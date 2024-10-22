@@ -2,13 +2,17 @@ import fs from "fs";
 import { execSync } from "child_process";
 
 const owner = "frontendmu";
-const repo = "frontend.mu";
 const branch = "main"; // Replace with the default branch of your repository
 
 const contributorsFile = "./data/contributors.json";
+const configSource = `https://raw.githubusercontent.com/${owner}/frontend.mu/${branch}/packages/frontendmu-data/scripts/update-contributors.config.json`
 
 async function updateContributors() {
   try {
+    const config = await loadConfig();
+    const includedRepositories = config.includedRepositories;
+    const excludedContributors = config.excludedContributors;
+
     const allPublicRepositoriesList = await fetch(
       `https://api.github.com/users/${owner}/repos`
     ).then((response) => response.json());
@@ -17,54 +21,15 @@ async function updateContributors() {
       (repo) => repo.name
     );
 
-    // console.log("All public repositories:", allPublicRepositories);
-    // [                          
-    //   '.github',                                        
-    //   'branding',                                       
-    //   'conference-2024',                                
-    //   'events',                                         
-    //   'frontend.mu',                                    
-    //   'frontendmu-daisy',                               
-    //   'frontendmu-nuxt',                                
-    //   'frontendmu-ticket',                              
-    //   'google-photos-sync',                             
-    //   'hacktoberfestmu-2019',
-    //   'meetupFEC',                                 
-    //   'nuxt-workshop-devcon2024',
-    //   'nuxt-workshop-devcon2024-preparations',
-    //   'playground',                                
-    //   'vercel-og-next',                            
-    //   'video'                                      
-    // ]                                              
-
-    // const contributors = [];
     const contributorsMap = {};
 
-    const excludedContributors = ["actions-user", "github-actions[bot]"];
-    const excludedRepositories = [".github", "google-photos-sync", "branding"];
-
     for (const repo of allPublicRepositories) {
-      if (excludedRepositories.includes(repo)) {
+      if (!includedRepositories.includes(repo)) {
         continue;
       }
       const contributorsList = await fetch(
         `https://api.github.com/repos/${owner}/${repo}/contributors`
       ).then((response) => response.json());
-
-      //   const contributorsListFiltered = contributorsList
-      //     .map((contributor) => {
-      //       return {
-      //         username: contributor.login,
-      //         contributions: contributor.contributions,
-      //       };
-      //     })
-      //     .filter((contributor) => {
-      //       return !excludedContributors.includes(contributor.username);
-      //     });
-      //   contributors.push(...contributorsListFiltered);
-      //   console.log(`Contributors for ${repo}:`, contributorsListFiltered);
-      // }
-      // const updatedContributors = [...new Set(contributors)];
 
       contributorsList.forEach((contributor) => {
         if (!excludedContributors.includes(contributor.login)) {
@@ -92,7 +57,6 @@ async function updateContributors() {
         contributorsFile,
         contributorsData
       );
-      // console.log("Contributors file updated.");
 
       // Configure Git user and email for the commit
       execSync('git config user.name "GitHub Action"');
@@ -123,6 +87,10 @@ function getExistingContributors() {
     return JSON.parse(fs.readFileSync(contributorsFile));
   }
   return [];
+}
+
+async function loadConfig() {
+  return await fetch(configSource).then((response) => response.json());
 }
 
 updateContributors();
