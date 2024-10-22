@@ -1,33 +1,53 @@
 import fs from "fs";
 import { execSync } from "child_process";
 
-const owner = "Front-End-Coders-Mauritius";
-const repo = "frontend.mu";
+const owner = "frontendmu";
 const branch = "main"; // Replace with the default branch of your repository
 
 const contributorsFile = "./data/contributors.json";
+const configSource = `https://raw.githubusercontent.com/${owner}/frontend.mu/${branch}/packages/frontendmu-data/scripts/update-contributors.config.json`
 
 async function updateContributors() {
   try {
-    const response = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/contributors`
+    const config = await loadConfig();
+    const includedRepositories = config.includedRepositories;
+    const excludedContributors = config.excludedContributors;
+
+    const allPublicRepositoriesList = await fetch(
+      `https://api.github.com/users/${owner}/repos`
+    ).then((response) => response.json());
+
+    const allPublicRepositories = allPublicRepositoriesList.map(
+      (repo) => repo.name
     );
 
-    const result = await response.json();
-    const contributors = result
-      .map((contributor) => {
-        return {
-          username: contributor.login,
-          contributions: contributor.contributions,
-        };
-      })
-      .filter((contributor) => {
-        // Exclude the following contributors from the list
-        const excludedContributors = ["actions-user", "github-actions[bot]"];
-        return !excludedContributors.includes(contributor.username);
-      });
+    const contributorsMap = {};
 
-    const updatedContributors = [...new Set(contributors)];
+    for (const repo of allPublicRepositories) {
+      if (!includedRepositories.includes(repo)) {
+        continue;
+      }
+      const contributorsList = await fetch(
+        `https://api.github.com/repos/${owner}/${repo}/contributors`
+      ).then((response) => response.json());
+
+      contributorsList.forEach((contributor) => {
+        if (!excludedContributors.includes(contributor.login)) {
+          if (contributorsMap[contributor.login]) {
+            contributorsMap[contributor.login] += contributor.contributions;
+          } else {
+            contributorsMap[contributor.login] = contributor.contributions;
+          }
+        }
+      });
+    }
+    const updatedContributors = Object.entries(contributorsMap).map(([username, contributions]) => ({
+      username,
+      contributions
+    }));
+    const contributorsData = JSON.stringify(updatedContributors, null, 2);
+
+    console.log(contributorsData)
 
     if (
       JSON.stringify(updatedContributors) !==
@@ -35,9 +55,8 @@ async function updateContributors() {
     ) {
       fs.writeFileSync(
         contributorsFile,
-        JSON.stringify(updatedContributors, null, 2)
+        contributorsData
       );
-      console.log("Contributors file updated.");
 
       // Configure Git user and email for the commit
       execSync('git config user.name "GitHub Action"');
@@ -68,6 +87,10 @@ function getExistingContributors() {
     return JSON.parse(fs.readFileSync(contributorsFile));
   }
   return [];
+}
+
+async function loadConfig() {
+  return await fetch(configSource).then((response) => response.json());
 }
 
 updateContributors();
