@@ -1,12 +1,12 @@
 <script setup lang="ts">
-defineOgImageComponent('Generic')
+defineOgImageComponent("Generic");
 </script>
 
 <template>
   <NuxtLoadingIndicator />
   <LayoutBackdrop>
     <SiteNavigation />
-
+    <SiteLeftMenu />
     <slot />
 
     <HomeSponsorHighlight />

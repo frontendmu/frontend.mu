@@ -1,28 +1,37 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
-import useAuth, { getClient } from '../../auth-utils/useAuth'
-import useAuthRedirect from '@/auth-utils/useAuthRedirect'
+import { onMounted } from "vue";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
+import useAuth, { getClient } from "../../auth-utils/useAuth";
+import useAuthRedirect from "@/auth-utils/useAuthRedirect";
 
-const { user, logout, isLoggedIn, getCurrentUser, responseFromServer, checkIfLoggedIn, avatarUrl } = useAuth(getClient())
+const { user, logout, isLoggedIn, checkIfLoggedIn, avatarUrl } = useAuth(
+  getClient()
+);
 
-const { setUrl } = useAuthRedirect()
+const { setUrl } = useAuthRedirect();
 
 onMounted(() => {
-  checkIfLoggedIn()
-})
+  checkIfLoggedIn();
+});
 </script>
 
 <template>
   <div class="dark:text-zinc-200 dark:ring-white/10 pl-4">
     <BaseButton
-      v-if="!isLoggedIn" href="/login" color="primary" class="font-medium hidden md:block"
+      v-if="!isLoggedIn"
+      href="/login"
+      color="primary"
+      class="font-medium hidden md:block"
       @click="setUrl()"
     >
       Log In
     </BaseButton>
     <BaseButton
-      v-if="!isLoggedIn" href="/login" color="primary" class="font-medium block md:hidden" size="sm"
+      v-if="!isLoggedIn"
+      href="/login"
+      color="primary"
+      class="font-medium block md:hidden"
+      size="sm"
       @click="setUrl()"
     >
       Log In
@@ -31,19 +40,24 @@ onMounted(() => {
       <Menu as="div" class="relative inline-block text-left">
         <div>
           <MenuButton
-            class="inline-flex items-center w-full justify-center gap-x-1.5 rounded-full  text-sm font-semibold text-verse-900 dark:text-verse-100 shadow-sm  ring-gray-300 hover:bg-gray-50"
+            class="inline-flex items-center w-full justify-center gap-x-1.5 rounded-full text-sm font-semibold text-verse-900 dark:text-verse-100 shadow-sm ring-gray-300 hover:bg-gray-50"
           >
             <div v-if="avatarUrl">
-              <img class="w-10 aspect-square rounded-full" :src="avatarUrl">
+              <img
+                class="w-10 aspect-square rounded-full"
+                :src="avatarUrl"
+                alt="User Avatar"
+              />
             </div>
-            <!-- <ChevronDownIcon class="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true" /> -->
           </MenuButton>
         </div>
 
         <transition
           enter-active-class="transition ease-out duration-100"
-          enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
-          leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100"
+          enter-from-class="transform opacity-0 scale-95"
+          enter-to-class="transform opacity-100 scale-100"
+          leave-active-class="transition ease-in duration-75"
+          leave-from-class="transform opacity-100 scale-100"
           leave-to-class="transform opacity-0 scale-95"
         >
           <MenuItems
@@ -53,15 +67,24 @@ onMounted(() => {
               <MenuItem v-slot="{ active }">
                 <NuxtLink
                   href="/user/me"
-                  class="block px-4 py-2 text-sm" :class="[active ? 'bg-gray-400/10 text-verse-900 dark:text-verse-100' : 'text-verse-900 dark:text-verse-100']"
+                  class="block px-4 py-2 text-sm"
+                  :class="[
+                    active
+                      ? 'bg-gray-400/10 text-verse-900 dark:text-verse-100'
+                      : 'text-verse-900 dark:text-verse-100',
+                  ]"
                 >
-                  My
-                  Profile
+                  My Profile
                 </NuxtLink>
               </MenuItem>
               <MenuItem v-slot="{ active }">
                 <NuxtLink
-                  class="block px-4 py-2 text-sm cursor-pointer" :class="[active ? 'bg-gray-400/10 text-verse-900 dark:text-verse-100' : 'text-verse-900 dark:text-verse-100']"
+                  class="block px-4 py-2 text-sm cursor-pointer"
+                  :class="[
+                    active
+                      ? 'bg-gray-400/10 text-verse-900 dark:text-verse-100'
+                      : 'text-verse-900 dark:text-verse-100',
+                  ]"
                   @click="logout()"
                 >
                   Logout
@@ -71,7 +94,10 @@ onMounted(() => {
             <div class="text-verse-900 dark:text-verse-100 p-4 text-sm">
               <div class="flex flex-col items-center justify-center gap-2">
                 <div v-if="avatarUrl">
-                  <img class="w-16 aspect-square rounded-full" :src="avatarUrl">
+                  <img
+                    class="w-16 aspect-square rounded-full"
+                    :src="avatarUrl"
+                  />
                 </div>
 
                 {{ user?.full_name }}
