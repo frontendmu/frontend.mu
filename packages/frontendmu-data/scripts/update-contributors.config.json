@@ -1,0 +1,13 @@
+{
+    "includedRepositories": [
+        "frontend.mu",
+        "video",
+        "google-photos-sync",
+        "conference-2024",
+        "frontendmu-ticket"
+    ],
+    "excludedContributors": [
+        "actions-user",
+        "github-actions[bot]"
+    ]
+}
