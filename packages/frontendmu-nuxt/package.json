@@ -21,8 +21,7 @@
     "@nuxtjs/color-mode": "^3.5.2",
     "@nuxtjs/seo": "2.0.0-rc.16",
     "@vueuse/core": "^10.11.1",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
+    "@vueuse/motion": "^2.2.6",
     "embla-carousel": "^8.4.0",
     "embla-carousel-vue": "^8.4.0",
     "lucide-vue-next": "^0.378.0",
@@ -30,17 +29,20 @@
     "radix-vue": "^1.9.10",
     "shadcn-nuxt": "^0.10.4",
     "simplex-noise": "^4.0.3",
-    "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7",
     "vue": "^3.5.13",
     "vue-router": "^4.4.5"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.27.3",
+    "@inspira-ui/plugins": "^0.0.1",
     "@nuxt/eslint": "^0.4.0",
     "@nuxtjs/tailwindcss": "^6.12.2",
     "@playwright/test": "^1.49.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
     "eslint": "^9.15.0",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.6.3"
   }
 }
