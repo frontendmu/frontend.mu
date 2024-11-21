@@ -212,19 +212,22 @@ function renderToScreen(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
   ctx.restore()
 }
 
+function handleResize() {
+  const canvas = canvasRef.value
+  const ctx = canvas?.getContext('2d')
+
+  if (canvas && ctx) {
+    resize(canvas, ctx)
+  }
+}
+
 onMounted(() => {
   setup()
-  window.addEventListener('resize', () => {
-    const canvas = canvasRef.value
-    const ctx = canvas?.getContext('2d')
-    if (canvas && ctx) {
-      resize(canvas, ctx)
-    }
-  })
+  window.addEventListener('resize', handleResize)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('resize', () => { })
+  window.removeEventListener('resize', handleResize)
 })
 </script>
 
