@@ -3,6 +3,8 @@ const { links, item } = defineProps<Props>()
 
 const currentPath = computed(() => useRoute().path)
 
+const today = new Date().getDate()
+
 interface TMenuItem {
   title: string
   href: string
@@ -30,7 +32,7 @@ interface Props {
     :aria-haspopup="links[item].title === 'About' ? 'true' : undefined"
   >
     <NuxtLink
-      :class="[links[item].title === 'Advent Calendar' && 'text-red-600 dark:text-green-500']"
+      :class="[links[item].title === 'Advent Calendar' && 'hidden md:flex text-red-600 dark:text-green-500']"
       class="flex items-center" :href="links[item].href"
       :target="!!links[item].href.includes(&quot;https&quot;) ? &quot;_blank&quot; : &quot;_self&quot;"
     >
@@ -40,7 +42,20 @@ interface Props {
       />
 
       <span class="relative z-20  p-2">{{ links[item].title }}</span>
+
       <Icon v-if="!!links[item].href.includes(&quot;https&quot;)" name="carbon:launch" height="1em" />
+    </NuxtLink>
+
+    <NuxtLink
+      v-if="links[item].title === 'Advent Calendar'" class="md:hidden text-green-600 relative flex justify-center items-center animate-bounce"
+      :href="links[item].href"
+
+      :target="!!links[item].href.includes(&quot;https&quot;) ? &quot;_blank&quot; : &quot;_self&quot;"
+    >
+      <IconCalendar class="w-8 h-8" />
+      <div class="text-xs text-red-600 dark:text-red-100 absolute top-1/3 ">
+        {{ today }}
+      </div>
     </NuxtLink>
     <div v-if="links[item].children" class="menu-dropdown px-2 pb-2 bg-white rounded-md text-black">
       <div class="menu-dropdown-item  theme-dark">

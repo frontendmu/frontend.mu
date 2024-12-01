@@ -99,7 +99,7 @@ const links: TMenu = {
   advent: {
     title: 'Advent Calendar',
     href: 'https://advent.frontend.mu',
-    class: 'hidden md:block',
+
   },
 }
 
@@ -195,7 +195,7 @@ onMounted(toggleHeader)
         </div>
         <nav>
           <ul
-            class="nav-links text-sm md:text-sm lg:text-base flex md:gap-4 font-medium font-heading"
+            class="nav-links text-sm md:text-sm lg:text-base flex md:gap-4 gap-2 font-medium font-heading"
           >
             <template v-for="item of Object.keys(links)" :key="item">
               <SiteMenuItem :links="links" :item="item" />
