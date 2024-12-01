@@ -9,6 +9,8 @@ interface TMenuItem {
   href: string
   class?: string
   children?: TMenuItem[]
+  target?: string
+  rel?: string
 }
 
 interface TMenu {
@@ -78,10 +80,10 @@ const links: TMenu = {
       },
     ],
   },
-  meetups: {
-    title: 'Meetups',
-    href: '/meetups',
-  },
+  // meetups: {
+  //   title: 'Meetups',
+  //   href: '/meetups',
+  // },
   community: {
     title: 'Community',
     href: '/community',
@@ -91,15 +93,17 @@ const links: TMenu = {
     href: '/team',
     class: 'hidden md:block',
   },
-  sponsors: {
-    title: 'Sponsors',
-    href: '/sponsors',
-    class: 'hidden md:block',
-  },
+  // sponsors: {
+  //   title: 'Sponsors',
+  //   href: '/sponsors',
+  //   class: 'hidden md:block',
+  // },
   advent: {
     title: 'Advent Calendar',
     href: 'https://advent.frontend.mu',
-
+    class: 'external-link',
+    target: '_blank',
+    rel: 'noopener noreferrer',
   },
 }
 
@@ -179,24 +183,16 @@ onMounted(toggleHeader)
     <div class="menu theme-light w-full">
       <div class="flex justify-between items-center contain">
         <div class="flex">
-          <NuxtLink
-            href="/"
-            class="flex gap-2 text-verse-500 dark:text-verse-200"
-            title="frontend.mu"
-            @contextmenu="handleRightClick"
-          >
+          <NuxtLink href="/" class="flex gap-2 text-verse-500 dark:text-verse-200" title="frontend.mu"
+            @contextmenu="handleRightClick">
             <SiteLogo class="w-10" />
-            <span
-              class="hidden text-lg font-bold leading-none tracking-tighter md:text-3xl md:block"
-            >
+            <span class="hidden text-lg font-bold leading-none tracking-tighter md:text-3xl md:block">
               frontend.mu
             </span>
           </NuxtLink>
         </div>
         <nav>
-          <ul
-            class="nav-links text-sm md:text-sm lg:text-base flex md:gap-4 gap-2 font-medium font-heading"
-          >
+          <ul class="nav-links text-sm md:text-sm lg:text-base flex md:gap-4 gap-2 font-medium font-heading">
             <template v-for="item of Object.keys(links)" :key="item">
               <SiteMenuItem :links="links" :item="item" />
             </template>
@@ -211,9 +207,7 @@ onMounted(toggleHeader)
             <slot name="dock-right" />
           </div>
         </div>
-        <div
-          class="absolute right-10 top-10 rounded-lg px-4 bg-white/20 shadow-[0px_0px_2px_var(--color-verse-500)]"
-        >
+        <div class="absolute right-10 top-10 rounded-lg px-4 bg-white/20 shadow-[0px_0px_2px_var(--color-verse-500)]">
           <slot name="dock-right-bottom" />
         </div>
       </div>
