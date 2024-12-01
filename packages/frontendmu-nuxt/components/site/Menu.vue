@@ -96,6 +96,11 @@ const links: TMenu = {
     href: '/sponsors',
     class: 'hidden md:block',
   },
+  advent: {
+    title: 'Advent Calendar',
+    href: 'https://advent.frontend.mu',
+    class: 'hidden md:block',
+  },
 }
 
 function toggleHeader() {
