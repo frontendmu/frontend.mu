@@ -17,7 +17,7 @@ const handleError = () => clearError({ redirect: '/' })
         </BaseHeading>
 
         <BaseHeading :level="3" weight="bold">
-          {{ error.statusCode }} - The page you were looking for doesn't exist
+          {{ error.statusCode }} - The page you are looking for doesn't exist
         </BaseHeading>
 
         <p>{{ error.message }}</p>

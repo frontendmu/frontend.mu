@@ -3,8 +3,6 @@ import eventsResponse from '../../../frontendmu-data/data/meetups-raw.json'
 import speakersResponse from '../../../frontendmu-data/data/speakers-raw.json'
 import speakersProfileResponse from '../../../frontendmu-data/data/speakers-profile.json'
 
-import type { Speaker, SpeakerProfile, Sponsor } from '~/utils/types'
-
 definePageMeta({
   middleware: [
     function (to, _) {
@@ -25,15 +23,11 @@ definePageMeta({
 
 const route = useRoute()
 
-function getSpeaker(id: string | string[]): { person: Speaker | undefined, sessions: Sponsor[] | undefined, profile: SpeakerProfile | undefined } {
+function getSpeaker(id: string | string[]) {
   const speaker = speakersResponse.find((ev: { id: string }) => String(ev.id) === String(id))
 
   if (!speaker) {
-    return {
-      person: undefined,
-      sessions: undefined,
-      profile: undefined,
-    }
+    return
   }
 
   // Get sessions of this speaker from the events
@@ -49,13 +43,15 @@ function getSpeaker(id: string | string[]): { person: Speaker | undefined, sessi
     person: speaker,
     sessions: speakerSession,
     profile,
+    Date: '',
+    Venue: '',
   }
 }
 
 const speaker = ref(getSpeaker(route.params.id))
 
 useHead({
-  title: speaker.value.person ? speaker.value.person.name : '',
+  title: speaker.value?.person ? speaker.value.person.name : '',
   meta: [
     {
       hid: 'description',
@@ -66,8 +62,8 @@ useHead({
 })
 
 defineOgImageComponent('Speaker', {
-  title: speaker.value.person ? speaker.value.person.name : '',
-  username: speaker.value.person?.github_account,
+  title: speaker.value?.person ? speaker.value.person.name : '',
+  username: speaker.value?.person.github_account,
 })
 </script>
 
