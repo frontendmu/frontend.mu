@@ -258,9 +258,14 @@ export interface SessionDetail {
 }
 
 export interface Speaker {
-  name: string
   id: string
+  status: string
+  sort: string | null
+  name: string
   github_account: string
+  featured: boolean
+  date_created: string
+  date_updated: string
 }
 
 export interface BrandingAsset {
@@ -268,4 +273,14 @@ export interface BrandingAsset {
   description: string
   filename: string
   versions: string[]
+}
+
+export interface SpeakerProfile {
+  id: string
+  bio: string
+  job_title: string
+  location: string
+  website: string
+  github: string
+  twitter: string
 }
