@@ -2,15 +2,28 @@
 import eventsResponse from '../../../frontendmu-data/data/meetups-raw.json'
 import speakersResponse from '../../../frontendmu-data/data/speakers-raw.json'
 
+definePageMeta({
+  middleware: [
+    function (to, _) {
+      const { id } = to.params
+      const speaker = speakersResponse.find((ev: { id: string }) => String(ev.id) === String(id))
+
+      if (!speaker) {
+        return abortNavigation(
+          createError({
+            status: 404,
+            message: `We could not find the speaker with ID: ${id}`,
+          }),
+        )
+      }
+    },
+  ],
+})
+
 const route = useRoute()
-const { id } = route.params
 
 function getSpeaker(id: string | string[]) {
   const speaker = speakersResponse.find((ev: { id: string }) => String(ev.id) === String(id))
-
-  if (speaker === null) {
-    console.error('cannot find speaker id: ', id)
-  }
 
   // Get sessions of this speaker from the events
   const allSessions = eventsResponse.map((event: any) => event.sessions).flat()
@@ -25,7 +38,7 @@ function getSpeaker(id: string | string[]) {
   }
 }
 
-const speaker = ref(getSpeaker(id))
+const speaker = ref(getSpeaker(route.params.id))
 
 useHead({
   title: speaker.value.person ? speaker.value.person.name : '',
@@ -47,7 +60,7 @@ defineOgImageComponent('Speaker', {
 <template>
   <div>
     <template v-if="speaker">
-      <SpeakerSingle :route-id="id" :speaker="speaker" />
+      <SpeakerSingle :speaker="speaker" />
     </template>
   </div>
 </template>
