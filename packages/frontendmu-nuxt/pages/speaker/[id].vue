@@ -3,9 +3,9 @@ import eventsResponse from '../../../frontendmu-data/data/meetups-raw.json'
 import speakersResponse from '../../../frontendmu-data/data/speakers-raw.json'
 
 const route = useRoute()
-const id = computed(() => route.params.id as string)
+const { id } = route.params
 
-function getSpeaker(id: string | number) {
+function getSpeaker(id: string | string[]) {
   const speaker = speakersResponse.find((ev: { id: string }) => String(ev.id) === String(id))
 
   if (speaker === null) {
@@ -25,9 +25,7 @@ function getSpeaker(id: string | number) {
   }
 }
 
-const speaker = ref(getSpeaker(id.value))
-
-const speakerExists = computed(() => speaker.value !== null)
+const speaker = ref(getSpeaker(id))
 
 useHead({
   title: speaker.value.person ? speaker.value.person.name : '',

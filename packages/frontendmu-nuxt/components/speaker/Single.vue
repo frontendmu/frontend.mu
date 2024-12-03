@@ -19,11 +19,11 @@ const speaker_photo = getGithubUrl(props.speaker.person?.github_account)
     <!-- <pre>
         <code>{{ JSON.stringify(props.speaker, null, 2) }}</code>
     </pre> -->
+
     <div :data-title="props.speaker.person?.name">
       <ContentBlock>
         <div class="flex md:flex-row justify-between flex-col-reverse">
           <div>
-            <!-- Content area -->
             <div>
               <div>
                 <BaseHeading :level="1" weight="bold">
@@ -34,7 +34,6 @@ const speaker_photo = getGithubUrl(props.speaker.person?.github_account)
               <EventsList :sessions="props.speaker.sessions" />
             </div>
 
-            <!-- Stats section -->
             <div class="mt-10">
               <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4 md:gap-y-8">
                 <template v-if="props.speaker.Date">
@@ -63,9 +62,10 @@ const speaker_photo = getGithubUrl(props.speaker.person?.github_account)
 
           <div class="flex-grow relative">
             <div class="w-full flex justify-end">
-              <img class="h-auto w-[80%] mx-auto md:mx-0 my-10 object-cover rounded-full lg:h-96 lg:w-96"
-                   :src="speaker_photo" :style="vTransitionName(props.speaker.person?.name, 'photo')"
-                   :alt="props.speaker.person?.name" :title="props.speaker.person?.name" width="300" height="300"
+              <img
+                class="h-auto w-[80%] mx-auto md:mx-0 my-10 object-cover rounded-full lg:h-96 lg:w-96"
+                :src="speaker_photo" :style="vTransitionName(props.speaker.person?.name, 'photo')"
+                :alt="props.speaker.person?.name" :title="props.speaker.person?.name" width="300" height="300"
               >
               <div class="w-full h-full absolute top-0">
                 <LogoSpiral class="w-full opacity-5 saturate-0" />
