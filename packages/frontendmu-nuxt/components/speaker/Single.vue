@@ -4,16 +4,10 @@ import LogoSpiral from '@/components/misc/LogoSpiral.vue'
 import { getGithubUrl } from '@/utils/helpers'
 import ContentBlock from '@/components/misc/ContentBlock.vue'
 
-import type { Speaker, SpeakerProfile, Sponsor } from '~/utils/types'
+import type { SpeakerProfileWithSessions } from '~/utils/types'
 
 interface SpeakerSingleProps {
-  speaker: {
-    person: Speaker
-    sessions: Sponsor[]
-    profile: SpeakerProfile
-    Date: string
-    Venue: string
-  }
+  speaker: SpeakerProfileWithSessions
 }
 
 const props = defineProps<SpeakerSingleProps>()
@@ -22,6 +16,7 @@ const person = computed(() => props.speaker.person)
 const sessions = computed(() => props.speaker.sessions)
 
 const profile = computed(() => props.speaker.profile)
+const hasProfileBio = computed(() => profile.value.bio !== '')
 const hasProfileLocation = computed(() => profile.value.location !== '')
 const hasProfileWebsite = computed(() => profile.value.website !== '')
 const hasProfileGithub = computed(() => profile.value.github !== '')
@@ -34,7 +29,7 @@ const speaker_photo = getGithubUrl(person.value.github_account)
   <div>
     <div :data-title="person.name">
       <ContentBlock>
-        <div class="flex flex-col-reverse md:flex-row justify-start gap-4">
+        <div class="flex flex-col-reverse md:flex-row justify-start gap-6">
           <div class="flex-grow">
             <!-- Content area -->
             <div>
@@ -84,7 +79,7 @@ const speaker_photo = getGithubUrl(person.value.github_account)
 
               <div
                 v-if="profile"
-                class="grid gap-4 w-full z-20"
+                class="grid gap-4 w-full p-4 border-2 border-verse-400 rounded-xl z-20 text-verse-600 dark:text-verse-300"
               >
                 <BaseHeading
                   class="md:hidden"
@@ -94,7 +89,9 @@ const speaker_photo = getGithubUrl(person.value.github_account)
                   {{ person.name }}
                 </BaseHeading>
 
-                <p>{{ profile.bio }}</p>
+                <p v-if="hasProfileBio">
+                  {{ profile.bio }}
+                </p>
 
                 <nav class="grid gap-2 *:flex *:justify-start *:items-center *:gap-2">
                   <span v-if="hasProfileLocation">

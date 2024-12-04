@@ -284,3 +284,11 @@ export interface SpeakerProfile {
   github: string
   twitter: string
 }
+
+export interface SpeakerProfileWithSessions {
+  person: Speaker
+  sessions: Sponsor[]
+  profile: SpeakerProfile
+  Date: string
+  Venue: string
+}

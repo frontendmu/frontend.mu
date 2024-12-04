@@ -3,6 +3,8 @@ import eventsResponse from '../../../frontendmu-data/data/meetups-raw.json'
 import speakersResponse from '../../../frontendmu-data/data/speakers-raw.json'
 import speakersProfileResponse from '../../../frontendmu-data/data/speakers-profile.json'
 
+import type { SpeakerProfileWithSessions } from '~/utils/types'
+
 definePageMeta({
   middleware: [
     function (to, _) {
@@ -23,11 +25,17 @@ definePageMeta({
 
 const route = useRoute()
 
-function getSpeaker(id: string | string[]) {
+function getSpeaker(id: string): SpeakerProfileWithSessions {
   const speaker = speakersResponse.find((ev: { id: string }) => String(ev.id) === String(id))
 
   if (!speaker) {
-    return
+    return {
+      person: undefined,
+      sessions: undefined,
+      profile: undefined,
+      Date: '',
+      Venue: '',
+    }
   }
 
   // Get sessions of this speaker from the events
@@ -37,7 +45,7 @@ function getSpeaker(id: string | string[]) {
     return id === session_speaker_id
   })
 
-  const profile = speakersProfileResponse.find(profile => profile.id === speaker.id)
+  const profile = speakersProfileResponse.find(profile => profile.github === speaker.github_account)
 
   return {
     person: speaker,
@@ -48,7 +56,7 @@ function getSpeaker(id: string | string[]) {
   }
 }
 
-const speaker = ref(getSpeaker(route.params.id))
+const speaker = ref(getSpeaker(route.params.id as string))
 
 useHead({
   title: speaker.value?.person ? speaker.value.person.name : '',
