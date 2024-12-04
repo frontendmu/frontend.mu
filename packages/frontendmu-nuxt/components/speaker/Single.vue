@@ -29,7 +29,7 @@ const speaker_photo = getGithubUrl(person.value.github_account)
   <div>
     <div :data-title="person.name">
       <ContentBlock>
-        <div class="flex flex-col-reverse md:flex-row justify-start gap-6">
+        <div class="flex flex-col-reverse md:flex-row justify-start md:gap-6">
           <div class="flex-grow">
             <!-- Content area -->
             <div>
