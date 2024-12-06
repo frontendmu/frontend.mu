@@ -4,34 +4,42 @@ import LogoSpiral from '@/components/misc/LogoSpiral.vue'
 import { getGithubUrl } from '@/utils/helpers'
 import ContentBlock from '@/components/misc/ContentBlock.vue'
 
-const props = defineProps({
-  speaker: {
-    type: Object,
-    required: true,
-  },
-})
+import type { SpeakerProfileWithSessions } from '~/utils/types'
 
-const speaker_photo = getGithubUrl(props.speaker.person?.github_account)
+interface SpeakerSingleProps {
+  speaker: SpeakerProfileWithSessions
+}
+
+const props = defineProps<SpeakerSingleProps>()
+
+const person = computed(() => props.speaker.person)
+const sessions = computed(() => props.speaker.sessions)
+
+const profile = computed(() => props.speaker.profile)
+const hasProfileBio = computed(() => profile.value.bio !== '')
+const hasProfileLocation = computed(() => profile.value.location !== '')
+const hasProfileWebsite = computed(() => profile.value.website !== '')
+const hasProfileGithub = computed(() => profile.value.github !== '')
+const hasProfileTwitter = computed(() => profile.value.twitter !== '')
+
+const speaker_photo = getGithubUrl(person.value.github_account)
 </script>
 
 <template>
   <div>
-    <!-- <pre>
-        <code>{{ JSON.stringify(props.speaker, null, 2) }}</code>
-    </pre> -->
-    <div :data-title="props.speaker.person?.name">
+    <div :data-title="person.name">
       <ContentBlock>
-        <div class="flex md:flex-row justify-between flex-col-reverse">
-          <div>
+        <div class="flex flex-col-reverse md:flex-row justify-start md:gap-6">
+          <div class="flex-grow">
             <!-- Content area -->
             <div>
-              <div>
+              <div class="hidden md:block">
                 <BaseHeading :level="1" weight="bold">
-                  {{ props.speaker.person?.name }}
+                  {{ person.name }}
                 </BaseHeading>
               </div>
 
-              <EventsList :sessions="props.speaker.sessions" />
+              <EventsList :sessions="sessions" />
             </div>
 
             <!-- Stats section -->
@@ -61,13 +69,62 @@ const speaker_photo = getGithubUrl(props.speaker.person?.github_account)
             </div>
           </div>
 
-          <div class="flex-grow relative">
-            <div class="w-full flex justify-end">
-              <img class="h-auto w-[80%] mx-auto md:mx-0 my-10 object-cover rounded-full lg:h-96 lg:w-96"
-                   :src="speaker_photo" :style="vTransitionName(props.speaker.person?.name, 'photo')"
-                   :alt="props.speaker.person?.name" :title="props.speaker.person?.name" width="300" height="300"
+          <div class="flex-grow relative w-full lg:max-w-[32.375rem]">
+            <div class="flex flex-col justify-start items-end w-full ">
+              <img
+                class="h-auto w-[80%] mx-auto md:mx-0 my-10 object-cover rounded-full lg:h-96 lg:w-96"
+                :src="speaker_photo" :style="vTransitionName(person.name, 'photo')"
+                :alt="person.name" :title="person.name" width="300" height="300"
               >
-              <div class="w-full h-full absolute top-0">
+
+              <div
+                v-if="profile"
+                class="grid gap-4 w-full p-4 border-2 border-verse-400 rounded-xl z-20 text-verse-600 dark:text-verse-300"
+              >
+                <BaseHeading
+                  class="md:hidden"
+                  :level="1"
+                  weight="bold"
+                >
+                  {{ person.name }}
+                </BaseHeading>
+
+                <p v-if="hasProfileBio">
+                  {{ profile.bio }}
+                </p>
+
+                <nav class="grid gap-2 *:flex *:justify-start *:items-center *:gap-2">
+                  <span v-if="hasProfileLocation">
+                    <Icon name="lucide:map-pin" mode="svg" class="size-6" />{{ profile.location }}
+                  </span>
+
+                  <NuxtLink
+                    v-if="hasProfileWebsite"
+                    :to="profile.website"
+                    target="_blank"
+                  >
+                    <Icon name="lucide:link" mode="svg" class="size-6" />{{ profile.website }}
+                  </NuxtLink>
+
+                  <NuxtLink
+                    v-if="hasProfileGithub"
+                    :to="`https://github.com/${profile.github}`"
+                    target="_blank"
+                  >
+                    <Icon name="lucide:github" mode="svg" class="size-6" />{{ profile.github }}
+                  </NuxtLink>
+
+                  <NuxtLink
+                    v-if="hasProfileTwitter"
+                    :to="`https://twitter.com/${profile.twitter}`"
+                    target="_blank"
+                  >
+                    <Icon name="ri:twitter-x-fill" mode="svg" class="size-6" />{{ profile.twitter }}
+                  </NuxtLink>
+                </nav>
+              </div>
+
+              <div class="w-full h-full absolute top-0 z-10">
                 <LogoSpiral class="w-full opacity-5 saturate-0" />
               </div>
             </div>
