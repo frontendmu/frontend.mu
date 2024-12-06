@@ -16,11 +16,12 @@ const person = computed(() => props.speaker.person)
 const sessions = computed(() => props.speaker.sessions)
 
 const profile = computed(() => props.speaker.profile)
-const hasProfileBio = computed(() => profile.value.bio !== '')
-const hasProfileLocation = computed(() => profile.value.location !== '')
-const hasProfileWebsite = computed(() => profile.value.website !== '')
-const hasProfileGithub = computed(() => profile.value.github !== '')
-const hasProfileTwitter = computed(() => profile.value.twitter !== '')
+const hasProfileBio = computed(() => profile.value.bio && profile.value.bio !== '')
+const hasProfileJobTitle = computed(() => profile.value.job_title && profile.value.job_title !== '')
+const hasProfileLocation = computed(() => profile.value.location && profile.value.location !== '')
+const hasProfileWebsite = computed(() => profile.value.website && profile.value.website !== '')
+const hasProfileGithub = computed(() => profile.value.github && profile.value.github !== '')
+const hasProfileTwitter = computed(() => profile.value.twitter && profile.value.twitter !== '')
 
 const speaker_photo = getGithubUrl(person.value.github_account)
 </script>
@@ -94,6 +95,10 @@ const speaker_photo = getGithubUrl(person.value.github_account)
                 </p>
 
                 <nav class="grid gap-2 *:flex *:justify-start *:items-center *:gap-2">
+                  <span v-if="hasProfileJobTitle">
+                    <Icon name="lucide:code-xml" mode="svg" class="size-6" />{{ profile.job_title }}
+                  </span>
+
                   <span v-if="hasProfileLocation">
                     <Icon name="lucide:map-pin" mode="svg" class="size-6" />{{ profile.location }}
                   </span>
