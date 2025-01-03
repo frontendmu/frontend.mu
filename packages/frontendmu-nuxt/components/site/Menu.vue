@@ -78,12 +78,19 @@ const links: TMenu = {
         href: TWITTER_URL,
         class: '',
       },
+      {
+        title: 'Advent Calendar',
+        href: 'https://advent.frontend.mu',
+        class: 'external-link',
+        target: '_blank',
+        rel: 'noopener noreferrer',
+      },
     ],
   },
-  // meetups: {
-  //   title: 'Meetups',
-  //   href: '/meetups',
-  // },
+  meetups: {
+    title: 'Meetups',
+    href: '/meetups',
+  },
   community: {
     title: 'Community',
     href: '/community',
@@ -93,18 +100,18 @@ const links: TMenu = {
     href: '/team',
     class: 'hidden md:block',
   },
-  // sponsors: {
-  //   title: 'Sponsors',
-  //   href: '/sponsors',
-  //   class: 'hidden md:block',
-  // },
-  advent: {
-    title: 'Advent Calendar',
-    href: 'https://advent.frontend.mu',
-    class: 'external-link',
-    target: '_blank',
-    rel: 'noopener noreferrer',
+  sponsors: {
+    title: 'Sponsors',
+    href: '/sponsors',
+    class: 'hidden md:block',
   },
+  // advent: {
+  //   title: 'Advent Calendar',
+  //   href: 'https://advent.frontend.mu',
+  //   class: 'external-link',
+  //   target: '_blank',
+  //   rel: 'noopener noreferrer',
+  // },
 }
 
 function toggleHeader() {
