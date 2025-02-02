@@ -41,8 +41,10 @@ interface UserFromDirectus {
   full_name?: string
   first_name?: string
   last_name?: string
-  id: string
-  email: string
+  id?: string
+  email?: string
+  role?: UserFromDircetusRole
+  provider?: 'google' | 'default' | 'github'
   current_occupation?: string
   meal?: string
   transport?: string
@@ -54,8 +56,6 @@ interface UserFromDirectus {
   avatar_url?: string
   profile_picture?: string
   google?: GoogleInfo
-  role: UserFromDircetusRole
-  provider: 'google' | 'default' | 'github'
   external_identifier?: string
 }
 
@@ -65,9 +65,9 @@ export function mapToValidUser(user: UserFromDirectus): User {
     : `${user?.first_name} ${user?.last_name ?? ''}`.trim()
 
   return {
-    id: user.id,
+    id: user?.id || '',
     full_name,
-    email: user.email,
+    email: user?.email || '',
     current_occupation: user?.current_occupation || '',
     meal: user?.meal || '',
     transport: user.transport || '',
@@ -78,7 +78,7 @@ export function mapToValidUser(user: UserFromDirectus): User {
     avatar_url: user?.avatar_url || '',
     profile_picture: user.profile_picture || '',
     google: user?.google || null,
-    role: user.role.name || 'default',
+    role: user?.role?.name,
     provider: user.provider,
     external_identifier: user.external_identifier,
   }
