@@ -1,4 +1,4 @@
-import type { User } from './types'
+import type { GoogleInfo, User } from './types'
 
 export function random(list: string[] | number[]) {
   return list[Math.floor(Math.random() * list.length)]
@@ -33,15 +33,43 @@ export function formatDate(date: string) {
   })
 }
 
-export function mapToValidUser(user: any): User {
+interface UserFromDircetusRole {
+  name: 'sso_google' | 'Admin'
+
+}
+interface UserFromDirectus {
+  full_name?: string
+  first_name?: string
+  last_name?: string
+  id?: string
+  email?: string
+  role?: UserFromDircetusRole
+  provider?: 'google' | 'default' | 'github'
+  current_occupation?: string
+  meal?: string
+  transport?: string
+  phone?: string
+  occupation?: string
+  created_at?: string
+  name?: string
+  github_username?: string
+  avatar_url?: string
+  profile_picture?: string
+  google?: GoogleInfo
+  external_identifier?: string
+}
+
+export function mapToValidUser(user: UserFromDirectus): User {
+  console.log('trying to map this')
+  console.log({ user })
   const full_name = user?.full_name
     ? user.full_name
-    : `${user.first_name} ${user.last_name ?? ''}`.trim()
+    : `${user?.first_name} ${user?.last_name ?? ''}`.trim()
 
   return {
-    id: user.id,
+    id: user?.id || '',
     full_name,
-    email: user.email,
+    email: user?.email || '',
     current_occupation: user?.current_occupation || '',
     meal: user?.meal || '',
     transport: user.transport || '',
@@ -49,10 +77,10 @@ export function mapToValidUser(user: any): User {
     occupation: user.occupation || '',
     created_at: user?.created_at || '',
     github_username: user?.github_username || '',
-    avatar_url: user.avatar_url,
+    avatar_url: user?.avatar_url || '',
     profile_picture: user.profile_picture || '',
-    google: user.google,
-    role: user.role.name,
+    google: user?.google || null,
+    role: user?.role?.name,
     provider: user.provider,
     external_identifier: user.external_identifier,
   }
