@@ -190,6 +190,10 @@ export default function useAuth(client: DirectusClient<any> & AuthenticationClie
       if (!token) {
         throw new Error('User is not logged in')
       }
+      else {
+        console.log('User is logged in')
+        console.log({ token })
+      }
 
       client = await client.with(staticToken(token))
 

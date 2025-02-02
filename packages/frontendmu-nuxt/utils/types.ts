@@ -32,7 +32,7 @@ export interface User {
   phone: string | null
   created_at: string
   avatar_url: string | null
-  google?: GoogleInfo
+  google?: GoogleInfo | null
   github_username?: string
   profile_picture?: string | null
   role: 'sso_google' | 'Admin'
