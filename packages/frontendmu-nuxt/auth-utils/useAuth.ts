@@ -115,8 +115,8 @@ export default function useAuth(client: DirectusClient<any> & AuthenticationClie
           method: 'POST',
           credentials: 'include', // this is required in order to send the refresh token cookie
           body: JSON.stringify({
-            refresh_token: cookieValue,
-            mode: 'cookie',
+            // refresh_token: cookieValue,
+            mode: 'session',
           }),
         },
       )
