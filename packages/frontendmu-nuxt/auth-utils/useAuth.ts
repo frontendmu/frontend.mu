@@ -108,6 +108,7 @@ export default function useAuth(client: DirectusClient<any> & AuthenticationClie
   async function loginWithSSO() {
     try {
       const cookieValue = getCookieValue('directus_session_token')
+      console.log({ cookieValue })
       const res = await fetch(
         'https://directus.frontend.mu/auth/refresh',
         {
@@ -119,8 +120,6 @@ export default function useAuth(client: DirectusClient<any> & AuthenticationClie
           }),
         },
       )
-
-      console.log({ cookieValue })
 
       const response: { data: AuthenticationData } = await res.json()
 
