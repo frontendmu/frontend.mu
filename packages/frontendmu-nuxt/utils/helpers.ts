@@ -60,6 +60,8 @@ interface UserFromDirectus {
 }
 
 export function mapToValidUser(user: UserFromDirectus): User {
+  console.log('trying to map this')
+  console.log({ user })
   const full_name = user?.full_name
     ? user.full_name
     : `${user?.first_name} ${user?.last_name ?? ''}`.trim()
