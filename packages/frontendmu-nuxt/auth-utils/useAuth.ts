@@ -150,6 +150,8 @@ export default function useAuth(client: DirectusClient<any> & AuthenticationClie
       isLoading.value = false
     }
 
+    console.log('Setting auth to ', value)
+
     isAuth.value = value
   }
 
