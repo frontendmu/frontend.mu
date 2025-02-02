@@ -107,21 +107,26 @@ export default function useAuth(client: DirectusClient<any> & AuthenticationClie
 
   async function loginWithSSO() {
     try {
+      const cookieValue = getCookieValue('directus_session_token')
       const res = await fetch(
         'https://directus.frontend.mu/auth/refresh',
         {
           method: 'POST',
           credentials: 'include', // this is required in order to send the refresh token cookie
           body: JSON.stringify({
-            refresh_token: getCookieValue('directus_session_token'),
+            refresh_token: cookieValue,
             mode: 'cookie',
           }),
         },
       )
 
+      console.log({ cookieValue })
+
       const response: { data: AuthenticationData } = await res.json()
 
+      console.log({ response })
       setCookie(response.data)
+      console.log('trying to set cookie to ', response.data)
       await getCurrentUser()
       setAuth(true)
       if (!rawUser.value?.profile_picture) {
