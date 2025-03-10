@@ -107,27 +107,31 @@ export default function useAuth(client: DirectusClient<any> & AuthenticationClie
 
   async function loginWithSSO() {
     try {
+      const cookieValue = getCookieValue('directus_session_token')
+      console.log({ cookieValue })
       const res = await fetch(
         'https://directus.frontend.mu/auth/refresh',
         {
           method: 'POST',
           credentials: 'include', // this is required in order to send the refresh token cookie
           body: JSON.stringify({
-            refresh_token: getCookieValue('directus_session_token'),
-            mode: 'cookie',
+            // refresh_token: cookieValue,
+            mode: 'session',
           }),
         },
       )
 
       const response: { data: AuthenticationData } = await res.json()
 
+      console.log({ response })
       setCookie(response.data)
+      console.log('trying to set cookie to ', response.data)
       await getCurrentUser()
       setAuth(true)
-      if (!rawUser.value?.profile_picture) {
-        const picture = await cloudFunctionUpdateProfilePicture(rawUser.value?.id || '')
-        console.log(picture)
-      }
+      // if (!rawUser.value?.profile_picture) {
+      //   const picture = await cloudFunctionUpdateProfilePicture(rawUser.value?.id || '')
+      //   console.log(picture)
+      // }
 
       return response.data
     }
@@ -145,6 +149,8 @@ export default function useAuth(client: DirectusClient<any> & AuthenticationClie
     if (value === false) {
       isLoading.value = false
     }
+
+    console.log('Setting auth to ', value)
 
     isAuth.value = value
   }
@@ -185,6 +191,10 @@ export default function useAuth(client: DirectusClient<any> & AuthenticationClie
 
       if (!token) {
         throw new Error('User is not logged in')
+      }
+      else {
+        console.log('User is logged in')
+        console.log({ token })
       }
 
       client = await client.with(staticToken(token))
