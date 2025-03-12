@@ -255,6 +255,7 @@ export interface Meetup {
 export interface SessionDetail {
   title: string
   speakers: Speaker
+  deck?: string
 }
 
 export interface Speaker {
