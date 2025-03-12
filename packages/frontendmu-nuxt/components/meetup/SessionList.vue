@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { getGithubUrl } from '@/utils/helpers'
+import { getGithubUrl, vTransitionName } from '@/utils/helpers'
 import type { Session } from '@/utils/types'
-import { vTransitionName } from "@/utils/helpers";
 
 const props = defineProps({
   sessions: {
@@ -43,8 +42,8 @@ function getSpeakerPhoto(githubAccount: string) {
             rel="noopener noreferrer nofollow"
             class="w-fit flex flex-row items-center gap-1 py-2 sticky z-[1] text-xs sm:text-sm md:text-base lg:text-lg underline"
           >
+            <Icon name="bx:slideshow" class="w-3 sm:w-4 lg:w-5 h-3 sm:h-4 lg:h-5" />
             View slides
-            <Icon name="noto:backhand-index-pointing-right" class="w-4 h-4" />
           </NuxtLink>
         </div>
 
