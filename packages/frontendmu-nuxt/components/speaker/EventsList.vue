@@ -22,7 +22,7 @@ const props = defineProps({
             <h3 class="text-xs font-medium lg:text-xl text-verse-400">
               {{ session.Events_id.title }}
             </h3>
-            <p class="text-xs font-medium lg:text-2xl text-verse-500 dark:text-verse-200">
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl font-medium text-verse-500 dark:text-verse-200">
               {{ session.Session_id.title }}
             </p>
             <NuxtLink
@@ -32,8 +32,8 @@ const props = defineProps({
               rel="noopener noreferrer nofollow"
               class="w-fit flex flex-row items-center gap-1 py-2 sticky z-[1] text-xs sm:text-sm md:text-base lg:text-lg underline"
             >
+              <Icon name="bx:slideshow" class="w-3 sm:w-4 lg:w-5 h-3 sm:h-4 lg:h-5" />
               View slides
-              <Icon name="noto:backhand-index-pointing-right" class="w-4 h-4" />
             </NuxtLink>
           </div>
         </div>
