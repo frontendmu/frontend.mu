@@ -41,15 +41,11 @@ const currentAlbum = computed(() => fetchAlbumDetails(props.getCurrentEvent?.alb
           <div class="relative">
             <!-- Content area -->
             <div>
-              <template v-if="isDateInFuture(getCurrentEvent.Date || '')">
+              <template v-if="isDateInFuture(new Date(getCurrentEvent.Date || new Date))">
                 <div class="flex flex-col pb-4 gap-2 md:flex-row md:justify-between md:items-center">
                   <div class="flex w-full items-center justify-start">
                     <p
-                      class="p-2 rounded-full text-sm font-medium tracking-wide uppercase px-4" :class="[
-                        isDateInFuture(getCurrentEvent.Date || '')
-                          ? 'tagStyle bg-green-100 text-green-800'
-                          : 'tagStyle bg-yellow-100 text-yellow-800',
-                      ]"
+                      class="p-2 rounded-full text-sm font-medium tracking-wide uppercase px-4 tagStyle bg-green-100 text-green-800"
                     >
                       happening soon
                     </p>

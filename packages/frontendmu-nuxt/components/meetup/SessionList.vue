@@ -1,8 +1,7 @@
 <script setup lang="ts">
-// import { Image } from "astro:assets";
 import { getGithubUrl } from '@/utils/helpers'
 import type { Session } from '@/utils/types'
-// import { vTransitionName } from "@/utils/helpers";
+import { vTransitionName } from "@/utils/helpers";
 
 const props = defineProps({
   sessions: {
@@ -22,26 +21,36 @@ function getSpeakerPhoto(githubAccount: string) {
       Agenda
     </div>
     <ul role="list" class="flex flex-col gap-6">
-      <li v-for="(session, index) in sessions" :key="index" class="space-y-4 flex gap-10 relative">
-        <img class="h-20 w-20 rounded-full lg:h-24 lg:w-24"
-             :src="getSpeakerPhoto(session.Session_id.speakers.github_account)" :alt="session.Session_id.speakers.name"
-             :title="session.Session_id.speakers.name" width="300" height="300"
-             :style="vTransitionName(session?.Session_id.speakers?.name, 'photo')"
+      <li v-for="(session, index) in sessions" :key="index" class="flex flex-row items-center sm:items-start gap-5 lg:gap-10 relative">
+        <img
+          class="h-16 sm:h-20 w-16 sm:w-20 rounded-full lg:h-24 lg:w-24"
+          :src="getSpeakerPhoto(session.Session_id.speakers.github_account)" :alt="session.Session_id.speakers.name"
+          :title="session.Session_id.speakers.name" width="300" height="300"
+          :style="vTransitionName(session?.Session_id.speakers?.name, 'photo')"
         >
 
-        <div class="space-y-2">
-          <div>
-            <h3 class="font-heading text-xs font-medium lg:text-xl text-verse-500 dark:text-verse-400">
-              {{ session.Session_id.speakers.name }}
-            </h3>
-            <p class="text-xs font-bold lg:text-2xl text-verse-800 dark:text-verse-200">
-              {{ session.Session_id.title }}
-            </p>
-          </div>
+        <div>
+          <h3 class="font-heading text-xs font-medium sm:text-sm md:text-base lg:text-xl text-verse-500 dark:text-verse-400">
+            {{ session.Session_id.speakers.name }}
+          </h3>
+          <p class="text-sm font-bold sm:text-base md:text-lg lg:text-2xl text-verse-800 dark:text-verse-200">
+            {{ session.Session_id.title }}
+          </p>
+          <NuxtLink
+            v-if="session.Session_id.deck"
+            :href="session.Session_id.deck"
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            class="w-fit flex flex-row items-center gap-1 py-2 sticky z-[1] text-xs sm:text-sm md:text-base lg:text-lg underline"
+          >
+            View slides
+            <Icon name="noto:backhand-index-pointing-right" class="w-4 h-4" />
+          </NuxtLink>
         </div>
 
-        <NuxtLink :href="`/speaker/${session.Session_id.speakers.id}`" class="absolute inset-0"
-                  :title="`Speaker name: ${session.Session_id.speakers.name}`"
+        <NuxtLink
+          :href="`/speaker/${session.Session_id.speakers.id}`" class="absolute inset-0"
+          :title="`Speaker name: ${session.Session_id.speakers.name}`"
         >
           <span class="sr-only">{{ session.Session_id.speakers.name }}</span>
         </NuxtLink>
