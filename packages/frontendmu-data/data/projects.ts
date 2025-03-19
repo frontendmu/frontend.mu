@@ -119,6 +119,14 @@ export const projects: Project[] = [
     author_github_username: 'Saamiyah',
     categories: ['music', 'ambiance'],
     description: 'Ambiance was created to mimic a different environment for working everyday.'
+  },
+  {
+    title: 'Meetup.mu',
+    icon: 'ph:calendar-duotone',
+    project_url: 'https://meetup.mu/',
+    author_github_username: 'xelab04',
+    categories: ['community', 'Mauritius', 'open-data'],
+    description: 'Aggregator for all tech meetups happening in Mauritius, so you can better plan your Saturdays!'
   }
 
 ]
