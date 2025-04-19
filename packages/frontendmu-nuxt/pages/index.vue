@@ -6,6 +6,9 @@ defineOgImageComponent('Home')
   <div>
     <HomeHero />
     <HomeLatestMeetup />
+    <ClientOnly>
+      <HomeTeamSection />
+    </ClientOnly>
     <HomeFeaturedSpeakers />
     <HomeSocialPresence />
     <HomeStatsCounter />
