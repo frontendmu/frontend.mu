@@ -69,7 +69,36 @@ export const useSponsorStore = defineStore('sponsor', {
           sponsorYear.meetups.push(meetup)
         }
       }
+      // After grouping, sort meetups descending by date for each sponsor/year
+      Object.values(grouped).forEach((entries) => {
+        entries.forEach((entry) => {
+          entry.meetups.sort((a, b) => b.date.localeCompare(a.date))
+        })
+      })
       return grouped
+    },
+
+    // 4c. Group all meetups by year, globally sorted by date descending (not grouped by sponsor)
+    getMeetupsGroupedByYearSorted(): [string, Array<{ sponsor: Sponsor, meetup: SponsorMeetup }>] [] {
+      const grouped: Record<string, Array<{ sponsor: Sponsor, meetup: SponsorMeetup }>> = {}
+      for (const sponsor of this.sponsors) {
+        for (const meetup of sponsor.meetups) {
+          const year = getYear(meetup.date)
+          if (!year) continue
+          if (!grouped[year]) grouped[year] = []
+          grouped[year].push({ sponsor, meetup })
+        }
+      }
+      // Sort meetups by date descending for each year
+      Object.values(grouped).forEach(arr => arr.sort((a, b) => b.meetup.date.localeCompare(a.meetup.date)))
+      // Return as a sorted array of [year, meetups[]]
+      return Object.entries(grouped).sort((a, b) => b[0].localeCompare(a[0]))
+    },
+
+    // 4b. Same as above, but returns a sorted array of [year, entries] pairs, descending by year
+    getSponsorsEventsGroupedByYearSorted(): [string, { sponsor: Sponsor, meetups: SponsorMeetup[] }[]][] {
+      const grouped = this.getSponsorsEventsGroupedByYear as Record<string, { sponsor: Sponsor, meetups: SponsorMeetup[] }[]>
+      return Object.entries(grouped).sort((a, b) => b[0].localeCompare(a[0]))
     },
     // 5. Get sponsors for a specific year
     getSponsorsForYear: state => (year: string) => {

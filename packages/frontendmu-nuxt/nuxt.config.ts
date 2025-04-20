@@ -25,6 +25,7 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@nuxt/image',
     '@nuxt/content',
+    '@pinia/nuxt',
   ],
 
   eslint: {
