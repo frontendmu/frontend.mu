@@ -1,0 +1,802 @@
+[
+  {
+    "id": "35bac92e-5a64-4c0d-99a8-649669f040ea",
+    "name": "Le Wagon",
+    "logo": "f89d7e35-6ded-4990-b66b-1eb0e0979d42",
+    "website": "https://www.lewagon.com/fr",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 17,
+        "title": "ReactJS",
+        "date": "2022-05-21",
+        "location": "Les Kocottes - Behind Kendra Mall",
+        "venue": "Le Wagon - St Pierre",
+        "description": "<p> <div class='font-mono'>Description : Following the succesful April meetup, we are once again organizing a new gathering for front-end developers, this time around ReactJS. <br/><br/></div> <br/>10:00 - 10:10 :: Welcome<br/> 10:15 - 10:45 :: <strong>Keys in React</strong> by Saamiyah Peerun <br/> 10:50 - 11:30 ::  <strong>Memoization in React</strong> by Zeeshan Maudar<br/> 11:45 - 12:45 :: Lunch<br/> 12:50 - 13:15 ::  <strong>Hosting SPAs</strong> by Ish Sookun<br/>13.20 - 14:00 :: <strong>Vite</strong> for Front-end Development by Sandeep Ramgolam </p>  <br/> Rsvp link: <br/><a href='https://www.facebook.com/events/680679923031516/'>Facebook Group</a></p><br/><p>Host: Sandeep Ramgolam</p><br/><p>Covid Guidelines:</p><p>Please wear your mask at all times except during lunch and practice social distancing.</p>"
+      }
+    ]
+  },
+  {
+    "id": "b0a134e2-cd9a-4c2f-bb16-2351444e15f3",
+    "name": "Prodigious",
+    "logo": "a33eb6b3-de47-484e-ab86-02289d295dfa",
+    "website": "https://www.prodigious.com/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 18,
+        "title": "Vue / Tailwind / OpenData",
+        "date": "2022-04-09",
+        "location": "Maeva Tower Ebene",
+        "venue": "Prodigious Office",
+        "description": "<p> <div class='font-mono'>Schedule: <br/>10:00 - 10:10 :: Welcome<br/> 10:15 - 10:45 :: Vue 3 by Michaël Jules <br/> 10:50 - 11:30 :: Intro TailwindCSS by Mahima Ramgolam<br/> 11:45 - 12:45 :: Lunch<br/> 12:50 - 13:15 :: Open Data in Mauritius by Sun <br/> 13.20 - 14:00 :: Open Session  <br/><br/> </div> Rsvp link: <br/><a href='https://fb.me/e/4E7CmRAsq'>https://fb.me/e/4E7CmRAsq</a></p><br/><p>Host: Sandeep Ramgolam</p><br/><p>Covid Guidelines:</p><p>Please wear your mask at all times except during lunch and practice social distancing.</p>"
+      }
+    ]
+  },
+  {
+    "id": "acfccaf6-c0ef-4245-a1d3-dd2233d32e8f",
+    "name": "LSL Digital",
+    "logo": "bea584e0-3795-413c-977c-cc91db3c9a54",
+    "website": "https://lsldigital.com/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 21,
+        "title": "Front-End Coders Meetup",
+        "date": "2018-01-20",
+        "location": "Brown Sequard Street",
+        "venue": "LSL Digital",
+        "description": "<p>**UPDATE**/n The Front-end Coders meetup scheduled for today has been postponed to next week due to bad weather conditions!</p> <br><p>We are holding our first 2018 meetup at the offices of LSL Digital in Port-Louis. It’s a free event and everyone is welcome. Join us to discover presentations on topics including CSS grids and insights on how to freelance by members of our community and participate in coding activities. It is a great way to share ideas and meet like-minded people.</p> <p>Schedule and plan :<br/>12:30 - 12:50 : A keylogger using CSS only (Sun)<br/>13:00 - 13:20 : Going Freelance ( Cedric )<br/>13:30 - 13:50 : Discover CSS Grid<br/>14:00 - 14:30 : Open Q&amp;A and Coding Challenges</p> <p>Food<br/>We will provide a light snacks for attendees. Vegetarian options will be available. Alternatively, there are local shops and cafes nearby.</p> <p>Tickets<br/>This is a free event and seats are limited. Please RSVP.</p> <p>Who are we?<br/>Front-End Coders is a global community for web professionals and students which focuses on education, innovation and networking.</p> "
+      }
+    ]
+  },
+  {
+    "id": "19109e0a-1ded-4aeb-b6f0-2f5b93c86ebf",
+    "name": "LSL Digital",
+    "logo": "0232448a-db1c-4092-b72f-74f772be21ce",
+    "website": "https://lsldigital.com/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 22,
+        "title": "Freelancing / CSS Grid",
+        "date": "2018-02-03",
+        "location": "Brown Sequard Street",
+        "venue": "LSL Digital",
+        "description": "<p>We are holding our first 2018 meetup at the offices of LSL Digital in Port-Louis. It’s a free event and everyone is welcome. Join us to discover presentations on topics including CSS grids and insights on how to freelance by members of our community and participate in coding activities. It is a great way to share ideas and meet like-minded people.</p> <p>Schedule and plan :<br/>12:30 - 12:50 : A keylogger using CSS only (Sun)<br/>13:00 - 13:20 : Going Freelance ( Cedric )<br/>13:30 - 13:50 : Discover CSS Grid<br/>14:00 - 14:30 : Open Q&amp;A and Coding Challenges</p> <p>Tickets<br/>This is a free event but seats are limited. Please RSVP.</p> <p>Who are we?<br/>Front-End Coders is a global community for web professionals and students which focuses on education, innovation and networking.</p> "
+      }
+    ]
+  },
+  {
+    "id": "7ccd18d0-c152-4b41-a47b-bda12f71b08b",
+    "name": "Extension Interactive",
+    "logo": "9615c3b8-e20e-4d96-ab42-8c0434eefc6a",
+    "website": "https://extension-interactive.com/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 23,
+        "title": "TypeScript: A gentle introduction",
+        "date": "2018-09-22",
+        "location": "14 Avenue des Lataniers, Quatre Bornes",
+        "venue": "Extension Interactive",
+        "description": "<p>Session 1 : Introduction to TypeScript by Saamiyah - Front-end Coders<br/>Session 2: How KDE is perfect for you! by Privi - LUGM</p> <p>TypeScript is a typed superset of javascript. It can be used across the whole JavaScript ecosystem, and works well with frameworks such as Angular, React, Vue and NodeJS.</p> <p>It has been designed to meet the needs of JavaScript programming teams that build and maintain large JavaScript programs.</p> <p>Come join us to learn about TypeScript and improve your understanding of the language.</p> <p>Speaker: Saamiyah ~ Software developer @ Maureva LTD</p> <p>---------------------------------------------------------------<br/>How KDE is perfect for you!</p> <p>From the Big Bang to KDE</p> <p>An overview of the Technology underneath KDE and what makes it tick<br/>Advanced usage of a Desktop and what you have been missing all these years</p> <p>Introduction to plasma, plasmoids and qml</p> <p>If possible create a KDE Hello world app as well as a webapp.<br/>Speaker: Pritvi Jheengut - The one and only<br/>---------------------------------------------------------------</p> <p>Session 3 : Surprise !</p> "
+      }
+    ]
+  },
+  {
+    "id": "472b862b-bbf9-45d4-b0d5-f8e48129e086",
+    "name": "MakerSpace",
+    "logo": "479dab83-3d03-4f43-ab4d-532267e15656",
+    "website": "https://www.facebook.com/GMakerSpace/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 24,
+        "title": "Front-End Coders x MSCC",
+        "date": "2019-02-23",
+        "location": "Vingta Lane 1",
+        "venue": "Makerspace",
+        "description": "<p>Location<br/>Makerspace / Generation Plus Ltd<br/>Vacoas-Phoenix<br/><a href=\"https://maps.app.goo.gl/Z9sYP\" class=\"linkified\">https://maps.app.goo.gl/Z9sYP</a></p> <p>Timing<br/>Start time: 11:00 am<br/>End time: 2:30 pm<br/>Lunch: 12:20 pm - 1:10 pm</p> <p>Slot details<br/>Total duration: 40 min<br/>Sections: setup - presentation - QnA</p> <p>Presentations - Speakers</p> <p>Christophe Ramsamy<br/>“Introduction to Heroku, or how to send your pet projects to the cloud”</p> <p>Bilkiss Dulloo<br/>“Translating an angular application into a mobile app with ionic”</p> <p>Rahul Thakoor<br/>\"Hardware programming for javascript developers?\"</p> "
+      }
+    ]
+  },
+  {
+    "id": "ff6ab3ac-2783-495f-bd14-322696c73e43",
+    "name": "Techsphere labs",
+    "logo": "802e6645-54fd-421b-8774-ea79a71a548b",
+    "website": "https://www.facebook.com/techspherelabs/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 25,
+        "title": "CSS / Web Components / FunctionalJS",
+        "date": "2019-06-22",
+        "location": "Souvenir Street, Gentilly Rd, Moka",
+        "venue": "Techsphere Labs",
+        "description": "<p>Front End Coders welcomes you to June's monthly meetup!<br/>Join us for front-end talks and some announcements about tech scene!</p> <p>Location<br/>Techsphere Labs,<br/>Moka<br/><a href=\"https://goo.gl/maps/b3mp3Aa57rfFFex8A\" class=\"linkified\">https://goo.gl/maps/b3mp3Aa57rfFFex8A</a></p> <p>Date: 22 June 2019</p> <p>Timing:<br/>Start: 9:30 am<br/>Finish: 2:00 pm<br/>Lunch: 12:30 pm - 1:15 pm</p> <p>No worries, lunch is on us! 😉</p> <p>Max capacity: 25 attendees</p> <p>Agenda:<br/>- Three presentations<br/>- Announcements</p> <p>Line-up, Topic - Speaker:<br/>CSS Name Spaces - Kushul Soomaree<br/>Web Components - Cedric Poilly<br/>Functional JavaScript - Christophe Ramsammy<br/>\"Tech Topic Discussions\" - Sandeep Ramgoolam</p> <p>Slot guidelines (40 min):<br/>- presentation duration: 30 min<br/>- Q &amp; A duration: 10 min</p> "
+      }
+    ]
+  },
+  {
+    "id": "b88596dd-9e39-4e8e-8c8a-93d113e72766",
+    "name": "TECHSPHERE LABS",
+    "logo": "66bfbca9-ede7-467b-8919-714bbf6b19a2",
+    "website": "https://www.facebook.com/techspherelabs/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 26,
+        "title": "Netlify / Svelte / Angular",
+        "date": "2019-07-20",
+        "location": "Souvenir Street, Gentilly Rd, Moka",
+        "venue": "Techsphere Labs",
+        "description": "-"
+      }
+    ]
+  },
+  {
+    "id": "4fcbf1ea-3202-4b63-aa1f-5f30ea7079e1",
+    "name": "Extension Interactive",
+    "logo": "2e954ecf-2001-4752-a8e5-2d2735d1a4d4",
+    "website": "https://extension-interactive.com/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 27,
+        "title": "Hacktoberfest x DevFest",
+        "date": "2019-09-21",
+        "location": "14 Avenue des Lataniers, Quatre Bornes",
+        "venue": "Extension Interactive",
+        "description": "<p>Let's get ready for October! Front-End Coders is there you help you get ready for the Hacktoberfest &amp; the Google DevFest! ✌🏼</p> <p># Location:<br/>Extension Interactive Maurice<br/>14 Avenue des Lataniers, Quatre Bornes<br/><a href=\"https://maps.app.goo.gl/qcgwPuGKRqnnpWnu9\" class=\"linkified\">https://maps.app.goo.gl/qcgwPuGKRqnnpWnu9</a></p> <p>Date: 21 September 2019</p> <p># Timing:<br/>Start: 10:00<br/>Finish: 15:00</p> <p>Max capacity: 25 attendees</p> <p># Agenda:<br/>- Presentation &amp; preparations for Hacktoberfest, with Pritvi! 🤘🏼<br/>- Practice runs for Google DevFest: test your presentation &amp; collect feedback. 😉</p> <p># FREE FOOD 🍕</p> "
+      }
+    ]
+  },
+  {
+    "id": "091e78bb-e552-49d4-af33-4f26a5c4fcd0",
+    "name": "Bocasay",
+    "logo": "c3cc8699-0999-4fba-a2fd-454f0fc73c4d",
+    "website": "https://www.bocasay.com/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 28,
+        "title": "Front-End Coders Monthly - Jan 2020",
+        "date": "2020-02-01",
+        "location": "51A Rue du Savoir",
+        "venue": "Bocasay (Maurice)",
+        "description": "<p>Hello Front-End Coders!<br/>Let's meet this Saturday and start 2020 with our first monthly meetup. ✌️</p> <p>Thanks to Bocasay (<a href=\"https://www.bocasay.com/\" class=\"linkified\">https://www.bocasay.com/</a>) &amp; Tristan Hebert for hosting us!</p> <p>Location<br/>Bocasay (Maurice)<br/>51A Rue du Savoir, Ebene 72201<br/><a href=\"https://maps.app.goo.gl/dvHE768DM2zonnoq5\" class=\"linkified\">https://maps.app.goo.gl/dvHE768DM2zonnoq5</a></p> <p>Date: (POSTPONED) Tentatively Saturday 1st Feb</p> <p>Contact:<br/>Sandeep -[masked]<br/>Cedric -[masked]</p> <p>Timing:<br/>Start: 10:00<br/>Finish: 15:00</p> <p>Max capacity: 20 people</p> <p>Agenda:<br/>- Discuss the yearly organisation of Front-End Coders<br/>- Discuss potential activities as Front-End Coders for the DevCon<br/>- Discuss Contributing to the Devcon(2020) website<br/>- Practice runs for DevCon presentations</p> <p># FREE FOOD 🍕</p> "
+      }
+    ]
+  },
+  {
+    "id": "dce6dc3f-3c58-4591-8a16-fe2d0d7999b6",
+    "name": "Bocasay",
+    "logo": "859b2e6e-20ab-4baa-91e2-1927946cafcc",
+    "website": "https://www.bocasay.com/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 29,
+        "title": "Open Source / Promises / DevCon",
+        "date": "2020-02-15",
+        "location": "51A Rue du Savoir",
+        "venue": "Bocasay (Maurice)",
+        "description": "<p>Hello Front-End Coders!<br/>Let's meet on the Saturday 15th of Feb and start 2020 with our first monthly meetup. ✌️</p> <p>Thanks to Bocasay (<a href=\"https://www.bocasay.com/\" class=\"linkified\">https://www.bocasay.com/</a>) &amp; Tristan Hebert for hosting us!</p> <p>Location<br/>Bocasay (Maurice)<br/>51A Rue du Savoir, Ebene 72201<br/><a href=\"https://maps.app.goo.gl/dvHE768DM2zonnoq5\" class=\"linkified\">https://maps.app.goo.gl/dvHE768DM2zonnoq5</a></p> <p>Contact:<br/>Sandeep -[masked]<br/>Cedric -[masked]</p> <p>Timing:<br/>Start: 10:30<br/>Finish: 15:00</p> <p>Max capacity: 20 people</p> <p>Agenda:<br/>- Discuss the yearly organisation of Front-End Coders - Open Floor<br/>- Discuss Contributing to the Devcon(2020) website - Sandeep Ramgolam<br/>- Callbacks &amp; Promises for asynchronous JavaScript - Cedric Poilly<br/>- Practice runs for DevCon presentations - FFA (We already have one. Others are most welcome)</p> <p># FREE FOOD 🍕</p> "
+      }
+    ]
+  },
+  {
+    "id": "0b8d17cc-2e15-4282-8510-22ae55272029",
+    "name": "Middlesex University Mauritius",
+    "logo": "b09873d2-7b5d-4d4f-b5e1-f0656fae0acb",
+    "website": "https://www.middlesex.mu/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": true,
+    "meetups": [
+      {
+        "id": 30,
+        "title": "Front-End Coders Monthly #2 - 21 Mar 2020",
+        "date": "2020-03-21",
+        "location": "Coastal Rd, Flic en Flac",
+        "venue": "Middlesex University Mauritius",
+        "description": "<p>⚠️ UPDATES 15/03/2020 ⚠️<br/>---<br/>Due to the current situation and for safety reasons. We think it's best that we avoid gatherings right now. We have decided to postponed the next front-end coders meetup. The next date will be communicated on meetup as usual. Let us know if you would be interested in an online meetup ?</p> <p>Thank you for your understanding.<br/>Wash your hands and stay safe<br/>Front-end Coders Team<br/>---</p> <p>Hello Front-End Coders &amp; Crafts(wo)men!</p> <p>Let's meet on the Saturday 21st of March for FEC's second monthly meetup: a joint event with the MSCC! 🥳🎉</p> <p>Thanks to Middlesex University Mauritius for hosting us!</p> <p>Location<br/><a href=\"https://goo.gl/maps/FMxhexL8qqAWLwDy7\" class=\"linkified\">https://goo.gl/maps/FMxhexL8qqAWLwDy7</a></p> <p>Contact:<br/>Sandeep -[masked]<br/>Cedric -[masked]</p> <p>Timing:<br/>Start: 10:30<br/>Finish: 15:00</p> <p>Max capacity:<br/>TBD</p> <p>Agenda:<br/>- VueJS Mauritius<br/>- JWT (JSON Web Token) from Back-End to Front-End (with Vue.js)<br/>- PWAs: Beyond The Service Worker (with Vue.js)<br/>- Basic Concept of React.js</p> <p># FREE FOOD 🍕</p> "
+      }
+    ]
+  },
+  {
+    "id": "4f3f7cff-e275-4039-90fe-2561683076c7",
+    "name": "Bocasay",
+    "logo": "f378c423-3bc2-4a9d-9aff-2f36b1bf7958",
+    "website": "https://www.bocasay.com/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 34,
+        "title": "Reactivity / Developers",
+        "date": "2020-10-10",
+        "location": "51A Rue du Savoir",
+        "venue": "Bocasay (Maurice)",
+        "description": "<p>A series of interesting talks to reignite the meetup vibes on the island !</p> <p>.topics {<br/>- ReactivityEverywhere.js - Michaël Jules<br/>- Developers are not just code writers - Cedric Poilly<br/>}</p> <p>Bocasay has been very kind and agreed to host us once again!</p> <p>to book your seat and let your friends know :D</p> <p>HEALTH AND SAFETY PRECAUTIONS:</p> <p>- Please wear a mask.<br/>- Use hand sanitizers at the entrance.<br/>- Social distancing rules apply inside the meetup.</p> "
+      }
+    ]
+  },
+  {
+    "id": "c86bb34d-07ca-48dd-ad23-b66291a4f89e",
+    "name": "Outremer Telecom",
+    "logo": "b305ce94-a57c-4ffb-8560-0876f1e6c5ea",
+    "website": "https://www.outremer-telecom.fr/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 36,
+        "title": "UI/UX",
+        "date": "2022-06-25",
+        "location": "Outremer Telecom, 5th floor, Cyber Tower 2, Ebene",
+        "venue": "Outremer Telecom",
+        "description": "<p>\n<div class='font-mono'>Topic : UI/UX</div>\n<br/>\n<strong>Speakers ::</strong>\n<br/>\n<strong>Kushul Soomaree</strong> - UI / UX & Web Accssibility\n<br/>\n<strong>Patrick L</strong> - Create Engaging User Experiences with WebGL\n<br/>\n<strong>Kherin Bundhoo</strong> - \n<br/>\n<strong>Sandeep Ramgolam</strong> - Infinite themes with CSS Variables\n</p>\n<br/>\n<br/>\n<p>Covid Guidelines:</p><p>Please wear your mask at all times except during lunch and practice social distancing. </p>"
+      }
+    ]
+  },
+  {
+    "id": "2169db43-9cff-4715-aa0e-47cc49846dc6",
+    "name": "XEFI Mauritius",
+    "logo": "ef87c8c9-3497-4b21-91c9-37a73d04661b",
+    "website": "https://agences.xefi.com/en/plaines-wilhems-district/quatre-bornes/xefi-mauritius-center-93",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 37,
+        "title": "Laravel for Front-end Devs",
+        "date": "2022-07-23",
+        "location": "Ebene, The Core, 8th Floor",
+        "venue": "XEFI Mauritius",
+        "description": "<p>\n<div class='font-mono'>Topic : Laravel for Front-end Devs</div>\n<br/>\n<strong>Speakers ::</strong>\n<br/>\n<strong>Ish Sookun</strong> - Laravel Livewire\n<br/>\n<strong>Percy Mamedy</strong> - Modern monolith with Laravel & InertiaJs\n<br/>\n<strong>Ravish Dussaruth</strong> - Setting up Laravel & NextJs with Breeze\n<br/>\n<strong>Yusuf Abdool Satar (Gophers.mu)</strong> - How to structure a go program\n<br/>\n<br/>"
+      }
+    ]
+  },
+  {
+    "id": "3af10d5f-270b-423d-a8a3-54d4158cf693",
+    "name": "Acensi Mauritius Ltd",
+    "logo": "2c8a85ac-885a-4be5-a551-4ccaafdbe6b4",
+    "website": "https://www.acensi.fr/page/accueil/fr_fr",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 38,
+        "title": "Fancy New Tech",
+        "date": "2022-08-20",
+        "location": "Acensi Mauritius Ltd, A7 St Pierre",
+        "venue": "Acensi Mauritius Ltd",
+        "description": "<p>\n<div class='font-mono'>Topic : Fancy New Tech</div>\n<br/>\n<strong>Speakers ::</strong>\n<br/>\n<strong>Michaël Jules </strong> - Astro: fast websites next-gen island architecture.\n<br/>\n<strong>Sandeep Ramgolam </strong> - Bun a fast all-in-one JavaScript runtime\n<br/>\n<strong>Jordan Bievenue </strong> - Photogrammetry\n<br/>\n<strong>Arwin Neil Baichoo</strong> - Web Assembly\n<br/>\n<strong>Percy Mamedy </strong> - Splade - The magic of Inertia.js with the simplicity of Blade\n<br/>\n<strong>Mahima Ramgolam </strong> - Sli.dev - Presentation tool for developers\n<br/>\n<strong>Renghen P. </strong> - Carbon Lang\n<br/>\n<strong>Abdur-Rahmaan Janhangeer </strong> - Contracting: Sharpening the edge to deliver\n<br/>"
+      }
+    ]
+  },
+  {
+    "id": "8026b777-d365-493f-abca-d6675ff00473",
+    "name": "Objectivity",
+    "logo": "650a869d-aa12-4d76-9a31-0867b7dac13b",
+    "website": "https://www.objectivity.co.uk/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 39,
+        "title": "The CSS Meetup ",
+        "date": "2022-09-24",
+        "location": "NEX Tower, 9th Floor",
+        "venue": "Objectivity",
+        "description": "-"
+      }
+    ]
+  },
+  {
+    "id": "2a43f088-f18e-422f-b934-e29efea7c740",
+    "name": "ELCA Mauritius",
+    "logo": "c0217e58-7e39-4478-8497-7c114253cdb7",
+    "website": "https://www.elca.ch/en/elca-mauritius",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 40,
+        "title": "October Meetup",
+        "date": "2022-10-29",
+        "location": "Vivea Business Park, Moka",
+        "venue": "ELCA Mauritius",
+        "description": "Join us and learn about frontend and anything around it. Apart from the technical talks we have fun networking sessions. October will be the last frontend coders meetup of the year so don't miss it !\n\n<br/>\n<strong>Speakers ::</strong>\n<br/>\n<strong>Data Visualization</strong> - Aditya Bholah\n<br/>\n<strong>TBA</strong> TBA \n<br/>\n<strong>TBA</strong> TBA \n<br/>\n"
+      },
+      {
+        "id": 55,
+        "title": "The June Meetup",
+        "date": "2024-06-22",
+        "location": "Vivea Business Park, Les Fascines A 2nd Floor, St Pierre",
+        "venue": "ELCA",
+        "description": null
+      }
+    ]
+  },
+  {
+    "id": "d160d525-b410-4fc7-89ba-11c1d7c04d37",
+    "name": "MCB Digital Factory",
+    "logo": "47a95755-86a9-47c4-88c2-89c8991108f6",
+    "website": "https://www.mcb.mu/en/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 41,
+        "title": "Promises, Testing and frontend updates",
+        "date": "2023-02-25",
+        "location": "Digital factory Level 4, Harbour Front, Port Louis",
+        "venue": "MCB Digital Factory",
+        "description": "February Meetup"
+      },
+      {
+        "id": 59,
+        "title": "The October Meetup",
+        "date": "2024-10-26",
+        "location": "Harbor Front, Port Louis",
+        "venue": "Digital Factory",
+        "description": null
+      }
+    ]
+  },
+  {
+    "id": "e2374089-9649-4d29-a309-61b82c6a34b3",
+    "name": "Providus",
+    "logo": "41996942-cd3c-42f0-ac41-33d9e9c39d35",
+    "website": "https://www.providus.mu/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": true,
+    "meetups": [
+      {
+        "id": 42,
+        "title": "NextJS / WebContainers / CSS",
+        "date": "2023-03-25",
+        "location": "Level 7, Tower C, 1 Exchange Square, Wall Street - Ebene",
+        "venue": "Providus",
+        "description": "CSS, NextJS, WebContainers on the menu for the March Meetup! "
+      }
+    ]
+  },
+  {
+    "id": "d9679f3a-8af6-441b-9d32-a5600ce0b36f",
+    "name": "Developers Institute Mauritius",
+    "logo": "d39d2791-76ba-4071-8a37-41018a25e14d",
+    "website": "https://developers.institute/mu/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 43,
+        "title": "Interviews / CVs / Freelancing",
+        "date": "2023-04-29",
+        "location": "First Floor, 125 Menagerie Rd, Port Louis",
+        "venue": "Developers Institute Mauritius",
+        "description": "Interviews / CVs / Freelancing"
+      }
+    ]
+  },
+  {
+    "id": "81ad6c97-6038-4784-9c74-1f0b55813f60",
+    "name": "Middlesex University Mauritius",
+    "logo": "b09873d2-7b5d-4d4f-b5e1-f0656fae0acb",
+    "website": "https://www.middlesex.mu/",
+    "description": null,
+    "sponsor_type": [
+      "venue"
+    ],
+    "darkbg": true,
+    "meetups": [
+      {
+        "id": 44,
+        "title": "Git, CVs & getting in to tech",
+        "date": "2023-05-20",
+        "location": "Coastal Rd, Flic en Flac",
+        "venue": "Middlesex University Mauritius",
+        "description": "The May Meetup will be geared towards getting started in web development, and how to land your first job !"
+      }
+    ]
+  },
+  {
+    "id": "f9e15509-5c8b-48bd-b94e-7770302247d0",
+    "name": "Bolt Talent Solutions",
+    "logo": "79e36777-2b76-4e56-b6fd-4f677fdc06fe",
+    "website": "https://bolttalent.com/",
+    "description": null,
+    "sponsor_type": [
+      "lunch"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 44,
+        "title": "Git, CVs & getting in to tech",
+        "date": "2023-05-20",
+        "location": "Coastal Rd, Flic en Flac",
+        "venue": "Middlesex University Mauritius",
+        "description": "The May Meetup will be geared towards getting started in web development, and how to land your first job !"
+      }
+    ]
+  },
+  {
+    "id": "75fe83cf-88c8-47c0-954e-3da839da9dba",
+    "name": "Red and Yellow",
+    "logo": "05cb1fd6-02a4-4c9c-92da-19515c308a15",
+    "website": "https://honoris.ac.mu/red-yellow-creative-school-of-business-expands-into-mauritius-and-beyond/",
+    "description": null,
+    "sponsor_type": [
+      "lunch"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 44,
+        "title": "Git, CVs & getting in to tech",
+        "date": "2023-05-20",
+        "location": "Coastal Rd, Flic en Flac",
+        "venue": "Middlesex University Mauritius",
+        "description": "The May Meetup will be geared towards getting started in web development, and how to land your first job !"
+      }
+    ]
+  },
+  {
+    "id": "be28fb78-e00c-4b8f-8337-b4f41e7343fc",
+    "name": "Alludo",
+    "logo": "3e28ae40-2321-419b-988f-40d64f773479",
+    "website": "https://www.alludo.com",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 45,
+        "title": "React, Zustand, FP & Marketing",
+        "date": "2023-06-24",
+        "location": "10th Floor Nexsky Building, Ebene",
+        "venue": "Alludo",
+        "description": "The June meetup will be around diverse frontend topics and hosted by Alludo."
+      }
+    ]
+  },
+  {
+    "id": "a69c7d69-b06a-467b-826a-7d81f1e5c7fa",
+    "name": "UDM",
+    "logo": "d7175af9-371c-457b-b7fc-a48b93f27539",
+    "website": null,
+    "description": null,
+    "sponsor_type": [
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 47,
+        "title": "August Meetup",
+        "date": "2023-08-26",
+        "location": "Beau Plan, B18, Pamplemousses",
+        "venue": "Universite des Mascareignes",
+        "description": null
+      }
+    ]
+  },
+  {
+    "id": "3f3f88bc-c06f-4906-a3c7-f76fdb181b28",
+    "name": "Ceridian",
+    "logo": "1c003401-f0e0-44cd-b187-167e78caf9dc",
+    "website": "www.ceridian.com",
+    "description": null,
+    "sponsor_type": [
+      "lunch"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 47,
+        "title": "August Meetup",
+        "date": "2023-08-26",
+        "location": "Beau Plan, B18, Pamplemousses",
+        "venue": "Universite des Mascareignes",
+        "description": null
+      }
+    ]
+  },
+  {
+    "id": "5ef4d6a0-7451-4a1a-8bc2-c45c569ec3b9",
+    "name": "Zendō",
+    "logo": "42bc2d01-b819-47ba-8c54-2e478c01ebb7",
+    "website": "www.zendō.com",
+    "description": null,
+    "sponsor_type": [
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 48,
+        "title": "September Meetup",
+        "date": "2023-09-23",
+        "location": "Zendō, 5th Floor, ICONEBENE",
+        "venue": "Zendō",
+        "description": "Front-End Coders Meetup about Supabase and Docker"
+      }
+    ]
+  },
+  {
+    "id": "f95d7284-812d-4718-8dba-525ebf4ce6a9",
+    "name": "HIK Vision",
+    "logo": "128ebc03-9ad9-4a15-9a15-903b5987b216",
+    "website": null,
+    "description": null,
+    "sponsor_type": [
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 48,
+        "title": "September Meetup",
+        "date": "2023-09-23",
+        "location": "Zendō, 5th Floor, ICONEBENE",
+        "venue": "Zendō",
+        "description": "Front-End Coders Meetup about Supabase and Docker"
+      }
+    ]
+  },
+  {
+    "id": "87e136d4-e372-42b2-bfd8-8b9c8733337f",
+    "name": "SD Worx",
+    "logo": "563a3e1d-db03-4b27-8712-efb035e99d4d",
+    "website": "https://www.sdworx.com/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 50,
+        "title": "February Meetup",
+        "date": "2024-03-02",
+        "location": "NEX Tower, 11th Floor, Ebene",
+        "venue": "SD Worx",
+        "description": null
+      }
+    ]
+  },
+  {
+    "id": "8258c629-5b86-4a4a-8b5a-817a3d98b023",
+    "name": "Publicis Global Delivery",
+    "logo": "cd1037b1-27a7-473c-b8ce-dea9419f979f",
+    "website": "https://www.publicisgroupe.com/en/splash-en",
+    "description": null,
+    "sponsor_type": [
+      "venue",
+      "lunch"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 52,
+        "title": "April Meetup",
+        "date": "2024-04-27",
+        "location": "2nd Floor , Maeva Tower, Ebene Mauritius",
+        "venue": "Publicis Global Delivery",
+        "description": null
+      }
+    ]
+  },
+  {
+    "id": "1701aac0-9fd0-4730-a555-cc9eadf0d624",
+    "name": "Dayforce",
+    "logo": "a7f8bf45-aa2c-4d5f-ba98-8b1a7a6cc191",
+    "website": "https://www.dayforce.com/",
+    "description": "Dayforce logo",
+    "sponsor_type": [
+      "venue",
+      "lunch"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 54,
+        "title": "May Meetup",
+        "date": "2024-05-18",
+        "location": "Icon Tower Ebene 3rd floor",
+        "venue": "Dayforce Mauritius",
+        "description": null
+      }
+    ]
+  },
+  {
+    "id": "6dc18fc4-81a3-4457-8234-d2b551d163e1",
+    "name": "Novity",
+    "logo": "6facfc10-cd82-42c4-9892-02bdbd967fd8",
+    "website": "https://novity.io",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 57,
+        "title": "The August Meetup",
+        "date": "2024-08-24",
+        "location": "NeXTeracom Tower I - 12th floor, Ebène, Maurice",
+        "venue": "Novity Mauritius",
+        "description": null
+      }
+    ]
+  },
+  {
+    "id": "f74eb8de-fcfd-4c40-bada-c72394189b41",
+    "name": "Swan",
+    "logo": "29dedcfe-5f63-4c33-a0c5-160fc9d78d6e",
+    "website": "https://swanforlife.com",
+    "description": null,
+    "sponsor_type": [
+      "venue",
+      "lunch"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 58,
+        "title": "The September Meetup",
+        "date": "2024-09-28",
+        "location": "Swan Center, 10 Intendance St, Port Louis",
+        "venue": "Swan Head Office",
+        "description": null
+      }
+    ]
+  },
+  {
+    "id": "99664935-0de8-43c6-a06e-44e629fbb50d",
+    "name": "Klanik",
+    "logo": "84571e1a-62e0-4985-9255-ae399df7cf0e",
+    "website": "https://www.klanik.com/en/agences/ile-maurice",
+    "description": null,
+    "sponsor_type": [
+      "lunch"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 60,
+        "title": "The Beach Meetup 2.0",
+        "date": "2024-11-30",
+        "location": "La Cambuse",
+        "venue": "The Beach",
+        "description": "We'll be at the beach !"
+      }
+    ]
+  },
+  {
+    "id": "7955a0c4-c38b-4fff-92cb-8a4cd0ddf096",
+    "name": "Spoon Consulting",
+    "logo": "ac50f309-a064-4e49-9f35-da440ec4c2a6",
+    "website": "https://www.spoonconsulting.com/",
+    "description": null,
+    "sponsor_type": [
+      "lunch",
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 61,
+        "title": "Developer Toolings Meetup",
+        "date": "2025-03-01",
+        "location": "Vivéa Business Park, 1st FLoor, Mountain View Building, St Pierre 81430",
+        "venue": "Spoon Consulting",
+        "description": null
+      }
+    ]
+  }
+]
