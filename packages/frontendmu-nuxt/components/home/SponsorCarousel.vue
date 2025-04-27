@@ -74,7 +74,7 @@ const carouselRef = templateRef<HTMLDivElement>('carouselRef')
 .carousel-grid {
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   gap: 1rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
