@@ -71,12 +71,30 @@ const carouselRef = templateRef<HTMLDivElement>('carouselRef')
     transform: rotate(360deg);
   }
 }
+
+@keyframes slide {
+  from {
+    /* transform: translateX(0); */
+    margin-left:0;
+  }
+  to {
+    /* transform: translateX(-10%); */
+    margin-left: -500px;
+  }
+}
+
 .carousel-grid {
+  animation: slide linear both;
+  animation-timeline: view(block);
+  animation-range: cover 0% cover 100%;
+
+  position: relative;
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(1, 1fr);
   gap: 1rem;
   overflow-x: auto;
+  width: 100%;
   scroll-snap-type: x mandatory;
   scroll-padding-left: 1rem;
   scroll-padding-right: 1rem;
