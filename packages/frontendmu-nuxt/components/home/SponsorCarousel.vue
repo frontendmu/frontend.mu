@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { templateRef } from '@vueuse/core'
 import { useSponsorStore } from '@/store/sponsorStore'
 
 const sponsorStore = useSponsorStore()
@@ -21,7 +21,7 @@ function sponsorLogoUrl(sponsor: any) {
   return ''
 }
 
-const carouselRef = ref<HTMLDivElement | null>(null)
+const carouselRef = templateRef<HTMLDivElement>('carouselRef')
 function scrollByOne(dir: 'left' | 'right') {
   if (!carouselRef.value)
     return
@@ -29,7 +29,7 @@ function scrollByOne(dir: 'left' | 'right') {
   const card = el.querySelector('.carousel-item') as HTMLElement
   if (!card)
     return
-  const scrollAmount = card.offsetWidth + 16 // 16px gap
+  const scrollAmount = card.offsetWidth + 500 // 16px gap
   el.scrollBy({
     left: dir === 'left' ? -scrollAmount : scrollAmount,
     behavior: 'smooth',
@@ -38,45 +38,58 @@ function scrollByOne(dir: 'left' | 'right') {
 </script>
 
 <template>
-  <section class="relative w-full max-w-6xl mx-auto py-6 md:py-10">
-    <div class="flex items-center justify-between mb-3">
-      <h2 class="text-2xl md:text-3xl font-bold text-verse-600 dark:text-verse-100">
-        Our Sponsors
+  <section class="relative w-full bg-white/50  dark:bg-verse-200/5 backdrop-blur-sm  mx-auto py-6 md:py-10">
+    <div class="flex items-center justify-center mb-3 w-full">
+      <h2 class="font-heading tracking-tight text-verse-900 dark:text-verse-200 font-light text-3xl sm:text-4xl md:text-5xl">
+        Sponsored by
       </h2>
-      <div class="flex gap-2">
-        <button aria-label="Scroll left" class="carousel-arrow" @click="() => scrollByOne('left')">
-          <Icon name="ic:round-arrow-back-ios" class="w-6 h-6" />
-        </button>
-        <button aria-label="Scroll right" class="carousel-arrow" @click="() => scrollByOne('right')">
-          <Icon name="ic:round-arrow-forward-ios" class="w-6 h-6" />
-        </button>
-      </div>
     </div>
-    <div
-      ref="carouselRef"
-      class="carousel flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 px-4"
-      tabindex="0"
-      aria-label="Sponsor logos carousel"
-    >
+    <div class="flex justify-between items-center w-full py-4">
+      <button aria-label="Scroll left" class="carousel-arrow" @click="() => scrollByOne('left')">
+        <Icon name="ic:round-arrow-back-ios" class="w-6 h-6" />
+      </button>
       <div
-        v-for="sponsor in sortedSponsors"
-        :key="sponsor.id"
-        class="carousel-item flex-shrink-0 w-32 h-32 md:w-32 md:h-16 rounded-full bg-white dark:bg-verse-900 shadow-lg flex items-center justify-center snap-center transition-transform duration-300 p-2"
-        :title="sponsor.name"
+        ref="carouselRef"
+        class="carousel flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 px-4"
+        tabindex="0"
+        aria-label="Sponsor logos carousel"
       >
-        <img
-          :src="sponsorLogoUrl(sponsor)"
-          :alt="sponsor.name"
-          class="w-full h-full object-contain rounded-full  "
-          :class="sponsor.darkbg ? 'dark:bg-verse-900 bg-gray-500' : 'bg-white'"
-          draggable="false"
+        <div
+          v-for="sponsor in sortedSponsors"
+          :key="sponsor.id"
+          class="carousel-item flex-shrink-0 md:w-48 md:h-24 mt-4 rounded-md   dark:bg-verse-100 flex items-center justify-center snap-center transition-transform duration-300"
+          :title="sponsor.name"
         >
+          <img
+            :src="sponsorLogoUrl(sponsor)"
+            :alt="sponsor.name"
+            class="w-full h-full object-contain rounded-sm  p-4 saturate-0 hover:saturate-100 transition"
+            :class="sponsor.darkbg ? 'dark:bg-verse-900 bg-gray-500' : ''"
+            draggable="false"
+          >
+        </div>
       </div>
+      <button aria-label="Scroll right" class="carousel-arrow" @click="() => scrollByOne('right')">
+        <Icon name="ic:round-arrow-forward-ios" class="w-6 h-6" />
+      </button>
+    </div>
+    <div class="text-center">
+      <a href="#" class="inline-block bg-verse-600 dark:bg-verse-400 text-white px-4 py-2 rounded-full hover:bg-verse-700 dark:hover:bg-verse-500 hover:scale-[110%] transition group">
+        Want to sponsor a meetup?
+      </a>
     </div>
   </section>
 </template>
 
 <style scoped>
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .carousel {
   scroll-padding-left: 1rem;
   scroll-padding-right: 1rem;
@@ -135,7 +148,7 @@ function scrollByOne(dir: 'left' | 'right') {
 }
 
 .carousel-arrow {
-  @apply rounded-full bg-verse-100 dark:bg-verse-800 p-2 hover:bg-verse-200 dark:hover:bg-verse-700 shadow transition;
+  @apply flex items-center justify-center p-2 rounded-full bg-verse-100 dark:bg-verse-800 hover:bg-verse-200 dark:hover:bg-verse-700 shadow transition;
   outline: none;
 }
 .carousel-arrow:focus {
