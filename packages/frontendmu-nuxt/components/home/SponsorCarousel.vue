@@ -22,19 +22,6 @@ function sponsorLogoUrl(sponsor: any) {
 }
 
 const carouselRef = templateRef<HTMLDivElement>('carouselRef')
-function scrollByOne(dir: 'left' | 'right') {
-  if (!carouselRef.value)
-    return
-  const el = carouselRef.value
-  const card = el.querySelector('.carousel-item') as HTMLElement
-  if (!card)
-    return
-  const scrollAmount = card.offsetWidth + 500 // 16px gap
-  el.scrollBy({
-    left: dir === 'left' ? -scrollAmount : scrollAmount,
-    behavior: 'smooth',
-  })
-}
 </script>
 
 <template>
@@ -44,34 +31,28 @@ function scrollByOne(dir: 'left' | 'right') {
         Sponsored by
       </h2>
     </div>
-    <div class="flex justify-between items-center w-full py-4">
-      <button aria-label="Scroll left" class="carousel-arrow" @click="() => scrollByOne('left')">
-        <Icon name="ic:round-arrow-back-ios" class="w-6 h-6" />
-      </button>
+    <div class="w-full py-4">
       <div
         ref="carouselRef"
-        class="carousel flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 px-4"
+        class="carousel-grid"
         tabindex="0"
         aria-label="Sponsor logos carousel"
       >
         <div
           v-for="sponsor in sortedSponsors"
           :key="sponsor.id"
-          class="carousel-item flex-shrink-0 md:w-48 md:h-24 mt-4 rounded-md   dark:bg-verse-100 flex items-center justify-center snap-center transition-transform duration-300"
+          class="carousel-item"
           :title="sponsor.name"
         >
           <img
             :src="sponsorLogoUrl(sponsor)"
             :alt="sponsor.name"
-            class="w-full h-full object-contain rounded-sm  p-4 saturate-0 hover:saturate-100 transition"
+            class="carousel-img"
             :class="sponsor.darkbg ? 'dark:bg-verse-900 bg-gray-500' : ''"
             draggable="false"
           >
         </div>
       </div>
-      <button aria-label="Scroll right" class="carousel-arrow" @click="() => scrollByOne('right')">
-        <Icon name="ic:round-arrow-forward-ios" class="w-6 h-6" />
-      </button>
     </div>
     <div class="text-center">
       <a href="#" class="inline-block bg-verse-600 dark:bg-verse-400 text-white px-4 py-2 rounded-full hover:bg-verse-700 dark:hover:bg-verse-500 hover:scale-[110%] transition group">
@@ -90,10 +71,70 @@ function scrollByOne(dir: 'left' | 'right') {
     transform: rotate(360deg);
   }
 }
-.carousel {
+.carousel-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
   scroll-padding-left: 1rem;
   scroll-padding-right: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   scrollbar-width: thin;
+}
+
+.carousel-item {
+  scroll-snap-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--tw-prose-bg, white);
+  border-radius: 0.5rem;
+  transition: transform 0.3s cubic-bezier(.4,2,.6,1);
+  width: 10rem;
+  height: 6rem;
+}
+
+.carousel-item:active {
+  transform: scale(0.96);
+}
+
+.carousel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  filter: saturate(0);
+  transition: filter 0.3s;
+}
+.carousel-img:hover {
+  filter: saturate(1);
+}
+
+@media (max-width: 768px) {
+  .carousel-grid {
+    grid-template-rows: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+  .carousel-item {
+    width: 7rem;
+    height: 4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-grid {
+    grid-template-rows: repeat(2, 1fr);
+    gap: 0.25rem;
+  }
+  .carousel-item {
+    width: 5.5rem;
+    height: 3rem;
+  }
 }
 .carousel::-webkit-scrollbar {
   height: 12px;
