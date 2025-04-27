@@ -84,14 +84,14 @@ const carouselRef = templateRef<HTMLDivElement>('carouselRef')
 }
 
 .carousel-grid {
-  animation: slide linear both;
+  /* animation: slide linear both;
   animation-timeline: view(block);
-  animation-range: cover 0% cover 100%;
+  animation-range: cover 0% cover 100%; */
 
   position: relative;
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: repeat(1, 1fr);
+  grid-template-rows: repeat(4, 1fr);
   gap: 1rem;
   overflow-x: auto;
   width: 100%;
