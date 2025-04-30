@@ -3,7 +3,7 @@ import { templateRef } from '@vueuse/core'
 import { useSponsorStore } from '@/store/sponsorStore'
 
 const sponsorStore = useSponsorStore()
-// Get all sponsors, sorted by their most recent event date descending
+// Get all sponsors, sorted by their most recent event date descending and remove duplicate sponsors from the list
 const sortedSponsors = computed(() => {
   return [...sponsorStore.sponsors]
     .sort((a, b) => {
@@ -11,6 +11,9 @@ const sortedSponsors = computed(() => {
       const aLatest = a.meetups.reduce((max, m) => m.date > max ? m.date : max, '')
       const bLatest = b.meetups.reduce((max, m) => m.date > max ? m.date : max, '')
       return bLatest.localeCompare(aLatest)
+    })
+    .filter((sponsor, index, self) => {
+      return index === self.findIndex(s => s.name.toLowerCase() === sponsor.name.toLowerCase())
     })
 })
 
@@ -31,23 +34,22 @@ const carouselRef = templateRef<HTMLDivElement>('carouselRef')
         Sponsored by
       </h2>
     </div>
-    <div class="w-full py-4">
+    <div class="w-full py-4 px-8 max-w-7xl mx-auto">
       <div
         ref="carouselRef"
-        class="carousel-grid"
+        class="grid grid-cols-6 gap-4 overflow-x-auto"
         tabindex="0"
         aria-label="Sponsor logos carousel"
       >
         <div
           v-for="sponsor in sortedSponsors"
           :key="sponsor.id"
-          class="carousel-item"
+          class="flex justify-center items-center bg-white p-4 rounded-md"
           :title="sponsor.name"
         >
           <img
             :src="sponsorLogoUrl(sponsor)"
             :alt="sponsor.name"
-            class="carousel-img"
             :class="sponsor.darkbg ? 'dark:bg-verse-900 bg-gray-500' : ''"
             draggable="false"
           >
@@ -61,162 +63,3 @@ const carouselRef = templateRef<HTMLDivElement>('carouselRef')
     </div>
   </section>
 </template>
-
-<style scoped>
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes slide {
-  from {
-    /* transform: translateX(0); */
-    margin-left:0;
-  }
-  to {
-    /* transform: translateX(-10%); */
-    margin-left: -500px;
-  }
-}
-
-.carousel-grid {
-  /* animation: slide linear both;
-  animation-timeline: view(block);
-  animation-range: cover 0% cover 100%; */
-
-  position: relative;
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-rows: repeat(4, 1fr);
-  gap: 1rem;
-  overflow-x: auto;
-  width: 100%;
-  scroll-snap-type: x mandatory;
-  scroll-padding-left: 1rem;
-  scroll-padding-right: 1rem;
-  padding-bottom: 1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  scrollbar-width: thin;
-}
-
-.carousel-item {
-  scroll-snap-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--tw-prose-bg, white);
-  border-radius: 0.5rem;
-  transition: transform 0.3s cubic-bezier(.4,2,.6,1);
-  width: 10rem;
-  height: 6rem;
-}
-
-.carousel-item:active {
-  transform: scale(0.96);
-}
-
-.carousel-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 0.25rem;
-  padding: 1rem;
-  filter: saturate(0);
-  transition: filter 0.3s;
-}
-.carousel-img:hover {
-  filter: saturate(1);
-}
-
-@media (max-width: 768px) {
-  .carousel-grid {
-    grid-template-rows: repeat(2, 1fr);
-    gap: 0.5rem;
-  }
-  .carousel-item {
-    width: 7rem;
-    height: 4rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .carousel-grid {
-    grid-template-rows: repeat(2, 1fr);
-    gap: 0.25rem;
-  }
-  .carousel-item {
-    width: 5.5rem;
-    height: 3rem;
-  }
-}
-.carousel::-webkit-scrollbar {
-  height: 12px;
-  background: transparent;
-}
-.light-mode .carousel::-webkit-scrollbar-thumb {
-  background: linear-gradient(90deg, #b6c2de 0%, #e0e7ef 100%);
-  border-radius: 8px;
-  border: 2px solid #f0f4fa;
-  background-clip: padding-box;
-  box-shadow: 0 2px 8px #cbd5e188;
-  opacity: 0.7;
-  transition: background 0.2s, opacity 0.3s;
-}
-.light-mode .carousel::-webkit-scrollbar-thumb:hover,
-.light-mode .carousel::-webkit-scrollbar-thumb:active {
-  background: linear-gradient(90deg, #e0e7ef 0%, #b6c2de 100%);
-  opacity: 1;
-}
-.light-mode .carousel::-webkit-scrollbar-track {
-  background: #f8fafc;
-  border-radius: 8px;
-}
-
-.dark-mode .carousel::-webkit-scrollbar-thumb {
-  background: linear-gradient(90deg, #7dd3fc 0%, #94a3b8 100%);
-  border-radius: 8px;
-  border: 3px solid #1e293b;
-  background-clip: padding-box;
-  box-shadow: 0 2px 8px #0f172a88;
-  opacity: 0.7;
-  transition: background 0.2s, opacity 0.3s;
-}
-.dark-mode .carousel::-webkit-scrollbar-thumb:hover,
-.dark-mode .carousel::-webkit-scrollbar-thumb:active {
-  background: linear-gradient(90deg, #bae6fd 0%, #a5b4fc 100%);
-  opacity: 1;
-}
-.dark-mode .carousel::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.3);
-  border-radius: 8px;
-}
-
-.carousel {
-  scrollbar-width: thin;
-}
-.light-mode .carousel {
-  scrollbar-color: #b6c2de #f8fafc;
-}
-.dark-mode .carousel {
-  scrollbar-color: #7dd3fc #23293a;
-}
-
-.carousel-arrow {
-  @apply flex items-center justify-center p-2 rounded-full bg-verse-100 dark:bg-verse-800 hover:bg-verse-200 dark:hover:bg-verse-700 shadow transition;
-  outline: none;
-}
-.carousel-arrow:focus {
-  @apply ring-2 ring-verse-400;
-}
-.carousel-item {
-  transition: transform 0.3s cubic-bezier(.4,2,.6,1);
-}
-.carousel-item:active {
-  transform: scale(0.96);
-}
-</style>
