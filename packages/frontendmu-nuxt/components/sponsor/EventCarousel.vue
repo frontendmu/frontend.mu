@@ -92,6 +92,7 @@ onMounted(() => {
           class="w-full h-full object-cover rounded-lg"
           :current-album="fetchAlbumDetails(meetup.album || '')"
           :source="photoAlbumSource"
+          :columns="2"
         />
         <span
           class="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 bg-verse-900/90 shadow-md shadow-verse-200/20 rounded-full text-white px-4 py-1 text-sm font-semibold truncate max-w-[90%] text-center"

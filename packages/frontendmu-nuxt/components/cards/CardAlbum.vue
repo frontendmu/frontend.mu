@@ -1,12 +1,21 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   currentAlbum: string[] | undefined
   source: string
+  columns?: number
 }>()
+
+const columns = computed(() => {
+  // default to 3
+  if (!props.columns) {
+    return 3
+  }
+  return props.columns
+})
 </script>
 
 <template>
-  <div v-if="currentAlbum" class="grid grid-cols-3 items-center h-full">
+  <div v-if="currentAlbum" class="grid items-center h-full" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
     <NuxtImg
       v-for="photo in currentAlbum"
       :key="photo"
