@@ -5,6 +5,7 @@ export default defineNuxtConfig({
   css: [
     '~/styles/global.css',
     '~/styles/tailwind.css',
+    '~/assets/css/scrollbar.css',
   ],
 
   typescript: {

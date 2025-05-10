@@ -1,0 +1,70 @@
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Light mode scrollbar */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, hsl(var(--color-primary-400)), hsl(var(--color-primary-600)));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, hsl(var(--color-primary-500)), hsl(var(--color-primary-700)));
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, hsl(var(--color-primary-300)), hsl(var(--color-primary-500)));
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, hsl(var(--color-primary-400)), hsl(var(--color-primary-600)));
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--color-primary-500)) transparent;
+}
+
+.dark * {
+  scrollbar-color: hsl(var(--color-primary-400)) transparent;
+}
+
+/* Custom class for components that need scrollbar */
+.custom-scrollbar {
+  scrollbar-gutter: stable;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, hsl(var(--color-primary-400)), hsl(var(--color-primary-600)));
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, hsl(var(--color-primary-500)), hsl(var(--color-primary-700)));
+  }
+
+  &.dark ::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, hsl(var(--color-primary-300)), hsl(var(--color-primary-500)));
+  }
+
+  &.dark ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, hsl(var(--color-primary-400)), hsl(var(--color-primary-600)));
+  }
+}

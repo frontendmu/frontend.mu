@@ -83,7 +83,10 @@ onMounted(() => {
       </svg>
     </button>
     <!-- Scroll Area -->
-    <div ref="scrollContainer" class="w-full h-[570px] overflow-y-auto rounded-lg border border-verse-700 bg-white/5 dark:bg-verse-900/10 snap-y snap-mandatory">
+    <div 
+      ref="scrollContainer" 
+      class="w-full h-[570px] overflow-y-auto rounded-lg border border-verse-700 bg-white/5 dark:bg-verse-900/10 snap-y snap-mandatory custom-scrollbar"
+    >
       <div v-for="(meetup, index) in meetupsWithAlbums" :key="index" class="relative h-[190px] mb-2 last:mb-0 group snap-start">
         <NuxtLink :to="`/meetup/${meetup.id}`" class="absolute inset-0 z-10">
           <span class="sr-only">{{ meetup.title }}</span>
