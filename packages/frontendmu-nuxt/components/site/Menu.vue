@@ -104,6 +104,18 @@ const links: TMenu = {
     title: 'Sponsors',
     href: '/sponsors',
     class: 'hidden md:block',
+    children: [
+      {
+        title: 'Our Sponsors',
+        href: '/sponsors',
+        class: '',
+      },
+      {
+        title: 'Sponsor Us',
+        href: '/sponsor-us',
+        class: '',
+      },
+    ],
   },
   // advent: {
   //   title: 'Advent Calendar',
@@ -190,8 +202,10 @@ onMounted(toggleHeader)
     <div class="menu theme-light w-full">
       <div class="flex justify-between items-center contain">
         <div class="flex">
-          <NuxtLink href="/" class="flex gap-2 text-verse-500 dark:text-verse-200" title="frontend.mu"
-            @contextmenu="handleRightClick">
+          <NuxtLink
+            href="/" class="flex gap-2 text-verse-500 dark:text-verse-200" title="frontend.mu"
+            @contextmenu="handleRightClick"
+          >
             <SiteLogo class="w-10" />
             <span class="hidden text-lg font-bold leading-none tracking-tighter md:text-3xl md:block">
               frontend.mu
