@@ -4,6 +4,8 @@
 
 <template>
   <ContentBlock>
+    <SponsorYearCalendar />
+
     <div class="space-y-4 mb-16 text-center md:text-left">
       <BaseHeading :level="2" class="!mb-2">
         Sponsoring a meetup

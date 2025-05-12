@@ -135,6 +135,7 @@ export interface SponsorId {
   Sponsor_type: string[]
   darkbg: boolean
   Logo: Logo
+  logomark: Logo
 }
 
 export interface SponsorType {
@@ -246,10 +247,11 @@ export interface Meetup {
   description: string
   Location: string
   Time: string
-  images?: []
-  gallery?: []
-  album?: string
+  images?: { imagename: string }[]
+  gallery?: any[]
+  album?: string | null
   sessions: Session[]
+  sponsors: Sponsor[]
 }
 
 export interface SessionDetail {

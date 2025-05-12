@@ -1,0 +1,111 @@
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import useMeetups from '../composables/useMeetups'
+import type { Meetup } from '../utils/types'
+
+const { meetupsGroupedByYear } = useMeetups({ pastMeetupsLimit: 1000 })
+
+const currentYear = new Date().getFullYear()
+const selectedYear = ref<number>(currentYear)
+
+const years = computed(() => {
+  const allYears = Object.keys(meetupsGroupedByYear.value)
+    .map(year => Number.parseInt(year))
+    .sort((a, b) => b - a)
+
+  // Filter to show past years and 2 years in future
+  return allYears.filter(year => year <= currentYear + 2)
+})
+
+const months = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+]
+
+const yearMeetups = computed<(Meetup | null)[]>(() => {
+  const yearData = meetupsGroupedByYear.value[selectedYear.value]
+  const monthlyMeetups: (Meetup | null)[] = Array(12).fill(null)
+
+  if (yearData) {
+    yearData.forEach((meetup) => {
+      const date = new Date(meetup.Date)
+      const month = date.getMonth()
+      monthlyMeetups[month] = meetup
+    })
+  }
+
+  return monthlyMeetups
+})
+
+function isInFuture(month: number) {
+  const today = new Date()
+  return selectedYear.value > today.getFullYear()
+    || (selectedYear.value === today.getFullYear() && month > today.getMonth())
+}
+
+function navigateYear(direction: number) {
+  const newYear = selectedYear.value + direction
+  if (years.value.includes(newYear)) {
+    selectedYear.value = newYear
+  }
+}
+</script>
+
+<template>
+  <div class="mb-16">
+    <div class="flex items-center justify-between mb-8">
+      <BaseHeading :level="2" class="!mb-0">
+        Meetup Calendar
+      </BaseHeading>
+      <div class="flex items-center gap-4">
+        <button
+          :disabled="!years.includes(selectedYear - 1)"
+          class="p-2 rounded-lg hover:bg-verse-100 dark:hover:bg-verse-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          @click="navigateYear(-1)"
+        >
+          <span class="sr-only">Previous Year</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <span class="text-xl font-semibold">{{ selectedYear }}</span>
+        <button
+          :disabled="!years.includes(selectedYear + 1)"
+          class="p-2 rounded-lg hover:bg-verse-100 dark:hover:bg-verse-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          @click="navigateYear(1)"
+        >
+          <span class="sr-only">Next Year</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto pb-4">
+      <div class="grid grid-cols-12 gap-4">
+        <div
+          v-for="(month, index) in months"
+          :key="month"
+          class="flex-1"
+        >
+          <MonthCard
+            :month="month"
+            :meetup="yearMeetups[index]"
+            :is-in-future="isInFuture(index)"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
