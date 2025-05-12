@@ -29,6 +29,7 @@ async function fetchSponsorsAndMeetups() {
           id: sponsor.id,
           name: sponsor.Name,
           logo: sponsor.Logo, // Directus file ID
+          logomark: sponsor.logomark || null, // Directus file ID
           website: sponsor.Website || null,
           description: sponsor.Description || null,
           sponsor_type: sponsor.Sponsor_type || [],
