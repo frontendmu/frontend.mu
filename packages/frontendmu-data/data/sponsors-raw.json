@@ -3,6 +3,7 @@
     "id": "35bac92e-5a64-4c0d-99a8-649669f040ea",
     "name": "Le Wagon",
     "logo": "f89d7e35-6ded-4990-b66b-1eb0e0979d42",
+    "logomark": "d5fac6c2-e228-4535-80bb-709641d3b63f",
     "website": "https://www.lewagon.com/fr",
     "description": null,
     "sponsor_type": [
@@ -25,6 +26,7 @@
     "id": "b0a134e2-cd9a-4c2f-bb16-2351444e15f3",
     "name": "Prodigious",
     "logo": "a33eb6b3-de47-484e-ab86-02289d295dfa",
+    "logomark": "95a598f4-7c4a-4c8c-ab37-33575d73bec1",
     "website": "https://www.prodigious.com/",
     "description": null,
     "sponsor_type": [
@@ -47,6 +49,7 @@
     "id": "acfccaf6-c0ef-4245-a1d3-dd2233d32e8f",
     "name": "LSL Digital",
     "logo": "bea584e0-3795-413c-977c-cc91db3c9a54",
+    "logomark": "bad1ae7d-cc3f-45de-846e-2b37bcd85c35",
     "website": "https://lsldigital.com/",
     "description": null,
     "sponsor_type": [
@@ -69,6 +72,7 @@
     "id": "19109e0a-1ded-4aeb-b6f0-2f5b93c86ebf",
     "name": "LSL Digital",
     "logo": "0232448a-db1c-4092-b72f-74f772be21ce",
+    "logomark": "7576210c-9a7a-4f2a-9457-1133fd982b06",
     "website": "https://lsldigital.com/",
     "description": null,
     "sponsor_type": [
@@ -91,6 +95,7 @@
     "id": "7ccd18d0-c152-4b41-a47b-bda12f71b08b",
     "name": "Extension Interactive",
     "logo": "9615c3b8-e20e-4d96-ab42-8c0434eefc6a",
+    "logomark": "55234886-8f4a-4578-98a5-b5eb245169c6",
     "website": "https://extension-interactive.com/",
     "description": null,
     "sponsor_type": [
@@ -113,6 +118,7 @@
     "id": "472b862b-bbf9-45d4-b0d5-f8e48129e086",
     "name": "MakerSpace",
     "logo": "479dab83-3d03-4f43-ab4d-532267e15656",
+    "logomark": "3bb04b96-f679-46cb-956d-3962ba274ea9",
     "website": "https://www.facebook.com/GMakerSpace/",
     "description": null,
     "sponsor_type": [
@@ -135,6 +141,7 @@
     "id": "ff6ab3ac-2783-495f-bd14-322696c73e43",
     "name": "Techsphere labs",
     "logo": "802e6645-54fd-421b-8774-ea79a71a548b",
+    "logomark": "132796d6-cc28-4769-b39d-996cfd6823d9",
     "website": "https://www.facebook.com/techspherelabs/",
     "description": null,
     "sponsor_type": [
@@ -157,6 +164,7 @@
     "id": "b88596dd-9e39-4e8e-8c8a-93d113e72766",
     "name": "TECHSPHERE LABS",
     "logo": "66bfbca9-ede7-467b-8919-714bbf6b19a2",
+    "logomark": "d81df925-4189-4fce-aaf9-5fb45cd041d7",
     "website": "https://www.facebook.com/techspherelabs/",
     "description": null,
     "sponsor_type": [
@@ -179,6 +187,7 @@
     "id": "4fcbf1ea-3202-4b63-aa1f-5f30ea7079e1",
     "name": "Extension Interactive",
     "logo": "2e954ecf-2001-4752-a8e5-2d2735d1a4d4",
+    "logomark": "c34f1a0c-4102-4a45-abcc-f0c3de29e4b0",
     "website": "https://extension-interactive.com/",
     "description": null,
     "sponsor_type": [
@@ -201,6 +210,7 @@
     "id": "091e78bb-e552-49d4-af33-4f26a5c4fcd0",
     "name": "Bocasay",
     "logo": "c3cc8699-0999-4fba-a2fd-454f0fc73c4d",
+    "logomark": "c4a1f460-9eeb-4834-bc64-ff3104a168e4",
     "website": "https://www.bocasay.com/",
     "description": null,
     "sponsor_type": [
@@ -223,6 +233,7 @@
     "id": "dce6dc3f-3c58-4591-8a16-fe2d0d7999b6",
     "name": "Bocasay",
     "logo": "859b2e6e-20ab-4baa-91e2-1927946cafcc",
+    "logomark": "0f96e021-7a67-4e8a-b5e2-32ace51016f7",
     "website": "https://www.bocasay.com/",
     "description": null,
     "sponsor_type": [
@@ -245,6 +256,7 @@
     "id": "0b8d17cc-2e15-4282-8510-22ae55272029",
     "name": "Middlesex University Mauritius",
     "logo": "b09873d2-7b5d-4d4f-b5e1-f0656fae0acb",
+    "logomark": "ea9a7e05-f040-45b4-852f-6ad7e3bde7e3",
     "website": "https://www.middlesex.mu/",
     "description": null,
     "sponsor_type": [
@@ -267,6 +279,7 @@
     "id": "4f3f7cff-e275-4039-90fe-2561683076c7",
     "name": "Bocasay",
     "logo": "f378c423-3bc2-4a9d-9aff-2f36b1bf7958",
+    "logomark": "5be46148-0ccb-4f9b-b0f1-0bb82f1e1b9d",
     "website": "https://www.bocasay.com/",
     "description": null,
     "sponsor_type": [
@@ -289,6 +302,7 @@
     "id": "c86bb34d-07ca-48dd-ad23-b66291a4f89e",
     "name": "Outremer Telecom",
     "logo": "b305ce94-a57c-4ffb-8560-0876f1e6c5ea",
+    "logomark": "ed08eeeb-6fe4-48fe-822d-d0091e534f12",
     "website": "https://www.outremer-telecom.fr/",
     "description": null,
     "sponsor_type": [
@@ -311,6 +325,7 @@
     "id": "2169db43-9cff-4715-aa0e-47cc49846dc6",
     "name": "XEFI Mauritius",
     "logo": "ef87c8c9-3497-4b21-91c9-37a73d04661b",
+    "logomark": "f68b0545-ed56-4af6-89b4-97baae223306",
     "website": "https://agences.xefi.com/en/plaines-wilhems-district/quatre-bornes/xefi-mauritius-center-93",
     "description": null,
     "sponsor_type": [
@@ -333,6 +348,7 @@
     "id": "3af10d5f-270b-423d-a8a3-54d4158cf693",
     "name": "Acensi Mauritius Ltd",
     "logo": "2c8a85ac-885a-4be5-a551-4ccaafdbe6b4",
+    "logomark": "5172f1cd-dc45-4a10-af99-315e40207b0a",
     "website": "https://www.acensi.fr/page/accueil/fr_fr",
     "description": null,
     "sponsor_type": [
@@ -355,6 +371,7 @@
     "id": "8026b777-d365-493f-abca-d6675ff00473",
     "name": "Objectivity",
     "logo": "650a869d-aa12-4d76-9a31-0867b7dac13b",
+    "logomark": "4b2dbfbf-bce5-4c90-8353-e12ccec7c33f",
     "website": "https://www.objectivity.co.uk/",
     "description": null,
     "sponsor_type": [
@@ -377,6 +394,7 @@
     "id": "2a43f088-f18e-422f-b934-e29efea7c740",
     "name": "ELCA Mauritius",
     "logo": "c0217e58-7e39-4478-8497-7c114253cdb7",
+    "logomark": "5de37f4e-f51c-4129-a526-45f03b9066a4",
     "website": "https://www.elca.ch/en/elca-mauritius",
     "description": null,
     "sponsor_type": [
@@ -407,6 +425,7 @@
     "id": "d160d525-b410-4fc7-89ba-11c1d7c04d37",
     "name": "MCB Digital Factory",
     "logo": "47a95755-86a9-47c4-88c2-89c8991108f6",
+    "logomark": "91c6c217-36e1-4974-bebd-0234a5454671",
     "website": "https://www.mcb.mu/en/",
     "description": null,
     "sponsor_type": [
@@ -437,6 +456,7 @@
     "id": "e2374089-9649-4d29-a309-61b82c6a34b3",
     "name": "Providus",
     "logo": "41996942-cd3c-42f0-ac41-33d9e9c39d35",
+    "logomark": "e43f731c-c10e-4a64-a3ac-85c19ba02ea6",
     "website": "https://www.providus.mu/",
     "description": null,
     "sponsor_type": [
@@ -459,6 +479,7 @@
     "id": "d9679f3a-8af6-441b-9d32-a5600ce0b36f",
     "name": "Developers Institute Mauritius",
     "logo": "d39d2791-76ba-4071-8a37-41018a25e14d",
+    "logomark": "971c09c4-5b91-43bd-816a-9d58e288f3bd",
     "website": "https://developers.institute/mu/",
     "description": null,
     "sponsor_type": [
@@ -481,6 +502,7 @@
     "id": "81ad6c97-6038-4784-9c74-1f0b55813f60",
     "name": "Middlesex University Mauritius",
     "logo": "b09873d2-7b5d-4d4f-b5e1-f0656fae0acb",
+    "logomark": "088f977d-1dc1-4436-9c46-a51459f4ad1c",
     "website": "https://www.middlesex.mu/",
     "description": null,
     "sponsor_type": [
@@ -502,6 +524,7 @@
     "id": "f9e15509-5c8b-48bd-b94e-7770302247d0",
     "name": "Bolt Talent Solutions",
     "logo": "79e36777-2b76-4e56-b6fd-4f677fdc06fe",
+    "logomark": "f2fe9788-d5ad-4052-85fb-e2a5321cbe70",
     "website": "https://bolttalent.com/",
     "description": null,
     "sponsor_type": [
@@ -523,6 +546,7 @@
     "id": "75fe83cf-88c8-47c0-954e-3da839da9dba",
     "name": "Red and Yellow",
     "logo": "05cb1fd6-02a4-4c9c-92da-19515c308a15",
+    "logomark": "cc914210-c629-4c4b-9de4-9d36b735ca37",
     "website": "https://honoris.ac.mu/red-yellow-creative-school-of-business-expands-into-mauritius-and-beyond/",
     "description": null,
     "sponsor_type": [
@@ -544,6 +568,7 @@
     "id": "be28fb78-e00c-4b8f-8337-b4f41e7343fc",
     "name": "Alludo",
     "logo": "3e28ae40-2321-419b-988f-40d64f773479",
+    "logomark": "8ca38859-8841-4abc-8159-f595cd3275c4",
     "website": "https://www.alludo.com",
     "description": null,
     "sponsor_type": [
@@ -566,6 +591,7 @@
     "id": "a69c7d69-b06a-467b-826a-7d81f1e5c7fa",
     "name": "UDM",
     "logo": "d7175af9-371c-457b-b7fc-a48b93f27539",
+    "logomark": "1b7cce33-4533-4d56-9660-67717d8c2522",
     "website": null,
     "description": null,
     "sponsor_type": [
@@ -587,6 +613,7 @@
     "id": "3f3f88bc-c06f-4906-a3c7-f76fdb181b28",
     "name": "Ceridian",
     "logo": "1c003401-f0e0-44cd-b187-167e78caf9dc",
+    "logomark": "4621bf9d-e4d3-444d-90df-979af8f1ef9b",
     "website": "www.ceridian.com",
     "description": null,
     "sponsor_type": [
@@ -608,6 +635,7 @@
     "id": "5ef4d6a0-7451-4a1a-8bc2-c45c569ec3b9",
     "name": "Zendō",
     "logo": "42bc2d01-b819-47ba-8c54-2e478c01ebb7",
+    "logomark": "bcf77674-4827-47de-952f-9911e51e9b07",
     "website": "www.zendō.com",
     "description": null,
     "sponsor_type": [
@@ -629,6 +657,7 @@
     "id": "f95d7284-812d-4718-8dba-525ebf4ce6a9",
     "name": "HIK Vision",
     "logo": "128ebc03-9ad9-4a15-9a15-903b5987b216",
+    "logomark": "fabb96a9-63ed-4a85-a2d2-9c9d56d6f113",
     "website": null,
     "description": null,
     "sponsor_type": [
@@ -647,9 +676,40 @@
     ]
   },
   {
+    "id": "6f9045eb-7259-4493-8ca4-8ecafb7a1194",
+    "name": "frontend.mu",
+    "logo": "b5cee8a3-e339-4fc5-8dcf-d4c74a29e7e4",
+    "logomark": "f08d7b3f-d717-4805-bd60-d2cadb31c33e",
+    "website": "https://frontend.mu",
+    "description": null,
+    "sponsor_type": [
+      "venue"
+    ],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 49,
+        "title": "November Meetup",
+        "date": "2023-11-18",
+        "location": "La Cambuse Public Beach",
+        "venue": "La Cambuse Public Beach",
+        "description": null
+      },
+      {
+        "id": 56,
+        "title": "Workshop by frontend.mu at DevCon2024",
+        "date": "2024-07-19",
+        "location": "Developers Conference 2024",
+        "venue": "Caudan Arts Centre, Pac Man Room",
+        "description": "In this workshop we will build a web app to display information about Power Outages in Mauritius\n\n**Pre-requisites**\n- Bring your laptop\n- Install VS Code\n- Install nodejs 18 or 20 with npm\n- That's it !\n\nWe will use an open data source to retrieve the information and display it in a nice way using Nuxt 3 and TailwindCSS"
+      }
+    ]
+  },
+  {
     "id": "87e136d4-e372-42b2-bfd8-8b9c8733337f",
     "name": "SD Worx",
     "logo": "563a3e1d-db03-4b27-8712-efb035e99d4d",
+    "logomark": "b0b71ff5-04c2-47a5-8d9b-7d7fdfb3ca73",
     "website": "https://www.sdworx.com/",
     "description": null,
     "sponsor_type": [
@@ -669,9 +729,38 @@
     ]
   },
   {
+    "id": "21230235-e5a0-49f4-9a78-053f10c07906",
+    "name": "Cedric's Twitch Channel",
+    "logo": "39dec6d4-7c35-451c-af71-d1fd73f1700a",
+    "logomark": "a868add9-4815-4e2f-88db-e4c1f95c45ac",
+    "website": "https://twitch.tv/cedpoilly",
+    "description": null,
+    "sponsor_type": [],
+    "darkbg": false,
+    "meetups": [
+      {
+        "id": 51,
+        "title": "March Meetup Live on Twitch",
+        "date": "2024-03-28",
+        "location": "Twitch",
+        "venue": "twitch.tv/cedpoilly",
+        "description": null
+      },
+      {
+        "id": 62,
+        "title": "The Vibe Coding Meetup [online]",
+        "date": "2025-04-29",
+        "location": "Online",
+        "venue": "https://twitch.tv/cedpoilly",
+        "description": null
+      }
+    ]
+  },
+  {
     "id": "8258c629-5b86-4a4a-8b5a-817a3d98b023",
     "name": "Publicis Global Delivery",
-    "logo": "cd1037b1-27a7-473c-b8ce-dea9419f979f",
+    "logo": "0e7b49c3-2e8f-4478-bc0d-5afc936bfbee",
+    "logomark": "c57bca9f-b927-42c9-9277-d3ac0111c175",
     "website": "https://www.publicisgroupe.com/en/splash-en",
     "description": null,
     "sponsor_type": [
@@ -694,6 +783,7 @@
     "id": "1701aac0-9fd0-4730-a555-cc9eadf0d624",
     "name": "Dayforce",
     "logo": "a7f8bf45-aa2c-4d5f-ba98-8b1a7a6cc191",
+    "logomark": "21907583-1e48-4aa5-8eb6-44eb59b20c49",
     "website": "https://www.dayforce.com/",
     "description": "Dayforce logo",
     "sponsor_type": [
@@ -716,6 +806,7 @@
     "id": "6dc18fc4-81a3-4457-8234-d2b551d163e1",
     "name": "Novity",
     "logo": "6facfc10-cd82-42c4-9892-02bdbd967fd8",
+    "logomark": "592325ac-fb38-49f0-87e1-da4affce2fb6",
     "website": "https://novity.io",
     "description": null,
     "sponsor_type": [
@@ -731,6 +822,14 @@
         "location": "NeXTeracom Tower I - 12th floor, Ebène, Maurice",
         "venue": "Novity Mauritius",
         "description": null
+      },
+      {
+        "id": 64,
+        "title": "August Meetup",
+        "date": "2025-08-23",
+        "location": "Novity",
+        "venue": "Novity",
+        "description": null
       }
     ]
   },
@@ -738,6 +837,7 @@
     "id": "f74eb8de-fcfd-4c40-bada-c72394189b41",
     "name": "Swan",
     "logo": "29dedcfe-5f63-4c33-a0c5-160fc9d78d6e",
+    "logomark": "bd32662d-bff0-4f05-b649-5344913641ef",
     "website": "https://swanforlife.com",
     "description": null,
     "sponsor_type": [
@@ -760,6 +860,7 @@
     "id": "99664935-0de8-43c6-a06e-44e629fbb50d",
     "name": "Klanik",
     "logo": "84571e1a-62e0-4985-9255-ae399df7cf0e",
+    "logomark": "fbbfcd70-1281-47b2-834e-1e6251720076",
     "website": "https://www.klanik.com/en/agences/ile-maurice",
     "description": null,
     "sponsor_type": [
@@ -781,6 +882,7 @@
     "id": "7955a0c4-c38b-4fff-92cb-8a4cd0ddf096",
     "name": "Spoon Consulting",
     "logo": "ac50f309-a064-4e49-9f35-da440ec4c2a6",
+    "logomark": "024cac62-46c5-41d6-8ec6-768cf449d804",
     "website": "https://www.spoonconsulting.com/",
     "description": null,
     "sponsor_type": [

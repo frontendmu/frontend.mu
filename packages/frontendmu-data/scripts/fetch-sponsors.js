@@ -2,7 +2,7 @@ import fs from "fs";
 import getDirectusClient from "./directus-client.js";
 import { readItems } from "@directus/sdk";
 
-async function fetchSponsorsAndMeetups() {
+export async function fetchSponsorsAndMeetups() {
   const client = await getDirectusClient();
 
   // Fetch all events with sponsors and sponsor details

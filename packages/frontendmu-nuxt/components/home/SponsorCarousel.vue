@@ -17,16 +17,9 @@ const sortedSponsors = computed(() => {
     })
 })
 
-function opacityValue(index: number) {
-  // the lower the index, the closer it has to be to 100, the higher the index it has to reach 0
-  // the max index is sortedSponsors.length - 1
-  const maxIndex = sortedSponsors.value.length - 1
-  return Math.floor(100 - (index * 100) / maxIndex)
-}
-
 function sponsorLogoUrl(sponsor: any) {
   if (typeof sponsor.logo === 'string') {
-    return `https://directus.frontend.mu/assets/${sponsor.logo}`
+    return `https://directus.frontend.mu/assets/${sponsor.logomark}`
   }
   return ''
 }
@@ -44,7 +37,7 @@ const carouselRef = templateRef<HTMLDivElement>('carouselRef')
     <div class="w-full py-4 px-8 max-w-7xl mx-auto">
       <div
         ref="carouselRef"
-        class="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-8"
+        class="grid lg:grid-cols-8 md:grid-cols-2 grid-cols-1 gap-8"
         tabindex="0"
         aria-label="Sponsor logos carousel"
       >

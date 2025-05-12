@@ -15,6 +15,7 @@ export interface Sponsor {
   id: string
   name: string
   logo: string
+  logomark: string
   website?: string
   description?: string
   sponsor_type?: string[]
@@ -84,8 +85,10 @@ export const useSponsorStore = defineStore('sponsor', {
       for (const sponsor of this.sponsors) {
         for (const meetup of sponsor.meetups) {
           const year = getYear(meetup.date)
-          if (!year) continue
-          if (!grouped[year]) grouped[year] = []
+          if (!year)
+            continue
+          if (!grouped[year])
+            grouped[year] = []
           grouped[year].push({ sponsor, meetup })
         }
       }

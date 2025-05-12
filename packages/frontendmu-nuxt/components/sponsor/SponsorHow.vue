@@ -1,6 +1,6 @@
 <template>
   <section class="w-full flex flex-col gap-8">
-    <BaseHeading :level="2">
+    <BaseHeading id="sponsor-cta" :level="2">
       Want to sponsor a meetup?
     </BaseHeading>
 

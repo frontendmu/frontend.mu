@@ -5,7 +5,8 @@ defineOgImageComponent('Home')
 <template>
   <div>
     <HomeHero />
-    <HomeSponsorCarousel />
+    <HomeSponsorCalendar />
+    <!-- <HomeSponsorCarousel /> -->
     <HomeLatestMeetup />
     <HomeFeaturedSpeakers />
     <HomeSocialPresence />
