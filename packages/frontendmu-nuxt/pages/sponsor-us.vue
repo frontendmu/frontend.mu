@@ -29,6 +29,10 @@
         <SponsorHow />
       </div>
 
+      <div class="flex flex-col gap-8">
+        <SponsorAdvocate />
+      </div>
+
       <SponsorCta />
     </div>
   </ContentBlock>
