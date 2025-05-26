@@ -42,9 +42,14 @@ const sponsorCTA = computed(() =>
       'cursor-pointer hover:border-verse-400 dark:hover:border-verse-500': hasMeetup || hasMeetupInFuture,
       'bg-verse-50 dark:bg-verse-800': !hasMeetup,
       'opacity-50': disabledMonth,
+      'border-red-400': sponsorCTA,
     }"
   >
-    <div class="p-3 bg-verse-100 dark:bg-verse-700 text-sm font-medium text-center">
+    <div
+      class="p-3 bg-verse-100 dark:bg-verse-700 text-sm font-medium text-center" :class="{
+        'bg-red-50 text-red-400': sponsorCTA,
+      }"
+    >
       {{ props.month }}
     </div>
     <div class="flex-1 grid place-items-center text-center">
@@ -68,6 +73,11 @@ const sponsorCTA = computed(() =>
         >
           <span class="sr-only">View meetup</span>
         </NuxtLink>
+      </template>
+      <template v-else-if="!sponsorCTA">
+        <div class="h-full grid place-items-center text-xs text-center bg-primary-500 hover:bg-primary-600 dark:bg-verse-500 dark:hover:bg-verse-600 text-verse-500 rounded">
+          No meetup
+        </div>
       </template>
 
       <template v-if="sponsorCTA">
