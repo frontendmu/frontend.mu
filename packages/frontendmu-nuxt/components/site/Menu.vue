@@ -80,7 +80,7 @@ const links: TMenu = {
       },
       {
         title: 'Advent Calendar',
-        href: 'https://advent.frontend.mu',
+        href: 'https://advent.coders.mu',
         class: 'external-link',
         target: '_blank',
         rel: 'noopener noreferrer',
@@ -107,7 +107,7 @@ const links: TMenu = {
   },
   // advent: {
   //   title: 'Advent Calendar',
-  //   href: 'https://advent.frontend.mu',
+  //   href: 'https://advent.coders.mu',
   //   class: 'external-link',
   //   target: '_blank',
   //   rel: 'noopener noreferrer',
@@ -190,8 +190,10 @@ onMounted(toggleHeader)
     <div class="menu theme-light w-full">
       <div class="flex justify-between items-center contain">
         <div class="flex">
-          <NuxtLink href="/" class="flex gap-2 text-verse-500 dark:text-verse-200" title="frontend.mu"
-            @contextmenu="handleRightClick">
+          <NuxtLink
+            href="/" class="flex gap-2 text-verse-500 dark:text-verse-200" title="frontend.mu"
+            @contextmenu="handleRightClick"
+          >
             <SiteLogo class="w-10" />
             <span class="hidden text-lg font-bold leading-none tracking-tighter md:text-3xl md:block">
               frontend.mu

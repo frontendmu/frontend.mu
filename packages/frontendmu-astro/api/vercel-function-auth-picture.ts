@@ -6,7 +6,7 @@ const googleClientId = process.env.AUTH_GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.AUTH_GOOGLE_CLIENT_SECRET;
 
 
-const directusApiEndpoint = 'https://directus.frontend.mu/users/me';
+const directusApiEndpoint = 'https://directus.coders.mu/users/me';
 
 async function fetchPicture(accessToken: string) {
 	let result = await fetch(directusApiEndpoint, {
@@ -88,7 +88,7 @@ async function uploadImageToDirectus(imageUrl: string, directusAccessToken: stri
 
 	let base64String = await fromUrlToBase64(imageUrl);
 
-	const DIRECTUS_PROJECT_URL = 'https://directus.frontend.mu';
+	const DIRECTUS_PROJECT_URL = 'https://directus.coders.mu';
 
 	try {
 		// Make a POST request to /files in the Directus instance

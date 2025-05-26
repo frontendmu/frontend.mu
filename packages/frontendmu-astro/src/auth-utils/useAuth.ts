@@ -112,7 +112,7 @@ export default function useAuth(client: DirectusClient<any> & AuthenticationClie
     async function loginWithSSO() {
         try {
             const res = await fetch(
-                "https://directus.frontend.mu/auth/refresh",
+                "https://directus.coders.mu/auth/refresh",
                 {
                     method: "POST",
                     credentials: "include", // this is required in order to send the refresh token cookie
@@ -280,7 +280,7 @@ export default function useAuth(client: DirectusClient<any> & AuthenticationClie
         if (eventListIds.includes(parseInt(eventId))) {
             // console.log('Already RSVPd, skipping')
         } else {
-            const result = await fetch(`https://directus.frontend.mu/users/me`, {
+            const result = await fetch(`https://directus.coders.mu/users/me`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -422,7 +422,7 @@ export default function useAuth(client: DirectusClient<any> & AuthenticationClie
 
     async function cloudFunctionUpdateProfilePicture(userId) {
 
-        const FUNCTION_AUTH_PICTURE_URL = `https://auth-picture.frontend.mu/`
+        const FUNCTION_AUTH_PICTURE_URL = `https://auth-picture.coders.mu/`
 
         const result = await fetch(FUNCTION_AUTH_PICTURE_URL, {
             method: 'POST',

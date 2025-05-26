@@ -205,7 +205,7 @@ const viewMore = () => {
                     <dd class="flex justify-between rounded-md bg-gray-100 mt-2 px-2 py-1 lg:w-[450px]">
                       <input id="myInput"
                         class="text-md break-words bg-gray-100pr-2 tracking-tight bg-gray-100 text-gray-600 line-clamp-3 w-[500px]"
-                        type="text" :value="`https://frontend.mu/meetup/${props.routeId}/`" />
+                        type="text" :value="`https://coders.mu/meetup/${props.routeId}/`" />
                       <div class="cursor-pointer" @click="copy">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />

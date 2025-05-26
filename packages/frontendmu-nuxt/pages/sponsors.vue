@@ -14,7 +14,7 @@ const description = "";
         <p class="text-xl text-verse-600 dark:text-verse-200">
           We're lucky to have sponsors support our community. If you're
           interested in sponsoring us,<a
-            href="mailto:hello@frontend.mu"
+            href="mailto:sandeep+frontendmu@ramgolam.com"
             class="underline hover:bg-verse-50 dark:bg-verse-950"
             title="Please reach out to us via email"
           >

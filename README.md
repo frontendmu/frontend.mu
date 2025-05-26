@@ -2,7 +2,7 @@
 
 Front-End coders Mauritius is a free meetup that's dedicated to all aspect of Front-End development. it occurs in general one a month at announced date and place. Feel free to join!
 
-Live website : [https://frontend.mu/](https://frontend.mu/)
+Live website : [https://frontend.coders.mu/](https://frontend.coders.mu/)
 
 ## Getting Started
 
