@@ -4,7 +4,7 @@ import sitemap from "@astrojs/sitemap";
 import Icons from "unplugin-icons/vite";
 import vue from "@astrojs/vue";
 import sentry from "@sentry/astro";
-let site = "https://frontend.mu";
+let site = "https://coders.mu";
 
 // https://vercel.com/docs/concepts/projects/environment-variables/system-environment-variables
 if (

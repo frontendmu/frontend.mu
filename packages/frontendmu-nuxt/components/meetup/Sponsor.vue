@@ -23,7 +23,7 @@ function sponsorClassList(sponsor) {
 }
 
 function sponsorLogoUrl(sponsor) {
-  return `https://directus.frontend.mu/assets/${sponsor.Sponsor_id.Logo.filename_disk}`
+  return `https://directus.coders.mu/assets/${sponsor.Sponsor_id.Logo.filename_disk}`
 }
 </script>
 

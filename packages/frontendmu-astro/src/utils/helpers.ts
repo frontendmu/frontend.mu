@@ -58,9 +58,9 @@ export const mapToValidUser = (user: any): User => {
 
 
 export const DIRECTUS_URL = () => {
-  return 'https://directus.frontend.mu';
+  return 'https://directus.coders.mu';
   // return process.env.NODE_ENV === 'production'
-  //   ? 'https://directus.frontend.mu'
+  //   ? 'https://directus.coders.mu'
   //   : 'http://localhost:8055'
 }
 

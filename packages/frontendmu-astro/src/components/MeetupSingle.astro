@@ -61,8 +61,6 @@ function fetchAlbumDetails(albumName: string | null) {
   }
 }
 
-
-
 let currentAlbum = fetchAlbumDetails(props.getCurrentEvent.album);
 ---
 
@@ -119,7 +117,6 @@ let currentAlbum = fetchAlbumDetails(props.getCurrentEvent.album);
             </div>
 
             <MeetupSonspor sponsors={props.getCurrentEvent.sponsors} />
-            
           </div>
         </div>
       </div>
@@ -277,7 +274,7 @@ let currentAlbum = fetchAlbumDetails(props.getCurrentEvent.album);
                     id="myInput"
                     class="text-md break-words bg-gray-100pr-2 tracking-tight bg-gray-100 text-gray-600 line-clamp-3 w-[500px]"
                     type="text"
-                    value={`https://frontend.mu/meetup/${props.routeId}/`}
+                    value={`https://coders.mu/meetup/${props.routeId}/`}
                     onclick="copy();"
                   />
                   <div class="cursor-pointer" onclick="copy();">
