@@ -9,7 +9,7 @@
  */
 
 async function fetchPicture(accessToken, googleClientId, googleClientSecret) {
-    const directusApiEndpoint = 'https://directus.frontend.mu/users/me';
+    const directusApiEndpoint = 'https://directus.coders.mu/users/me';
     let result = await fetch(directusApiEndpoint, {
         headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -102,7 +102,7 @@ async function uploadImageToDirectus(imageUrl, directusAccessToken, directusUser
 
     let base64String = await fromUrlToBase64(imageUrl);
 
-    const DIRECTUS_PROJECT_URL = 'https://directus.frontend.mu';
+    const DIRECTUS_PROJECT_URL = 'https://directus.coders.mu';
 
     try {
         // Make a POST request to /files in the Directus instance

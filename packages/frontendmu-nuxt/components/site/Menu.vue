@@ -80,7 +80,7 @@ const links: TMenu = {
       },
       {
         title: 'Advent Calendar',
-        href: 'https://advent.frontend.mu',
+        href: 'https://advent.coders.mu',
         class: 'external-link',
         target: '_blank',
         rel: 'noopener noreferrer',
@@ -119,7 +119,7 @@ const links: TMenu = {
   },
   // advent: {
   //   title: 'Advent Calendar',
-  //   href: 'https://advent.frontend.mu',
+  //   href: 'https://advent.coders.mu',
   //   class: 'external-link',
   //   target: '_blank',
   //   rel: 'noopener noreferrer',

@@ -10,7 +10,7 @@ const sortedMeetupsByYear = computed(() => sponsorStore.getMeetupsGroupedByYearS
 
 function sponsorLogoUrl(sponsor: Sponsor) {
   if (typeof sponsor.logo === 'string') {
-    return `https://directus.frontend.mu/assets/${sponsor.logo}`
+    return `https://directus.coders.mu/assets/${sponsor.logo}`
   }
   return ''
 }
