@@ -29,38 +29,46 @@ const benefits = [
 </script>
 
 <template>
-  <section class="w-full space-y-8">
-    <div class="text-center md:text-left">
-      <h3 class="text-2xl font-bold text-verse-700 dark:text-verse-200 mb-4">
-        Why should your company sponsor a Meetup?
+  <section class="w-full space-y-12">
+    <div class="text-center">
+      <h3 class="text-3xl font-bold text-verse-700 dark:text-verse-200 mb-6 tracking-tight">
+        Why Sponsor a Meetup?
       </h3>
-      <p class="text-lg text-verse-600 dark:text-verse-300 max-w-2xl">
-        Join us in fostering the growth of frontend development in Mauritius while gaining valuable benefits for your organization.
+      <p class="text-xl text-verse-600 dark:text-verse-300 max-w-2xl mx-auto leading-relaxed">
+        Join us in shaping the future of frontend development in Mauritius while unlocking exceptional value for your organization.
       </p>
     </div>
 
-    <div class="grid gap-6 md:gap-8">
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
       <div
         v-for="benefit in benefits"
         :key="benefit.title"
-        class="flex items-start gap-4 p-4 rounded-xl bg-white dark:bg-verse-800/50 shadow-sm hover:shadow-md transition-all duration-200 group"
+        class="group relative overflow-hidden rounded-2xl bg-gradient-to-b from-white to-verse-50 dark:from-verse-800/90 dark:to-verse-800/50 p-6 backdrop-blur-sm border border-verse-100/10 dark:border-verse-700/10"
       >
-        <div class="p-2 flex items-center rounded-lg bg-verse-100 dark:bg-verse-700/50 text-verse-600 dark:text-verse-300 group-hover:scale-110 transition-transform duration-200">
-          <Icon :name="benefit.icon" class="w-6 h-6" />
-        </div>
-        <div class="flex-grow">
-          <h4 class="font-bold text-verse-700 dark:text-verse-200 mb-1 group-hover:text-verse-500 dark:group-hover:text-verse-300 transition-colors duration-200">
-            {{ benefit.title }}
-          </h4>
-          <p class="text-verse-600 dark:text-verse-300 text-sm md:text-base">
-            {{ benefit.description }}
-          </p>
+        <div class="absolute inset-0 bg-gradient-to-b from-verse-500/5 to-transparent dark:from-verse-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out" />
+        
+        <div class="relative space-y-4">
+          <div class="inline-flex p-3 rounded-2xl bg-verse-100 dark:bg-verse-700/50 text-verse-500 dark:text-verse-300 group-hover:scale-110 group-hover:bg-verse-500 dark:group-hover:bg-verse-600 group-hover:text-white transition-all duration-500 ease-out">
+            <Icon :name="benefit.icon" class="w-8 h-8" />
+          </div>
+          
+          <div class="space-y-2">
+            <h4 class="text-xl font-semibold text-verse-700 dark:text-verse-200 group-hover:text-verse-500 dark:group-hover:text-verse-300 transition-colors duration-300">
+              {{ benefit.title }}
+            </h4>
+            <p class="text-verse-600 dark:text-verse-300 leading-relaxed">
+              {{ benefit.description }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
 
-    <p class="text-verse-600 dark:text-verse-300 text-lg max-w-2xl mx-auto md:mx-0 text-center md:text-left">
-      Sponsoring a meetup is more than just marketing—it's about building relationships and contributing to the growth of Mauritius' vibrant tech scene. Whether you want to support knowledge sharing or simply give back, sponsoring a meetup is a great way to make an impact.
-    </p>
+    <div class="relative rounded-3xl bg-gradient-to-br from-verse-500/10 to-verse-600/5 dark:from-verse-500/20 dark:to-verse-600/10 p-8 md:p-12 backdrop-blur-sm border border-verse-100/10 dark:border-verse-700/10 overflow-hidden">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1),transparent)] pointer-events-none" />
+      <p class="relative text-xl text-verse-700 dark:text-verse-200 max-w-3xl mx-auto text-center leading-relaxed">
+        Sponsoring a meetup is more than marketing—it's about fostering innovation, building meaningful connections, and contributing to Mauritius' thriving tech ecosystem. Make a lasting impact on our community's future.
+      </p>
+    </div>
   </section>
 </template>
