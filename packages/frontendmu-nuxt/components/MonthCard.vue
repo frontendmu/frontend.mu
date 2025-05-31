@@ -56,7 +56,7 @@ const sponsorCTA = computed(() =>
       <template v-if="props.meetup && hasSponsor">
         <div class="flex items-center justify-center">
           <img
-            :src="`https://directus.frontend.mu/assets/${sponsor?.logomark.id}`"
+            :src="`https://directus.coders.mu/assets/${sponsor?.logomark.id}`"
             :alt="sponsor?.Name"
             class="w-full h-full object-contain"
             :class="sponsor?.darkbg ? 'dark:bg-verse-900 bg-gray-500' : 'bg-white'"

@@ -19,7 +19,7 @@ const sortedSponsors = computed(() => {
 
 function sponsorLogoUrl(sponsor: any) {
   if (typeof sponsor.logo === 'string') {
-    return `https://directus.frontend.mu/assets/${sponsor.logomark}`
+    return `https://directus.coders.mu/assets/${sponsor.logomark}`
   }
   return ''
 }
