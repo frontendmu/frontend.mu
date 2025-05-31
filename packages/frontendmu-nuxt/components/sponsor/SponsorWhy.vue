@@ -29,16 +29,7 @@ const benefits = [
 </script>
 
 <template>
-  <section class="w-full space-y-12">
-    <div class="text-center">
-      <h3 class="text-3xl font-bold text-verse-700 dark:text-verse-200 mb-6 tracking-tight">
-        Why Sponsor a Meetup?
-      </h3>
-      <p class="text-xl text-verse-600 dark:text-verse-300 max-w-2xl mx-auto leading-relaxed">
-        Join us in shaping the future of frontend development in Mauritius while unlocking exceptional value for your organization.
-      </p>
-    </div>
-
+  <section class="w-full">
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
       <div
         v-for="benefit in benefits"

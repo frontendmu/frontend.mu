@@ -64,9 +64,14 @@ function navigateYear(direction: number) {
 <template>
   <div class="mb-16">
     <div class="flex items-center justify-between mb-8">
-      <BaseHeading :level="2" class="!mb-0">
-        Meetup Calendar
-      </BaseHeading>
+      <div>
+        <BaseHeading :level="2" class="!mb-4">
+          Meetup Calendar
+        </BaseHeading>
+        <p class="text-lg text-verse-600 dark:text-verse-300">
+          View upcoming sponsorship opportunities
+        </p>
+      </div>
       <div class="flex items-center gap-4">
         <button
           :disabled="!years.includes(selectedYear - 1)"
