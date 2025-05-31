@@ -95,7 +95,7 @@ function updateProfile() {
         <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3">
           <SideInfo title="Personal Information">
             Minimum information required to maintain a profile on
-            frontend.mu.
+            coders.mu.
           </SideInfo>
 
           <form class="md:col-span-2 pb-16">
@@ -288,7 +288,7 @@ function updateProfile() {
 
         <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 py-16 md:grid-cols-3">
           <SideInfo title="Authentication provider">
-            You've signed up on frontend.mu using this provider.
+            You've signed up on coders.mu using this provider.
           </SideInfo>
 
           <form class="md:col-span-2">

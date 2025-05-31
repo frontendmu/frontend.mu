@@ -3,7 +3,7 @@
 withDefaults(defineProps<{
   title?: string
 }>(), {
-  title: 'frontend.mu',
+  title: 'coders.mu',
 })
 </script>
 
