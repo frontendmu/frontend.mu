@@ -5,6 +5,7 @@ export default defineNuxtConfig({
   css: [
     '~/styles/global.css',
     '~/styles/tailwind.css',
+    '~/assets/css/scrollbar.css',
   ],
 
   typescript: {
@@ -25,6 +26,7 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@nuxt/image',
     '@nuxt/content',
+    '@pinia/nuxt',
   ],
 
   eslint: {

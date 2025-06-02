@@ -1,6 +1,6 @@
 <script setup>
 const title = 'Brand Assets'
-const description = 'Brand resources for all things frontend.mu'
+const description = 'Brand resources for all things frontend.coders.mu'
 
 const assets = ref([
   {
