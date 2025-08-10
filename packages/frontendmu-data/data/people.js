@@ -36,16 +36,22 @@ export const communityMembers = [
         id: "77031f3f-3f2c-4306-802f-3f8b55fd30d8",
     },
     {
+        name: "Danshil Kokil Mungur",
+        role: "Active Community Member",
+        imageUrl: "https://github.com/danshilm.png",
+        id: "b8fe6ad1-e6e9-4d3a-862a-ff8d5040fe44",
+    },
+    {
+        name: "Jain Ramchurn",
+        role: "Active Community Member",
+        imageUrl: "https://github.com/k3ii.png",
+        id: "3be36def-6bfa-46a9-8a15-7b111554d041",
+    },
+    {
         name: "Saamiyah Peerun",
         role: "Community Member",
         imageUrl: "https://github.com/saamiyah.png",
         id: "78966047-4716-4afc-856e-46f1430974ed",
-    },
-    {
-        name: "Noor Joomun",
-        role: "Community Member",
-        imageUrl: "https://github.com/joomun.png",
-        id: "",
     },
     {
         name: "Michaël Jules",
