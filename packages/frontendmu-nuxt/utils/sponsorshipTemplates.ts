@@ -8,15 +8,18 @@ export const sponsorshipTemplates: Record<string, SponsorshipTemplate> = {
     title: 'For CEOs and Decision Makers',
     text: `Dear {{companyName}} leadership team,
 
-As the CEO of {{companyName}}, you understand the importance of building a strong tech community and attracting top talent. Frontend Coders Mauritius, largest frontend development community, presents a unique opportunity to position {{companyName}} as a tech leader while accessing a pool of skilled developers.
+As the CEO of {{companyName}}, you understand the importance of building a strong tech community and attracting top talent. Coders.mu is a community of passionate developers based in Mauritius. We host meetups regularly around tech topics and have been doing so since 2016! Our motivation is simply the passion for tech itself and our goal is to help developers in Mauritius level up. 
 
-By sponsoring our meetups, you'll gain:
-• Direct access to 500+ frontend developers
-• Enhanced employer branding in the tech community
-• Opportunities to showcase {{companyName}}'s tech innovation
-• Priority access to talented developers
+However, passion only is not enough to make monthly meetups a reality. As such we rely on sponsors to secure a venue and lunch during the event, and we would love to talk if you're interested in supporting the community. We already collaborated with 30+ companies in Mauritius in the past: https://coders.mu/sponsors.
 
-Learn more about our impact at https://frontend.coders.mu/meetups and view our sponsorship opportunities at https://frontend.coders.mu/sponsor-us#sponsor-cta.`,
+By sponsoring our meetups, you'll:
+• Help us build a strong tech community
+• Enhance employer branding in the tech community
+• Showcase {{companyName}}'s tech innovation
+• Connect with talented developers
+• Advertise your job offers during the event
+
+Learn more about our impact at https://coders.mu/meetups and view our sponsorship opportunities at https://coders.mu/sponsor-us#sponsor-cta.`,
   },
   hr: {
     title: 'For HR and Talent Acquisition',
@@ -30,7 +33,7 @@ Our meetups provide:
 • Platform to showcase {{companyName}}'s work culture
 • Networking with experienced developers
 
-Check our past events at https://frontend.coders.mu/meetups to see the caliber of talent you'll connect with. Visit https://frontend.coders.mu/sponsor-us#sponsor-cta to learn about our sponsorship packages.`,
+Check our past events at https://coders.mu/meetups to see the caliber of talent you'll connect with. Visit https://coders.mu/sponsor-us#sponsor-cta to learn about our sponsorship packages.`,
   },
   tech: {
     title: 'For Tech Leaders and Engineering Managers',
@@ -44,6 +47,6 @@ Sponsoring offers your team:
 • Access to the latest frontend trends and best practices
 • Community recognition as a tech-forward company
 
-See our technical talks at https://frontend.coders.mu/meetups and explore sponsorship benefits at https://frontend.coders.mu/sponsor-us#sponsor-cta.`,
+See our technical talks at https://coders.mu/meetups and explore sponsorship benefits at https://coders.mu/sponsor-us#sponsor-cta.`,
   },
 }
