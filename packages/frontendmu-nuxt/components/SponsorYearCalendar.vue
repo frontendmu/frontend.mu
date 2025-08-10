@@ -40,7 +40,35 @@ const yearMeetups = computed<(Meetup | null)[]>(() => {
     yearData.forEach((meetup) => {
       const date = new Date(meetup.Date)
       const month = date.getMonth()
-      monthlyMeetups[month] = meetup
+      const existingMeetup = monthlyMeetups[month]
+
+      // If no existing meetup for this month, use this one
+      if (!existingMeetup) {
+        monthlyMeetups[month] = meetup
+        return
+      }
+
+      // If current meetup has sponsors and existing doesn't, prefer current
+      const currentHasSponsors = meetup.sponsors && meetup.sponsors.length > 0
+      const existingHasSponsors = existingMeetup.sponsors && existingMeetup.sponsors.length > 0
+
+      if (currentHasSponsors && !existingHasSponsors) {
+        monthlyMeetups[month] = meetup
+        return
+      }
+
+      // If existing has sponsors and current doesn't, keep existing
+      if (existingHasSponsors && !currentHasSponsors) {
+        return
+      }
+
+      // If both have sponsors or both don't have sponsors, choose the later date
+      const currentDate = new Date(meetup.Date)
+      const existingDate = new Date(existingMeetup.Date)
+
+      if (currentDate > existingDate) {
+        monthlyMeetups[month] = meetup
+      }
     })
   }
 
@@ -97,18 +125,10 @@ function navigateYear(direction: number) {
       </div>
     </div>
 
-    <div class="overflow-x-auto pb-4">
-      <div class="grid grid-cols-12 gap-4">
-        <div
-          v-for="(month, index) in months"
-          :key="month"
-          class="flex-1"
-        >
-          <MonthCard
-            :month="month"
-            :meetup="yearMeetups[index]"
-            :is-in-future="isInFuture(index)"
-          />
+    <div class="pb-4">
+      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-12 gap-4">
+        <div v-for="(month, index) in months" :key="month" class="flex-1">
+          <MonthCard :month="month" :meetup="yearMeetups[index]" :is-in-future="isInFuture(index)" />
         </div>
       </div>
     </div>
