@@ -12,16 +12,16 @@
         <ol class="relative border-s border-verse-400 dark:border-verse-700 ml-4 mb-8">
           <li class="mb-8 ms-6">
             <span class="absolute -start-3 flex items-center justify-center w-6 h-6 bg-verse-600 dark:bg-verse-400 rounded-full ring-8 ring-white dark:ring-verse-900 text-white font-bold">1</span>
-            <span class="">Reach out to the organizers</span>
+            <span class="">Reach out to the organizers. <br> Email / LinkedIn</span>
           </li>
           <li class="mb-8 ms-6">
             <span class="absolute -start-3 flex items-center justify-center w-6 h-6 bg-verse-600 dark:bg-verse-400 rounded-full ring-8 ring-white dark:ring-verse-900 text-white font-bold">2</span>
             We will be happy to answer your questions and explain how we run meetups.
           </li>
-          <li class="mb-8 ms-6">
+          <!-- <li class="mb-8 ms-6">
             <span class="absolute -start-3 flex items-center justify-center w-6 h-6 bg-verse-600 dark:bg-verse-400 rounded-full ring-8 ring-white dark:ring-verse-900 text-white font-bold">3</span>
             How can we help increase visibility of your company through meetups
-          </li>
+          </li> -->
           <li class="mb-8 ms-6">
             <span class="absolute -start-3 flex items-center justify-center w-6 h-6 bg-verse-600 dark:bg-verse-400 rounded-full ring-8 ring-white dark:ring-verse-900 text-white font-bold">4</span>
             Finalize date and location
@@ -58,9 +58,21 @@
           Event day
         </BaseHeading>
         <ol class="relative border-s border-verse-400 dark:border-verse-700 ml-4 mb-8">
-          <li class="ms-6">
+          <li class="mb-8 ms-6">
             <span class="absolute -start-3 flex items-center justify-center w-6 h-6 bg-verse-600 dark:bg-verse-400 rounded-full ring-8 ring-white dark:ring-verse-900 text-white font-bold">9</span>
-            <span class="font-semibold">Event day!</span>
+            We will be there to help you
+          </li>
+          <li class="mb-8 ms-6">
+            <span class="absolute -start-3 flex items-center justify-center w-6 h-6 bg-verse-600 dark:bg-verse-400 rounded-full ring-8 ring-white dark:ring-verse-900 text-white font-bold">10</span>
+            Dedicated sponsored segment at the start of the meetup
+          </li>
+          <li class="mb-8 ms-6">
+            <span class="absolute -start-3 flex items-center justify-center w-6 h-6 bg-verse-600 dark:bg-verse-400 rounded-full ring-8 ring-white dark:ring-verse-900 text-white font-bold">11</span>
+            2 sessions followed by lunch break
+          </li>
+          <li class="mb-8 ms-6">
+            <span class="absolute -start-3 flex items-center justify-center w-6 h-6 bg-verse-600 dark:bg-verse-400 rounded-full ring-8 ring-white dark:ring-verse-900 text-white font-bold">12</span>
+            Photoshoot, last sessions and networking
           </li>
         </ol>
       </div>
