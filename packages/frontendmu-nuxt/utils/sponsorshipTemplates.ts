@@ -25,28 +25,34 @@ Learn more about our impact at https://coders.mu/meetups and view our sponsorshi
     title: 'For HR and Talent Acquisition',
     text: `Hello {{companyName}} HR team,
 
-Looking to attract top frontend development talent? Frontend Coders Mauritius offers {{companyName}} a direct channel to connect with over 500 skilled developers in Mauritius.
+Attracting proven frontend talent in Mauritius works best through authentic, low-pressure interactions. Frontend Coders Mauritius is an active community that meets regularly to learn, share, and connect.
 
-Our meetups provide:
-• Direct recruitment opportunities
-• Enhanced employer branding
-• Platform to showcase {{companyName}}'s work culture
-• Networking with experienced developers
+As a sponsor, you can:
+• Meet motivated practitioners during our meetups and networking breaks
+• Use light-touch employer branding (logo on site and slides, verbal thanks, social mention)
+• Briefly share open roles or internship opportunities
+• Start conversations that help you qualify interest before a formal process
+• Choose simple, transparent pricing; in-kind support (venue/food) is also welcome
 
-Check our past events at https://coders.mu/meetups to see the caliber of talent you'll connect with. Visit https://coders.mu/sponsor-us#sponsor-cta to learn about our sponsorship packages.`,
+We don’t promise direct hires. What we offer is consistent visibility with engaged developers and a credible place to begin meaningful hiring conversations.
+
+See what our meetups look like at https://coders.mu/meetups and explore sponsorship options at https://coders.mu/sponsor-us#sponsor-cta.`,
   },
   tech: {
     title: 'For Tech Leaders and Engineering Managers',
     text: `Hey {{companyName}} tech team,
 
-Want to boost your team's frontend expertise and community presence? Frontend Coders Mauritius meetups are where Mauritius' frontend developers gather to share knowledge and explore new technologies.
+Your engineers thrive on real-world exchange. Our meetups are hands-on and vendor-neutral, focused on code, architecture, and lessons learned from production.
 
-Sponsoring offers your team:
-• Speaking opportunities to showcase your tech stack
-• Knowledge sharing with 500+ frontend developers
-• Access to the latest frontend trends and best practices
-• Community recognition as a tech-forward company
+With a sponsorship, your team can:
+• Propose a talk or show-and-tell that teaches something practical
+• Share trade-offs and pitfalls, and get feedback from practitioners
+• Meet engineers who work with similar stacks and constraints
+• Learn what tools and practices are resonating locally
+• Build your team’s public-speaking confidence and community presence
 
-See our technical talks at https://coders.mu/meetups and explore sponsorship benefits at https://coders.mu/sponsor-us#sponsor-cta.`,
+We keep talks educational—not sales demos. Sponsorship simply helps cover venue and lunch so the community can keep learning together.
+
+Browse past sessions at https://coders.mu/meetups and review sponsor options at https://coders.mu/sponsor-us#sponsor-cta.`,
   },
 }
