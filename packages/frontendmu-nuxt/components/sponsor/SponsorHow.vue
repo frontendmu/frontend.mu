@@ -4,7 +4,7 @@
       Want to sponsor a meetup?
     </BaseHeading>
 
-    <div class="grid grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <div class="space-y-8">
         <BaseHeading :level="3">
           Get in touch
@@ -12,7 +12,7 @@
         <ol class="relative border-s border-verse-400 dark:border-verse-700 ml-4 mb-8">
           <li class="mb-8 ms-6">
             <span class="absolute -start-3 flex items-center justify-center w-6 h-6 bg-verse-600 dark:bg-verse-400 rounded-full ring-8 ring-white dark:ring-verse-900 text-white font-bold">1</span>
-            <span class="">Reach out to the organizers. <br> Email / LinkedIn</span>
+            <span class="">Reach out to the <a href="/team#organizers" class="font-bold underline">organizers</a>.</span>
           </li>
           <li class="mb-8 ms-6">
             <span class="absolute -start-3 flex items-center justify-center w-6 h-6 bg-verse-600 dark:bg-verse-400 rounded-full ring-8 ring-white dark:ring-verse-900 text-white font-bold">2</span>

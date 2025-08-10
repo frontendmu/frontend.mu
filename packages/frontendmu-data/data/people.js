@@ -4,18 +4,21 @@ export const organisers = [
         role: "Lead Organiser",
         imageUrl: "https://github.com/MrSunshyne.png",
         id: "6a23b471-4829-44cf-bf85-7ecd955c7c3a",
+        linkedin: "https://www.linkedin.com/in/sandeepramgolam/",
     },
     {
         name: "Kushul Soomaree",
         role: "Co-Organiser",
         imageUrl: "https://github.com/kushul.png",
         id: "5c852db3-4844-4f6d-b6fe-c135963441fb",
+        linkedin: "https://www.linkedin.com/in/kushul-soomaree-515502147/",
     },
     {
         name: "Cedric Poilly",
         role: "Co-Organiser",
         imageUrl: "https://github.com/cedpoilly.png",
         id: "549be7b0-1e7d-4deb-9fb3-273cfe0da5b0",
+        linkedin: "https://www.linkedin.com/in/cedpoilly/",
     },
 ];
 

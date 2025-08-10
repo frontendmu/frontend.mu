@@ -36,14 +36,23 @@ const NuxtLink = resolveComponent('NuxtLink')
               :src="person.imageUrl" :alt="person.name" :title="person.name" width="300" height="300"
             >
 
-            <div class="space-y-2 py-2">
-              <div class="text-xs font-medium lg:text-lg text-center">
+            <div class=" py-2">
+              <div class="text-xs space-y-2 font-medium lg:text-lg text-center">
                 <h3 class="text-verse-500 dark:text-verse-200">
                   {{ person.name }}
                 </h3>
                 <p class="font-heading uppercase font-bold text-xs dark:text-verse-400 text-verse-500 saturate-50">
                   {{ person.role }}
                 </p>
+                <a
+                  v-if="person.linkedin" :href="person.linkedin" target="_blank"
+                  class="flex justify-center gap-2 items-center dark:text-verse-400 text-verse-600 hover:text-verse-900 hover:dark:text-verse-100"
+                >
+                  <Icon name="carbon:logo-linkedin" class="w-6  h-6 " />
+                  <p class="font-heading ">
+                    LinkedIn
+                  </p>
+                </a>
               </div>
             </div>
           </component>
