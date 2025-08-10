@@ -37,16 +37,16 @@ const sponsorCTA = computed(() =>
 
 <template>
   <div
-    class="relative h-full flex justify-center flex-col rounded-lg border border-verse-200 dark:border-verse-700 overflow-hidden"
+    class="relative h-full flex justify-center flex-col rounded-lg border border-verse-500 dark:border-verse-700 overflow-hidden"
     :class="{
       'cursor-pointer hover:border-verse-400 dark:hover:border-verse-500': hasMeetup || hasMeetupInFuture,
       'bg-verse-50 dark:bg-verse-800': !hasMeetup,
-      'opacity-20': disabledMonth,
-      'border-green-400': sponsorCTA,
+      'opacity-40': disabledMonth,
+      'border-green-400 hover:border-green-300 hover:shadow-lg': sponsorCTA,
     }"
   >
     <div
-      class="p-3 bg-verse-100 dark:bg-verse-700 text-sm font-medium text-center" :class="{
+      class="p-3 bg-verse-100 dark:bg-verse-700  text-sm font-medium text-center" :class="{
         'bg-green-50 text-green-400': sponsorCTA,
       }"
     >
@@ -72,7 +72,7 @@ const sponsorCTA = computed(() =>
     </div>
 
     <template v-if="sponsorCTA">
-      <div class="h-full grid min-h-20 p-3 place-items-center text-xs text-center bg-primary-500 hover:bg-primary-600 dark:bg-verse-500 dark:hover:bg-verse-600 text-verse-200 rounded">
+      <div class="h-full grid min-h-20 p-3 place-items-center text-xs text-center bg-primary-500 hover:bg-primary-600 dark:bg-transparent dark:hover:bg-verse-600 text-green-500 rounded">
         Sponsor this meetup
       </div>
       <NuxtLink
