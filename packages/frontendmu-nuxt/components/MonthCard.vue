@@ -37,60 +37,50 @@ const sponsorCTA = computed(() =>
 
 <template>
   <div
-    class="relative h-full flex flex-col rounded-lg border border-verse-200 dark:border-verse-700 overflow-hidden"
+    class="relative h-full flex justify-center flex-col rounded-lg border border-verse-200 dark:border-verse-700 overflow-hidden"
     :class="{
       'cursor-pointer hover:border-verse-400 dark:hover:border-verse-500': hasMeetup || hasMeetupInFuture,
       'bg-verse-50 dark:bg-verse-800': !hasMeetup,
-      'opacity-50': disabledMonth,
-      'border-red-400': sponsorCTA,
+      'opacity-20': disabledMonth,
+      'border-green-400': sponsorCTA,
     }"
   >
     <div
       class="p-3 bg-verse-100 dark:bg-verse-700 text-sm font-medium text-center" :class="{
-        'bg-red-50 text-red-400': sponsorCTA,
+        'bg-green-50 text-green-400': sponsorCTA,
       }"
     >
       {{ props.month }}
     </div>
-    <div class="flex-1 grid place-items-center text-center">
-      <template v-if="props.meetup && hasSponsor">
-        <div class="flex items-center justify-center">
-          <img
-            :src="`https://directus.coders.mu/assets/${sponsor?.logomark.id}`"
-            :alt="sponsor?.Name"
-            class="w-full h-full object-contain"
-            :class="sponsor?.darkbg ? 'dark:bg-verse-900 bg-gray-500' : 'bg-white'"
-          >
-          <!-- <template v-else>
-            <span class="text-sm text-red-500">
-              No Sponsors
-            </span>
-          </template> -->
-        </div>
+    <div v-if="props.meetup && hasSponsor" class="flex-1 grid place-items-center text-center">
+      <div class="flex items-center justify-center">
+        <img
+          v-if="hasSponsor"
+          :src="`https://directus.coders.mu/assets/${sponsor?.logomark.id}`"
+          :alt="sponsor?.Name"
+          class="w-full h-full object-contain"
+          :class="sponsor?.darkbg ? 'dark:bg-verse-900 bg-gray-500' : 'bg-white'"
+        >
+
         <NuxtLink
           :to="`/meetup/${props.meetup.id}`"
           class="absolute inset-0 h-full grid place-items-center text-xs text-center bg-primary-500 hover:bg-primary-600 text-white rounded"
         >
           <span class="sr-only">View meetup</span>
         </NuxtLink>
-      </template>
-      <template v-else-if="!sponsorCTA">
-        <div class="h-full grid place-items-center text-xs text-center bg-primary-500 hover:bg-primary-600 dark:bg-verse-500 dark:hover:bg-verse-600 text-verse-500 rounded">
-          No meetup
-        </div>
-      </template>
-
-      <template v-if="sponsorCTA">
-        <div class="h-full grid place-items-center text-xs text-center bg-primary-500 hover:bg-primary-600 dark:bg-verse-500 dark:hover:bg-verse-600 text-verse-500 rounded">
-          Sponsor this meetup
-        </div>
-        <NuxtLink
-          to="/sponsor-us#sponsor-cta"
-          class="absolute inset-0 "
-        >
-          <span class="sr-only">Sponsor this meetup</span>
-        </NuxtLink>
-      </template>
+      </div>
     </div>
+
+    <template v-if="sponsorCTA">
+      <div class="h-full grid min-h-20 p-3 place-items-center text-xs text-center bg-primary-500 hover:bg-primary-600 dark:bg-verse-500 dark:hover:bg-verse-600 text-verse-200 rounded">
+        Sponsor this meetup
+      </div>
+      <NuxtLink
+        to="/sponsor-us#sponsor-cta"
+        class="absolute inset-0 "
+      >
+        <span class="sr-only">Sponsor this meetup</span>
+      </NuxtLink>
+    </template>
   </div>
 </template>

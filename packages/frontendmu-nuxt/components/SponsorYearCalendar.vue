@@ -77,8 +77,17 @@ const yearMeetups = computed<(Meetup | null)[]>(() => {
 
 function isInFuture(month: number) {
   const today = new Date()
-  return selectedYear.value > today.getFullYear()
-    || (selectedYear.value === today.getFullYear() && month > today.getMonth())
+  const meetup = yearMeetups.value[month]
+
+  // If no meetup for this month, fall back to month-based comparison
+  if (!meetup) {
+    return selectedYear.value > today.getFullYear()
+      || (selectedYear.value === today.getFullYear() && month > today.getMonth())
+  }
+
+  // Compare actual meetup date with today
+  const meetupDate = new Date(meetup.Date)
+  return meetupDate > today
 }
 
 function navigateYear(direction: number) {
