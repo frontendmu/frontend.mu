@@ -824,11 +824,11 @@
         "description": null
       },
       {
-        "id": 64,
-        "title": "August Meetup",
-        "date": "2025-08-23",
-        "location": "Novity",
-        "venue": "Novity",
+        "id": 65,
+        "title": "September Meetup",
+        "date": "2025-09-20",
+        "location": null,
+        "venue": null,
         "description": null
       }
     ]
