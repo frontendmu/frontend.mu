@@ -16,7 +16,7 @@ const NuxtLink = resolveComponent('NuxtLink')
 <template>
   <ContentBlock>
     <div class="space-y-8 sm:space-y-12">
-      <div class="space-y-5 sm:mx-auto sm:space-y-4">
+      <div id="organizers" class="space-y-5 sm:mx-auto sm:space-y-4">
         <BaseHeading>Organisers</BaseHeading>
         <p class="text-xl text-gray-600 dark:text-gray-400">
           There are many people who contribute to making front-end coders an
