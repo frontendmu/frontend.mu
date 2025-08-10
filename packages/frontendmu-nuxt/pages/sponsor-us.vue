@@ -91,7 +91,7 @@
 
       <!-- CTA Section -->
       <div class="w-full max-w-4xl mx-auto px-4 sm:px-0">
-        <SponsorCta />
+        <SponsorCta to="/team#organizers" />
       </div>
     </div>
   </ContentBlock>

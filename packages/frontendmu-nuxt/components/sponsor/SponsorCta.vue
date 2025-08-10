@@ -1,8 +1,8 @@
 <script setup lang="ts">
 defineProps({
-  email: {
+  to: {
     type: String,
-    default: 'sandeep@ramgolam.com',
+    default: 'mailto:sandeep@ramgolam.com',
   },
   title: {
     type: String,
@@ -32,7 +32,7 @@ defineProps({
       {{ subtitle }}
     </p>
     <a
-      :href="`mailto:${email}`"
+      :href="to"
       class="inline-block bg-verse-600 dark:bg-verse-400 text-white px-8 py-4 rounded-full hover:bg-verse-700 dark:hover:bg-verse-500 hover:scale-[105%] transition-all duration-200 text-lg font-semibold w-full md:w-auto shadow-lg hover:shadow-xl"
     >
       {{ buttonText }}
