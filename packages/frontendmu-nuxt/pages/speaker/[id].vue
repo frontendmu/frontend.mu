@@ -64,7 +64,7 @@ useHead({
     {
       hid: 'description',
       name: 'description',
-      content: 'frontend.mu speaker profile',
+      content: 'Frontend Coders Mauritius speaker profile',
     },
   ],
 })

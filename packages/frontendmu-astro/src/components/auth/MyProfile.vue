@@ -100,7 +100,7 @@ function updateProfile() {
                 <div class="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3">
                     <SideInfo title="Personal Information">
                         Minimum information required to maintain a profile on
-                        frontend.mu.
+                        Frontend Coders Mauritius.
                     </SideInfo>
 
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import sponsorTypes from "../../frontendmu-data/data/sponsors.js";
-import { vTransitionName } from "@/utils/helpers";
+import sponsorTypes from '../../frontendmu-data/data/sponsors.js'
+import { vTransitionName } from '@/utils/helpers'
 
-const title = "Our sponsors";
-const description = "";
+const title = 'Our sponsors'
+const description = ''
 </script>
 
 <template>
@@ -18,9 +18,11 @@ const description = "";
             class="underline hover:bg-verse-50 dark:bg-verse-950"
             title="Please reach out to us via email"
           >
-            please reach out to the organizers here</a
-          >.
+            please reach out to the organizers here</a>.
         </p>
+      </div>
+      <div>
+        <SiteMeetupSponsors />
       </div>
       <div class="grid gap-20 pt-12 md:grid-cols-2">
         <template v-for="sponsorType in sponsorTypes" :key="sponsorType.title">
@@ -54,7 +56,7 @@ const description = "";
                       class="w-48 h-52 object-contain"
                       :src="`/img/sponsors/${sponsor.logo}`"
                       :style="vTransitionName('sponsor-name', sponsor.name)"
-                    />
+                    >
                     <div v-else>
                       <span class="text-2xl font-bold">{{ sponsor.name }}</span>
                     </div>
@@ -70,21 +72,6 @@ const description = "";
             </ul>
           </div>
         </template>
-      </div>
-      <div>
-        <div class="space-y-5 sm:mx-auto sm:space-y-2 py-4">
-          <h3
-            class="text-3xl font-bold tracking-tight text-center md:text-left sm:text-4xl sm:tracking-tight text-verse-500 dark:text-verse-200"
-          >
-            Past meetup sponsors
-          </h3>
-          <p class="max-w-2xl text-xl text-verse-600 dark:text-verse-200">
-            These wonderful companies have sponsored our meetups in the past.
-            We're grateful for their support.
-          </p>
-        </div>
-
-        <SiteMeetupSponsors />
       </div>
     </div>
   </ContentBlock>

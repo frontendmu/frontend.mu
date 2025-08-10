@@ -1,8 +1,3 @@
-<!-- ---
-const title = "About us";
-const description = "About us";
---- -->
-
 <template>
   <ContentBlock>
     <BaseHeading :level="1">
@@ -14,8 +9,9 @@ const description = "About us";
       </p>
 
       <p>
-        Do you want to know more? <a class="text-verse-600 dark:text-verse-300"
-                                     href="mailto:sandeep+frontendmu@ramgolam.com"
+        Do you want to know more? <a
+          class="text-verse-600 dark:text-verse-300"
+          href="/team#organizers"
         >
           Get in touch with the organisers
         </a>

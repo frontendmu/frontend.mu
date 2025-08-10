@@ -5,7 +5,7 @@
   <div class="homepage-container -mt-32 pt-16 md:pt-0">
     <div class="homepage-wrapper">
       <main>
-        <div class="relative z-0 w-full contain py-[200px] flex flex-col gap-32">
+        <div class="relative z-0 w-full contain pt-[200px] pb-[100px] flex flex-col gap-32">
           <div class="relative z-20  flex flex-col-reverse md:flex-row h-full justify-between">
             <div class="flex flex-col justify-center text-center md:text-left gap-10 md:w-2/3">
               <h1
