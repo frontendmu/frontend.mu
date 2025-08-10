@@ -102,7 +102,7 @@ async function copyText() {
       </div>
 
       <div class="prose dark:prose-invert max-w-none">
-        <div class="bg-white dark:bg-verse-800/50 p-8 rounded-lg shadow-lg letter-container">
+        <div class="bg-white dark:bg-gray-950 p-8 rounded-lg shadow-lg letter-container">
           <div class="preview-content">
             <div class="whitespace-pre-wrap font-mono text-sm text-verse-700 dark:text-verse-300">
               {{ processedText }}
@@ -139,11 +139,11 @@ html.dark-mode .handwritten-text {
 }
 
 html.dark-mode .letter-container {
-  background-image: linear-gradient(#ffffff15 2px, transparent 2px),
-                  linear-gradient(90deg, #ffffff15 2px, transparent 2px),
-                  linear-gradient(#ffffff08 1px, transparent 1px),
-                  linear-gradient(90deg, #ffffff08 1px, transparent 1px);
-  border-color: #374151;
+  background-image: linear-gradient(#ffffff08 2px, transparent 2px),
+                  linear-gradient(90deg, #ffffff08 2px, transparent 2px),
+                  linear-gradient(#ffffff04 1px, transparent 1px),
+                  linear-gradient(90deg, #ffffff04 1px, transparent 1px);
+  border-color: #061122;
 }
 
 .letter-content {
