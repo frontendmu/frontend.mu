@@ -101,7 +101,7 @@ function navigateYear(direction: number) {
 <template>
   <div class="mb-16">
     <div class="flex items-center justify-between mb-8">
-      <div>
+      <div id="calendar">
         <BaseHeading :level="2" class="!mb-4">
           Meetup Calendar
         </BaseHeading>
