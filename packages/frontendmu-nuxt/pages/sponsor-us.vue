@@ -11,7 +11,7 @@
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.2),transparent)] dark:bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.05),transparent)] pointer-events-none" />
         <div class="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-verse-300/20 dark:via-verse-300/10 to-transparent" />
         <div class="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-verse-300/20 dark:via-verse-300/10 to-transparent" />
-        
+
         <!-- Content -->
         <div class="relative text-center space-y-8 sm:space-y-12">
           <div class="space-y-6 sm:space-y-8">
@@ -19,7 +19,7 @@
             <p class="text-sm md:text-base font-medium text-verse-600 dark:text-verse-400 tracking-wide uppercase">
               Join Mauritius' Premier Frontend Community
             </p>
-            
+
             <div class="space-y-4 sm:space-y-6">
               <BaseHeading :level="1" class="text-3xl sm:text-4xl md:text-6xl !mb-0 tracking-tight bg-gradient-to-br from-verse-700 to-verse-900 dark:from-verse-200 dark:to-verse-400 bg-clip-text text-transparent px-4 sm:px-0">
                 Sponsor Frontend Coders Mauritius
