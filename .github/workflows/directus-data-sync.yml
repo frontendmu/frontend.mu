@@ -43,42 +43,65 @@ jobs:
             echo "No changes detected in data files"
           fi
 
-      - name: Create Pull Request
+      - name: Create or Update Pull Request
         if: steps.changes.outputs.changes == 'true'
         run: |
           # Configure git
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
-          # Create timestamp for branch and commit
-          TIMESTAMP=$(date '+%Y%m%d-%H%M%S')
-          BRANCH_NAME="cms/data-update-${TIMESTAMP}"
+          # Fixed branch name for CMS updates
+          BRANCH_NAME="cms/data-updates"
+          COMMIT_TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
           
-          # Create and switch to new branch
-          git checkout -b "${BRANCH_NAME}"
+          # Check if branch already exists
+          if git ls-remote --exit-code --heads origin "${BRANCH_NAME}"; then
+            echo "Branch ${BRANCH_NAME} exists, updating existing PR"
+            # Switch to existing branch and pull latest
+            git fetch origin "${BRANCH_NAME}"
+            git checkout "${BRANCH_NAME}"
+            git merge origin/main --no-edit
+          else
+            echo "Creating new branch ${BRANCH_NAME}"
+            # Create new branch from main
+            git checkout -b "${BRANCH_NAME}"
+          fi
           
           # Add all changes in the data directory
           git add packages/frontendmu-data/data/
           
           # Create commit with timestamp
-          COMMIT_TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
           git commit -m "(cms): data updated ${COMMIT_TIMESTAMP}"
           
-          # Push the new branch
+          # Push the branch
           git push origin "${BRANCH_NAME}"
           
-          # Create pull request using GitHub CLI
-          gh pr create \
-            --title "(cms): data updated ${COMMIT_TIMESTAMP}" \
-            --body "Automated data sync from Directus CMS.
+          # Check if PR already exists, if not create one
+          if ! gh pr view "${BRANCH_NAME}" > /dev/null 2>&1; then
+            echo "Creating new pull request"
+            gh pr create \
+              --title "(cms): data updates" \
+              --body "Automated data sync from Directus CMS.
 
-          **Changes:**
-          - Updated data files from Directus collections
-          - Generated at: ${COMMIT_TIMESTAMP}
+          **Latest update:** ${COMMIT_TIMESTAMP}
+
+          This PR contains automated updates from Directus collections. Each commit represents a data sync triggered by CMS changes.
           
-          This PR was automatically created by the Directus data sync workflow." \
-            --head "${BRANCH_NAME}" \
-            --base main
+          This PR will be updated automatically when new data changes are detected." \
+              --head "${BRANCH_NAME}" \
+              --base main
+          else
+            echo "Pull request already exists, updated with new commit"
+            # Update PR body with latest timestamp
+            gh pr edit "${BRANCH_NAME}" \
+              --body "Automated data sync from Directus CMS.
+
+          **Latest update:** ${COMMIT_TIMESTAMP}
+
+          This PR contains automated updates from Directus collections. Each commit represents a data sync triggered by CMS changes.
+          
+          This PR will be updated automatically when new data changes are detected."
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
