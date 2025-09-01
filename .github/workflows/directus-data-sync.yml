@@ -25,7 +25,9 @@ jobs:
         uses: pnpm/action-setup@v4
 
       - name: Install dependencies
-        run: pnpm install --filter @frontend.mu/data
+        run: |
+          cd packages/frontendmu-data
+          pnpm install --frozen-lockfile
 
       - name: Build data
         run: pnpm run data build
@@ -41,22 +43,44 @@ jobs:
             echo "No changes detected in data files"
           fi
 
-      - name: Commit and push changes
+      - name: Create Pull Request
         if: steps.changes.outputs.changes == 'true'
         run: |
           # Configure git
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
+          # Create timestamp for branch and commit
+          TIMESTAMP=$(date '+%Y%m%d-%H%M%S')
+          BRANCH_NAME="cms/data-update-${TIMESTAMP}"
+          
+          # Create and switch to new branch
+          git checkout -b "${BRANCH_NAME}"
+          
           # Add all changes in the data directory
           git add packages/frontendmu-data/data/
           
           # Create commit with timestamp
-          TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
-          git commit -m "(cms): data updated ${TIMESTAMP}"
+          COMMIT_TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+          git commit -m "(cms): data updated ${COMMIT_TIMESTAMP}"
           
-          # Push changes
-          git push
+          # Push the new branch
+          git push origin "${BRANCH_NAME}"
+          
+          # Create pull request using GitHub CLI
+          gh pr create \
+            --title "(cms): data updated ${COMMIT_TIMESTAMP}" \
+            --body "Automated data sync from Directus CMS.
+
+          **Changes:**
+          - Updated data files from Directus collections
+          - Generated at: ${COMMIT_TIMESTAMP}
+          
+          This PR was automatically created by the Directus data sync workflow." \
+            --head "${BRANCH_NAME}" \
+            --base main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: No changes summary
         if: steps.changes.outputs.changes == 'false'
