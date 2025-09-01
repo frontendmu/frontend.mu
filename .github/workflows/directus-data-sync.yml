@@ -1,0 +1,65 @@
+name: Directus Data Sync
+
+on:
+  repository_dispatch:
+    types: [directus-data-update]
+  workflow_dispatch: # Allow manual triggering for testing
+
+jobs:
+  sync-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.2.0
+
+      - name: Install dependencies
+        run: pnpm install --filter @frontend.mu/data
+
+      - name: Build data
+        run: pnpm run data build
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if [ -n "$(git status --porcelain packages/frontendmu-data/data/)" ]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "Changes detected in data files"
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "No changes detected in data files"
+          fi
+
+      - name: Commit and push changes
+        if: steps.changes.outputs.changes == 'true'
+        run: |
+          # Configure git
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # Add all changes in the data directory
+          git add packages/frontendmu-data/data/
+          
+          # Create commit with timestamp
+          TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+          git commit -m "(cms): data updated ${TIMESTAMP}"
+          
+          # Push changes
+          git push
+
+      - name: No changes summary
+        if: steps.changes.outputs.changes == 'false'
+        run: echo "No data changes detected. Repository is up to date."
