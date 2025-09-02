@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd packages/frontendmu-data
-          pnpm install --frozen-lockfile
+          pnpm install --frozen-lockfile --ignore-workspace
 
       - name: Build data
         run: pnpm run data build
@@ -59,6 +59,8 @@ jobs:
             echo "Branch ${BRANCH_NAME} exists, updating existing PR"
             # Copy the new data files to a temp location
             cp -r packages/frontendmu-data/data /tmp/new-data
+            # Reset any local changes to allow clean checkout
+            git reset --hard HEAD
             # Switch to existing branch and pull latest
             git fetch origin "${BRANCH_NAME}"
             git checkout "${BRANCH_NAME}"
