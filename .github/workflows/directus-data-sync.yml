@@ -57,14 +57,16 @@ jobs:
           # Check if branch already exists
           if git ls-remote --exit-code --heads origin "${BRANCH_NAME}"; then
             echo "Branch ${BRANCH_NAME} exists, updating existing PR"
-            # Stash current changes to avoid conflicts
-            git stash push -m "temp-changes-$(date +%s)"
+            # Create a temporary patch file with current changes
+            git diff > /tmp/data-changes.patch
+            # Discard local changes to allow clean checkout
+            git checkout -- packages/frontendmu-data/data/
             # Switch to existing branch and pull latest
             git fetch origin "${BRANCH_NAME}"
             git checkout "${BRANCH_NAME}"
             git merge origin/main --no-edit
-            # Apply stashed changes
-            git stash pop
+            # Apply the patch with new changes
+            git apply /tmp/data-changes.patch
           else
             echo "Creating new branch ${BRANCH_NAME}"
             # Create new branch from main
