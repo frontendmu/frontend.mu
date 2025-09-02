@@ -57,16 +57,14 @@ jobs:
           # Check if branch already exists
           if git ls-remote --exit-code --heads origin "${BRANCH_NAME}"; then
             echo "Branch ${BRANCH_NAME} exists, updating existing PR"
-            # Create a temporary patch file with current changes
-            git diff > /tmp/data-changes.patch
-            # Discard local changes to allow clean checkout
-            git checkout -- packages/frontendmu-data/data/
+            # Copy the new data files to a temp location
+            cp -r packages/frontendmu-data/data /tmp/new-data
             # Switch to existing branch and pull latest
             git fetch origin "${BRANCH_NAME}"
             git checkout "${BRANCH_NAME}"
             git merge origin/main --no-edit
-            # Apply the patch with new changes
-            git apply /tmp/data-changes.patch
+            # Replace data files with the new ones
+            cp -r /tmp/new-data/* packages/frontendmu-data/data/
           else
             echo "Creating new branch ${BRANCH_NAME}"
             # Create new branch from main
