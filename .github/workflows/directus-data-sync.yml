@@ -25,9 +25,7 @@ jobs:
         uses: pnpm/action-setup@v4
 
       - name: Install dependencies
-        run: |
-          cd packages/frontendmu-data
-          pnpm install --frozen-lockfile --ignore-workspace
+        run: pnpm install --filter @frontend.mu/data --frozen-lockfile
 
       - name: Build data
         run: pnpm run data build
