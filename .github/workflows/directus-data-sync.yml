@@ -57,10 +57,14 @@ jobs:
           # Check if branch already exists
           if git ls-remote --exit-code --heads origin "${BRANCH_NAME}"; then
             echo "Branch ${BRANCH_NAME} exists, updating existing PR"
+            # Stash current changes to avoid conflicts
+            git stash push -m "temp-changes-$(date +%s)"
             # Switch to existing branch and pull latest
             git fetch origin "${BRANCH_NAME}"
             git checkout "${BRANCH_NAME}"
             git merge origin/main --no-edit
+            # Apply stashed changes
+            git stash pop
           else
             echo "Creating new branch ${BRANCH_NAME}"
             # Create new branch from main
