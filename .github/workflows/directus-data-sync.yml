@@ -76,9 +76,22 @@ jobs:
           # Push the branch
           git push origin "${BRANCH_NAME}"
           
-          # Check if PR already exists, if not create one
-          if ! gh pr view "${BRANCH_NAME}" > /dev/null 2>&1; then
-            echo "Creating new pull request"
+          # Check if an open PR exists for this branch
+          PR_STATE=$(gh pr view "${BRANCH_NAME}" --json state --jq '.state' 2>/dev/null || echo "NOT_FOUND")
+          
+          if [ "$PR_STATE" = "OPEN" ]; then
+            echo "Open pull request exists, updating with new commit"
+            # Update PR body with latest timestamp
+            gh pr edit "${BRANCH_NAME}" \
+              --body "Automated data sync from Directus CMS.
+
+          **Latest update:** ${COMMIT_TIMESTAMP}
+
+          This PR contains automated updates from Directus collections. Each commit represents a data sync triggered by CMS changes.
+          
+          This PR will be updated automatically when new data changes are detected."
+          elif [ "$PR_STATE" = "MERGED" ] || [ "$PR_STATE" = "CLOSED" ]; then
+            echo "Previous PR was ${PR_STATE,,}, creating new pull request"
             gh pr create \
               --title "(cms): data updates" \
               --body "Automated data sync from Directus CMS.
@@ -91,16 +104,18 @@ jobs:
               --head "${BRANCH_NAME}" \
               --base main
           else
-            echo "Pull request already exists, updated with new commit"
-            # Update PR body with latest timestamp
-            gh pr edit "${BRANCH_NAME}" \
+            echo "No existing PR found, creating new pull request"
+            gh pr create \
+              --title "(cms): data updates" \
               --body "Automated data sync from Directus CMS.
 
           **Latest update:** ${COMMIT_TIMESTAMP}
 
           This PR contains automated updates from Directus collections. Each commit represents a data sync triggered by CMS changes.
           
-          This PR will be updated automatically when new data changes are detected."
+          This PR will be updated automatically when new data changes are detected." \
+              --head "${BRANCH_NAME}" \
+              --base main
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
