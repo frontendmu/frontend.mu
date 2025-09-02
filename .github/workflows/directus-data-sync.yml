@@ -74,6 +74,12 @@ jobs:
           # Add all changes in the data directory
           git add packages/frontendmu-data/data/
           
+          # Check if there are actually changes to commit after all operations
+          if git diff --cached --quiet; then
+            echo "No changes to commit after branch operations - data is already up to date"
+            exit 0
+          fi
+          
           # Create commit with timestamp
           git commit -m "(cms): data updated ${COMMIT_TIMESTAMP}"
           
