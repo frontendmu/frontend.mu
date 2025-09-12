@@ -5,6 +5,7 @@ import useAuthRedirect from '@/auth-utils/useAuthRedirect'
 import RsvpForm from '@/components/auth/RsvpForm.vue'
 import AttendeeQRCode from '@/components/auth/AttendeeQRCode.vue'
 import type { DirectusEvent } from '@/utils/types'
+import { addEventToGoogleCalendar } from '@/utils/add-to-calendar'
 import { formatDate } from '@/utils/helpers'
 
 const props = defineProps<{
