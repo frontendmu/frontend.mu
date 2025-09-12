@@ -103,6 +103,10 @@ function saveForm() {
 const showQrModal = ref(false)
 const arrayOfEventRsvpDetail = await getRsvp({ event_id: props.meetupId })
 const currentEventRsvpDetail = arrayOfEventRsvpDetail && arrayOfEventRsvpDetail[0]
+
+function handleAddToCalendar(): void {
+  addEventToGoogleCalendar(props.meetupDetails)
+}
 </script>
 
 <template>
@@ -165,6 +169,16 @@ const currentEventRsvpDetail = arrayOfEventRsvpDetail && arrayOfEventRsvpDetail[
                   class="hidden md:block" @click="$rsvpForm?.cancelRsvpToCurrentMeetup(meetupId)"
                 >
                   Cancel RSVP
+                </BaseButton>
+
+                <BaseButton
+                  v-if="!rsvpPaneOpen"
+                  color="neutral"
+                  class="mr-2"
+                  @click="handleAddToCalendar"
+                >
+                  <IconGoogleCalendar class="w-4" />
+                  Add to Calendar
                 </BaseButton>
 
                 <template v-if="!currentEventRsvpDetail?.verified">
