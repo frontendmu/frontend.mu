@@ -5,6 +5,7 @@ import useAuthRedirect from '@/auth-utils/useAuthRedirect'
 import RsvpForm from '@/components/auth/RsvpForm.vue'
 import AttendeeQRCode from '@/components/auth/AttendeeQRCode.vue'
 import type { DirectusEvent } from '@/utils/types'
+import { addEventToGoogleCalendar } from '@/utils/add-to-calendar'
 import { formatDate } from '@/utils/helpers'
 
 const props = defineProps<{
@@ -103,6 +104,10 @@ function saveForm() {
 const showQrModal = ref(false)
 const arrayOfEventRsvpDetail = await getRsvp({ event_id: props.meetupId })
 const currentEventRsvpDetail = arrayOfEventRsvpDetail && arrayOfEventRsvpDetail[0]
+
+function handleAddToCalendar(): void {
+  addEventToGoogleCalendar(props.meetupDetails)
+}
 </script>
 
 <template>
@@ -165,6 +170,16 @@ const currentEventRsvpDetail = arrayOfEventRsvpDetail && arrayOfEventRsvpDetail[
                   class="hidden md:block" @click="$rsvpForm?.cancelRsvpToCurrentMeetup(meetupId)"
                 >
                   Cancel RSVP
+                </BaseButton>
+
+                <BaseButton
+                  v-if="!rsvpPaneOpen"
+                  color="neutral"
+                  class="mr-2"
+                  @click="handleAddToCalendar"
+                >
+                  <IconGoogleCalendar class="w-4" />
+                  Add to Calendar
                 </BaseButton>
 
                 <template v-if="!currentEventRsvpDetail?.verified">
