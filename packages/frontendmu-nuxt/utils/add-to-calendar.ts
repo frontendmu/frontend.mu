@@ -1,4 +1,4 @@
-import type { DirectusEvent } from '@/.nuxt/imports'
+import type { DirectusEvent } from '@/utils/types'
 
 type MeetupData = DirectusEvent
 type GoogleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${string}&details=${string}&dates=${string}${string}`
