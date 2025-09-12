@@ -86,6 +86,13 @@ RSVP at: ${rsvpUrl}`,
       eventEndDate = `${endDateTime.toISOString().replace(/[-:]/g, '').split('.')[0]}Z`
     }
 
+    if (!eventStartDate || !eventEndDate) {
+      const start = new Date(eventDate)
+      start.setHours(10, 0, 0, 0)
+      const end = new Date(start.getTime() + 4 * 60 * 60 * 1000)
+      eventStartDate = `${start.toISOString().replace(/[-:]/g, '').split('.')[0]}Z`
+      eventEndDate = `${end.toISOString().replace(/[-:]/g, '').split('.')[0]}Z`
+    }
     googleCalendarUrl.searchParams.set('dates', `${eventStartDate}/${eventEndDate}`)
   }
 
