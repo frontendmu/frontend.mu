@@ -4,9 +4,10 @@ type MeetupData = DirectusEvent
 type GoogleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${string}&details=${string}&dates=${string}${string}`
 
 export function createGoogleCalendarUrl(meetupData: MeetupData): GoogleCalendarUrl {
-  const eventTitle = encodeURIComponent(meetupData.title || 'Frontend.mu Meetup')
+  const eventTitle = meetupData.title || 'Frontend.mu Meetup'
 
   const cleanDescription = meetupData.description?.replace(/<[^>]*>/g, '') || ''
+  const rsvpUrl = typeof window !== 'undefined' ? window.location.href : ''
   const eventDescription = encodeURIComponent(
     `${cleanDescription}
 
@@ -14,7 +15,7 @@ Venue: ${meetupData.Venue || 'TBD'}
 Location: ${meetupData.Location || 'TBD'}
 ${meetupData.parking_location ? `Parking: ${meetupData.parking_location}` : ''}
 
-RSVP at: ${window.location.href || ''}`,
+RSVP at: ${rsvpUrl}`,
   )
 
   const googleCalendarUrl = new URL('https://calendar.google.com/calendar/render')
