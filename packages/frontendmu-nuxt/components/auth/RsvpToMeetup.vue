@@ -117,12 +117,12 @@ function handleAddToCalendar(): void {
         <div
           class="relative flex md:gap-4 gap-2 flex-col shadow-2xl bg-white/90 text-verse-800 shadow-zinc-800 ring-2 ring-zinc-900/5 backdrop-blur-2xl dark:bg-verse-800/40 dark:text-zinc-200  py-2"
         >
-          <div class="flex items-center justify-between px-4 py-2 gap-2 w-full">
+          <div class="flex flex-col md:flex-row md:items-center justify-between px-4 py-2 gap-4 w-full">
             <div class="px-2 md:px-4">
               <div class="text-xl font-semibold">
                 {{ props.meetupDetails.title }}
               </div>
-              <div class="text-base flex md:flex-row flex-col gap-2">
+              <div v-if="props.meetupDetails.Date" class="text-base flex md:flex-row flex-col gap-2">
                 {{ formatDate(props.meetupDetails.Date) }}
 
                 <template v-if="currentEventRsvpDetail?.verified">
@@ -147,7 +147,7 @@ function handleAddToCalendar(): void {
                                 {{ isAttendingCurrentEvent ? 'You\'re Attending' : 'You have not RSVP\'d to this meetup' }}
                             </div> -->
 
-              <div class="flex md:flex-row flex-col items-center gap-2 px-2">
+              <div class="flex items-center gap-2 px-2">
                 <Transition name="fade" mode="out-in">
                   <Icon
                     v-if="rsvpPaneOpen" name=""
@@ -179,7 +179,7 @@ function handleAddToCalendar(): void {
                   @click="handleAddToCalendar"
                 >
                   <IconGoogleCalendar class="w-4" />
-                  Add to Calendar
+                  <span class="hidden md:block">Add to Calendar</span>
                 </BaseButton>
 
                 <template v-if="!currentEventRsvpDetail?.verified">
@@ -197,7 +197,7 @@ function handleAddToCalendar(): void {
                 </BaseButton>
 
                 <!-- @click="rsvpToCurrentMeetup(meetupId)" -->
-                <BaseButton v-if="!rsvpPaneOpen" :color="isAttendingCurrentEvent ? 'success' : 'primary'" @click="rsvpPaneOpen = true">
+                <BaseButton v-if="!rsvpPaneOpen" class="flex-grow-[2]" :color="isAttendingCurrentEvent ? 'success' : 'primary'" @click="rsvpPaneOpen = true">
                   {{ isAttendingCurrentEvent ? 'Attending' : 'Attend' }}
                 </BaseButton>
 
