@@ -10,13 +10,13 @@ const props = defineProps<{
 const sizeClasses = computed(() => {
   switch (props.size) {
     case 'sm':
-      return 'px-2 py-1 text-sm'
+      return 'px-2 py-1 text-xs md:text-sm'
     case 'md':
-      return 'px-4 py-2 text-base'
+      return 'px-4 py-2 text-sm md:text-base'
     case 'lg':
-      return 'px-6 py-3 text-lg'
+      return 'px-6 py-3 text-md md:text-lg'
     default:
-      return 'px-4 py-2 text-base'
+      return 'px-4 py-2 text-sm md:text-base'
   }
 })
 
