@@ -1,27 +1,25 @@
 import type { DirectusEvent } from '@/utils/types'
 
 type MeetupData = DirectusEvent
-type GoogleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${string}&details=${string}&dates=${string}${string}`
+type GoogleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${string}&details=${string}&dates=${string}/${string}${string}`
 
 export function createGoogleCalendarUrl(meetupData: MeetupData): GoogleCalendarUrl {
   const eventTitle = meetupData.title || 'Frontend.mu Meetup'
 
   const cleanDescription = meetupData.description?.replace(/<[^>]*>/g, '') || ''
   const rsvpUrl = typeof window !== 'undefined' ? window.location.href : ''
-  const eventDescription = encodeURIComponent(
-    `${cleanDescription}
+  const eventDescription = `${cleanDescription}
 
 Venue: ${meetupData.Venue || 'TBD'}
 Location: ${meetupData.Location || 'TBD'}
 ${meetupData.parking_location ? `Parking: ${meetupData.parking_location}` : ''}
 
-RSVP at: ${rsvpUrl}`,
-  )
+RSVP at: ${rsvpUrl}`
 
   const googleCalendarUrl = new URL('https://calendar.google.com/calendar/render')
   googleCalendarUrl.searchParams.set('action', 'TEMPLATE')
-  googleCalendarUrl.searchParams.set('text', decodeURIComponent(eventTitle))
-  googleCalendarUrl.searchParams.set('details', decodeURIComponent(eventDescription))
+  googleCalendarUrl.searchParams.set('text', eventTitle)
+  googleCalendarUrl.searchParams.set('details', eventDescription)
 
   let eventStartDate: string = ''
   let eventEndDate: string = ''
@@ -96,9 +94,9 @@ RSVP at: ${rsvpUrl}`,
     googleCalendarUrl.searchParams.set('dates', `${eventStartDate}/${eventEndDate}`)
   }
 
-  const location = encodeURIComponent(meetupData.Location || '')
+  const location = [meetupData.Venue, meetupData.Location].filter(Boolean).join(', ').trim()
   if (location)
-    googleCalendarUrl.searchParams.set('location', decodeURIComponent(location))
+    googleCalendarUrl.searchParams.set('location', location)
 
   return googleCalendarUrl.toString() as GoogleCalendarUrl
 }
@@ -109,5 +107,6 @@ RSVP at: ${rsvpUrl}`,
  */
 export function addEventToGoogleCalendar(meetupData: MeetupData): void {
   const calendarUrl = createGoogleCalendarUrl(meetupData)
-  window.open(calendarUrl, '_blank')
+  if (typeof window !== 'undefined')
+    window.open(calendarUrl, '_blank')
 }
