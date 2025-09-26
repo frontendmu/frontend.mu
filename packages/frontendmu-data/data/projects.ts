@@ -50,8 +50,8 @@ export const projects: Project[] = [
   },
   {
     title: 'Le Pop Quiz',
-    icon: 'material-symbols-light:question-exchange-rounded',
-    project_url: 'https://lepopquiz.com/',
+    icon: 'healthicons:artificial-intelligence',
+    project_url: 'https://lepopquiz.app/',
     author_github_username: 'cedpoilly',
     categories: ['quiz', 'game', 'real-time', 'ai'],
     description: 'A real-time quiz game with AI',
