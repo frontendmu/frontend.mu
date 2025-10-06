@@ -759,9 +759,9 @@
   {
     "id": "8258c629-5b86-4a4a-8b5a-817a3d98b023",
     "name": "Publicis Global Delivery",
-    "logo": "0e7b49c3-2e8f-4478-bc0d-5afc936bfbee",
-    "logomark": "c57bca9f-b927-42c9-9277-d3ac0111c175",
-    "website": "https://www.publicisgroupe.com/en/splash-en",
+    "logo": "21589ac3-6a44-4c64-9218-3a4148289bc7",
+    "logomark": "508ccdbf-945b-4a87-850a-babd71b08246",
+    "website": "https://www.publicisglobaldelivery.com/en-us/home",
     "description": null,
     "sponsor_type": [
       "venue",
@@ -781,7 +781,7 @@
         "id": 66,
         "title": "The October Meetup",
         "date": "2025-10-18",
-        "location": null,
+        "location": "2nd floor Maeva tower Ebène, Mauritius",
         "venue": "PGD Mauritius",
         "description": null
       }
