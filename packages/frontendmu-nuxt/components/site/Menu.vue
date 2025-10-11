@@ -370,7 +370,7 @@ onBeforeUnmount(() => {
       role="dialog"
       aria-modal="true"
       aria-labelledby="mobile-menu-title"
-      class="mobile-menu md:hidden h-dvh"
+      class="mobile-menu p-4 pt-6 md:hidden h-dvh bg-verse-50/95 backdrop-blur text-verse-900 dark:bg-verse-900/95 dark:text-verse-50"
       tabindex="-1"
     >
       <header class="mobile-menu-header">
@@ -379,20 +379,20 @@ onBeforeUnmount(() => {
         </p>
         <button
           type="button"
-          class="flex items-centerfocus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-verse-500"
+          class="flex items-center text-verse-600 dark:text-verse-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-verse-500"
           @click="closeMobileMenu"
         >
-          <Icon name="carbon:close" class="w-6 h-6" />
+          <Icon name="carbon:close" class="w-7 h-7" />
           <span class="sr-only">Close menu</span>
         </button>
       </header>
 
       <nav class="mobile-menu-content p-0.5" aria-label="Mobile navigation">
-        <ul class="flex flex-col gap-4 text-lg font-medium">
+        <ul class="flex flex-col gap-4 text-lg font-medium p-0.5">
           <template v-for="itemKey of linkKeys" :key="`${itemKey}-mobile`">
             <li class="mobile-menu-item">
               <NuxtLink
-                class="mobile-menu-link"
+                class="mobile-menu-link hover:text-verse-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-verse-500 dark:hover:text-verse-200"
                 :href="links[itemKey].href"
                 :target="links[itemKey].target ?? (links[itemKey].href.startsWith('http') ? '_blank' : '_self')"
                 :rel="links[itemKey].rel"
@@ -408,7 +408,7 @@ onBeforeUnmount(() => {
               >
                 <li v-for="subItem in links[itemKey].children" :key="`${itemKey}-child-${subItem.title}`">
                   <NuxtLink
-                    class="mobile-submenu-link"
+                    class="mobile-submenu-link hover:text-verse-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-verse-500 dark:hover:text-verse-200"
                     :href="subItem.href"
                     :target="subItem.target ?? (subItem.href.startsWith('http') ? '_blank' : '_self')"
                     :rel="subItem.rel"
@@ -462,16 +462,8 @@ onBeforeUnmount(() => {
   z-index: 40;
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.98);
-  color: #0f172a;
   gap: 1.5rem;
   height: 100dvh;
-}
-
-.dark .mobile-menu {
-  background: rgba(15, 23, 42, 0.98);
-  color: #f8fafc;
 }
 
 .mobile-menu-header,
