@@ -448,7 +448,8 @@ onBeforeUnmount(() => {
 
 .mobile-menu-enter-active,
 .mobile-menu-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  --duration: 0.5s;
+  transition: opacity var(--duration) ease, transform var(--duration) ease;
 }
 
 .mobile-menu-enter-from,
