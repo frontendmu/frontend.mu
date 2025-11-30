@@ -114,6 +114,18 @@ const currentAlbum = computed(() => {
 const viewMore = () => {
   if (limit.value < maxAlbumLength.value) limit.value += 8;
 };
+
+// Helper function to construct proper image URLs
+// Handles double slashes and URL encoding for paths with spaces
+function getImageUrl(photoPath: string): string {
+  // Remove trailing slash from source if present
+  const baseUrl = source.replace(/\/$/, '')
+  // Remove leading slash from photo path if present
+  const cleanPath = photoPath.replace(/^\//, '')
+  // URL encode each segment of the path to handle spaces
+  const encodedPath = cleanPath.split('/').map(segment => encodeURIComponent(segment)).join('/')
+  return `${baseUrl}/${encodedPath}`
+}
 </script>
 
 <template>
@@ -243,7 +255,7 @@ const viewMore = () => {
 
               <div class="w-full grid grid-cols-4 gap-4">
                 <div v-for="photo in currentAlbum" :key="photo" class="rounded-md overflow-hidden aspect-video">
-                  <img :src="`${source}/${photo}`" class="object-cover w-full h-full object-center block" />
+                  <img :src="getImageUrl(photo)" class="object-cover w-full h-full object-center block" />
                 </div>
               </div>
               <div v-if="limit < maxAlbumLength"

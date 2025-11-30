@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getImageUrl } from '@/utils/helpers'
+
 const props = defineProps<{
   currentAlbum: string[] | undefined
   source: string
@@ -19,7 +21,7 @@ const columns = computed(() => {
     <NuxtImg
       v-for="photo in currentAlbum"
       :key="photo"
-      :src="`${source}/${photo}`"
+      :src="getImageUrl(source, photo)"
       alt="Album Photo"
       width="242"
       height="408"

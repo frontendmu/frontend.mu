@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { getImageUrl } from '@/utils/helpers'
 
 const props = defineProps<{
   getCurrentEvent: DirectusEvent
@@ -28,7 +29,7 @@ function setActiveImageIndex(index: number) {
           <div v-for="(photo, index) in currentAlbum" :key="photo" class="aspect-video">
             <DialogTrigger as-child>
               <img
-                :src="`${source}/${photo}`"
+                :src="getImageUrl(source, photo)"
                 loading="lazy"
                 tabindex="0"
                 class="object-cover w-full h-full object-center block rounded-md overflow-hidden cursor-zoom-in hover:scale-105 focus-visible:scale-105 transition-transform"
@@ -55,7 +56,7 @@ function setActiveImageIndex(index: number) {
             <CarouselContent class="h-full max-h-[calc(100svh-160px)]">
               <CarouselItem v-for="photo in currentAlbum" :key="photo">
                 <div class="w-full h-full flex flex-row justify-center items-center">
-                  <img :src="`${source}/${photo}`" class="object-contain max-w-full max-h-full block rounded-md overflow-hidden">
+                  <img :src="getImageUrl(source, photo)" class="object-contain max-w-full max-h-full block rounded-md overflow-hidden">
                 </div>
               </CarouselItem>
             </CarouselContent>
