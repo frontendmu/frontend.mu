@@ -4,7 +4,7 @@ import { isDateToday } from '../utils/helpers'
 
 const { allMeetups, meetupsGroupedByYear, nextMeetup, todaysMeetups } = useMeetups({})
 
-const nextMeetupId = nextMeetup.value.id
+const nextMeetupId = nextMeetup.value?.id
 </script>
 
 <template>
