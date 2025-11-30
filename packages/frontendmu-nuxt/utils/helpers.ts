@@ -33,6 +33,24 @@ export function formatDate(date: string) {
   })
 }
 
+/**
+ * Constructs a proper image URL from a base URL and photo path.
+ * Handles double slashes and URL encoding for paths with spaces.
+ * 
+ * @param baseUrl - The base URL (e.g., "https://raw.githubusercontent.com/.../main/")
+ * @param photoPath - The photo path (e.g., "timeliner_repo/processed/data/2025 September Selected/photo.webp")
+ * @returns The properly formatted image URL
+ */
+export function getImageUrl(baseUrl: string, photoPath: string): string {
+  // Remove trailing slash from base URL if present
+  const cleanBaseUrl = baseUrl.replace(/\/$/, '')
+  // Remove leading slash from photo path if present
+  const cleanPath = photoPath.replace(/^\//, '')
+  // URL encode each segment of the path to handle spaces
+  const encodedPath = cleanPath.split('/').map(segment => encodeURIComponent(segment)).join('/')
+  return `${cleanBaseUrl}/${encodedPath}`
+}
+
 export function mapToValidUser(user: any): User {
   const full_name = user?.full_name
     ? user.full_name
