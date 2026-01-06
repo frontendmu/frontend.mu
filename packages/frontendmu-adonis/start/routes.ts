@@ -10,30 +10,24 @@
 import router from '@adonisjs/core/services/router'
 
 // Home page
-router.on('/').renderInertia('home')
+router.get('/', [() => import('#controllers/home_controller'), 'index'])
 
 // Meetups pages
-router.on('/meetups').renderInertia('meetups/index', {
-  meetups: [], // TODO: Fetch from controller/database
-})
-
-router.on('/meetup/:id').renderInertia('meetups/show', {
-  meetup: null, // TODO: Fetch from controller/database
-})
+router.get('/meetups', [() => import('#controllers/events_controller'), 'index'])
+router.get('/meetup/:id', [() => import('#controllers/events_controller'), 'show'])
 
 // Speakers pages
-router.on('/speakers').renderInertia('speakers/index', {
-  speakers: [], // TODO: Fetch from controller/database
-})
+router.get('/speakers', [() => import('#controllers/speakers_controller'), 'index'])
+router.get('/speaker/:id', [() => import('#controllers/speakers_controller'), 'show'])
 
-router.on('/speaker/:id').renderInertia('speakers/show', {
-  speaker: null, // TODO: Fetch from controller/database
-})
+// Sponsors pages
+router.get('/sponsors', [() => import('#controllers/sponsors_controller'), 'index'])
+
+// Team page
+router.get('/team', [() => import('#controllers/team_controller'), 'index'])
 
 // Static pages
-router.on('/sponsors').renderInertia('sponsors')
-router.on('/sponsor-us').renderInertia('sponsor-us')
-router.on('/team').renderInertia('team')
-router.on('/about').renderInertia('about')
-router.on('/community').renderInertia('community')
-router.on('/branding').renderInertia('branding')
+router.get('/sponsor-us', [() => import('#controllers/pages_controller'), 'sponsorUs'])
+router.get('/about', [() => import('#controllers/pages_controller'), 'about'])
+router.get('/community', [() => import('#controllers/pages_controller'), 'community'])
+router.get('/branding', [() => import('#controllers/pages_controller'), 'branding'])

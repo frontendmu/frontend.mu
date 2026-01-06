@@ -26,3 +26,4 @@ playwright-report/
 /blob-report/
 playwright/.cache/
 .vercel
+plan-*.md

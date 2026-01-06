@@ -27,11 +27,11 @@ export default class Event extends BaseModel {
   @column.dateTime()
   declare eventDate: DateTime
 
-  @column.time()
-  declare startTime: DateTime | null
+  @column()
+  declare startTime: string | null
 
-  @column.time()
-  declare endTime: DateTime | null
+  @column()
+  declare endTime: string | null
 
   @column()
   declare attendeeCount: number
