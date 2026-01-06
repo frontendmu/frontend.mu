@@ -33,12 +33,12 @@ const links: TMenu = {
       },
       {
         title: 'Code of conduct',
-        href: '/code_of_conduct',
+        href: '/code-of-conduct',
         class: '',
       },
       {
         title: 'Coding Guidelines',
-        href: '/coding_guidelines',
+        href: '/coding-guidelines',
         class: '',
       },
       {
