@@ -17,6 +17,7 @@ export default class SpeakersController {
       speakers = dbSpeakers.map((speaker) => this.serializeSpeaker(speaker))
     } catch (error) {
       console.log('Database not available, using empty data')
+      console.log('Error:', error.message || error)
     }
 
     return inertia.render('speakers/index', {
@@ -34,7 +35,6 @@ export default class SpeakersController {
     try {
       const dbSpeaker = await User.query()
         .where('id', params.id)
-        .where('role', 'speaker')
         .preload('sessions', (query) => {
           query.preload('event')
         })
@@ -53,6 +53,7 @@ export default class SpeakersController {
       }
     } catch (error) {
       console.log('Database not available, using empty data')
+      console.log('Error:', error.message || error)
     }
 
     return inertia.render('speakers/show', {

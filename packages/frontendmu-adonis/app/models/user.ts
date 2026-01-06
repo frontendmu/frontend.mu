@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
-import type { HasMany } from '@adonisjs/lucid/types/relations'
+import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
+import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import Session from '#models/session'
 
 export type UserRole = 'admin' | 'organizer' | 'speaker' | 'community_member'
@@ -46,10 +46,12 @@ export default class User extends BaseModel {
   declare updatedAt: DateTime | null
 
   // Relationships
-  @hasMany(() => Session, {
-    foreignKey: 'speakerId',
+  @manyToMany(() => Session, {
+    pivotTable: 'session_speakers',
+    pivotForeignKey: 'speaker_id',
+    pivotRelatedForeignKey: 'session_id',
   })
-  declare sessions: HasMany<typeof Session>
+  declare sessions: ManyToMany<typeof Session>
 
   /**
    * Check if user is a speaker

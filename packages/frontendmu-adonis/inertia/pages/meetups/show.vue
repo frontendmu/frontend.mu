@@ -112,11 +112,13 @@ const speakers = computed(() => {
                 <h3 class="text-xl font-semibold text-verse-900 dark:text-verse-100 mb-3">
                   {{ session.title }}
                 </h3>
-                <div v-for="speaker in session.speakers || []" :key="speaker.id" class="flex items-center gap-3">
-                  <img v-if="speaker.githubUsername"
-                    :src="`https://avatars.githubusercontent.com/${speaker.githubUsername}`" :alt="speaker.name"
-                    class="w-10 h-10 rounded-full" />
-                  <span class="text-verse-600 dark:text-verse-300">{{ speaker.name }}</span>
+                <div v-for="speaker in session.speakers || []" :key="speaker.id">
+                  <Link :href="`/speaker/${speaker.id}`" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                    <img v-if="speaker.githubUsername"
+                      :src="`https://avatars.githubusercontent.com/${speaker.githubUsername}`" :alt="speaker.name"
+                      class="w-10 h-10 rounded-full" />
+                    <span class="text-verse-600 dark:text-verse-300">{{ speaker.name }}</span>
+                  </Link>
                 </div>
               </div>
             </div>
