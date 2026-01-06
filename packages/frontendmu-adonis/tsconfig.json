@@ -2,7 +2,13 @@
   "extends": "@adonisjs/tsconfig/tsconfig.app.json",
   "compilerOptions": {
     "rootDir": "./",
-    "outDir": "./build"
+    "outDir": "./build",
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./inertia/*"]
+    },
+    "types": ["@inertiajs/vue3"]
   },
-  "exclude": ["./inertia/**/*", "node_modules", "build"]
+  "include": ["./inertia/**/*", "./app/**/*"],
+  "exclude": ["node_modules", "build"]
 }
