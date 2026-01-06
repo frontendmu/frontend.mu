@@ -1,8 +1,59 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+/* Custom theme configuration for Tailwind CSS 4 */
+@theme {
+  /* Custom colors - verse palette */
+  --color-verse-50: #f0f9ff;
+  --color-verse-100: #e0f2fe;
+  --color-verse-200: #bae6fd;
+  --color-verse-300: #7dd3fc;
+  --color-verse-400: #38bdf8;
+  --color-verse-500: #0ea5e9;
+  --color-verse-600: #0284c7;
+  --color-verse-700: #0369a1;
+  --color-verse-800: #075985;
+  --color-verse-900: #0c4a6e;
+  --color-verse-950: #082f49;
+}
 
 html,
 body,
 #app {
   height: 100%;
   width: 100%;
+}
+
+/* Dark mode support */
+html.dark {
+  color-scheme: dark;
+}
+
+/* Font configuration */
+.font-heading {
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+}
+
+/* Animation utilities */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Custom utilities */
+.contain {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
 }
