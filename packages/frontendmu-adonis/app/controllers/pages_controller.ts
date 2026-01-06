@@ -28,4 +28,32 @@ export default class PagesController {
   async branding({ inertia }: HttpContext) {
     return inertia.render('branding')
   }
+
+  /**
+   * Display history page
+   */
+  async history({ inertia }: HttpContext) {
+    return inertia.render('history')
+  }
+
+  /**
+   * Display contribute page
+   */
+  async contribute({ inertia }: HttpContext) {
+    return inertia.render('contribute')
+  }
+
+  /**
+   * Display coding guidelines page
+   */
+  async codingGuidelines({ inertia }: HttpContext) {
+    return inertia.render('coding-guidelines')
+  }
+
+  /**
+   * Display code of conduct page
+   */
+  async codeOfConduct({ inertia }: HttpContext) {
+    return inertia.render('code-of-conduct')
+  }
 }

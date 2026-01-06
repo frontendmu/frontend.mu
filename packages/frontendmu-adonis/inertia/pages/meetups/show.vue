@@ -125,15 +125,28 @@ const speakers = computed(() => {
           </section>
 
           <!-- Sponsors -->
-          <section v-if="meetup.sponsors && meetup.sponsors.id" class="mb-12">
+          <section v-if="meetup.sponsors && meetup.sponsors.length" class="mb-12">
             <h2 class="text-2xl font-bold text-verse-900 dark:text-verse-100 mb-6">Sponsors</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div
-                class="p-4 bg-white dark:bg-verse-800/50 rounded-xl shadow-sm border border-verse-100 dark:border-verse-700 text-center">
-                <p class="font-medium text-verse-900 dark:text-verse-100">
-                  {{ meetup.sponsors.name }}
+              <a
+                v-for="sponsor in meetup.sponsors"
+                :key="sponsor.id"
+                :href="`/sponsor/${sponsor.id}`"
+                class="p-4 bg-white dark:bg-verse-800/50 rounded-xl shadow-sm border border-verse-100 dark:border-verse-700 text-center hover:shadow-md transition-shadow"
+              >
+                <p class="font-medium text-verse-900 dark:text-verse-100 mb-2">
+                  {{ sponsor.name }}
                 </p>
-              </div>
+                <div class="flex flex-wrap gap-1 justify-center">
+                  <span
+                    v-for="type in sponsor.sponsorTypes || []"
+                    :key="type"
+                    class="px-2 py-0.5 bg-verse-100 dark:bg-verse-700 text-verse-600 dark:text-verse-300 rounded text-xs capitalize"
+                  >
+                    {{ type }}
+                  </span>
+                </div>
+              </a>
             </div>
           </section>
         </template>

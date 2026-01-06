@@ -32,3 +32,9 @@ router.get('/sponsor-us', [() => import('#controllers/pages_controller'), 'spons
 router.get('/about', [() => import('#controllers/pages_controller'), 'about'])
 router.get('/community', [() => import('#controllers/pages_controller'), 'community'])
 router.get('/branding', [() => import('#controllers/pages_controller'), 'branding'])
+router.get('/history', [() => import('#controllers/pages_controller'), 'history'])
+router.get('/contribute', [() => import('#controllers/pages_controller'), 'contribute'])
+router.get('/coding-guidelines', [() => import('#controllers/pages_controller'), 'codingGuidelines'])
+
+// Code of Conduct page
+router.get('/code-of-conduct', [() => import('#controllers/pages_controller'), 'codeOfConduct'])

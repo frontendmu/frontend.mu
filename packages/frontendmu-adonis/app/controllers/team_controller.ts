@@ -16,15 +16,24 @@ export default class TeamController {
 
     try {
       // Load organizers from JSON
-      const organizersPath = join(__dirname, '../../../../packages/frontendmu-data/data/organizers.json')
+      const organizersPath = join(
+        __dirname,
+        '../../../../packages/frontendmu-data/data/organizers.json'
+      )
       organizers = JSON.parse(readFileSync(organizersPath, 'utf-8'))
 
       // Load community members from JSON
-      const communityMembersPath = join(__dirname, '../../../../packages/frontendmu-data/data/community_members.json')
+      const communityMembersPath = join(
+        __dirname,
+        '../../../../packages/frontendmu-data/data/community_members.json'
+      )
       communityMembers = JSON.parse(readFileSync(communityMembersPath, 'utf-8'))
 
       // Load contributors from JSON
-      const contributorsPath = join(__dirname, '../../../../packages/frontendmu-data/data/contributors.json')
+      const contributorsPath = join(
+        __dirname,
+        '../../../../packages/frontendmu-data/data/contributors.json'
+      )
       contributors = JSON.parse(readFileSync(contributorsPath, 'utf-8'))
 
       // Get speakers from database
@@ -34,7 +43,6 @@ export default class TeamController {
         .orderBy('name', 'asc')
 
       speakers = dbSpeakers.map((user) => this.serializeUser(user))
-
     } catch (error) {
       console.log('Error loading team data:', error.message || error)
     }
@@ -54,9 +62,7 @@ export default class TeamController {
       github_account: user.githubUsername,
       avatar_url:
         user.avatarUrl ||
-        (user.githubUsername
-          ? `https://github.com/${user.githubUsername}.png`
-          : null),
+        (user.githubUsername ? `https://github.com/${user.githubUsername}.png` : null),
       linkedinUrl: user.linkedinUrl,
       twitterUrl: user.twitterUrl,
       websiteUrl: user.websiteUrl,

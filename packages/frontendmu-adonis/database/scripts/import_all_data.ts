@@ -154,6 +154,82 @@ async function importMeetups() {
   console.log('Speaker links: ' + speakersLinked)
 }
 
+async function importSponsors() {
+  console.log('\nImporting sponsors from sponsors-raw.json...')
+
+  const dataPath = join(__dirname, '../../../frontendmu-data/data/sponsors-raw.json')
+  const sponsorsData = JSON.parse(readFileSync(dataPath, 'utf-8'))
+
+  let sponsorsImported = 0
+  let sponsorLinksCreated = 0
+
+  for (const sponsor of sponsorsData) {
+    // Check if sponsor already exists
+    const existingResult = await client.query(
+      'SELECT id FROM sponsors WHERE id = $1',
+      [sponsor.id]
+    )
+
+    if (existingResult.rows.length > 0) {
+      console.log('  Sponsor already exists: ' + sponsor.name)
+    } else {
+      // Insert sponsor
+      await client.query(
+        `INSERT INTO sponsors (id, name, website, description, logo_url, logomark_url, sponsor_types, darkbg, status, created_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'active', NOW())
+         ON CONFLICT (id) DO NOTHING`,
+        [
+          sponsor.id,
+          sponsor.name,
+          sponsor.website,
+          sponsor.description,
+          sponsor.logo,
+          sponsor.logomark,
+          JSON.stringify(sponsor.sponsor_type),
+          sponsor.darkbg,
+        ]
+      )
+      sponsorsImported++
+      console.log('  Imported sponsor: ' + sponsor.name)
+    }
+
+    // Link sponsor to events based on meetup data
+    if (sponsor.meetups && sponsor.meetups.length > 0) {
+      for (const meetup of sponsor.meetups) {
+        // Find event by title (most reliable match)
+        const eventResult = await client.query(
+          'SELECT id FROM events WHERE title = $1',
+          [meetup.title]
+        )
+
+        if (eventResult.rows.length > 0) {
+          const eventId = eventResult.rows[0].id
+
+          // Check if link already exists
+          const linkResult = await client.query(
+            'SELECT 1 FROM event_sponsors WHERE event_id = $1 AND sponsor_id = $2',
+            [eventId, sponsor.id]
+          )
+
+          if (linkResult.rows.length === 0) {
+            await client.query(
+              'INSERT INTO event_sponsors (event_id, sponsor_id, created_at) VALUES ($1, $2, NOW())',
+              [eventId, sponsor.id]
+            )
+            sponsorLinksCreated++
+            console.log('    Linked to event: ' + meetup.title)
+          }
+        } else {
+          console.log('    Event not found: ' + meetup.title)
+        }
+      }
+    }
+  }
+
+  console.log('\nSponsors: ' + sponsorsImported)
+  console.log('Sponsor-Event links: ' + sponsorLinksCreated)
+}
+
 function generateUUID(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0
@@ -170,18 +246,23 @@ async function runMigration() {
     
     await importSpeakers()
     await importMeetups()
+    await importSponsors()
 
     // Summary
     const userResult = await client.query('SELECT COUNT(*) as total FROM users')
     const eventResult = await client.query('SELECT COUNT(*) as total FROM events')
     const sessionResult = await client.query('SELECT COUNT(*) as total FROM sessions')
-    const linkResult = await client.query('SELECT COUNT(*) as total FROM session_speakers')
+    const speakerLinkResult = await client.query('SELECT COUNT(*) as total FROM session_speakers')
+    const sponsorResult = await client.query('SELECT COUNT(*) as total FROM sponsors')
+    const sponsorLinkResult = await client.query('SELECT COUNT(*) as total FROM event_sponsors')
 
     console.log('\nFinal Summary:')
     console.log('  Users: ' + userResult.rows[0].total)
     console.log('  Events: ' + eventResult.rows[0].total)
     console.log('  Sessions: ' + sessionResult.rows[0].total)
-    console.log('  Speaker links: ' + linkResult.rows[0].total)
+    console.log('  Speaker links: ' + speakerLinkResult.rows[0].total)
+    console.log('  Sponsors: ' + sponsorResult.rows[0].total)
+    console.log('  Sponsor-Event links: ' + sponsorLinkResult.rows[0].total)
 
     console.log('\nDone!')
 

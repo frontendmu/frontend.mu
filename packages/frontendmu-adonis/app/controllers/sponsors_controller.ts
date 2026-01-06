@@ -1,48 +1,20 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { readFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
-import { dirname, join } from 'node:path'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-interface SponsorJson {
-  id: string
-  name: string
-  logo: string
-  logomark: string
-  website: string | null
-  description: string | null
-  sponsor_type: string[]
-  darkbg: boolean
-  meetups: Array<{
-    id: number
-    title: string
-    date: string
-    location: string
-    venue: string
-    description: string | null
-  }>
-}
-
-function loadSponsors(): SponsorJson[] {
-  const sponsorsPath = join(__dirname, '../../../../packages/frontendmu-data/data/sponsors-raw.json')
-  return JSON.parse(readFileSync(sponsorsPath, 'utf-8')) as SponsorJson[]
-}
+import Sponsor from '#models/sponsor'
+import Event from '#models/event'
 
 export default class SponsorsController {
   async index({ inertia }: HttpContext) {
     let sponsors: any[] = []
 
     try {
-      const sponsorsData = loadSponsors()
+      const dbSponsors = await Sponsor.query().where('status', 'active').orderBy('name', 'asc')
 
-      sponsors = sponsorsData.map((sponsor) => ({
+      sponsors = dbSponsors.map((sponsor) => ({
         id: sponsor.id,
         name: sponsor.name,
         website: sponsor.website,
         description: sponsor.description,
-        sponsorTypes: sponsor.sponsor_type,
+        sponsorTypes: sponsor.sponsorTypes,
         darkbg: sponsor.darkbg,
       }))
     } catch (error) {
@@ -59,19 +31,29 @@ export default class SponsorsController {
     let meetups: any[] = []
 
     try {
-      const sponsorsData = loadSponsors()
-      const sponsorData = sponsorsData.find((s: SponsorJson) => s.id === params.id)
+      const dbSponsor = await Sponsor.find(params.id)
 
-      if (sponsorData) {
+      if (dbSponsor) {
         sponsor = {
-          id: sponsorData.id,
-          name: sponsorData.name,
-          website: sponsorData.website,
-          description: sponsorData.description,
-          sponsorTypes: sponsorData.sponsor_type,
-          darkbg: sponsorData.darkbg,
+          id: dbSponsor.id,
+          name: dbSponsor.name,
+          website: dbSponsor.website,
+          description: dbSponsor.description,
+          sponsorTypes: dbSponsor.sponsorTypes,
+          darkbg: dbSponsor.darkbg,
         }
-        meetups = sponsorData.meetups || []
+
+        // Load events linked to this sponsor
+        const events = await dbSponsor.related('events').query().orderBy('event_date', 'desc')
+
+        meetups = events.map((event) => ({
+          id: event.id,
+          title: event.title,
+          date: event.eventDate?.toISODate() || null,
+          location: event.location,
+          venue: event.venue,
+          description: event.description,
+        }))
       }
     } catch (error) {
       console.log('Error loading sponsor:', error.message || error)

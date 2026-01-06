@@ -40,6 +40,7 @@ export default class EventsController {
           query.preload('speakers')
         })
         .preload('photos')
+        .preload('sponsors')
         .first()
 
       if (event) {
