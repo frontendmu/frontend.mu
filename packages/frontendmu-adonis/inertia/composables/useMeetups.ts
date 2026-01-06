@@ -1,6 +1,6 @@
 import { computed, type ComputedRef } from 'vue'
-import { isDateInFuture, isDateInPast, isDateToday } from '../utils/date'
-import type { Meetup } from '../types'
+import { isDateInFuture, isDateInPast, isDateToday } from '../utils/date.js'
+import type { Meetup } from '../types/index.js'
 
 interface UseMeetupsOptions {
   pastMeetupsLimit?: number
@@ -16,10 +16,7 @@ interface UseMeetupsReturn {
   areThereMeetupsToday: ComputedRef<boolean>
 }
 
-export function useMeetups(
-  meetups: Meetup[],
-  options: UseMeetupsOptions = {}
-): UseMeetupsReturn {
+export function useMeetups(meetups: Meetup[], options: UseMeetupsOptions = {}): UseMeetupsReturn {
   const { pastMeetupsLimit = 10 } = options
 
   const meetupsGroupedByYear = computed(() => {

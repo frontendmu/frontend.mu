@@ -15,7 +15,7 @@ const inertiaConfig = defineConfig({
       }
       return {
         isAuthenticated: true,
-        user: ctx.auth.user?.toJSON(),
+        user: ctx.auth.user,
       }
     },
   },
@@ -30,4 +30,13 @@ export default inertiaConfig
 
 declare module '@adonisjs/inertia/types' {
   export interface SharedProps extends InferSharedProps<typeof inertiaConfig> {}
+}
+
+declare module '@adonisjs/core/http' {
+  interface HttpContext {
+    auth: {
+      isAuthenticated: boolean
+      user?: unknown
+    }
+  }
 }

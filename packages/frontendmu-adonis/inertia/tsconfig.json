@@ -1,10 +1,12 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "@adonisjs/tsconfig/tsconfig.client.json",
   "compilerOptions": {
-    "noEmit": true,
-    "isolatedModules": true,
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true
+    "jsx": "preserve",
+    "module": "ESNext",
+    "jsxImportSource": "vue",
+    "paths": {
+      "~/*": ["./*"],
+    },
   },
-  "include": ["**/*.vue", "**/*.ts", "**/*.d.ts"]
+  "include": ["./**/*.ts", "./**/*.vue"],
 }

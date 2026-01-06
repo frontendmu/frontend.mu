@@ -5,10 +5,10 @@
     "outDir": "./build",
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./inertia/*"]
+      "~/*": ["./inertia/*"],
     },
-    "types": ["@inertiajs/vue3"]
+    "types": ["@inertiajs/vue3", "@adonisjs/inertia", "vite/client"],
   },
   "include": ["./inertia/**/*", "./app/**/*"],
-  "exclude": ["node_modules", "build"]
+  "exclude": ["node_modules", "build"],
 }

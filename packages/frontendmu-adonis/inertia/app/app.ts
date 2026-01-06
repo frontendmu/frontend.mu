@@ -1,5 +1,5 @@
-/// <reference path="../adonisrc.ts" />
-/// <reference path="../config/inertia.ts" />
+/// <reference path="../../adonisrc.ts" />
+/// <reference path="../../config/inertia.ts" />
 
 import '../css/app.css'
 import { createApp, h } from 'vue'
@@ -12,18 +12,18 @@ const appName = import.meta.env.VITE_APP_NAME || 'frontend.mu'
 createInertiaApp({
   progress: { color: '#3B82F6' },
 
-  title: (title) => `${title} - ${appName}`,
+  title: (title: string) => `${title} - ${appName}`,
 
-  resolve: (name) => {
+  resolve: (name: string) => {
     return resolvePageComponent(
       `../pages/${name}.vue`,
       import.meta.glob<DefineComponent>('../pages/**/*.vue')
     )
   },
 
-  setup({ el, App, props, plugin }) {
-    createApp({ render: () => h(App, props) })
-      .use(plugin)
-      .mount(el)
+  setup({ el, App, props, plugin }: { el: unknown; App: unknown; props: unknown; plugin: unknown }) {
+    createApp({ render: () => h(App as any, props as any) })
+      .use(plugin as any)
+      .mount(el as any)
   },
 })

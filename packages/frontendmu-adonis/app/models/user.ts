@@ -48,7 +48,6 @@ export default class User extends BaseModel {
   // Relationships
   @hasMany(() => Session, {
     foreignKey: 'speakerId',
-    relatedKey: 'speaker_id',
   })
   declare sessions: HasMany<typeof Session>
 
