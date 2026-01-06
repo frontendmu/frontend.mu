@@ -22,6 +22,7 @@ router.get('/speaker/:id', [() => import('#controllers/speakers_controller'), 's
 
 // Sponsors pages
 router.get('/sponsors', [() => import('#controllers/sponsors_controller'), 'index'])
+router.get('/sponsor/:id', [() => import('#controllers/sponsors_controller'), 'show'])
 
 // Team page
 router.get('/team', [() => import('#controllers/team_controller'), 'index'])

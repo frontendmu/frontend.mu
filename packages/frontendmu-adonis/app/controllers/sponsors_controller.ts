@@ -1,21 +1,52 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import Sponsor from '#models/sponsor'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+interface SponsorJson {
+  id: string
+  name: string
+  logo: string
+  logomark: string
+  website: string | null
+  description: string | null
+  sponsor_type: string[]
+  darkbg: boolean
+  meetups: Array<{
+    id: number
+    title: string
+    date: string
+    location: string
+    venue: string
+    description: string | null
+  }>
+}
+
+function loadSponsors(): SponsorJson[] {
+  const sponsorsPath = join(__dirname, '../../../../packages/frontendmu-data/data/sponsors-raw.json')
+  return JSON.parse(readFileSync(sponsorsPath, 'utf-8')) as SponsorJson[]
+}
 
 export default class SponsorsController {
-  /**
-   * Display all sponsors
-   */
   async index({ inertia }: HttpContext) {
     let sponsors: any[] = []
 
     try {
-      const dbSponsors = await Sponsor.query()
-        .where('status', 'active')
-        .orderBy('name', 'asc')
+      const sponsorsData = loadSponsors()
 
-      sponsors = dbSponsors.map((sponsor) => this.serializeSponsor(sponsor))
+      sponsors = sponsorsData.map((sponsor) => ({
+        id: sponsor.id,
+        name: sponsor.name,
+        website: sponsor.website,
+        description: sponsor.description,
+        sponsorTypes: sponsor.sponsor_type,
+        darkbg: sponsor.darkbg,
+      }))
     } catch (error) {
-      console.log('Database not available, using empty data')
+      console.log('Error loading sponsors:', error.message || error)
     }
 
     return inertia.render('sponsors', {
@@ -23,18 +54,32 @@ export default class SponsorsController {
     })
   }
 
-  /**
-   * Serialize sponsor for frontend
-   */
-  private serializeSponsor(sponsor: Sponsor) {
-    return {
-      id: sponsor.id,
-      name: sponsor.name,
-      website: sponsor.website,
-      logoUrl: sponsor.logoUrl,
-      description: sponsor.description,
-      sponsorTypes: sponsor.sponsorTypes,
-      darkbg: sponsor.darkbg,
+  async show({ params, inertia }: HttpContext) {
+    let sponsor: any = null
+    let meetups: any[] = []
+
+    try {
+      const sponsorsData = loadSponsors()
+      const sponsorData = sponsorsData.find((s: SponsorJson) => s.id === params.id)
+
+      if (sponsorData) {
+        sponsor = {
+          id: sponsorData.id,
+          name: sponsorData.name,
+          website: sponsorData.website,
+          description: sponsorData.description,
+          sponsorTypes: sponsorData.sponsor_type,
+          darkbg: sponsorData.darkbg,
+        }
+        meetups = sponsorData.meetups || []
+      }
+    } catch (error) {
+      console.log('Error loading sponsor:', error.message || error)
     }
+
+    return inertia.render('sponsor', {
+      sponsor,
+      meetups,
+    })
   }
 }
