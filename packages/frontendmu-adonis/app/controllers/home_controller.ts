@@ -19,42 +19,40 @@ export default class HomeController {
     }
 
     try {
-      // Get latest published events
+      // Get all published events for the homepage
       const dbEvents = await Event.query()
         .where('status', 'published')
         .orderBy('eventDate', 'desc')
-        .limit(5)
         .preload('sessions', (query) => {
           query.preload('speakers')
         })
+        .preload('sponsors')
 
       events = dbEvents.map((event) => this.serializeEvent(event))
 
       // Get featured speakers
-      const dbSpeakers = await User.query()
-        .where('role', 'speaker')
-        .where('featured', true)
-        .orderBy('name', 'asc')
-        .limit(10)
+      const dbSpeakers = await User.query().where('featured', true).orderBy('name', 'asc').limit(12)
 
       featuredSpeakers = dbSpeakers.map((speaker) => this.serializeSpeaker(speaker))
 
       // Get active sponsors
-      const dbSponsors = await Sponsor.query()
-        .where('status', 'active')
-        .orderBy('name', 'asc')
+      const dbSponsors = await Sponsor.query().where('status', 'active').orderBy('name', 'asc')
 
       sponsors = dbSponsors.map((sponsor) => this.serializeSponsor(sponsor))
 
       // Get stats
       const totalMeetups = await Event.query().where('status', 'published').count('* as total')
-      const totalSpeakers = await User.query().where('role', 'speaker').count('* as total')
+      const totalSpeakers = await User.query()
+        .whereHas('sessions', (query) => {
+          query.whereNotNull('id')
+        })
+        .count('* as total')
 
       stats.meetups = Number(totalMeetups[0].$extras.total) || 0
       stats.speakers = Number(totalSpeakers[0].$extras.total) || 0
     } catch (error) {
       // Database not available, use empty data
-      console.log('Database not available, using placeholder data')
+      console.log('Database not available, using placeholder data', error)
     }
 
     return inertia.render('home', {
@@ -80,19 +78,20 @@ export default class HomeController {
       Attendees: event.attendeeCount,
       accepting_rsvp: event.acceptingRsvp,
       album: event.albumName,
-      sessions: event.sessions?.map((session) => ({
-        id: session.id,
-        Session_id: {
-          title: session.title,
-          speakers: session.speakers?.[0]
-            ? {
-                id: session.speakers[0].id,
-                name: session.speakers[0].name,
-                github_account: session.speakers[0].githubUsername,
-              }
-            : null,
-        },
-      })) || [],
+      sessions:
+        event.sessions?.map((session) => ({
+          id: session.id,
+          Session_id: {
+            title: session.title,
+            speakers: session.speakers?.[0]
+              ? {
+                  id: session.speakers[0].id,
+                  name: session.speakers[0].name,
+                  github_account: session.speakers[0].githubUsername,
+                }
+              : null,
+          },
+        })) || [],
       sponsors: [],
     }
   }

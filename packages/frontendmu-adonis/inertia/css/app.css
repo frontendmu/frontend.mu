@@ -57,3 +57,29 @@ html.dark {
 .contain {
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
 }
+
+/* Native dialog styling */
+dialog {
+  border: none;
+  padding: 0;
+  margin: auto;
+  position: fixed;
+  inset: 0;
+  height: fit-content;
+}
+
+dialog:not([open]) {
+  display: none;
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  position: fixed;
+  inset: 0;
+}
+
+dialog[open] {
+  display: flex;
+  flex-direction: column;
+}

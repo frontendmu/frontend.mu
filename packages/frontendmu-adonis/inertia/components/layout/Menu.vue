@@ -17,6 +17,13 @@ const page = usePage()
 const isAuthenticated = computed(() => page.props.auth.isAuthenticated)
 const user = computed(() => page.props.auth.user)
 
+// Check if user is an admin (organizer or superadmin)
+const isAdmin = computed(() => {
+  if (!user.value) return false
+  const role = (user.value as any).role
+  return role === 'organizer' || role === 'superadmin'
+})
+
 function handleLogout() {
   router.post('/logout')
 }
@@ -230,6 +237,18 @@ onMounted(toggleHeader)
             <slot name="dock-right" />
           </div>
           <ul class="flex items-center md:gap-1 gap-0 text-sm md:text-sm lg:text-base font-medium font-heading">
+            <!-- Admin link for organizers/superadmins -->
+            <li
+              v-if="isAdmin"
+              class="hover:bg-white/10 rounded-md"
+            >
+              <Link
+                href="/admin"
+                class="flex items-center text-verse-100 bg-verse-600 hover:bg-verse-700 rounded-md transition-colors"
+              >
+                <span class="relative z-20 p-2">Admin</span>
+              </Link>
+            </li>
             <template v-for="link in authLinks" :key="link.href">
               <li class="hover:bg-white/10 rounded-md text-verse-700 dark:text-verse-300 hover:dark:text-white">
                 <Link
