@@ -33,13 +33,13 @@ onMounted(() => {
 
 <template>
   <button
-    class="text-verse-600 dark:text-verse-100 w-6 h-6 cursor-pointer relative"
+    class="text-verse-600 dark:text-verse-100 w-6 h-6 cursor-pointer relative flex items-center justify-center hover:bg-white/10 rounded-md"
     @click="cycleMode"
     aria-label="Toggle theme"
   >
     <!-- Moon icon (light mode) -->
     <svg
-      class="absolute w-6 h-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+      class="absolute w-5 h-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
       xmlns="http://www.w3.org/2000/svg"
       width="1em"
       height="1em"
@@ -54,7 +54,7 @@ onMounted(() => {
     </svg>
     <!-- Sun icon (dark mode) -->
     <svg
-      class="absolute w-6 h-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+      class="absolute w-5 h-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
       xmlns="http://www.w3.org/2000/svg"
       width="1em"
       height="1em"

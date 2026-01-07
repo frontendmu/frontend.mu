@@ -225,25 +225,33 @@ onMounted(toggleHeader)
             </template>
           </ul>
         </nav>
-        <div>
-          <div class="flex items-center gap-4">
+        <div class="flex items-center md:gap-2 gap-1">
+          <div class="flex items-center justify-center p-2">
             <slot name="dock-right" />
-            <template v-for="link in authLinks" :key="link.href">
-              <Link
-                :href="link.href"
-                class="text-sm font-medium text-verse-600 dark:text-verse-300 hover:text-verse-800 dark:hover:text-verse-100"
-              >
-                {{ link.title }}
-              </Link>
-            </template>
-            <button
-              v-if="isAuthenticated"
-              @click="handleLogout"
-              class="text-sm font-medium text-verse-600 dark:text-verse-300 hover:text-verse-800 dark:hover:text-verse-100"
-            >
-              Logout
-            </button>
           </div>
+          <ul class="flex items-center md:gap-1 gap-0 text-sm md:text-sm lg:text-base font-medium font-heading">
+            <template v-for="link in authLinks" :key="link.href">
+              <li class="hover:bg-white/10 rounded-md text-verse-700 dark:text-verse-300 hover:dark:text-white">
+                <Link
+                  :href="link.href"
+                  class="flex items-center"
+                >
+                  <span class="relative z-20 p-2">{{ link.title }}</span>
+                </Link>
+              </li>
+            </template>
+            <li
+              v-if="isAuthenticated"
+              class="hover:bg-white/10 rounded-md text-verse-700 dark:text-verse-300 hover:dark:text-white"
+            >
+              <button
+                @click="handleLogout"
+                class="flex items-center"
+              >
+                <span class="relative z-20 p-2">Logout</span>
+              </button>
+            </li>
+          </ul>
         </div>
         <div
           class="absolute right-10 top-10 rounded-lg px-4 bg-white/20 shadow-[0px_0px_2px_var(--color-verse-500)]"
