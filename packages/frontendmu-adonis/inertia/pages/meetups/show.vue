@@ -1,17 +1,139 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { DateTime } from 'luxon'
-import { Head, Link } from '@inertiajs/vue3'
+import { Head, Link, usePage, router } from '@inertiajs/vue3'
 import DefaultLayout from '~/layouts/DefaultLayout.vue'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
-import Event from '#models/event'
+import type Event from '#models/event'
+import type Rsvp from '#models/rsvp'
+
+interface PublicAttendee {
+  id: string
+  name: string
+  avatarUrl: string | null
+  githubUsername: string | null
+}
 
 interface Props {
   meetup: Event | null
+  userRsvp: Rsvp | null
+  rsvpCount: number
+  canEdit: boolean
+  attendees: PublicAttendee[]
 }
 
 const props = defineProps<Props>()
+
+const page = usePage()
+const isAuthenticated = computed(() => page.props.auth?.isAuthenticated)
+const featureFlags = computed(() => (page.props as any).featureFlags || {})
+
+// RSVP state
+const isRsvpLoading = ref(false)
+const rsvpError = ref<string | null>(null)
+const rsvpSuccess = ref<string | null>(null)
+
+// Check if user has an active RSVP
+const hasRsvp = computed(() => !!props.userRsvp)
+const rsvpStatus = computed(() => props.userRsvp?.status)
+
+// Check if event is accepting RSVPs
+const canRsvp = computed(() => {
+  if (!props.meetup) return false
+  if (!props.meetup.acceptingRsvp) return false
+  // Check if event is in the past (skip if feature flag is enabled)
+  if (!featureFlags.value.rsvpPastEvents && isPast.value) return false
+  // Check RSVP closing date
+  if (props.meetup.rsvpClosingDate) {
+    const closingDate = typeof props.meetup.rsvpClosingDate === 'string'
+      ? DateTime.fromISO(props.meetup.rsvpClosingDate)
+      : DateTime.fromJSDate(props.meetup.rsvpClosingDate.toJSDate())
+    if (closingDate < DateTime.now()) return false
+  }
+  return true
+})
+
+// Check if event is full
+const isFull = computed(() => {
+  if (!props.meetup?.seatsAvailable) return false
+  return props.rsvpCount >= props.meetup.seatsAvailable
+})
+
+// RSVP handlers
+async function handleRsvp() {
+  if (!props.meetup) return
+
+  isRsvpLoading.value = true
+  rsvpError.value = null
+  rsvpSuccess.value = null
+
+  try {
+    const response = await fetch(`/api/events/${props.meetup.id}/rsvp`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-XSRF-TOKEN': decodeURIComponent(
+          document.cookie
+            .split('; ')
+            .find((row) => row.startsWith('XSRF-TOKEN='))
+            ?.split('=')[1] || ''
+        ),
+      },
+    })
+
+    const data = await response.json()
+
+    if (response.ok) {
+      rsvpSuccess.value = data.message
+      // Reload the page to get fresh data
+      router.reload()
+    } else {
+      rsvpError.value = data.message || 'Failed to RSVP'
+    }
+  } catch (error) {
+    rsvpError.value = 'An error occurred. Please try again.'
+  } finally {
+    isRsvpLoading.value = false
+  }
+}
+
+async function handleCancelRsvp() {
+  if (!props.meetup) return
+
+  isRsvpLoading.value = true
+  rsvpError.value = null
+  rsvpSuccess.value = null
+
+  try {
+    const response = await fetch(`/api/events/${props.meetup.id}/rsvp`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-XSRF-TOKEN': decodeURIComponent(
+          document.cookie
+            .split('; ')
+            .find((row) => row.startsWith('XSRF-TOKEN='))
+            ?.split('=')[1] || ''
+        ),
+      },
+    })
+
+    const data = await response.json()
+
+    if (response.ok) {
+      rsvpSuccess.value = data.message
+      // Reload the page to get fresh data
+      router.reload()
+    } else {
+      rsvpError.value = data.message || 'Failed to cancel RSVP'
+    }
+  } catch (error) {
+    rsvpError.value = 'An error occurred. Please try again.'
+  } finally {
+    isRsvpLoading.value = false
+  }
+}
 
 const eventDate = computed(() => {
   if (!props.meetup?.eventDate) return null
@@ -27,6 +149,10 @@ const isUpcoming = computed(() =>
 
 const isToday = computed(() =>
   eventDate.value ? eventDate.value.hasSame(DateTime.now(), 'day') : false
+)
+
+const isPast = computed(() =>
+  eventDate.value ? eventDate.value < DateTime.now() && !isToday.value : false
 )
 
 const formattedDate = computed(() =>
@@ -46,11 +172,21 @@ const speakers = computed(() => {
     <ContentBlock>
       <div class="py-8 pb-20">
         <template v-if="meetup">
-          <!-- Breadcrumb -->
-          <nav class="mb-6">
+          <!-- Breadcrumb & Edit Link -->
+          <nav class="mb-6 flex items-center justify-between">
             <Link href="/meetups"
               class="text-verse-600 hover:text-verse-800 dark:text-verse-400 dark:hover:text-verse-200">
               &larr; All Meetups
+            </Link>
+            <Link
+              v-if="canEdit"
+              :href="`/admin/events/${meetup.id}/edit`"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor">
+                <path d="M2 26h28v2H2zM25.4 9c.8-.8.8-2 0-2.8l-3.6-3.6c-.8-.8-2-.8-2.8 0l-15 15V24h6.4l15-15zm-5-5L24 7.6l-3 3L17.4 7l3-3zM6 22v-3.6l10-10 3.6 3.6-10 10H6z"/>
+              </svg>
+              Edit Event
             </Link>
           </nav>
 
@@ -99,6 +235,129 @@ const speakers = computed(() => {
               </div>
             </div>
           </div>
+
+          <!-- RSVP Section -->
+          <div v-if="isUpcoming || isToday || (featureFlags.rsvpPastEvents && isPast && meetup.acceptingRsvp)" class="mb-8 p-6 bg-verse-50 dark:bg-verse-800/50 rounded-xl border border-verse-100 dark:border-verse-700">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h3 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-1">
+                  <template v-if="canRsvp">
+                    <template v-if="hasRsvp">
+                      You're registered!
+                    </template>
+                    <template v-else>
+                      Join this meetup
+                    </template>
+                  </template>
+                  <template v-else>
+                    RSVPs are closed
+                  </template>
+                </h3>
+                <p class="text-sm text-verse-600 dark:text-verse-400">
+                  <template v-if="hasRsvp && rsvpStatus === 'confirmed'">
+                    Your spot is confirmed. See you there!
+                  </template>
+                  <template v-else-if="hasRsvp && rsvpStatus === 'waitlist'">
+                    You're on the waitlist. We'll notify you if a spot opens up.
+                  </template>
+                  <template v-else-if="canRsvp && meetup.seatsAvailable">
+                    {{ rsvpCount }} / {{ meetup.seatsAvailable }} spots taken
+                    <span v-if="isFull" class="text-amber-600 dark:text-amber-400"> (Waitlist available)</span>
+                  </template>
+                  <template v-else-if="canRsvp">
+                    {{ rsvpCount }} people attending
+                  </template>
+                  <template v-else>
+                    This event is no longer accepting RSVPs.
+                  </template>
+                </p>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <!-- Not authenticated -->
+                <template v-if="!isAuthenticated && canRsvp">
+                  <Link
+                    href="/login"
+                    class="inline-flex items-center justify-center px-6 py-2.5 bg-verse-600 hover:bg-verse-700 text-white font-medium rounded-lg transition-colors"
+                  >
+                    Login to RSVP
+                  </Link>
+                  <p class="text-xs text-verse-500 dark:text-verse-400 text-center">
+                    Don't have an account? <Link href="/register" class="underline">Register</Link>
+                  </p>
+                </template>
+
+                <!-- Authenticated and can RSVP -->
+                <template v-else-if="isAuthenticated && canRsvp">
+                  <template v-if="hasRsvp">
+                    <button
+                      @click="handleCancelRsvp"
+                      :disabled="isRsvpLoading"
+                      class="inline-flex items-center justify-center px-6 py-2.5 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white font-medium rounded-lg transition-colors"
+                    >
+                      <span v-if="isRsvpLoading">Cancelling...</span>
+                      <span v-else>Cancel RSVP</span>
+                    </button>
+                  </template>
+                  <template v-else>
+                    <button
+                      @click="handleRsvp"
+                      :disabled="isRsvpLoading"
+                      class="inline-flex items-center justify-center px-6 py-2.5 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-medium rounded-lg transition-colors"
+                    >
+                      <span v-if="isRsvpLoading">Processing...</span>
+                      <span v-else-if="isFull">Join Waitlist</span>
+                      <span v-else>RSVP Now</span>
+                    </button>
+                  </template>
+                </template>
+              </div>
+            </div>
+
+            <!-- Success/Error messages -->
+            <div v-if="rsvpSuccess" class="mt-4 p-3 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 rounded-lg text-sm">
+              {{ rsvpSuccess }}
+            </div>
+            <div v-if="rsvpError" class="mt-4 p-3 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 rounded-lg text-sm">
+              {{ rsvpError }}
+            </div>
+          </div>
+
+          <!-- Attendees Section (only visible to logged in users) -->
+          <section v-if="isAuthenticated && attendees.length > 0" class="mb-8">
+            <h2 class="text-xl font-bold text-verse-900 dark:text-verse-100 mb-4">
+              Who's Coming ({{ attendees.length }})
+            </h2>
+            <div class="flex flex-wrap gap-3">
+              <div
+                v-for="attendee in attendees"
+                :key="attendee.id"
+                class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-verse-800/50 rounded-lg border border-verse-100 dark:border-verse-700"
+              >
+                <img
+                  v-if="attendee.githubUsername"
+                  :src="`https://avatars.githubusercontent.com/${attendee.githubUsername}?size=32`"
+                  :alt="attendee.name"
+                  class="w-8 h-8 rounded-full"
+                />
+                <div
+                  v-else-if="attendee.avatarUrl"
+                  class="w-8 h-8 rounded-full bg-cover bg-center"
+                  :style="{ backgroundImage: `url(${attendee.avatarUrl})` }"
+                />
+                <div
+                  v-else
+                  class="w-8 h-8 rounded-full bg-verse-200 dark:bg-verse-600 flex items-center justify-center text-verse-600 dark:text-verse-300 text-sm font-medium"
+                >
+                  {{ attendee.name.charAt(0).toUpperCase() }}
+                </div>
+                <span class="text-sm text-verse-700 dark:text-verse-300">{{ attendee.name }}</span>
+              </div>
+            </div>
+            <p class="mt-3 text-xs text-verse-500 dark:text-verse-400">
+              Names are partially hidden for privacy.
+            </p>
+          </section>
 
           <!-- Description -->
           <div v-if="meetup.description" class="prose dark:prose-invert max-w-none mb-12" v-html="meetup.description" />
