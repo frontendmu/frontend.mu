@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
+/* Enable dark mode with class strategy */
+@variant dark (&:where(.dark, .dark *));
+
 /* Custom theme configuration for Tailwind CSS 4 */
 @theme {
   /* Custom colors - verse palette */
