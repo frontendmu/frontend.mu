@@ -1,5 +1,6 @@
 import { defineConfig } from '@adonisjs/inertia'
 import type { InferSharedProps } from '@adonisjs/inertia/types'
+import featureFlags from './feature_flags.js'
 
 const inertiaConfig = defineConfig({
   rootView: 'inertia_layout',
@@ -14,6 +15,7 @@ const inertiaConfig = defineConfig({
         csrfToken: ctx.request.csrfToken,
       }
     },
+    featureFlags: () => featureFlags,
   },
 
   ssr: {
