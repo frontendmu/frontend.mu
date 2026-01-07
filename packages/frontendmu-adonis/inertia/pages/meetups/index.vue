@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { DateTime } from 'luxon'
-import { Head } from '@inertiajs/vue3'
+import { Head, Link } from '@inertiajs/vue3'
 import DefaultLayout from '~/layouts/DefaultLayout.vue'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
 import EventCard from '~/components/event/EventCard.vue'
-import Event from '#models/event'
+import type Event from '#models/event'
 
 interface Props {
   meetups: Event[]
+  canCreate: boolean
 }
 
 const props = defineProps<Props>()
@@ -77,7 +78,19 @@ const nextMeetupId = computed(() => nextMeetup.value?.id)
     <ContentBlock>
       <div class="past-events-container pb-4 py-8">
         <div class="flex flex-col gap-2 mb-8">
-          <BaseHeading :level="1"> All meetups </BaseHeading>
+          <div class="flex items-center justify-between gap-4">
+            <BaseHeading :level="1"> All meetups </BaseHeading>
+            <Link
+              v-if="canCreate"
+              href="/admin/events/create"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+              </svg>
+              Create Event
+            </Link>
+          </div>
           <p class="text-verse-700 dark:text-verse-300 py-4">
             Over the years, we've organized a lot of meetups. Here's a list of
             all of them.

@@ -1,15 +1,24 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import { randomUUID } from 'node:crypto'
+import { BaseModel, column, belongsTo, hasMany, manyToMany, beforeCreate } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Session from '#models/session'
 import Sponsor from '#models/sponsor'
 import EventPhoto from '#models/event_photo'
+import Rsvp from '#models/rsvp'
 
 export type EventStatus = 'published' | 'draft' | 'cancelled'
 
 export default class Event extends BaseModel {
   @column({ isPrimary: true })
   declare id: string
+
+  @beforeCreate()
+  static assignUuid(event: Event) {
+    if (!event.id) {
+      event.id = randomUUID()
+    }
+  }
 
   @column()
   declare title: string
@@ -83,6 +92,10 @@ export default class Event extends BaseModel {
     pivotTable: 'event_sponsors',
   })
   declare sponsors: ManyToMany<typeof Sponsor>
+
+  // RSVPs for this event
+  @hasMany(() => Rsvp)
+  declare rsvps: HasMany<typeof Rsvp>
 
   /**
    * Check if event is published
