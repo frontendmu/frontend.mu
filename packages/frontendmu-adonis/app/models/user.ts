@@ -1,10 +1,11 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
+import { BaseModel, column, manyToMany, hasMany } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
-import type { ManyToMany } from '@adonisjs/lucid/types/relations'
+import type { ManyToMany, HasMany } from '@adonisjs/lucid/types/relations'
 import Session from '#models/session'
+import Rsvp from '#models/rsvp'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
@@ -56,6 +57,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare isCommunityMember: boolean
 
+  @column()
+  declare googleId: string | null
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
@@ -68,6 +72,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
     pivotRelatedForeignKey: 'session_id',
   })
   declare sessions: ManyToMany<typeof Session>
+
+  @hasMany(() => Rsvp)
+  declare rsvps: HasMany<typeof Rsvp>
 
   get isSpeaker(): boolean {
     return this.sessions && this.sessions.length > 0
