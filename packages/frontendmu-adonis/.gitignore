@@ -23,3 +23,7 @@ yarn-error.log
 
 # Platform specific
 .DS_Store
+
+# Database backups
+database/backups/*.sql
+*_backup_*.sql

@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: frontendmu-postgres-docker
+    environment:
+      POSTGRES_DB: frontendmu_docker_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5433:5432'  # Changed port to avoid conflicts
+    volumes:
+      - postgres-docker-data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d frontendmu_docker_dev']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer:latest
+    restart: always
+    ports:
+      - 8989:8080
+    depends_on:
+      - postgres
+
+volumes:
+  postgres-docker-data:
+    name: frontendmu-postgres-docker-data

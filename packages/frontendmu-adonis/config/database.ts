@@ -7,11 +7,16 @@ const dbConfig = defineConfig({
     postgres: {
       client: 'pg',
       connection: {
-        host: env.get('DB_HOST'),
-        port: env.get('DB_PORT'),
-        user: env.get('DB_USER'),
-        password: env.get('DB_PASSWORD'),
-        database: env.get('DB_DATABASE'),
+        host: env.get('DB_HOST', 'localhost'),
+        port: env.get('DB_PORT', 5432),
+        user: env.get('DB_USER', 'postgres'),
+        password: env.get('DB_PASSWORD', 'postgres'),
+        database: env.get('DB_DATABASE', 'frontendmu_dev'),
+        // Add explicit connection settings
+        ssl: env.get('DB_SSL', false),
+        connectionTimeoutMillis: 5000,
+        idleTimeoutMillis: 30000,
+        max: 10, // connection pool
       },
       migrations: {
         naturalSort: true,
