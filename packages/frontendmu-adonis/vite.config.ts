@@ -18,4 +18,18 @@ export default defineConfig({
       '~': fileURLToPath(new URL('./inertia', import.meta.url)),
     },
   },
+
+  esbuild: {
+    target: 'esnext',
+  },
+
+  build: {
+    target: 'esnext',
+  },
+
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'esnext',
+    },
+  },
 })

@@ -1,12 +1,3 @@
-/*
-|--------------------------------------------------------------------------
-| Routes file
-|--------------------------------------------------------------------------
-|
-| The routes file is used for defining the HTTP routes.
-|
-*/
-
 import router from '@adonisjs/core/services/router'
 
 // Home page
@@ -34,7 +25,16 @@ router.get('/community', [() => import('#controllers/pages_controller'), 'commun
 router.get('/branding', [() => import('#controllers/pages_controller'), 'branding'])
 router.get('/history', [() => import('#controllers/pages_controller'), 'history'])
 router.get('/contribute', [() => import('#controllers/pages_controller'), 'contribute'])
+router.get('/code-of-conduct', [() => import('#controllers/pages_controller'), 'codeOfConduct'])
 router.get('/coding-guidelines', [() => import('#controllers/pages_controller'), 'codingGuidelines'])
 
-// Code of Conduct page
-router.get('/code-of-conduct', [() => import('#controllers/pages_controller'), 'codeOfConduct'])
+// Auth routes
+router.get('/login', [() => import('#controllers/auth/login_controller'), 'show'])
+router.post('/login', [() => import('#controllers/auth/login_controller'), 'store'])
+router.get('/register', [() => import('#controllers/auth/register_controller'), 'show'])
+router.post('/register', [() => import('#controllers/auth/register_controller'), 'store'])
+router.post('/logout', [() => import('#controllers/auth/logout_controller'), 'handle'])
+
+// Profile route
+router.get('/profile', [() => import('#controllers/profile_controller'), 'show'])
+router.put('/profile', [() => import('#controllers/profile_controller'), 'update'])

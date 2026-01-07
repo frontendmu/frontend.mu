@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { Link, usePage } from '@inertiajs/vue3'
+import { onMounted, ref, computed } from 'vue'
+import { Link, usePage, router } from '@inertiajs/vue3'
 import Logo from '~/components/layout/Logo.vue'
 import MenuItem from '~/components/layout/MenuItem.vue'
 import {
@@ -14,6 +14,12 @@ import {
 import type { TMenu } from '~/types'
 
 const page = usePage()
+const isAuthenticated = computed(() => page.props.auth.isAuthenticated)
+const user = computed(() => page.props.auth.user)
+
+function handleLogout() {
+  router.post('/logout')
+}
 
 const links: TMenu = {
   about: {
@@ -112,6 +118,30 @@ const links: TMenu = {
   },
 }
 
+const authLinks = computed(() => {
+  if (isAuthenticated.value && user.value) {
+    return [
+      {
+        title: 'Profile',
+        href: '/profile',
+        class: '',
+      },
+    ]
+  }
+  return [
+    {
+      title: 'Login',
+      href: '/login',
+      class: '',
+    },
+    {
+      title: 'Register',
+      href: '/register',
+      class: '',
+    },
+  ]
+})
+
 function toggleHeader() {
   const headerElement = document.querySelector('.menu-wrapper') as HTMLElement
 
@@ -196,8 +226,23 @@ onMounted(toggleHeader)
           </ul>
         </nav>
         <div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-4">
             <slot name="dock-right" />
+            <template v-for="link in authLinks" :key="link.href">
+              <Link
+                :href="link.href"
+                class="text-sm font-medium text-verse-600 dark:text-verse-300 hover:text-verse-800 dark:hover:text-verse-100"
+              >
+                {{ link.title }}
+              </Link>
+            </template>
+            <button
+              v-if="isAuthenticated"
+              @click="handleLogout"
+              class="text-sm font-medium text-verse-600 dark:text-verse-300 hover:text-verse-800 dark:hover:text-verse-100"
+            >
+              Logout
+            </button>
           </div>
         </div>
         <div

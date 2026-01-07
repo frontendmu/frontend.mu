@@ -29,16 +29,18 @@ server.use([
   () => import('@adonisjs/vite/vite_middleware'),
 ])
 
-/**
- * The router middleware stack runs middleware on all the HTTP
- * requests with a registered route.
- */
-router.use([
-  () => import('@adonisjs/core/bodyparser_middleware'),
-  () => import('@adonisjs/session/session_middleware'),
-  () => import('@adonisjs/shield/shield_middleware'),
-  () => import('@adonisjs/inertia/inertia_middleware'),
-])
+  /**
+   * The router middleware stack runs middleware on all the HTTP
+   * requests with a registered route.
+   */
+  router.use([
+    () => import('@adonisjs/core/bodyparser_middleware'),
+    () => import('@adonisjs/session/session_middleware'),
+    () => import('@adonisjs/shield/shield_middleware'),
+    () => import('@adonisjs/auth/initialize_auth_middleware'),
+    () => import('#middleware/initialize_bouncer_middleware'),
+    () => import('@adonisjs/inertia/inertia_middleware'),
+  ])
 
 /**
  * Named middleware collection must be explicitly assigned to

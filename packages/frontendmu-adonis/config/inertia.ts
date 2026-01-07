@@ -6,16 +6,12 @@ const inertiaConfig = defineConfig({
 
   sharedData: {
     errors: (ctx) => ctx.session!.flashMessages.get('errors'),
-    auth: (ctx) => {
-      if (!ctx.auth || !ctx.auth.isAuthenticated) {
-        return {
-          isAuthenticated: false,
-          user: null,
-        }
-      }
+    auth: async (ctx) => {
+      await ctx.auth.check()
       return {
-        isAuthenticated: true,
-        user: ctx.auth.user,
+        isAuthenticated: ctx.auth.isAuthenticated,
+        user: ctx.auth.user || null,
+        csrfToken: ctx.request.csrfToken,
       }
     },
   },
@@ -30,13 +26,4 @@ export default inertiaConfig
 
 declare module '@adonisjs/inertia/types' {
   export interface SharedProps extends InferSharedProps<typeof inertiaConfig> {}
-}
-
-declare module '@adonisjs/core/http' {
-  interface HttpContext {
-    auth: {
-      isAuthenticated: boolean
-      user?: unknown
-    }
-  }
 }

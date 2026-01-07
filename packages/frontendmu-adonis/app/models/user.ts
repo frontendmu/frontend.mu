@@ -1,11 +1,19 @@
 import { DateTime } from 'luxon'
+import hash from '@adonisjs/core/services/hash'
+import { compose } from '@adonisjs/core/helpers'
 import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
+import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import Session from '#models/session'
 
-export type UserRole = 'admin' | 'organizer' | 'speaker' | 'community_member'
+const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
+  uids: ['email'],
+  passwordColumnName: 'password',
+})
 
-export default class User extends BaseModel {
+export type AppRole = 'viewer' | 'member' | 'organizer' | 'superadmin'
+
+export default class User extends compose(BaseModel, AuthFinder) {
   @column({ isPrimary: true })
   declare id: string
 
@@ -22,7 +30,10 @@ export default class User extends BaseModel {
   declare avatarUrl: string | null
 
   @column()
-  declare role: UserRole
+  declare role: AppRole
+
+  @column({ serializeAs: null })
+  declare password: string | null
 
   @column()
   declare bio: string | null
@@ -39,13 +50,18 @@ export default class User extends BaseModel {
   @column()
   declare featured: boolean
 
+  @column()
+  declare isOrganizer: boolean
+
+  @column()
+  declare isCommunityMember: boolean
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 
-  // Relationships
   @manyToMany(() => Session, {
     pivotTable: 'session_speakers',
     pivotForeignKey: 'speaker_id',
@@ -53,17 +69,12 @@ export default class User extends BaseModel {
   })
   declare sessions: ManyToMany<typeof Session>
 
-  /**
-   * Check if user is a speaker
-   */
   get isSpeaker(): boolean {
-    return this.role === 'speaker'
+    return this.sessions && this.sessions.length > 0
   }
 
-  /**
-   * Check if user is featured
-   */
-  get isFeatured(): boolean {
-    return this.featured
+  hasAppRole(minimumRole: AppRole): boolean {
+    const hierarchy: AppRole[] = ['viewer', 'member', 'organizer', 'superadmin']
+    return hierarchy.indexOf(this.role) >= hierarchy.indexOf(minimumRole)
   }
 }
