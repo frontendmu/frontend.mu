@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo, manyToMany } from '@adonisjs/lucid/orm'
+import { randomUUID } from 'node:crypto'
+import { BaseModel, column, belongsTo, manyToMany, beforeCreate } from '@adonisjs/lucid/orm'
 import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Event from '#models/event'
 import User from '#models/user'
@@ -7,6 +8,13 @@ import User from '#models/user'
 export default class Session extends BaseModel {
   @column({ isPrimary: true })
   declare id: string
+
+  @beforeCreate()
+  static assignUuid(session: Session) {
+    if (!session.id) {
+      session.id = randomUUID()
+    }
+  }
 
   @column()
   declare eventId: string
