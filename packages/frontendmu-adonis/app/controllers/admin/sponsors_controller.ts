@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { randomUUID } from 'node:crypto'
 import Sponsor from '#models/sponsor'
 import vine from '@vinejs/vine'
+import SponsorPolicy from '#policies/sponsor_policy'
 
 // Validators
 const createSponsorValidator = vine.compile(
@@ -34,9 +35,8 @@ export default class AdminSponsorsController {
   /**
    * List all sponsors
    */
-  async index({ inertia, auth, response, request }: HttpContext) {
-    const user = auth.user!
-    if (!user.hasAppRole('organizer')) {
+  async index({ inertia, bouncer, response, request }: HttpContext) {
+    if (await bouncer.with(SponsorPolicy).denies('viewAny')) {
       return response.forbidden('You are not authorized to view sponsors.')
     }
 
@@ -59,9 +59,8 @@ export default class AdminSponsorsController {
   /**
    * Show the create form for a new sponsor
    */
-  async create({ inertia, auth, response }: HttpContext) {
-    const user = auth.user!
-    if (!user.hasAppRole('organizer')) {
+  async create({ inertia, bouncer, response }: HttpContext) {
+    if (await bouncer.with(SponsorPolicy).denies('create')) {
       return response.forbidden('You are not authorized to create sponsors.')
     }
 
@@ -71,9 +70,8 @@ export default class AdminSponsorsController {
   /**
    * Store a new sponsor
    */
-  async store({ request, auth, response, session }: HttpContext) {
-    const user = auth.user!
-    if (!user.hasAppRole('organizer')) {
+  async store({ request, bouncer, response, session }: HttpContext) {
+    if (await bouncer.with(SponsorPolicy).denies('create')) {
       return response.forbidden('You are not authorized to create sponsors.')
     }
 
@@ -98,9 +96,8 @@ export default class AdminSponsorsController {
   /**
    * Show the edit form for a sponsor
    */
-  async edit({ inertia, params, auth, response }: HttpContext) {
-    const user = auth.user!
-    if (!user.hasAppRole('organizer')) {
+  async edit({ inertia, params, bouncer, response }: HttpContext) {
+    if (await bouncer.with(SponsorPolicy).denies('edit')) {
       return response.forbidden('You are not authorized to edit sponsors.')
     }
 
@@ -120,9 +117,8 @@ export default class AdminSponsorsController {
   /**
    * Update a sponsor
    */
-  async update({ params, request, auth, response, session }: HttpContext) {
-    const user = auth.user!
-    if (!user.hasAppRole('organizer')) {
+  async update({ params, request, bouncer, response, session }: HttpContext) {
+    if (await bouncer.with(SponsorPolicy).denies('update')) {
       return response.forbidden('You are not authorized to update sponsors.')
     }
 
@@ -149,9 +145,8 @@ export default class AdminSponsorsController {
   /**
    * Delete a sponsor
    */
-  async destroy({ params, auth, response, session }: HttpContext) {
-    const user = auth.user!
-    if (!user.hasAppRole('superadmin')) {
+  async destroy({ params, bouncer, response, session }: HttpContext) {
+    if (await bouncer.with(SponsorPolicy).denies('delete')) {
       return response.forbidden('You are not authorized to delete sponsors.')
     }
 

@@ -6,41 +6,42 @@ import type { AuthorizerResponse } from '@adonisjs/bouncer/types'
 /**
  * Policy for Session authorization
  *
- * Sessions inherit event authorization - only organizers and superadmins can manage sessions.
+ * Uses the new RBAC permission system.
+ * Permissions used: create-session, edit-session, delete-session
  */
 export default class SessionPolicy extends BasePolicy {
   /**
-   * Only organizers and superadmins can create sessions
+   * Only users with create-session permission can create sessions
    */
-  create(user: User): AuthorizerResponse {
-    return user.hasAppRole('organizer')
+  async create(user: User): Promise<AuthorizerResponse> {
+    return await user.can('create-session')
   }
 
   /**
-   * Only organizers and superadmins can edit sessions
+   * Only users with edit-session permission can edit sessions
    */
-  edit(user: User, _session: Session): AuthorizerResponse {
-    return user.hasAppRole('organizer')
+  async edit(user: User, _session: Session): Promise<AuthorizerResponse> {
+    return await user.can('edit-session')
   }
 
   /**
-   * Only organizers and superadmins can update sessions
+   * Only users with edit-session permission can update sessions
    */
-  update(user: User, _session: Session): AuthorizerResponse {
-    return user.hasAppRole('organizer')
+  async update(user: User, _session: Session): Promise<AuthorizerResponse> {
+    return await user.can('edit-session')
   }
 
   /**
-   * Only organizers and superadmins can delete sessions
+   * Only users with delete-session permission can delete sessions
    */
-  delete(user: User, _session: Session): AuthorizerResponse {
-    return user.hasAppRole('organizer')
+  async delete(user: User, _session: Session): Promise<AuthorizerResponse> {
+    return await user.can('delete-session')
   }
 
   /**
-   * Only organizers and superadmins can manage sessions (add/remove speakers)
+   * Only users with edit-session permission can manage sessions (add/remove speakers)
    */
-  manage(user: User, _session: Session): AuthorizerResponse {
-    return user.hasAppRole('organizer')
+  async manage(user: User, _session: Session): Promise<AuthorizerResponse> {
+    return await user.can('edit-session')
   }
 }

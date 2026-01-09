@@ -1,13 +1,15 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
+import Role from '#models/role'
 import vine from '@vinejs/vine'
+import UserPolicy from '#policies/user_policy'
 
 // Validator for updating users
 const updateUserValidator = vine.compile(
   vine.object({
     name: vine.string().trim().minLength(1).maxLength(255),
     email: vine.string().email().optional(),
-    role: vine.enum(['viewer', 'member', 'organizer', 'superadmin']),
+    roleIds: vine.array(vine.number()).minLength(1), // New RBAC: array of role IDs
     githubUsername: vine.string().trim().maxLength(100).optional(),
     bio: vine.string().trim().maxLength(2000).optional(),
     linkedinUrl: vine.string().url().optional(),
@@ -23,20 +25,23 @@ export default class AdminUsersController {
   /**
    * List all users
    */
-  async index({ inertia, auth, response, request }: HttpContext) {
-    const user = auth.user!
-    if (!user.hasAppRole('superadmin')) {
+  async index({ inertia, bouncer, response, request }: HttpContext) {
+    if (await bouncer.with(UserPolicy).denies('viewAny')) {
       return response.forbidden('You are not authorized to view users.')
     }
 
     const roleFilter = request.input('role', 'all')
     const search = request.input('search', '')
 
-    let query = User.query().orderBy('createdAt', 'desc')
+    let query = User.query()
+      .preload('roles')
+      .orderBy('createdAt', 'desc')
 
-    // Apply role filter
+    // Apply role filter (filter by RBAC role name)
     if (roleFilter !== 'all') {
-      query = query.where('role', roleFilter)
+      query = query.whereHas('roles', (roleQuery) => {
+        roleQuery.where('name', roleFilter)
+      })
     }
 
     // Apply search
@@ -50,80 +55,120 @@ export default class AdminUsersController {
 
     const users = await query
 
-    // Get role counts
-    const roleCounts = await User.query()
-      .select('role')
-      .count('* as count')
-      .groupBy('role')
+    // Get all available roles for the filter
+    const allRoles = await Role.query().orderBy('name', 'asc')
 
-    const counts = {
-      all: 0,
-      viewer: 0,
-      member: 0,
-      organizer: 0,
-      superadmin: 0,
+    // Get role counts using RBAC
+    const roleCounts: Record<string, number> = { all: 0 }
+    for (const role of allRoles) {
+      const count = await User.query()
+        .whereHas('roles', (q) => q.where('role_id', role.id))
+        .count('* as total')
+        .first()
+      roleCounts[role.name] = Number(count?.$extras.total || 0)
+      roleCounts.all += roleCounts[role.name]
     }
-
-    roleCounts.forEach((r) => {
-      const role = r.role as keyof typeof counts
-      const count = Number(r.$extras.count)
-      counts[role] = count
-      counts.all += count
-    })
 
     return inertia.render('admin/users/index', {
       users: users.map((u) => ({
         ...u.serialize(),
-        avatarUrl: u.avatarUrl || 
+        roles: u.roles.map((r) => ({ id: r.id, name: r.name })),
+        avatarUrl:
+          u.avatarUrl ||
           (u.githubUsername ? `https://avatars.githubusercontent.com/${u.githubUsername}` : null),
       })),
+      allRoles: allRoles.map((r) => ({ id: r.id, name: r.name, description: r.description })),
       roleFilter,
       search,
-      counts,
+      counts: roleCounts,
     })
   }
 
   /**
    * Show the edit form for a user
    */
-  async edit({ inertia, params, auth, response }: HttpContext) {
-    const currentUser = auth.user!
-    if (!currentUser.hasAppRole('superadmin')) {
+  async edit({ inertia, params, bouncer, response }: HttpContext) {
+    if (await bouncer.with(UserPolicy).denies('edit')) {
       return response.forbidden('You are not authorized to edit users.')
     }
 
-    const user = await User.findOrFail(params.id)
+    const user = await User.query()
+      .where('id', params.id)
+      .preload('roles', (query) => {
+        query.preload('permissions')
+      })
+      .firstOrFail()
+
+    // Get all available roles with their permissions
+    const allRoles = await Role.query()
+      .preload('permissions')
+      .orderBy('name', 'asc')
+
+    // Get the user's current permissions (derived from roles)
+    const userPermissions = await user.getAllPermissions()
 
     return inertia.render('admin/users/edit', {
       user: {
         ...user.serialize(),
-        avatarUrl: user.avatarUrl || 
-          (user.githubUsername ? `https://avatars.githubusercontent.com/${user.githubUsername}` : null),
+        roles: user.roles.map((r) => ({
+          id: r.id,
+          name: r.name,
+          description: r.description,
+          permissions: r.permissions.map((p) => ({ id: p.id, name: p.name })),
+        })),
+        permissions: userPermissions,
+        avatarUrl:
+          user.avatarUrl ||
+          (user.githubUsername
+            ? `https://avatars.githubusercontent.com/${user.githubUsername}`
+            : null),
       },
+      allRoles: allRoles.map((r) => ({
+        id: r.id,
+        name: r.name,
+        description: r.description,
+        permissions: r.permissions.map((p) => ({
+          id: p.id,
+          name: p.name,
+          description: p.description,
+        })),
+      })),
     })
   }
 
   /**
    * Update a user
    */
-  async update({ params, request, auth, response, session }: HttpContext) {
-    const currentUser = auth.user!
-    if (!currentUser.hasAppRole('superadmin')) {
+  async update({ params, request, auth, bouncer, response, session }: HttpContext) {
+    if (await bouncer.with(UserPolicy).denies('update')) {
       return response.forbidden('You are not authorized to update users.')
     }
 
-    const user = await User.findOrFail(params.id)
+    const currentUser = auth.user!
+    const user = await User.query()
+      .where('id', params.id)
+      .preload('roles')
+      .firstOrFail()
+
     const data = await request.validateUsing(updateUserValidator)
 
-    // Prevent superadmin from demoting themselves
-    if (user.id === currentUser.id && data.role !== 'superadmin') {
-      return response.badRequest('You cannot change your own role.')
+    // Check if user is trying to remove superadmin role from themselves
+    const isSuperadmin = await currentUser.hasRole('superadmin')
+    const superadminRole = await Role.findBy('name', 'superadmin')
+
+    if (
+      user.id === currentUser.id &&
+      isSuperadmin &&
+      superadminRole &&
+      !data.roleIds.includes(superadminRole.id)
+    ) {
+      return response.badRequest('You cannot remove superadmin role from yourself.')
     }
 
+    // Update basic user info
     user.merge({
       name: data.name,
       email: data.email || null,
-      role: data.role,
       githubUsername: data.githubUsername || null,
       bio: data.bio || null,
       linkedinUrl: data.linkedinUrl || null,
@@ -136,6 +181,12 @@ export default class AdminUsersController {
 
     await user.save()
 
+    // Update user's roles using the pivot table
+    await user.related('roles').sync(data.roleIds)
+
+    // Clear the RBAC cache since roles changed
+    user.clearRbacCache()
+
     session.flash('success', 'User updated successfully!')
     return response.redirect('/admin/users')
   }
@@ -143,12 +194,12 @@ export default class AdminUsersController {
   /**
    * Delete a user
    */
-  async destroy({ params, auth, response, session }: HttpContext) {
-    const currentUser = auth.user!
-    if (!currentUser.hasAppRole('superadmin')) {
+  async destroy({ params, auth, bouncer, response, session }: HttpContext) {
+    if (await bouncer.with(UserPolicy).denies('delete')) {
       return response.forbidden('You are not authorized to delete users.')
     }
 
+    const currentUser = auth.user!
     const user = await User.findOrFail(params.id)
 
     // Prevent deleting yourself

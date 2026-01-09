@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto'
 import db from '@adonisjs/lucid/services/db'
 import User from '#models/user'
 import vine from '@vinejs/vine'
+import SpeakerPolicy from '#policies/speaker_policy'
 
 // Validators
 const createSpeakerValidator = vine.compile(
@@ -35,9 +36,8 @@ export default class AdminSpeakersController {
   /**
    * List all speakers (users who have spoken at sessions)
    */
-  async index({ inertia, auth, response }: HttpContext) {
-    const user = auth.user!
-    if (!user.hasAppRole('organizer')) {
+  async index({ inertia, bouncer, response }: HttpContext) {
+    if (await bouncer.with(SpeakerPolicy).denies('viewAny')) {
       return response.forbidden('You are not authorized to view speakers.')
     }
 
@@ -65,9 +65,8 @@ export default class AdminSpeakersController {
   /**
    * Show the create form for a new speaker
    */
-  async create({ inertia, auth, response }: HttpContext) {
-    const user = auth.user!
-    if (!user.hasAppRole('organizer')) {
+  async create({ inertia, bouncer, response }: HttpContext) {
+    if (await bouncer.with(SpeakerPolicy).denies('create')) {
       return response.forbidden('You are not authorized to create speakers.')
     }
 
@@ -77,9 +76,8 @@ export default class AdminSpeakersController {
   /**
    * Store a new speaker
    */
-  async store({ request, auth, response, session }: HttpContext) {
-    const user = auth.user!
-    if (!user.hasAppRole('organizer')) {
+  async store({ request, bouncer, response, session }: HttpContext) {
+    if (await bouncer.with(SpeakerPolicy).denies('create')) {
       return response.forbidden('You are not authorized to create speakers.')
     }
 
@@ -107,9 +105,8 @@ export default class AdminSpeakersController {
   /**
    * Show the edit form for a speaker
    */
-  async edit({ inertia, params, auth, response }: HttpContext) {
-    const user = auth.user!
-    if (!user.hasAppRole('organizer')) {
+  async edit({ inertia, params, bouncer, response }: HttpContext) {
+    if (await bouncer.with(SpeakerPolicy).denies('edit')) {
       return response.forbidden('You are not authorized to edit speakers.')
     }
 
@@ -138,9 +135,8 @@ export default class AdminSpeakersController {
   /**
    * Update a speaker
    */
-  async update({ params, request, auth, response, session }: HttpContext) {
-    const user = auth.user!
-    if (!user.hasAppRole('organizer')) {
+  async update({ params, request, bouncer, response, session }: HttpContext) {
+    if (await bouncer.with(SpeakerPolicy).denies('update')) {
       return response.forbidden('You are not authorized to update speakers.')
     }
 
@@ -167,9 +163,8 @@ export default class AdminSpeakersController {
   /**
    * Delete a speaker
    */
-  async destroy({ params, auth, response, session }: HttpContext) {
-    const user = auth.user!
-    if (!user.hasAppRole('superadmin')) {
+  async destroy({ params, bouncer, response, session }: HttpContext) {
+    if (await bouncer.with(SpeakerPolicy).denies('delete')) {
       return response.forbidden('You are not authorized to delete speakers.')
     }
 

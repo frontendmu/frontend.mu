@@ -6,7 +6,8 @@ import type { AuthorizerResponse } from '@adonisjs/bouncer/types'
 /**
  * Policy for Event authorization
  *
- * Only organizers and superadmins can manage events.
+ * Uses the new RBAC permission system.
+ * Permissions used: view-events, create-event, edit-event, delete-event, publish-event
  */
 export default class EventPolicy extends BasePolicy {
   /**
@@ -18,44 +19,44 @@ export default class EventPolicy extends BasePolicy {
   }
 
   /**
-   * Only organizers and superadmins can view the admin events list
+   * Only users with access-admin permission can view the admin events list
    */
-  viewAny(user: User): AuthorizerResponse {
-    return user.hasAppRole('organizer')
+  async viewAny(user: User): Promise<AuthorizerResponse> {
+    return await user.can('access-admin')
   }
 
   /**
-   * Only organizers and superadmins can create events
+   * Only users with create-event permission can create events
    */
-  create(user: User): AuthorizerResponse {
-    return user.hasAppRole('organizer')
+  async create(user: User): Promise<AuthorizerResponse> {
+    return await user.can('create-event')
   }
 
   /**
-   * Only organizers and superadmins can edit events
+   * Only users with edit-event permission can edit events
    */
-  edit(user: User, _event: Event): AuthorizerResponse {
-    return user.hasAppRole('organizer')
+  async edit(user: User, _event: Event): Promise<AuthorizerResponse> {
+    return await user.can('edit-event')
   }
 
   /**
-   * Only organizers and superadmins can update events
+   * Only users with edit-event permission can update events
    */
-  update(user: User, _event: Event): AuthorizerResponse {
-    return user.hasAppRole('organizer')
+  async update(user: User, _event: Event): Promise<AuthorizerResponse> {
+    return await user.can('edit-event')
   }
 
   /**
-   * Only superadmins can delete events
+   * Only users with delete-event permission can delete events
    */
-  delete(user: User, _event: Event): AuthorizerResponse {
-    return user.hasAppRole('superadmin')
+  async delete(user: User, _event: Event): Promise<AuthorizerResponse> {
+    return await user.can('delete-event')
   }
 
   /**
-   * Only organizers and superadmins can view the admin/edit page
+   * Only users with edit-event permission can manage events
    */
-  manage(user: User, _event: Event): AuthorizerResponse {
-    return user.hasAppRole('organizer')
+  async manage(user: User, _event: Event): Promise<AuthorizerResponse> {
+    return await user.can('edit-event')
   }
 }

@@ -7,12 +7,18 @@ import featureFlags from '#config/feature_flags'
 
 /**
  * Ability to RSVP to an event
- * - User must be authenticated
+ * - User must be authenticated and have create-rsvp permission
  * - Event must be accepting RSVPs
  * - Event must not be in the past (unless FEATURE_RSVP_PAST_EVENTS is enabled)
  * - Event RSVP closing date must not have passed
  */
-export const rsvpToEvent = Bouncer.ability((_user: User, event: Event) => {
+export const rsvpToEvent = Bouncer.ability(async (user: User, event: Event) => {
+  // Check if user has permission to RSVP
+  const canRsvp = await user.can('create-rsvp')
+  if (!canRsvp) {
+    return false
+  }
+
   // Check if event is accepting RSVPs
   if (!event.acceptingRsvp) {
     return false
@@ -34,21 +40,23 @@ export const rsvpToEvent = Bouncer.ability((_user: User, event: Event) => {
 /**
  * Ability to cancel own RSVP
  * - User must be the owner of the RSVP
+ * - User must have cancel-rsvp permission
  */
-export const cancelRsvp = Bouncer.ability((user: User, rsvp: Rsvp) => {
-  return user.id === rsvp.userId
+export const cancelRsvp = Bouncer.ability(async (user: User, rsvp: Rsvp) => {
+  const canCancel = await user.can('cancel-rsvp')
+  return canCancel && user.id === rsvp.userId
 })
 
 /**
- * Ability to view RSVPs for an event (for organizers/admins)
+ * Ability to view RSVPs for an event (for users with view-rsvps permission)
  */
-export const viewEventRsvps = Bouncer.ability((user: User, _event: Event) => {
-  return user.hasAppRole('organizer')
+export const viewEventRsvps = Bouncer.ability(async (user: User, _event: Event) => {
+  return await user.can('view-rsvps')
 })
 
 /**
- * Ability to manage RSVPs (update status, etc.) - for organizers/admins
+ * Ability to manage RSVPs (update status, etc.) - for users with manage-rsvps permission
  */
-export const manageRsvp = Bouncer.ability((user: User, _rsvp: Rsvp) => {
-  return user.hasAppRole('organizer')
+export const manageRsvp = Bouncer.ability(async (user: User, _rsvp: Rsvp) => {
+  return await user.can('manage-rsvps')
 })

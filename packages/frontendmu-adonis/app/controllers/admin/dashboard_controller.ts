@@ -1,18 +1,17 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import db from '@adonisjs/lucid/services/db'
 import Event from '#models/event'
 import User from '#models/user'
 import Sponsor from '#models/sponsor'
+import db from '@adonisjs/lucid/services/db'
+import EventPolicy from '#policies/event_policy'
 
 export default class DashboardController {
   /**
    * Show the admin dashboard
    */
-  async index({ inertia, auth, response }: HttpContext) {
-    const user = auth.user!
-
-    // Only organizers and superadmins can access the dashboard
-    if (!user.hasAppRole('organizer')) {
+  async index({ inertia, bouncer, response }: HttpContext) {
+    // Only users with access-admin permission can access the dashboard (checked via viewAny policy)
+    if (await bouncer.with(EventPolicy).denies('viewAny')) {
       return response.forbidden('You are not authorized to access the admin dashboard.')
     }
 
