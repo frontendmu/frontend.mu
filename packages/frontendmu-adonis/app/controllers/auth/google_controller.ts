@@ -48,15 +48,11 @@ export default class GoogleController {
     /**
      * Find or create user based on Google ID or email
      */
-    let user = await User.query()
-      .where('google_id', googleUser.id)
-      .first()
+    let user = await User.query().where('google_id', googleUser.id).first()
 
     if (!user) {
       // Try to find by email (for existing users migrated from Directus)
-      user = await User.query()
-        .where('email', googleUser.email!)
-        .first()
+      user = await User.query().where('email', googleUser.email!).first()
 
       if (user) {
         // Link the Google account to the existing user

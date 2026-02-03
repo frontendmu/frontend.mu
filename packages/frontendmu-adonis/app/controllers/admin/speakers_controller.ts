@@ -53,8 +53,11 @@ export default class AdminSpeakersController {
     const speakersWithCounts = speakers.map((speaker) => ({
       ...speaker.serialize(),
       sessionCount: speaker.sessions?.length || 0,
-      avatarUrl: speaker.avatarUrl || 
-        (speaker.githubUsername ? `https://avatars.githubusercontent.com/${speaker.githubUsername}` : null),
+      avatarUrl:
+        speaker.avatarUrl ||
+        (speaker.githubUsername
+          ? `https://avatars.githubusercontent.com/${speaker.githubUsername}`
+          : null),
     }))
 
     return inertia.render('admin/speakers/index', {
@@ -120,14 +123,18 @@ export default class AdminSpeakersController {
     return inertia.render('admin/speakers/edit', {
       speaker: {
         ...speaker.serialize(),
-        avatarUrl: speaker.avatarUrl || 
-          (speaker.githubUsername ? `https://avatars.githubusercontent.com/${speaker.githubUsername}` : null),
-        sessions: speaker.sessions?.map((s) => ({
-          id: s.id,
-          title: s.title,
-          eventTitle: s.event?.title,
-          eventDate: s.event?.eventDate?.toISODate(),
-        })) || [],
+        avatarUrl:
+          speaker.avatarUrl ||
+          (speaker.githubUsername
+            ? `https://avatars.githubusercontent.com/${speaker.githubUsername}`
+            : null),
+        sessions:
+          speaker.sessions?.map((s) => ({
+            id: s.id,
+            title: s.title,
+            eventTitle: s.event?.title,
+            eventDate: s.event?.eventDate?.toISODate(),
+          })) || [],
       },
     })
   }
@@ -169,10 +176,10 @@ export default class AdminSpeakersController {
     }
 
     const speaker = await User.findOrFail(params.id)
-    
+
     // Remove from session_speakers first
     await db.from('session_speakers').where('speaker_id', speaker.id).delete()
-    
+
     // Delete the user
     await speaker.delete()
 

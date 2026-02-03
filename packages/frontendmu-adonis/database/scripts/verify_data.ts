@@ -45,18 +45,14 @@ async function verifyDataIntegrity() {
 
     // Check sessions have valid events
     const orphanedSessions = await Session.query()
-      .whereNotExists(
-        Event.query().whereColumn('events.id', 'sessions.event_id')
-      )
+      .whereNotExists(Event.query().whereColumn('events.id', 'sessions.event_id'))
       .count('* as total')
 
     console.log(`   Orphaned sessions: ${orphanedSessions[0].total}`)
 
     // Check photos have valid events
     const orphanedPhotos = await EventPhoto.query()
-      .whereNotExists(
-        Event.query().whereColumn('events.id', 'event_photos.event_id')
-      )
+      .whereNotExists(Event.query().whereColumn('events.id', 'event_photos.event_id'))
       .count('* as total')
 
     console.log(`   Orphaned photos: ${orphanedPhotos[0].total}`)
@@ -64,7 +60,9 @@ async function verifyDataIntegrity() {
     // Check users by role
     const organizers = await User.query().where('role', 'organizer').count('* as total')
     const speakers = await User.query().where('role', 'speaker').count('* as total')
-    const communityMembers = await User.query().where('role', 'community_member').count('* as total')
+    const communityMembers = await User.query()
+      .where('role', 'community_member')
+      .count('* as total')
 
     console.log('\n👥 User Distribution:')
     console.log(`   Organizers: ${organizers[0].total}`)
@@ -86,9 +84,7 @@ async function verifyDataIntegrity() {
     console.log(`   Active: ${activeSponsors[0].total}`)
 
     // Check sessions per event
-    const eventsWithSessions = await Event.query()
-      .has('sessions')
-      .count('* as total')
+    const eventsWithSessions = await Event.query().has('sessions').count('* as total')
 
     console.log('\n🎤 Events with Sessions:')
     console.log(`   Events with sessions: ${eventsWithSessions[0].total}`)
@@ -97,7 +93,7 @@ async function verifyDataIntegrity() {
     if (userCount[0].total > 0) {
       console.log('\n👀 Sample Users:')
       const sampleUsers = await User.query().limit(3)
-      sampleUsers.forEach(user => {
+      sampleUsers.forEach((user) => {
         console.log(`   - ${user.name} (${user.role}) - ${user.githubUsername || 'No GitHub'}`)
       })
     }
@@ -114,7 +110,8 @@ async function verifyDataIntegrity() {
     }
 
     // Summary
-    const totalIssues = parseInt(orphanedSessions[0].total) + parseInt(orphanedPhotos[0].total)
+    const totalIssues =
+      Number.parseInt(orphanedSessions[0].total) + Number.parseInt(orphanedPhotos[0].total)
     if (totalIssues === 0) {
       console.log('\n✅ Data integrity check PASSED')
     } else {
@@ -122,7 +119,6 @@ async function verifyDataIntegrity() {
     }
 
     console.log('\n🎉 Verification complete!')
-
   } catch (error) {
     console.error('❌ Verification failed:', error)
     process.exit(1)

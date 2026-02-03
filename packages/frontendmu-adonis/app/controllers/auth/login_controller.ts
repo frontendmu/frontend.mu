@@ -24,11 +24,11 @@ export default class LoginController {
       console.log('[Login] Calling User.verifyCredentials...')
       const user = await User.verifyCredentials(email, password)
       console.log('[Login] Credentials verified successfully for user:', user.id)
-      
+
       console.log('[Login] Logging in user...')
       await auth.use('web').login(user)
       console.log('[Login] Login successful, redirecting to /')
-      
+
       return response.redirect('/')
     } catch (error) {
       console.log('[Login] Login failed with error:', error.message)

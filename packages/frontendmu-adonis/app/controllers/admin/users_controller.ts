@@ -33,9 +33,7 @@ export default class AdminUsersController {
     const roleFilter = request.input('role', 'all')
     const search = request.input('search', '')
 
-    let query = User.query()
-      .preload('roles')
-      .orderBy('createdAt', 'desc')
+    let query = User.query().preload('roles').orderBy('createdAt', 'desc')
 
     // Apply role filter (filter by RBAC role name)
     if (roleFilter !== 'all') {
@@ -100,9 +98,7 @@ export default class AdminUsersController {
       .firstOrFail()
 
     // Get all available roles with their permissions
-    const allRoles = await Role.query()
-      .preload('permissions')
-      .orderBy('name', 'asc')
+    const allRoles = await Role.query().preload('permissions').orderBy('name', 'asc')
 
     // Get the user's current permissions (derived from roles)
     const userPermissions = await user.getAllPermissions()
@@ -145,10 +141,7 @@ export default class AdminUsersController {
     }
 
     const currentUser = auth.user!
-    const user = await User.query()
-      .where('id', params.id)
-      .preload('roles')
-      .firstOrFail()
+    const user = await User.query().where('id', params.id).preload('roles').firstOrFail()
 
     const data = await request.validateUsing(updateUserValidator)
 

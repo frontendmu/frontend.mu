@@ -10,7 +10,7 @@ const { Client } = pg
 
 const client = new Client({
   host: process.env.DB_HOST || '127.0.0.1',
-  port: parseInt(process.env.DB_PORT || '5432'),
+  port: Number.parseInt(process.env.DB_PORT || '5432'),
   user: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || 'postgres',
   database: process.env.DB_DATABASE || 'frontendmu_dev',
@@ -56,38 +56,50 @@ async function runMigration() {
 
       if (row.id !== strapiId) {
         // Check if there's already a speaker with the Strapi ID
-        const existingStrapi = await client.query(
-          'SELECT id FROM users WHERE id = $1',
-          [strapiId]
-        )
+        const existingStrapi = await client.query('SELECT id FROM users WHERE id = $1', [strapiId])
 
         if (existingStrapi.rows.length > 0) {
           // There's already a speaker with the Strapi ID, merge them
-          console.log('  Merging ' + row.name + ' (@' + row.github_username + ') from ' + row.id.substring(0, 8) + ' to ' + strapiId.substring(0, 8))
+          console.log(
+            '  Merging ' +
+              row.name +
+              ' (@' +
+              row.github_username +
+              ') from ' +
+              row.id.substring(0, 8) +
+              ' to ' +
+              strapiId.substring(0, 8)
+          )
 
           // First update session_speakers to use the Strapi ID
-          await client.query(
-            'UPDATE session_speakers SET speaker_id = $1 WHERE speaker_id = $2',
-            [strapiId, row.id]
-          )
+          await client.query('UPDATE session_speakers SET speaker_id = $1 WHERE speaker_id = $2', [
+            strapiId,
+            row.id,
+          ])
 
           // Then delete the old speaker
           await client.query('DELETE FROM users WHERE id = $1', [row.id])
         } else {
           // Just update the ID - need to update foreign keys first
-          console.log('  Fixing ' + row.name + ' (@' + row.github_username + ') from ' + row.id.substring(0, 8) + ' to ' + strapiId.substring(0, 8))
+          console.log(
+            '  Fixing ' +
+              row.name +
+              ' (@' +
+              row.github_username +
+              ') from ' +
+              row.id.substring(0, 8) +
+              ' to ' +
+              strapiId.substring(0, 8)
+          )
 
           // First update session_speakers
-          await client.query(
-            'UPDATE session_speakers SET speaker_id = $1 WHERE speaker_id = $2',
-            [strapiId, row.id]
-          )
+          await client.query('UPDATE session_speakers SET speaker_id = $1 WHERE speaker_id = $2', [
+            strapiId,
+            row.id,
+          ])
 
           // Then update the user ID
-          await client.query(
-            'UPDATE users SET id = $1 WHERE id = $2',
-            [strapiId, row.id]
-          )
+          await client.query('UPDATE users SET id = $1 WHERE id = $2', [strapiId, row.id])
         }
 
         fixedCount++
@@ -102,14 +114,13 @@ async function runMigration() {
 
     // Final summary
     const speakerCount = await client.query("SELECT COUNT(*) FROM users WHERE role = 'speaker'")
-    const sessionCount = await client.query("SELECT COUNT(*) FROM session_speakers")
+    const sessionCount = await client.query('SELECT COUNT(*) FROM session_speakers')
 
     console.log('\nFinal:')
     console.log('  Total speakers: ' + speakerCount.rows[0].count)
     console.log('  Total session-speaker links: ' + sessionCount.rows[0].count)
 
     console.log('\nDone!')
-
   } catch (error) {
     console.error('Migration failed:', error)
     process.exit(1)

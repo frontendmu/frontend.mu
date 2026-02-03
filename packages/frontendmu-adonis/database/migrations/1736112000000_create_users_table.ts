@@ -10,7 +10,10 @@ export default class extends BaseSchema {
       table.string('email', 254).nullable().unique()
       table.string('github_username').nullable().unique()
       table.string('avatar_url').nullable()
-      table.enum('role', ['admin', 'organizer', 'speaker', 'community_member']).defaultTo('community_member').notNullable()
+      table
+        .enum('role', ['admin', 'organizer', 'speaker', 'community_member'])
+        .defaultTo('community_member')
+        .notNullable()
       table.text('bio').nullable()
       table.string('linkedin_url').nullable()
       table.string('twitter_url').nullable()

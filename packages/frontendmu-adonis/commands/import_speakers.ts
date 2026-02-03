@@ -202,7 +202,9 @@ export default class ImportSpeakers extends BaseCommand {
           .first()
 
         if (existing) {
-          this.logger.debug(`Skipping existing relationship: session ${sessionId} -> user ${userId}`)
+          this.logger.debug(
+            `Skipping existing relationship: session ${sessionId} -> user ${userId}`
+          )
           this.stats.relationsSkipped++
           continue
         }

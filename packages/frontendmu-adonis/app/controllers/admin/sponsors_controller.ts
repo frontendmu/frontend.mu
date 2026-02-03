@@ -101,10 +101,7 @@ export default class AdminSponsorsController {
       return response.forbidden('You are not authorized to edit sponsors.')
     }
 
-    const sponsor = await Sponsor.query()
-      .where('id', params.id)
-      .preload('events')
-      .firstOrFail()
+    const sponsor = await Sponsor.query().where('id', params.id).preload('events').firstOrFail()
 
     return inertia.render('admin/sponsors/edit', {
       sponsor: {

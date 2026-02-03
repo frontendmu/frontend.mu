@@ -73,11 +73,13 @@ async function migrateUsers() {
     user.bio = null
 
     // Try to find additional profile data
-    const profileData = speakersProfile.find(p => p.github === githubUsername)
+    const profileData = speakersProfile.find((p) => p.github === githubUsername)
     if (profileData) {
       user.bio = profileData.bio
       user.websiteUrl = profileData.website || null
-      user.twitterUrl = profileData.twitter ? `https://twitter.com/${profileData.twitter.replace('@', '')}` : null
+      user.twitterUrl = profileData.twitter
+        ? `https://twitter.com/${profileData.twitter.replace('@', '')}`
+        : null
     }
 
     await user.save()
@@ -105,9 +107,7 @@ async function migrateUsers() {
   }
 
   // Create speaker users from contributors with high contribution counts
-  const topContributors = contributors
-    .filter(c => c.contributions >= 10)
-    .slice(0, 20) // Limit to top 20 contributors
+  const topContributors = contributors.filter((c) => c.contributions >= 10).slice(0, 20) // Limit to top 20 contributors
 
   for (const contributor of topContributors) {
     // Check if user already exists
@@ -127,12 +127,16 @@ async function migrateUsers() {
     user.bio = null
 
     // Try to find additional profile data
-    const profileData = speakersProfile.find(p => p.github === contributor.username)
+    const profileData = speakersProfile.find((p) => p.github === contributor.username)
     if (profileData) {
-      user.name = profileData.job_title ? `${contributor.username} (${profileData.job_title})` : contributor.username
+      user.name = profileData.job_title
+        ? `${contributor.username} (${profileData.job_title})`
+        : contributor.username
       user.bio = profileData.bio
       user.websiteUrl = profileData.website || null
-      user.twitterUrl = profileData.twitter ? `https://twitter.com/${profileData.twitter.replace('@', '')}` : null
+      user.twitterUrl = profileData.twitter
+        ? `https://twitter.com/${profileData.twitter.replace('@', '')}`
+        : null
     }
 
     await user.save()
@@ -186,7 +190,7 @@ async function migrateEvents() {
       parkingLocation: 'Free parking at venue',
       mapUrl: 'https://maps.google.com/example2',
       status: 'published' as const,
-    }
+    },
   ]
 
   for (const eventData of sampleEvents) {
@@ -228,7 +232,7 @@ async function migrateSessions() {
         title: 'Q&A and Networking',
         description: 'Open discussion and networking session',
         order: 3,
-      }
+      },
     ]
 
     for (const sessionData of sessions) {
@@ -238,7 +242,7 @@ async function migrateSessions() {
 
       // Add speakers to sessions
       const speakers = await User.query().where('role', 'speaker').limit(2)
-      await session.related('speakers').attach(speakers.map(s => s.id))
+      await session.related('speakers').attach(speakers.map((s) => s.id))
 
       console.log(`✅ Created session: ${session.title}`)
     }
@@ -253,7 +257,7 @@ async function migrateSponsors() {
   // Flatten sponsors from the nested structure
   const allSponsors: any[] = []
 
-  sponsorsData.forEach(category => {
+  sponsorsData.forEach((category) => {
     if (category.sponsors) {
       category.sponsors.forEach((sponsor: any) => {
         // Map sponsor types based on category
@@ -277,8 +281,8 @@ async function migrateSponsors() {
   })
 
   // Remove duplicates
-  const uniqueSponsors = allSponsors.filter((sponsor, index, self) =>
-    index === self.findIndex(s => s.name === sponsor.name)
+  const uniqueSponsors = allSponsors.filter(
+    (sponsor, index, self) => index === self.findIndex((s) => s.name === sponsor.name)
   )
 
   for (const sponsorData of uniqueSponsors) {
@@ -300,8 +304,7 @@ async function migrateEventSponsors() {
   const sponsors = await Sponsor.all()
 
   // Link sponsors to events (sample relationships)
-  for (let i = 0; i < events.length; i++) {
-    const event = events[i]
+  for (const [i, event] of events.entries()) {
     const eventSponsors = sponsors.slice(i * 2, (i + 1) * 2) // 2 sponsors per event
 
     for (const sponsor of eventSponsors) {
@@ -341,7 +344,7 @@ async function migrateEventPhotos() {
         photoUrl: `/img/gallery/${event.albumName}/3.jpg`,
         caption: 'Networking session',
         order: 3,
-      }
+      },
     ]
 
     for (const photoData of photos) {
@@ -367,7 +370,7 @@ async function migratePages() {
       content: 'Welcome to the Mauritian frontend community...',
       metaDescription: 'Learn about Frontend.mu, the Mauritian frontend community',
       status: 'published' as const,
-    }
+    },
   ]
 
   for (const pageData of pages) {
@@ -405,7 +408,6 @@ async function runMigration() {
     console.log(`   Events: ${eventCount[0].total}`)
     console.log(`   Sessions: ${sessionCount[0].total}`)
     console.log(`   Sponsors: ${sponsorCount[0].total}`)
-
   } catch (error) {
     console.error('❌ Migration failed:', error)
     process.exit(1)

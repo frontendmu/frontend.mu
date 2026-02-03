@@ -182,9 +182,7 @@ export default class ImportDirectusUsers extends BaseCommand {
         }
 
         // Check if user already exists
-        const existingUser = await User.query()
-          .where('email', directusUser.email)
-          .first()
+        const existingUser = await User.query().where('email', directusUser.email).first()
 
         if (existingUser) {
           this.logger.debug(`Skipping existing user: ${directusUser.email}`)
@@ -278,7 +276,9 @@ export default class ImportDirectusUsers extends BaseCommand {
           .first()
 
         if (existingRsvp) {
-          this.logger.debug(`Skipping existing RSVP: user ${directusRsvp.user_id} -> event ${eventUuid}`)
+          this.logger.debug(
+            `Skipping existing RSVP: user ${directusRsvp.user_id} -> event ${eventUuid}`
+          )
           this.stats.rsvpsSkipped++
           continue
         }
@@ -326,7 +326,11 @@ export default class ImportDirectusUsers extends BaseCommand {
 
         // Fuzzy match: normalize titles by removing version numbers and comparing
         const normalizeTitle = (t: string) =>
-          t.toLowerCase().replace(/\d+\.\d+/g, '').replace(/\s+/g, ' ').trim()
+          t
+            .toLowerCase()
+            .replace(/\d+\.\d+/g, '')
+            .replace(/\s+/g, ' ')
+            .trim()
         const fuzzyMatch = normalizeTitle(adonisEvent.title) === normalizeTitle(directusEvent.title)
 
         return sameDate || titleMatch || fuzzyMatch
@@ -334,9 +338,13 @@ export default class ImportDirectusUsers extends BaseCommand {
 
       if (matchingEvent) {
         mapping.set(directusEvent.id, matchingEvent.id)
-        this.logger.debug(`Mapped event ${directusEvent.id} (${directusEvent.title}) -> ${matchingEvent.id}`)
+        this.logger.debug(
+          `Mapped event ${directusEvent.id} (${directusEvent.title}) -> ${matchingEvent.id}`
+        )
       } else {
-        this.logger.warning(`No mapping found for event ${directusEvent.id}: ${directusEvent.title}`)
+        this.logger.warning(
+          `No mapping found for event ${directusEvent.id}: ${directusEvent.title}`
+        )
       }
     }
 

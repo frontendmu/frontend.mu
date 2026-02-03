@@ -24,7 +24,7 @@ export default class DbRestore extends BaseCommand {
       port: 5433,
       user: 'postgres',
       password: 'postgres',
-      database: 'frontendmu_docker_dev'
+      database: 'frontendmu_docker_dev',
     }
 
     const backupsDir = path.join(process.cwd(), 'database', 'backups')
@@ -38,12 +38,13 @@ export default class DbRestore extends BaseCommand {
       }
     } else {
       // Find most recent backup
-      const backups = fs.readdirSync(backupsDir)
-        .filter(f => f.endsWith('.sql'))
-        .map(f => ({
+      const backups = fs
+        .readdirSync(backupsDir)
+        .filter((f) => f.endsWith('.sql'))
+        .map((f) => ({
           file: f,
           path: path.join(backupsDir, f),
-          mtime: fs.statSync(path.join(backupsDir, f)).mtime
+          mtime: fs.statSync(path.join(backupsDir, f)).mtime,
         }))
         .sort((a, b) => b.mtime.getTime() - a.mtime.getTime())
 
@@ -57,12 +58,12 @@ export default class DbRestore extends BaseCommand {
 
     console.log(`📂 Backup file: ${path.basename(selectedBackup)}`)
     console.log(`⚠️  This will replace all data in ${dbConfig.database}`)
-    
+
     // Confirm
-    const readline = require('readline')
+    const readline = require('node:readline')
     const rl = readline.createInterface({
       input: process.stdin,
-      output: process.stdout
+      output: process.stdout,
     })
 
     const confirmed = await new Promise<boolean>((resolve) => {
@@ -85,7 +86,7 @@ export default class DbRestore extends BaseCommand {
         `PGPASSWORD="${dbConfig.password}" psql -h ${dbConfig.host} -p ${dbConfig.port} -U ${dbConfig.user} -d ${dbConfig.database} < "${selectedBackup}"`,
         {
           stdio: 'inherit',
-          shell: '/bin/bash'
+          shell: '/bin/bash',
         }
       )
 

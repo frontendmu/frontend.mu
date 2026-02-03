@@ -6,7 +6,12 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.uuid('event_id').references('id').inTable('events').onDelete('CASCADE').notNullable()
-      table.uuid('sponsor_id').references('id').inTable('sponsors').onDelete('CASCADE').notNullable()
+      table
+        .uuid('sponsor_id')
+        .references('id')
+        .inTable('sponsors')
+        .onDelete('CASCADE')
+        .notNullable()
 
       table.timestamp('created_at').notNullable()
 

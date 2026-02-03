@@ -5,7 +5,7 @@ import db from '@adonisjs/lucid/services/db'
 
 /**
  * RBAC Seeder
- * 
+ *
  * Creates the default roles and permissions for the application.
  * Also migrates existing users from the legacy single-role column to the new system.
  */
@@ -89,13 +89,27 @@ export default class RbacSeeder extends BaseSeeder {
         name: 'organizer',
         description: 'Can manage events, speakers, sponsors, and RSVPs',
         permissions: [
-          'view-events', 'create-event', 'edit-event', 'publish-event',
-          'create-rsvp', 'cancel-rsvp', 'view-rsvps', 'manage-rsvps',
-          'view-users', 'edit-user',
-          'view-speakers', 'create-speaker', 'edit-speaker',
-          'view-sessions', 'create-session', 'edit-session',
-          'view-sponsors', 'create-sponsor', 'edit-sponsor',
-          'access-admin', 'view-analytics',
+          'view-events',
+          'create-event',
+          'edit-event',
+          'publish-event',
+          'create-rsvp',
+          'cancel-rsvp',
+          'view-rsvps',
+          'manage-rsvps',
+          'view-users',
+          'edit-user',
+          'view-speakers',
+          'create-speaker',
+          'edit-speaker',
+          'view-sessions',
+          'create-session',
+          'edit-session',
+          'view-sponsors',
+          'create-sponsor',
+          'edit-sponsor',
+          'access-admin',
+          'view-analytics',
         ],
       },
       {
@@ -103,7 +117,8 @@ export default class RbacSeeder extends BaseSeeder {
         description: 'Regular community member who can RSVP to events',
         permissions: [
           'view-events',
-          'create-rsvp', 'cancel-rsvp',
+          'create-rsvp',
+          'cancel-rsvp',
           'view-speakers',
           'view-sessions',
           'view-sponsors',
@@ -112,12 +127,7 @@ export default class RbacSeeder extends BaseSeeder {
       {
         name: 'viewer',
         description: 'Can only view public content',
-        permissions: [
-          'view-events',
-          'view-speakers',
-          'view-sessions',
-          'view-sponsors',
-        ],
+        permissions: ['view-events', 'view-speakers', 'view-sessions', 'view-sponsors'],
       },
     ]
 
@@ -148,13 +158,13 @@ export default class RbacSeeder extends BaseSeeder {
 
     // Map old role names to new role names
     const roleMapping: Record<string, string> = {
-      'superadmin': 'superadmin',
-      'admin': 'superadmin',        // Legacy admin -> superadmin
-      'organizer': 'organizer',
-      'speaker': 'member',          // Speakers are members with speaker sessions
-      'member': 'member',
-      'community_member': 'member', // Legacy community_member -> member
-      'viewer': 'viewer',
+      superadmin: 'superadmin',
+      admin: 'superadmin', // Legacy admin -> superadmin
+      organizer: 'organizer',
+      speaker: 'member', // Speakers are members with speaker sessions
+      member: 'member',
+      community_member: 'member', // Legacy community_member -> member
+      viewer: 'viewer',
     }
 
     // Get all users with their current legacy role

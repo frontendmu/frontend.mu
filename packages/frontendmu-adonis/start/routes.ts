@@ -41,7 +41,10 @@ router.post('/logout', [() => import('#controllers/auth/logout_controller'), 'ha
 
 // Google OAuth routes
 router.get('/auth/google', [() => import('#controllers/auth/google_controller'), 'redirect'])
-router.get('/auth/google/callback', [() => import('#controllers/auth/google_controller'), 'callback'])
+router.get('/auth/google/callback', [
+  () => import('#controllers/auth/google_controller'),
+  'callback',
+])
 
 // Profile route
 router.get('/profile', [() => import('#controllers/profile_controller'), 'show'])
@@ -93,7 +96,10 @@ router
       .put('/admin/events/:id', [() => import('#controllers/admin/events_controller'), 'update'])
       .as('admin.events.update')
     router
-      .delete('/admin/events/:id', [() => import('#controllers/admin/events_controller'), 'destroy'])
+      .delete('/admin/events/:id', [
+        () => import('#controllers/admin/events_controller'),
+        'destroy',
+      ])
       .as('admin.events.destroy')
 
     // Session management (nested under events)
@@ -152,19 +158,31 @@ router
       .get('/admin/speakers', [() => import('#controllers/admin/speakers_controller'), 'index'])
       .as('admin.speakers.index')
     router
-      .get('/admin/speakers/create', [() => import('#controllers/admin/speakers_controller'), 'create'])
+      .get('/admin/speakers/create', [
+        () => import('#controllers/admin/speakers_controller'),
+        'create',
+      ])
       .as('admin.speakers.create')
     router
       .post('/admin/speakers', [() => import('#controllers/admin/speakers_controller'), 'store'])
       .as('admin.speakers.store')
     router
-      .get('/admin/speakers/:id/edit', [() => import('#controllers/admin/speakers_controller'), 'edit'])
+      .get('/admin/speakers/:id/edit', [
+        () => import('#controllers/admin/speakers_controller'),
+        'edit',
+      ])
       .as('admin.speakers.edit')
     router
-      .put('/admin/speakers/:id', [() => import('#controllers/admin/speakers_controller'), 'update'])
+      .put('/admin/speakers/:id', [
+        () => import('#controllers/admin/speakers_controller'),
+        'update',
+      ])
       .as('admin.speakers.update')
     router
-      .delete('/admin/speakers/:id', [() => import('#controllers/admin/speakers_controller'), 'destroy'])
+      .delete('/admin/speakers/:id', [
+        () => import('#controllers/admin/speakers_controller'),
+        'destroy',
+      ])
       .as('admin.speakers.destroy')
 
     // Sponsor management
@@ -172,19 +190,31 @@ router
       .get('/admin/sponsors', [() => import('#controllers/admin/sponsors_controller'), 'index'])
       .as('admin.sponsors.index')
     router
-      .get('/admin/sponsors/create', [() => import('#controllers/admin/sponsors_controller'), 'create'])
+      .get('/admin/sponsors/create', [
+        () => import('#controllers/admin/sponsors_controller'),
+        'create',
+      ])
       .as('admin.sponsors.create')
     router
       .post('/admin/sponsors', [() => import('#controllers/admin/sponsors_controller'), 'store'])
       .as('admin.sponsors.store')
     router
-      .get('/admin/sponsors/:id/edit', [() => import('#controllers/admin/sponsors_controller'), 'edit'])
+      .get('/admin/sponsors/:id/edit', [
+        () => import('#controllers/admin/sponsors_controller'),
+        'edit',
+      ])
       .as('admin.sponsors.edit')
     router
-      .put('/admin/sponsors/:id', [() => import('#controllers/admin/sponsors_controller'), 'update'])
+      .put('/admin/sponsors/:id', [
+        () => import('#controllers/admin/sponsors_controller'),
+        'update',
+      ])
       .as('admin.sponsors.update')
     router
-      .delete('/admin/sponsors/:id', [() => import('#controllers/admin/sponsors_controller'), 'destroy'])
+      .delete('/admin/sponsors/:id', [
+        () => import('#controllers/admin/sponsors_controller'),
+        'destroy',
+      ])
       .as('admin.sponsors.destroy')
 
     // User management

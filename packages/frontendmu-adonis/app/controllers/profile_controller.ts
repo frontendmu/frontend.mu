@@ -10,10 +10,7 @@ export default class ProfileController {
     }
 
     // Load user with roles for display
-    const user = await User.query()
-      .where('id', auth.user.id)
-      .preload('roles')
-      .firstOrFail()
+    const user = await User.query().where('id', auth.user.id).preload('roles').firstOrFail()
 
     return inertia.render('profile', {
       user: {

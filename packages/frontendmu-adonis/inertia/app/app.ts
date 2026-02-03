@@ -21,7 +21,17 @@ createInertiaApp({
     )
   },
 
-  setup({ el, App, props, plugin }: { el: unknown; App: unknown; props: unknown; plugin: unknown }) {
+  setup({
+    el,
+    App,
+    props,
+    plugin,
+  }: {
+    el: unknown
+    App: unknown
+    props: unknown
+    plugin: unknown
+  }) {
     createApp({ render: () => h(App as any, props as any) })
       .use(plugin as any)
       .mount(el as any)

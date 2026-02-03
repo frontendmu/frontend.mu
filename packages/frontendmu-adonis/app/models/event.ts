@@ -1,6 +1,13 @@
 import { DateTime } from 'luxon'
 import { randomUUID } from 'node:crypto'
-import { BaseModel, column, belongsTo, hasMany, manyToMany, beforeCreate } from '@adonisjs/lucid/orm'
+import {
+  BaseModel,
+  column,
+  belongsTo,
+  hasMany,
+  manyToMany,
+  beforeCreate,
+} from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Session from '#models/session'
 import Sponsor from '#models/sponsor'

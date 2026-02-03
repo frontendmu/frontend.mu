@@ -21,7 +21,7 @@ export default class DbBackup extends BaseCommand {
       port: 5433,
       user: 'postgres',
       password: 'postgres',
-      database: 'frontendmu_docker_dev'
+      database: 'frontendmu_docker_dev',
     }
 
     // Create backups directory
@@ -44,7 +44,7 @@ export default class DbBackup extends BaseCommand {
         `PGPASSWORD="${dbConfig.password}" pg_dump -h ${dbConfig.host} -p ${dbConfig.port} -U ${dbConfig.user} -d ${dbConfig.database} > "${backupPath}"`,
         {
           stdio: 'inherit',
-          shell: '/bin/bash'
+          shell: '/bin/bash',
         }
       )
 
@@ -57,12 +57,12 @@ export default class DbBackup extends BaseCommand {
       console.log(`⏱️  Duration: ${duration}s`)
     } catch (error) {
       console.error('❌ Backup failed:', error.message)
-      
+
       // Clean up incomplete backup
       if (fs.existsSync(backupPath)) {
         fs.unlinkSync(backupPath)
       }
-      
+
       process.exit(1)
     }
   }

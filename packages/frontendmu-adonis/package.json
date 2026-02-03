@@ -10,7 +10,7 @@
     "dev": "node ace serve --hmr",
     "test": "node ace test",
     "lint": "eslint .",
-    "format": "prettier --write .",
+    "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit",
     "clean:ports": "lsof -t -i:3333 | xargs kill && lsof -t -i:24678 | xargs kill"
   },

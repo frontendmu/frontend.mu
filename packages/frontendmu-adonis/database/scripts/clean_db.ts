@@ -61,7 +61,6 @@ async function cleanDatabase() {
 
     console.log('✅ Database cleaned successfully!')
     console.log('All tables are now empty.')
-
   } catch (error) {
     console.error('❌ Database cleanup failed:', error)
     process.exit(1)

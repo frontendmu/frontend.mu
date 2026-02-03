@@ -11,7 +11,10 @@ export default class extends BaseSchema {
 
       table.boolean('is_community_member').defaultTo(false).notNullable()
 
-      table.enum('app_role', ['viewer', 'member', 'organizer', 'superadmin']).defaultTo('viewer').notNullable()
+      table
+        .enum('app_role', ['viewer', 'member', 'organizer', 'superadmin'])
+        .defaultTo('viewer')
+        .notNullable()
     })
 
     this.schema.alter(this.tableName, (table) => {
@@ -35,7 +38,10 @@ export default class extends BaseSchema {
     })
 
     this.schema.alter(this.tableName, (table) => {
-      table.enum('role', ['admin', 'organizer', 'speaker', 'community_member']).defaultTo('community_member').notNullable()
+      table
+        .enum('role', ['admin', 'organizer', 'speaker', 'community_member'])
+        .defaultTo('community_member')
+        .notNullable()
     })
   }
 }

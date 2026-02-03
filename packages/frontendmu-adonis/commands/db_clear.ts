@@ -19,16 +19,16 @@ export default class DbClear extends BaseCommand {
       port: 5433,
       user: 'postgres',
       password: 'postgres',
-      database: 'frontendmu_docker_dev'
+      database: 'frontendmu_docker_dev',
     }
 
     console.log(`⚠️  WARNING: This will delete ALL data in ${dbConfig.database}!`)
-    
+
     // Confirm
-    const readline = require('readline')
+    const readline = require('node:readline')
     const rl = readline.createInterface({
       input: process.stdin,
-      output: process.stdout
+      output: process.stdout,
     })
 
     const confirmed = await new Promise<boolean>((resolve) => {
@@ -45,7 +45,7 @@ export default class DbClear extends BaseCommand {
 
     try {
       console.log('📋 Terminating active connections...')
-      
+
       // Terminate connections
       execSync(
         `PGPASSWORD="${dbConfig.password}" psql -h ${dbConfig.host} -p ${dbConfig.port} -U ${dbConfig.user} -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${dbConfig.database}' AND pid <> pg_backend_pid();"`,
@@ -53,7 +53,7 @@ export default class DbClear extends BaseCommand {
       )
 
       console.log('🗑️  Dropping database...')
-      
+
       // Drop database
       execSync(
         `PGPASSWORD="${dbConfig.password}" psql -h ${dbConfig.host} -p ${dbConfig.port} -U ${dbConfig.user} -d postgres -c "DROP DATABASE IF EXISTS ${dbConfig.database};"`,
@@ -61,7 +61,7 @@ export default class DbClear extends BaseCommand {
       )
 
       console.log('🆕 Creating database...')
-      
+
       // Create database
       execSync(
         `PGPASSWORD="${dbConfig.password}" psql -h ${dbConfig.host} -p ${dbConfig.port} -U ${dbConfig.user} -d postgres -c "CREATE DATABASE ${dbConfig.database};"`,
@@ -69,7 +69,7 @@ export default class DbClear extends BaseCommand {
       )
 
       console.log('🔌 Creating UUID extension...')
-      
+
       // Create UUID extension
       execSync(
         `PGPASSWORD="${dbConfig.password}" psql -h ${dbConfig.host} -p ${dbConfig.port} -U ${dbConfig.user} -d ${dbConfig.database} -c "CREATE EXTENSION IF NOT EXISTS \\"uuid-ossp\\";"`,

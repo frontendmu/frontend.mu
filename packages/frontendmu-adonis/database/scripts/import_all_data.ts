@@ -10,7 +10,7 @@ const { Client } = pg
 
 const client = new Client({
   host: process.env.DB_HOST || '127.0.0.1',
-  port: parseInt(process.env.DB_PORT || '5432'),
+  port: Number.parseInt(process.env.DB_PORT || '5432'),
   user: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || 'postgres',
   database: process.env.DB_DATABASE || 'frontendmu_dev',
@@ -40,7 +40,7 @@ async function importSpeakers() {
         speaker.github_account,
         'speaker',
         speaker.featured,
-        speaker.github_account ? `https://github.com/${speaker.github_account}.png` : null
+        speaker.github_account ? `https://github.com/${speaker.github_account}.png` : null,
       ]
     )
     imported++
@@ -61,10 +61,9 @@ async function importMeetups() {
 
   for (const meetup of meetupsData) {
     // Check if event already exists by title
-    const existingResult = await client.query(
-      'SELECT id FROM events WHERE title = $1',
-      [meetup.title]
-    )
+    const existingResult = await client.query('SELECT id FROM events WHERE title = $1', [
+      meetup.title,
+    ])
 
     if (existingResult.rows.length > 0) {
       console.log('  Event already exists: ' + meetup.title)
@@ -83,16 +82,16 @@ async function importMeetups() {
       // Match patterns like "10am", "10am to 2pm", "10:00 - 11:30", etc.
       const timeMatch = meetup.Time.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i)
       if (timeMatch) {
-        let hours = parseInt(timeMatch[1])
+        let hours = Number.parseInt(timeMatch[1])
         const minutes = timeMatch[2] || '00'
         const period = (timeMatch[3] || '').toLowerCase()
-        
+
         if (period === 'pm' && hours < 12) {
           hours += 12
         } else if (period === 'am' && hours === 12) {
           hours = 0
         }
-        
+
         startTime = hours.toString().padStart(2, '0') + ':' + minutes
       }
     }
@@ -165,10 +164,7 @@ async function importSponsors() {
 
   for (const sponsor of sponsorsData) {
     // Check if sponsor already exists
-    const existingResult = await client.query(
-      'SELECT id FROM sponsors WHERE id = $1',
-      [sponsor.id]
-    )
+    const existingResult = await client.query('SELECT id FROM sponsors WHERE id = $1', [sponsor.id])
 
     if (existingResult.rows.length > 0) {
       console.log('  Sponsor already exists: ' + sponsor.name)
@@ -197,10 +193,9 @@ async function importSponsors() {
     if (sponsor.meetups && sponsor.meetups.length > 0) {
       for (const meetup of sponsor.meetups) {
         // Find event by title (most reliable match)
-        const eventResult = await client.query(
-          'SELECT id FROM events WHERE title = $1',
-          [meetup.title]
-        )
+        const eventResult = await client.query('SELECT id FROM events WHERE title = $1', [
+          meetup.title,
+        ])
 
         if (eventResult.rows.length > 0) {
           const eventId = eventResult.rows[0].id
@@ -243,7 +238,7 @@ async function runMigration() {
 
   try {
     await client.connect()
-    
+
     await importSpeakers()
     await importMeetups()
     await importSponsors()
@@ -265,7 +260,6 @@ async function runMigration() {
     console.log('  Sponsor-Event links: ' + sponsorLinkResult.rows[0].total)
 
     console.log('\nDone!')
-
   } catch (error) {
     console.error('Migration failed:', error)
     process.exit(1)
