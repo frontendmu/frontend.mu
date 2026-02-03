@@ -2,3 +2,4 @@ packages:
   - "packages/frontendmu-astro/"
   - "packages/frontendmu-nuxt/"
   - "packages/frontendmu-data/"
+  - "packages/frontendmu-adonis/"

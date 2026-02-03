@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title inertia>frontend.mu</title>
+    <script>
+      // Prevent flash of incorrect theme
+      (function() {
+        const savedMode = localStorage.getItem('color-mode');
+        if (savedMode === 'dark' || (!savedMode && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+    @vite(['inertia/app/app.ts'])
+    @inertiaHead()
+</head>
+<body>
+    @inertia()
+</body>
+</html>
