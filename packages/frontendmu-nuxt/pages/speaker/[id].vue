@@ -73,6 +73,10 @@ defineOgImageComponent('Speaker', {
   title: speaker.value?.person ? speaker.value.person.name : '',
   username: speaker.value?.person.github_account,
 })
+
+const { register, cleanup } = useWebMCPSpeakerDetail(speaker)
+onMounted(() => register())
+onUnmounted(() => cleanup())
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import useAuth, { getClient } from '@/auth-utils/useAuth'
 import useAuthRedirect from '@/auth-utils/useAuthRedirect'
 import RsvpForm from '@/components/auth/RsvpForm.vue'
@@ -108,6 +108,28 @@ const currentEventRsvpDetail = arrayOfEventRsvpDetail && arrayOfEventRsvpDetail[
 function handleAddToCalendar(): void {
   addEventToGoogleCalendar(props.meetupDetails)
 }
+
+const { register: registerRsvpTools, cleanup: cleanupRsvpTools } = useWebMCPRsvp({
+  meetupId: props.meetupId,
+  meetupDetails: props.meetupDetails,
+  isLoggedIn,
+  isAttending: isAttendingCurrentEvent,
+  rsvpOpen,
+  onRsvp: async () => {
+    rsvpPaneOpen.value = true
+  },
+  onCancel: async () => {
+    $rsvpForm.value?.cancelRsvpToCurrentMeetup(props.meetupId)
+  },
+})
+
+onMounted(() => registerRsvpTools())
+onUnmounted(() => cleanupRsvpTools())
+
+watch([isLoggedIn, isAttendingCurrentEvent, rsvpOpen], () => {
+  cleanupRsvpTools()
+  registerRsvpTools()
+})
 </script>
 
 <template>

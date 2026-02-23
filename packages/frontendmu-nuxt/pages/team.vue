@@ -10,6 +10,10 @@ interface Contributor {
 }
 
 const contributors: Contributor[] = Contributors
+
+const { register, cleanup } = useWebMCPSpeakers()
+onMounted(() => register())
+onUnmounted(() => cleanup())
 </script>
 
 <template>
