@@ -838,6 +838,14 @@
         "location": "NeXTeracom Tower I - 12th floor, Ebène, Maurice 72201",
         "venue": "Novity Mauritius",
         "description": null
+      },
+      {
+        "id": 71,
+        "title": "The September Meetup",
+        "date": "2026-09-19",
+        "location": null,
+        "venue": null,
+        "description": null
       }
     ]
   },
