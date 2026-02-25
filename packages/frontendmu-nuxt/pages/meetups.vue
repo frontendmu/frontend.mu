@@ -6,9 +6,6 @@ const { allMeetups, meetupsGroupedByYear, nextMeetup, todaysMeetups } = useMeetu
 
 const nextMeetupId = nextMeetup.value?.id
 
-const { register, cleanup } = useWebMCPMeetups(allMeetups)
-onMounted(() => register())
-onUnmounted(() => cleanup())
 </script>
 
 <template>
