@@ -18,7 +18,33 @@ export default defineNuxtPlugin(() => {
   }
 
   const router = useRouter()
+  const colorMode = useColorMode()
   const { registerTool } = useWebMCP()
+
+  registerTool({
+    name: 'setTheme',
+    description: 'Switch the website between light and dark mode. Use this when the user asks to change the theme, toggle dark mode, or switch to light mode.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mode: {
+          type: 'string',
+          enum: ['light', 'dark', 'toggle'],
+          description: 'Set to "light", "dark", or "toggle" to switch between them.',
+        },
+      },
+      required: ['mode'],
+    },
+    handler: async ({ mode }: { mode: 'light' | 'dark' | 'toggle' }) => {
+      if (mode === 'toggle') {
+        colorMode.preference = colorMode.preference === 'dark' ? 'light' : 'dark'
+      }
+      else {
+        colorMode.preference = mode
+      }
+      return { theme: colorMode.preference }
+    },
+  })
 
   registerTool({
     name: 'navigateTo',
