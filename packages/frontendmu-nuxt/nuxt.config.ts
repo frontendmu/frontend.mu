@@ -99,5 +99,9 @@ export default defineNuxtConfig({
     domains: ['raw.githubusercontent.com', 'avatars.githubusercontent.com'],
   },
 
+  runtimeConfig: {
+    googleTtsApiKey: '',
+  },
+
   compatibilityDate: '2024-08-02',
 })
