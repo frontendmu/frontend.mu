@@ -1,92 +1,169 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import Logo from '~/components/layout/Logo.vue'
+import type { Meetup } from '~/types'
+import { isDateInFuture, isDateToday } from '~/utils/date'
+
+interface Props {
+  featuredEvent?: Meetup
+}
+
+const props = defineProps<Props>()
 
 const description =
   'A community of passionate developers in Mauritius. Join us for regular meetups, workshops, and tech talks.'
+
+const eventStatus = computed(() => {
+  if (!props.featuredEvent?.Date) return ''
+  const date = new Date(props.featuredEvent.Date)
+  if (isDateToday(date)) return 'Happening Today'
+  if (isDateInFuture(date)) return 'Next Event'
+  return 'Latest Meetup'
+})
+
+function formatDate(dateStr: string) {
+  const date = new Date(dateStr)
+  return {
+    day: date.getDate(),
+    month: date.toLocaleString('en-US', { month: 'short' }),
+  }
+}
 </script>
 
 <template>
-  <div class="homepage-container -mt-24">
-    <div class="homepage-wrapper">
-      <main>
-        <div
-          class="relative z-0 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16 md:pt-40 md:pb-20 flex flex-col"
-        >
-          <div class="relative z-20 flex flex-col-reverse md:flex-row h-full justify-between gap-8 md:gap-12">
-            <div class="flex flex-col justify-center text-center md:text-left gap-6 md:gap-8 md:w-2/3">
-              <h1
-                class="font-heading dark:text-white font-black text-4xl leading-tight sm:text-5xl lg:text-5xl xl:text-7xl"
-              >
-                Frontend Coders<br />
-                <span
-                  class="accent font-bold uppercase sm:text-4xl lg:text-4xl xl:text-6xl inline-block"
-                  >Mauritius</span
-                >
-              </h1>
-              <p class="text-md md:text-lg dark:text-gray-300 md:w-5/6">
-                {{ description }}
-              </p>
-              <div class="grid place-items-center md:place-items-start">
-                <Link
-                  href="/meetups"
-                  class="bg-verse-500 hover:bg-verse-600 transition-colors duration-200 text-md block w-48 rounded-full px-5 py-3 text-center font-medium text-white md:w-52 md:px-6 md:py-3.5 md:text-lg"
-                >
-                  View all meetups
-                </Link>
-              </div>
-            </div>
+  <section class="relative min-h-[calc(100vh-5rem)] flex items-center overflow-hidden">
+    <!-- Abstract Background - Minimal Pattern Focused -->
+    <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+      <!-- Grid pattern overlay -->
+      <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM5QzYyRDAiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTAgMGg0MHY0MEgwVjB6bTIwIDIwdjIwSDBWMjBoMjB6bTIwIDB2MjBIMjBWMjBoMjB6TTAgMGgyMHYyMEgwVjB6bTIwIDBoMjB2MjBIMjBWMHoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40 dark:opacity-60"></div>
 
-            <div class="grid place-items-center">
-              <div class="image-container">
-                <div class="image-bg" />
-                <Logo class="img-src text-verse-500 dark:text-white w-48 md:w-64 lg:w-80" />
+      <!-- Grain Texture Overlay -->
+      <div class="absolute inset-0 opacity-[0.1] dark:opacity-[0.2] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+    </div>
+
+    <div class="contain relative z-10 w-full">
+      <div class="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-24">
+        <!-- Text Content -->
+        <div class="w-full lg:w-[60%] text-center lg:text-left space-y-12">
+          
+          <div class="flex flex-col">
+            <!-- Simple Static Role -->
+            <span class="text-xl md:text-2xl font-black uppercase tracking-[0.4em] text-verse-500 block leading-none mb-4">
+              Frontend
+            </span>
+
+            <h1 class="relative z-10 text-7xl md:text-8xl xl:text-9xl font-black tracking-tighter leading-[0.8] dark:text-white pointer-events-auto cursor-default">
+              <span class="block">Coders</span>
+              <span class="relative inline-block">
+                <span class="text-verse-600 dark:text-verse-400">Mauritius</span>
+                <svg class="absolute -bottom-2 left-0 w-full h-4 text-verse-500/30 dark:text-verse-400/20" viewBox="0 0 100 10" preserveAspectRatio="none">
+                  <path d="M0 5 Q 25 0, 50 5 T 100 5" fill="none" stroke="currentColor" stroke-width="4" />
+                </svg>
+              </span>
+            </h1>
+          </div>
+
+          <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
+            {{ description }}
+          </p>
+
+          <!-- CTAs -->
+          <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
+            <Link
+              href="/meetups"
+              class="group relative inline-flex items-center justify-center px-10 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/10"
+            >
+              <span>Explore Meetups</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+            </Link>
+            
+            <a 
+              href="https://discord.gg/WxXW9Jvv6k" 
+              target="_blank"
+              class="inline-flex items-center justify-center px-8 py-4 font-bold text-verse-700 dark:text-verse-200 transition-all duration-200 bg-white dark:bg-verse-900/40 border-2 border-verse-200 dark:border-verse-800 font-heading rounded-2xl hover:bg-verse-50 dark:hover:bg-verse-900/60 active:scale-95"
+            >
+              Join Discord
+            </a>
+          </div>
+
+          <!-- Dynamic Event Card -->
+          <div v-if="featuredEvent" class="flex justify-center lg:justify-start pt-4">
+            <Link :href="`/meetup/${featuredEvent.id}`" class="group relative flex items-center gap-5 bg-white/80 dark:bg-verse-900/40 backdrop-blur-xl border border-verse-200 dark:border-verse-800 p-4 pr-10 rounded-[2rem] transition-all hover:scale-[1.02] hover:shadow-xl hover:border-verse-400 dark:hover:border-verse-500 text-left">
+              <div class="flex flex-col items-center justify-center w-14 h-14 rounded-2xl bg-verse-500 text-white font-black shrink-0 shadow-lg shadow-verse-500/20">
+                <span class="text-xl leading-none">{{ formatDate(featuredEvent.Date).day }}</span>
+                <span class="text-[10px] uppercase tracking-wider">{{ formatDate(featuredEvent.Date).month }}</span>
               </div>
-            </div>
+              <div>
+                <p class="text-[10px] font-black uppercase tracking-[0.25em] text-verse-500">{{ eventStatus }}</p>
+                <h3 class="font-bold text-gray-900 dark:text-white line-clamp-1 group-hover:text-verse-600 dark:group-hover:text-verse-400 transition-colors">
+                  {{ featuredEvent.title }}
+                </h3>
+              </div>
+              <div class="absolute -right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white dark:bg-verse-800 border border-verse-200 dark:border-verse-700 flex items-center justify-center shadow-md group-hover:bg-verse-500 group-hover:text-white transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
           </div>
         </div>
-      </main>
+
+        <!-- Visual Element -->
+        <div class="w-full lg:w-[40%] flex justify-center items-center relative py-12 lg:py-0">
+          <div class="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96">
+            <div class="absolute inset-0 rounded-full border-2 border-dashed border-verse-500/20 animate-spin-slow"></div>
+            <div class="absolute inset-6 rounded-full border border-verse-500/10 animate-spin-reverse-slow"></div>
+            <div class="absolute inset-12 rounded-[3.5rem] bg-white dark:bg-verse-900/40 backdrop-blur-2xl border border-verse-200 dark:border-verse-700 flex items-center justify-center shadow-2xl p-12 rotate-3 transition-transform hover:rotate-0 duration-500 group/logo">
+              <Logo class="w-full h-full text-verse-500 dark:text-white transition-transform duration-500 group-hover/logo:scale-110" />
+            </div>
+            <div class="absolute -top-4 -right-4 w-12 h-12 bg-red-500 rounded-2xl animate-float opacity-80 shadow-lg"></div>
+            <div class="absolute bottom-10 -left-6 w-8 h-8 bg-green-500 rounded-full animate-float-slow opacity-80 shadow-lg" style="animation-delay: 1s"></div>
+            <div class="absolute -bottom-2 right-12 w-10 h-10 bg-yellow-400 rounded-xl animate-float opacity-80 shadow-lg" style="animation-delay: 2s"></div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <style scoped>
-.accent {
-  background: linear-gradient(
-    135deg,
-    hsl(13, 100%, 52%) 10%,
-    hsl(175, 100%, 38%) 50%,
-    hsl(13, 100%, 52%) 80%,
-    hsl(175, 100%, 38%) 90%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  background-size: 400% 400%;
-  animation: gradient-animation 12s ease infinite;
+@reference 'tailwindcss';
+
+.animate-spin-slow {
+  animation: spin 35s linear infinite;
 }
 
-@keyframes gradient-animation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+.animate-spin-reverse-slow {
+  animation: spin-reverse 40s linear infinite;
 }
 
-.image-container {
-  position: relative;
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
 
-.image-bg {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle, rgba(0, 200, 150, 0.2) 0%, transparent 70%);
-  filter: blur(40px);
-  transform: scale(1.5);
+.animate-float-slow {
+  animation: float 8s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out forwards;
+}
+
+@keyframes spin-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(2deg); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>

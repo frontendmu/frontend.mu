@@ -2,6 +2,7 @@
 import DefaultLayout from '~/layouts/DefaultLayout.vue'
 import { Head } from '@inertiajs/vue3'
 import type { Meetup } from '~/types'
+import { useMeetups } from '~/composables/useMeetups'
 import Hero from '~/components/home/Hero.vue'
 import LatestMeetup from '~/components/home/LatestMeetup.vue'
 import FeaturedSpeakers from '~/components/home/FeaturedSpeakers.vue'
@@ -27,7 +28,13 @@ interface Props {
   }
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+
+const { nextMeetup, todaysMeetups, areThereMeetupsToday, pastMeetups } = useMeetups(props.events)
+
+const featuredEvent = areThereMeetupsToday.value 
+  ? todaysMeetups.value[0] 
+  : (nextMeetup.value || pastMeetups.value[0])
 </script>
 
 <template>
@@ -35,7 +42,7 @@ defineProps<Props>()
   <DefaultLayout>
     <main class="pb-8">
       <!-- Hero Section -->
-      <Hero />
+      <Hero :featured-event="featuredEvent" />
 
       <!-- Latest Meetups Section -->
       <LatestMeetup :events="events" />
