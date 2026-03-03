@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
+import Role from '#models/role'
 
 export default class GoogleController {
   /**
@@ -51,16 +52,13 @@ export default class GoogleController {
     let user = await User.query().where('google_id', googleUser.id).first()
 
     if (!user) {
-      // Try to find by email (for existing users migrated from Directus)
-      user = await User.query().where('email', googleUser.email!).first()
+      // Check if an account with this email already exists
+      const existingUser = await User.query().where('email', googleUser.email!).first()
 
-      if (user) {
-        // Link the Google account to the existing user
-        user.googleId = googleUser.id
-        if (!user.avatarUrl && googleUser.avatarUrl) {
-          user.avatarUrl = googleUser.avatarUrl
-        }
-        await user.save()
+      if (existingUser) {
+        // Do NOT auto-link — the user must log in with their existing credentials first
+        session.flash('error', 'An account with this email already exists. Please log in with your password first, then link your Google account from your profile.')
+        return response.redirect('/login')
       }
     }
 
@@ -71,8 +69,14 @@ export default class GoogleController {
         name: googleUser.name || googleUser.email!.split('@')[0],
         googleId: googleUser.id,
         avatarUrl: googleUser.avatarUrl,
-        role: 'member', // New users get 'member' role
+        role: 'member',
       })
+
+      // Assign RBAC member role
+      const memberRole = await Role.findBy('name', 'member')
+      if (memberRole) {
+        await user.related('roles').attach([memberRole.id])
+      }
     }
 
     /**
