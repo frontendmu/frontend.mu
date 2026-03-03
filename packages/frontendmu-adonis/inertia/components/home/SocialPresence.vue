@@ -9,96 +9,52 @@ import IconLinkedin from '~/components/icons/IconLinkedin.vue'
 </script>
 
 <template>
-  <div class="bg-verse-950 dark:bg-verse-800/80">
-    <div
-      class="max-w-6xl mx-auto py-14 md:py-16 grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-6 md:px-12"
-    >
-      <SocialCard href="https://discord.gg/WxXW9Jvv6k" class="bg-[#5865f2] text-sm md:text-normal">
-        <template #tagline>
-          <p>Discord</p>
-        </template>
-        <template #description>
-          <p>Join the community, ask questions, livestream, chill!</p>
-        </template>
+  <section class="relative py-32 overflow-hidden bg-white dark:bg-verse-950">
+    <div class="contain relative z-10">
+      <div class="max-w-3xl mx-auto text-center space-y-4 mb-20">
+        <h2 class="text-4xl md:text-5xl font-black tracking-tight dark:text-white">Everywhere You Are</h2>
+        <p class="text-lg text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
+          Stay connected with the heartbeat of Mauritius' tech scene. Join our discussions, follow our projects, and never miss a beat.
+        </p>
+      </div>
 
-        <template #icon>
-          <IconDiscord class="w-14 md:w-16" />
-        </template>
-      </SocialCard>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <SocialCard href="https://discord.gg/WxXW9Jvv6k" class="bg-[#5865f2] h-[300px] shadow-xl shadow-[#5865f2]/20">
+          <template #tagline>Discord</template>
+          <template #description>Join the community, ask questions, livestream, chill!</template>
+          <template #icon><IconDiscord class="w-10 h-10" /></template>
+        </SocialCard>
 
-      <SocialCard href="https://github.com/frontendmu" class="bg-[#333] text-sm md:text-normal">
-        <template #tagline>
-          <p>GitHub</p>
-        </template>
-        <template #description>
-          <p>The home of FEC projects</p>
-        </template>
+        <SocialCard href="https://github.com/frontendmu" class="bg-[#181717] h-[300px] shadow-xl shadow-[#181717]/20">
+          <template #tagline>GitHub</template>
+          <template #description>The home of FEC projects. Build, contribute, and explore.</template>
+          <template #icon><IconGithub class="w-10 h-10" /></template>
+        </SocialCard>
 
-        <template #icon>
-          <IconGithub class="w-12 md:w-16" />
-        </template>
-      </SocialCard>
+        <SocialCard href="https://chat.whatsapp.com/CqXAj6m8NtQB6NN8B9aoEJ" class="bg-[#25D366] h-[300px] shadow-xl shadow-[#25D366]/20">
+          <template #tagline>Whatsapp</template>
+          <template #description>Join our community to stay informed about our latest meetups.</template>
+          <template #icon><IconWhatsapp class="w-10 h-10" /></template>
+        </SocialCard>
 
-      <SocialCard
-        href="https://chat.whatsapp.com/CqXAj6m8NtQB6NN8B9aoEJ"
-        class="bg-[#25D366] text-sm md:text-normal"
-      >
-        <template #tagline>
-          <p>Whatsapp Community</p>
-        </template>
-        <template #description>
-          <p>Join this community to stay informed about our events</p>
-        </template>
+        <SocialCard href="https://twitter.com/frontendmu" class="bg-[#1DA1F2] h-[300px] shadow-xl shadow-[#1DA1F2]/20">
+          <template #tagline>Twitter</template>
+          <template #description>Short-form updates from us. Follow for announcements!</template>
+          <template #icon><IconTwitter class="w-10 h-10" /></template>
+        </SocialCard>
 
-        <template #icon>
-          <IconWhatsapp class="w-14 md:w-16 p-2" />
-        </template>
-      </SocialCard>
+        <SocialCard href="https://instagram.com/frontend.mu" class="bg-gradient-to-br from-[#833ab4] via-[#fd1d1d] to-[#fcb045] h-[300px] shadow-xl shadow-[#fd1d1d]/20">
+          <template #tagline>Instagram</template>
+          <template #description>Visual highlights of our events and the people who make them special.</template>
+          <template #icon><IconInstagram class="w-10 h-10" /></template>
+        </SocialCard>
 
-      <SocialCard href="https://twitter.com/frontendmu" class="bg-[#1DA1F2] text-sm md:text-normal">
-        <template #tagline>
-          <p>Twitter</p>
-        </template>
-        <template #description>
-          <p>Short-form updates from us.</p>
-        </template>
-
-        <template #icon>
-          <IconTwitter class="w-14 md:w-16 p-2" />
-        </template>
-      </SocialCard>
-
-      <SocialCard
-        href="https://instagram.com/frontend.mu"
-        class="bg-[#d6249f] text-sm md:text-normal"
-      >
-        <template #tagline>
-          <p>Instagram</p>
-        </template>
-        <template #description>
-          <p>Pictures of frontend coders.</p>
-        </template>
-
-        <template #icon>
-          <IconInstagram class="w-14 md:w-16 p-2" />
-        </template>
-      </SocialCard>
-
-      <SocialCard
-        href="https://www.linkedin.com/company/81846464/admin/"
-        class="bg-[#007db1] text-sm md:text-normal"
-      >
-        <template #tagline>
-          <p>LinkedIn Page</p>
-        </template>
-        <template #description>
-          <p>For those who don't use facebook and discord</p>
-        </template>
-
-        <template #icon>
-          <IconLinkedin class="w-14 md:w-16" />
-        </template>
-      </SocialCard>
+        <SocialCard href="https://www.linkedin.com/company/81846464/admin/" class="bg-[#0077b5] h-[300px] shadow-xl shadow-[#0077b5]/20">
+          <template #tagline>LinkedIn</template>
+          <template #description>Professional networking for those who prefer formal updates.</template>
+          <template #icon><IconLinkedin class="w-10 h-10" /></template>
+        </SocialCard>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
