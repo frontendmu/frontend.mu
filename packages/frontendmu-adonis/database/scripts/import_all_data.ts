@@ -38,7 +38,7 @@ async function importSpeakers() {
         speaker.id,
         speaker.name,
         speaker.github_account,
-        'speaker',
+        'member',
         speaker.featured,
         speaker.github_account ? `https://github.com/${speaker.github_account}.png` : null,
       ]
@@ -226,11 +226,7 @@ async function importSponsors() {
 }
 
 function generateUUID(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0
-    const v = c === 'x' ? r : (r & 0x3) | 0x8
-    return v.toString(16)
-  })
+  return crypto.randomUUID()
 }
 
 async function runMigration() {
