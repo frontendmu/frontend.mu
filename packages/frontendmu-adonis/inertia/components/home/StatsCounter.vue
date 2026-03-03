@@ -49,26 +49,26 @@ onMounted(counterAnimation)
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto pt-14 px-8 md:px-16 py-16">
+  <div class="max-w-6xl mx-auto px-6 md:px-12 py-14 md:py-16">
     <BaseHeading class="text-center"> Our Numbers So Far </BaseHeading>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+    <div class="grid grid-cols-3 gap-2 md:gap-4 mt-8">
       <div
-        class="h-full flex justify-between items-center flex-col gap-4 p-6 prose dark:prose-invert"
+        class="h-full flex justify-between items-center flex-col gap-2 md:gap-4 p-2 md:p-6 prose dark:prose-invert"
       >
-        <p class="font-bold text-8xl mb-0 accent stat-num" :data-final-num="numOfSpeakers">0</p>
-        <p class="text-2xl mt-0 text-verse-700 dark:text-verse-300">Speakers</p>
+        <p class="font-bold text-5xl md:text-8xl mb-0 accent stat-num" :data-final-num="numOfSpeakers">0</p>
+        <p class="text-base md:text-2xl mt-0 text-verse-700 dark:text-verse-300">Speakers</p>
       </div>
       <div
-        class="h-full flex justify-between items-center flex-col gap-4 p-6 prose dark:prose-invert"
+        class="h-full flex justify-between items-center flex-col gap-2 md:gap-4 p-2 md:p-6 prose dark:prose-invert"
       >
-        <p class="font-bold text-8xl mb-0 accent stat-num" :data-final-num="numOfMeetups">0</p>
-        <p class="text-2xl mt-0 text-verse-700 dark:text-verse-300">Meetups</p>
+        <p class="font-bold text-5xl md:text-8xl mb-0 accent stat-num" :data-final-num="numOfMeetups">0</p>
+        <p class="text-base md:text-2xl mt-0 text-verse-700 dark:text-verse-300">Meetups</p>
       </div>
       <div
-        class="h-full flex justify-between items-center flex-col gap-4 p-6 prose dark:prose-invert"
+        class="h-full flex justify-between items-center flex-col gap-2 md:gap-4 p-2 md:p-6 prose dark:prose-invert"
       >
-        <p class="font-bold text-8xl mb-0 accent stat-num" :data-final-num="numOfContributors">0</p>
-        <p class="text-2xl mt-0 text-verse-700 dark:text-verse-300">Contributors</p>
+        <p class="font-bold text-5xl md:text-8xl mb-0 accent stat-num" :data-final-num="numOfContributors">0</p>
+        <p class="text-base md:text-2xl mt-0 text-verse-700 dark:text-verse-300">Contributors</p>
       </div>
     </div>
   </div>
