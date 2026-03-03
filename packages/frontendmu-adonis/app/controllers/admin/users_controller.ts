@@ -174,6 +174,16 @@ export default class AdminUsersController {
 
     await user.save()
 
+    // Check assign-roles permission before modifying roles
+    if (await bouncer.with(UserPolicy).denies('assignRoles')) {
+      return response.forbidden('You are not authorized to assign roles.')
+    }
+
+    // Only superadmins can assign the superadmin role
+    if (superadminRole && data.roleIds.includes(superadminRole.id) && !isSuperadmin) {
+      return response.forbidden('Only superadmins can assign the superadmin role.')
+    }
+
     // Update user's roles using the pivot table
     await user.related('roles').sync(data.roleIds)
 
