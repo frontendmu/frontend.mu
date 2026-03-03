@@ -170,20 +170,22 @@ export default class AdminSpeakersController {
   /**
    * Delete a speaker
    */
-  async destroy({ params, bouncer, response, session }: HttpContext) {
+  async destroy({ params, auth, bouncer, response, session }: HttpContext) {
     if (await bouncer.with(SpeakerPolicy).denies('delete')) {
       return response.forbidden('You are not authorized to delete speakers.')
     }
 
     const speaker = await User.findOrFail(params.id)
 
-    // Remove from session_speakers first
+    // Prevent removing yourself from speakers
+    if (auth.user && speaker.id === auth.user.id) {
+      return response.badRequest('You cannot remove yourself from speakers.')
+    }
+
+    // Only remove session associations — do NOT delete the user account
     await db.from('session_speakers').where('speaker_id', speaker.id).delete()
 
-    // Delete the user
-    await speaker.delete()
-
-    session.flash('success', 'Speaker deleted successfully!')
+    session.flash('success', 'Speaker removed from all sessions successfully!')
     return response.redirect('/admin/speakers')
   }
 }
