@@ -6,8 +6,19 @@ const shieldConfig = defineConfig({
    * to learn more
    */
   csp: {
-    enabled: false,
-    directives: {},
+    enabled: true,
+    directives: {
+      defaultSrc: [`'self'`],
+      scriptSrc: [`'self'`, `'nonce-@nonce'`],
+      styleSrc: [`'self'`, `'unsafe-inline'`],
+      imgSrc: [`'self'`, 'data:', 'https://avatars.githubusercontent.com', 'https://github.com', 'https://lh3.googleusercontent.com'],
+      fontSrc: [`'self'`],
+      connectSrc: [`'self'`],
+      frameSrc: [`'none'`],
+      objectSrc: [`'none'`],
+      baseUri: [`'self'`],
+      formAction: [`'self'`],
+    },
     reportOnly: false,
   },
 
