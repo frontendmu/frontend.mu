@@ -28,8 +28,13 @@ export default defineConfig({
   },
 
   optimizeDeps: {
+    exclude: ['@libsql/sqlite3', 'oracledb', 'knex-dynamic-connection'],
     esbuildOptions: {
       target: 'esnext',
     },
+  },
+
+  ssr: {
+    external: ['@libsql/sqlite3', 'oracledb'],
   },
 })
