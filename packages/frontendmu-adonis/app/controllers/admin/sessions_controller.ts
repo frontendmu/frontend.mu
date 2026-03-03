@@ -195,15 +195,8 @@ export default class AdminSessionsController {
       return response.forbidden('You are not authorized to view speakers.')
     }
 
-    // Get all users that can be speakers - anyone who has been a speaker before
-    // or members and above
-    const speakers = await User.query()
-      .where((query) => {
-        query
-          .whereIn('role', ['member', 'organizer', 'superadmin'])
-          .orWhereHas('sessions', (q) => q.whereNotNull('id'))
-      })
-      .orderBy('name', 'asc')
+    // Get all users — any user can potentially be a speaker
+    const speakers = await User.query().orderBy('name', 'asc')
 
     return response.json({
       speakers: speakers.map((user) => ({
