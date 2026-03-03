@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import BaseHeading from '~/components/base/BaseHeading.vue'
 
 interface Props {
   stats: {
@@ -21,21 +20,33 @@ function counterAnimation() {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         let startNum = 0
-        const nullCheck = entry.target.getAttribute('data-final-num')
-        if (nullCheck !== null) {
-          const finalNum = +nullCheck
+        const finalNumStr = entry.target.getAttribute('data-final-num')
+        if (finalNumStr !== null) {
+          const finalNum = parseInt(finalNumStr, 10)
 
-          if (finalNum) {
-            const duration = Math.floor(700 / finalNum)
+          if (finalNum > 0) {
+            const duration = 2000 // 2 seconds total duration
+            const frameDuration = 1000 / 60 // 60fps
+            const totalFrames = Math.round(duration / frameDuration)
+            let frame = 0
 
             const counter = setInterval(() => {
-              startNum += 1
-              entry.target.textContent = `${startNum}`
+              frame++
+              const progress = frame / totalFrames
+              // Ease out expo
+              const currentNum = Math.round(finalNum * (progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)))
+              
+              entry.target.textContent = `${currentNum}`
 
-              if (startNum === finalNum) clearInterval(counter)
-              observer.unobserve(entry.target)
-            }, duration)
+              if (frame === totalFrames) {
+                entry.target.textContent = `${finalNum}`
+                clearInterval(counter)
+              }
+            }, frameDuration)
+          } else {
+            entry.target.textContent = '0'
           }
+          observer.unobserve(entry.target)
         }
       }
     })
@@ -49,56 +60,39 @@ onMounted(counterAnimation)
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto px-6 md:px-12 py-14 md:py-16">
-    <BaseHeading class="text-center"> Our Numbers So Far </BaseHeading>
-    <div class="grid grid-cols-3 gap-2 md:gap-4 mt-8">
-      <div
-        class="h-full flex justify-between items-center flex-col gap-2 md:gap-4 p-2 md:p-6 prose dark:prose-invert"
-      >
-        <p class="font-bold text-5xl md:text-8xl mb-0 accent stat-num" :data-final-num="numOfSpeakers">0</p>
-        <p class="text-base md:text-2xl mt-0 text-verse-700 dark:text-verse-300">Speakers</p>
-      </div>
-      <div
-        class="h-full flex justify-between items-center flex-col gap-2 md:gap-4 p-2 md:p-6 prose dark:prose-invert"
-      >
-        <p class="font-bold text-5xl md:text-8xl mb-0 accent stat-num" :data-final-num="numOfMeetups">0</p>
-        <p class="text-base md:text-2xl mt-0 text-verse-700 dark:text-verse-300">Meetups</p>
-      </div>
-      <div
-        class="h-full flex justify-between items-center flex-col gap-2 md:gap-4 p-2 md:p-6 prose dark:prose-invert"
-      >
-        <p class="font-bold text-5xl md:text-8xl mb-0 accent stat-num" :data-final-num="numOfContributors">0</p>
-        <p class="text-base md:text-2xl mt-0 text-verse-700 dark:text-verse-300">Contributors</p>
+  <section class="relative py-32 bg-verse-50 dark:bg-verse-900/10 overflow-hidden">
+    <div class="contain relative z-10">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 text-center">
+        <!-- Speakers -->
+        <div class="space-y-4">
+          <div class="relative inline-block">
+            <span class="stat-num text-7xl md:text-9xl font-black tracking-tighter text-gray-900 dark:text-white leading-none" :data-final-num="numOfSpeakers">0</span>
+            <span class="absolute -top-4 -right-8 text-4xl font-black text-verse-500">+</span>
+          </div>
+          <h3 class="text-xl md:text-2xl font-bold uppercase tracking-widest text-verse-600 dark:text-verse-400">Speakers</h3>
+          <p class="text-gray-500 dark:text-gray-400 font-medium max-w-[200px] mx-auto">Diverse voices sharing expert insights.</p>
+        </div>
+
+        <!-- Meetups -->
+        <div class="space-y-4">
+          <div class="relative inline-block">
+            <span class="stat-num text-7xl md:text-9xl font-black tracking-tighter text-gray-900 dark:text-white leading-none" :data-final-num="numOfMeetups">0</span>
+            <span class="absolute -top-4 -right-8 text-4xl font-black text-verse-500">+</span>
+          </div>
+          <h3 class="text-xl md:text-2xl font-bold uppercase tracking-widest text-verse-600 dark:text-verse-400">Events</h3>
+          <p class="text-gray-500 dark:text-gray-400 font-medium max-w-[200px] mx-auto">Memorable sessions since 2016.</p>
+        </div>
+
+        <!-- Contributors -->
+        <div class="space-y-4">
+          <div class="relative inline-block">
+            <span class="stat-num text-7xl md:text-9xl font-black tracking-tighter text-gray-900 dark:text-white leading-none" :data-final-num="numOfContributors">0</span>
+            <span class="absolute -top-4 -right-8 text-4xl font-black text-verse-500">+</span>
+          </div>
+          <h3 class="text-xl md:text-2xl font-bold uppercase tracking-widest text-verse-600 dark:text-verse-400">Contributors</h3>
+          <p class="text-gray-500 dark:text-gray-400 font-medium max-w-[200px] mx-auto">Passionate builders behind the scenes.</p>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
-
-<style scoped>
-.accent {
-  background: linear-gradient(
-    135deg,
-    hsl(13, 100%, 52%) 10%,
-    hsl(175, 100%, 38%) 50%,
-    hsl(13, 100%, 52%) 80%,
-    hsl(175, 100%, 38%) 90%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  background-size: 400% 400%;
-  animation: gradient-animation 12s ease infinite;
-}
-
-@keyframes gradient-animation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-</style>
