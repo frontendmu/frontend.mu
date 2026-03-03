@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
+import { updateProfileValidator } from '#validators/profile_validator'
 
 export default class ProfileController {
   async show({ inertia, auth, response }: HttpContext) {
@@ -32,10 +33,16 @@ export default class ProfileController {
       return response.redirect('/login')
     }
 
-    const data = request.only(['name', 'bio', 'linkedinUrl', 'twitterUrl', 'websiteUrl'])
+    const data = await request.validateUsing(updateProfileValidator)
 
     const user = await User.findOrFail(auth.user.id)
-    user.merge(data)
+    user.merge({
+      name: data.name,
+      bio: data.bio || null,
+      linkedinUrl: data.linkedinUrl || null,
+      twitterUrl: data.twitterUrl || null,
+      websiteUrl: data.websiteUrl || null,
+    })
     await user.save()
 
     session.flash('success', 'Profile updated successfully!')
