@@ -17,11 +17,11 @@ export default class extends BaseSchema {
         .notNullable()
     })
 
-    this.schema.alter(this.tableName, (table) => {
+    this.schema.alterTable(this.tableName, (table) => {
       table.dropColumn('role')
     })
 
-    this.schema.alter(this.tableName, (table) => {
+    this.schema.alterTable(this.tableName, (table) => {
       table.renameColumn('app_role', 'role')
     })
   }
@@ -33,11 +33,11 @@ export default class extends BaseSchema {
       table.dropColumn('is_community_member')
     })
 
-    this.schema.alter(this.tableName, (table) => {
+    this.schema.alterTable(this.tableName, (table) => {
       table.dropColumn('role')
     })
 
-    this.schema.alter(this.tableName, (table) => {
+    this.schema.alterTable(this.tableName, (table) => {
       table
         .enum('role', ['admin', 'organizer', 'speaker', 'community_member'])
         .defaultTo('community_member')
