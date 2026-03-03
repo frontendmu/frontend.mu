@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
-import BaseHeading from '~/components/base/BaseHeading.vue'
 
 interface Speaker {
   id: string
@@ -15,98 +13,114 @@ interface Props {
   speakers: Speaker[]
 }
 
-const props = defineProps<Props>()
-
-const initialActiveSpeakerIndex = computed(() => Math.floor(props.speakers.length / 2))
-
-const activeSpeakerId = ref<string>(props.speakers[initialActiveSpeakerIndex.value]?.id || '')
+defineProps<Props>()
 
 function getGithubUrl(username: string | null): string {
-  if (!username) return '/placeholder-avatar.png'
+  if (!username) return 'https://ui-avatars.com/api/?name=Speaker&background=random'
   return `https://avatars.githubusercontent.com/${username}`
 }
 </script>
 
 <template>
-  <div v-if="speakers.length > 0" class="latest-events-wrapper py-12 md:py-16">
-    <div class="mx-auto px-4 pb-6 md:pb-8">
-      <BaseHeading class="text-center"> Featured Speakers </BaseHeading>
+  <section v-if="speakers.length > 0" class="relative py-32 overflow-hidden bg-white dark:bg-verse-950">
+    <!-- Large Background Text -->
+    <div class="absolute top-0 left-0 w-full h-full pointer-events-none select-none overflow-hidden">
+      <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[25vw] font-black text-gray-500/[0.03] dark:text-white/[0.02] whitespace-nowrap">
+        SPEAKERS • TALKS • EVENTS • KNOWLEDGE
+      </span>
     </div>
 
-    <div class="flex justify-center px-4">
-      <ul id="team" role="list" class="mx-auto flex flex-wrap md:flex-nowrap justify-center gap-4">
-        <li
-          v-for="(person, index) in speakers"
-          :key="person.id"
-          class="single-photo rounded-xl overflow-hidden relative group cursor-pointer"
-          :class="[`index-${index}`, activeSpeakerId === person.id && 'active']"
-          @click="activeSpeakerId = person.id"
-        >
-          <img
-            class="mx-auto md:saturate-0 rounded-xl ease-in-out duration-300 md:h-[640px] h-[150px] w-[150px] md:w-[90px] object-cover object-center md:group-hover:w-[120px] group-hover:saturate-100 transition-all"
-            :src="getGithubUrl(person.github_account)"
-            :alt="person.name"
-            :title="person.name"
-            width="300"
-            height="300"
-          />
+    <div class="contain relative z-10">
+      <!-- Section Header -->
+      <div class="relative mb-32 max-w-4xl mx-auto text-center lg:text-left lg:mx-0">
+        <div class="inline-flex items-center gap-3 mb-6">
+          <span class="h-1 w-12 bg-verse-500 rounded-full"></span>
+          <span class="text-sm font-black uppercase tracking-[0.4em] text-verse-500">The Lineup</span>
+        </div>
+        <h2 class="text-6xl md:text-8xl font-black tracking-tight dark:text-white leading-[0.9]">
+          Featured <br />
+          <span class="text-verse-600 dark:text-verse-400">Speakers.</span>
+        </h2>
+        <p class="mt-8 text-xl text-gray-500 dark:text-gray-400 font-medium max-w-2xl">
+          Get to know some of the amazing people who have shared their expertise at our meetups. From local legends to international guests.
+        </p>
+      </div>
 
-          <div
-            class="speaker-details-background inset-0 space-y-2 absolute text-center top-0 left-0 flex flex-col justify-end"
-          >
-            <div
-              class="p-2 md:p-10 speaker-details md:opacity-0 flex flex-col items-center md:gap-2"
-            >
-              <p class="text-verse-200 text-xs md:text-2xl block cursor-text">
-                @{{ person.github_account }}
-              </p>
-              <h3 class="text-verse-100 font-extrabold text-sm md:text-4xl block cursor-text">
-                {{ person.name }}
-              </h3>
-              <Link
-                :href="`/speaker/${person.id}`"
-                class="p-1 text-verse-500 md:text-white text-sm md:text-base hidden md:block bg-white/20 text-center rounded-md font-bold w-24"
-              >
-                List talks
-              </Link>
+      <!-- Editorial Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-32 gap-x-12 lg:gap-x-24">
+        <div 
+          v-for="(person, index) in speakers" 
+          :key="person.id" 
+          class="group relative"
+          :class="{ 'lg:translate-y-24': index % 3 === 1, 'lg:translate-y-48': index % 3 === 2 }"
+        >
+          <!-- Decorative Numbering -->
+          <div class="absolute -top-12 -left-6 text-8xl font-black text-gray-100 dark:text-verse-900/50 group-hover:text-verse-500/20 transition-colors z-0 select-none">
+            {{ (index + 1).toString().padStart(2, '0') }}
+          </div>
+
+          <!-- Custom Frame Container -->
+          <div class="relative z-10 aspect-[4/5] overflow-hidden rounded-[3rem] bg-gray-50 dark:bg-verse-900 shadow-2xl transition-all duration-700 group-hover:rounded-[1rem] group-hover:scale-[1.02]">
+            <img
+              class="w-full h-full object-cover transition-all duration-1000 grayscale group-hover:grayscale-0 group-hover:scale-110"
+              :src="getGithubUrl(person.github_account)"
+              :alt="person.name"
+            />
+            
+            <!-- Link Overlay -->
+            <Link 
+              :href="`/speaker/${person.id}`" 
+              class="absolute inset-0 z-20"
+              aria-label="View speaker profile"
+            />
+
+            <!-- Hover Branding -->
+            <div class="absolute top-6 right-6 z-30 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+               <div class="bg-white/90 dark:bg-verse-950/90 backdrop-blur-md p-3 rounded-2xl shadow-xl border border-white/20">
+                 <svg class="w-6 h-6 text-verse-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                 </svg>
+               </div>
             </div>
           </div>
 
-          <div class="speaker-link hidden absolute bottom-0 right-0 p-2 md:p-10" />
-        </li>
-      </ul>
+          <!-- Text Details -->
+          <div class="mt-12 space-y-3 relative z-10">
+            <h3 class="text-3xl md:text-4xl font-black tracking-tight text-gray-900 dark:text-white group-hover:text-verse-500 transition-colors duration-300">
+              {{ person.name }}
+            </h3>
+            <div class="flex items-center gap-4">
+              <span class="h-0.5 w-6 bg-verse-500 transition-all duration-500 group-hover:w-12"></span>
+              <p v-if="person.github_account" class="text-sm font-black uppercase tracking-[0.25em] text-gray-400 dark:text-gray-500">
+                @{{ person.github_account }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- CTA Footer -->
+      <div class="mt-64 flex flex-col items-center gap-8">
+        <div class="h-px w-full bg-gradient-to-r from-transparent via-gray-200 dark:via-verse-800 to-transparent"></div>
+        <Link 
+          href="/speakers" 
+          class="group relative inline-flex items-center gap-6 px-16 py-6 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full font-black uppercase tracking-[0.2em] overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-black/20 dark:shadow-white/10"
+        >
+          <span class="relative z-10">See all speakers</span>
+          <svg class="w-6 h-6 relative z-10 transition-transform group-hover:translate-x-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+          <div class="absolute inset-0 bg-verse-500 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-expo"></div>
+        </Link>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <style scoped>
-@media (min-width: 768px) {
-  .single-photo.active:hover img,
-  .single-photo.active img {
-    width: 545px;
-    filter: saturate(1) blur(0px);
-  }
+@reference "tailwindcss";
 
-  .single-photo.active .speaker-details {
-    opacity: 1;
-    transition: opacity 300ms;
-    transition-delay: 300ms;
-  }
-
-  .single-photo.active .speaker-link {
-    display: block;
-    opacity: 1;
-    transition: opacity 300ms;
-    transition-delay: 300ms;
-  }
-}
-
-.single-photo .speaker-details-background {
-  background: linear-gradient(
-    to bottom,
-    hsla(175, 100%, 38%, 0.284) 0%,
-    hsla(216, 100%, 95%, 0) 70%,
-    hsla(214, 22%, 15%, 0.9) 100%
-  );
+.ease-expo {
+  transition-timing-function: cubic-bezier(0.87, 0, 0.13, 1);
 }
 </style>
