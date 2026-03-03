@@ -33,7 +33,7 @@ defineProps<Props>()
 <template>
   <Head title="Home" />
   <DefaultLayout>
-    <main class="pb-20">
+    <main class="pb-8">
       <!-- Hero Section -->
       <Hero />
 
