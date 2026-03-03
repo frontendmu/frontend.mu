@@ -46,9 +46,13 @@ router.get('/auth/google/callback', [
   'callback',
 ])
 
-// Profile route
-router.get('/profile', [() => import('#controllers/profile_controller'), 'show'])
-router.put('/profile', [() => import('#controllers/profile_controller'), 'update'])
+// Profile routes (requires authentication)
+router
+  .group(() => {
+    router.get('/profile', [() => import('#controllers/profile_controller'), 'show'])
+    router.put('/profile', [() => import('#controllers/profile_controller'), 'update'])
+  })
+  .use(middleware.auth())
 
 // RSVP routes
 // Get RSVP status (public - returns null if not authenticated)
