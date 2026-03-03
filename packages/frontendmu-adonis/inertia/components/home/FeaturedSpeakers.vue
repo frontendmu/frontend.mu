@@ -28,12 +28,12 @@ function getGithubUrl(username: string | null): string {
 </script>
 
 <template>
-  <div v-if="speakers.length > 0" class="latest-events-wrapper py-16">
-    <div class="mx-auto px-4 pt-8 py-4 text-4xl tracking-tight sm:text-5xl md:py-8 md:text-5xl">
+  <div v-if="speakers.length > 0" class="latest-events-wrapper py-12 md:py-16">
+    <div class="mx-auto px-4 pb-6 md:pb-8">
       <BaseHeading class="text-center"> Featured Speakers </BaseHeading>
     </div>
 
-    <div class="flex justify-center p-4">
+    <div class="flex justify-center px-4">
       <ul id="team" role="list" class="mx-auto flex flex-wrap md:flex-nowrap justify-center gap-4">
         <li
           v-for="(person, index) in speakers"
