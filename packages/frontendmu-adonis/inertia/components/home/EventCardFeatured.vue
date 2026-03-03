@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import type { Meetup } from '~/types'
-import Logo from '~/components/layout/Logo.vue'
 
 interface Props {
   event: Meetup
@@ -17,7 +16,11 @@ const props = withDefaults(defineProps<Props>(), {
 
 const formattedDate = computed(() => {
   if (!props.event.Date) return ''
-  return new Date(props.event.Date).toDateString()
+  const date = new Date(props.event.Date)
+  return {
+    full: date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+    short: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  }
 })
 
 const speakers = computed(() => {
@@ -29,136 +32,89 @@ const speakers = computed(() => {
 
 <template>
   <div
-    class="mt-4 md:mt-0 relative rounded-xl group flex flex-col items-start md:items-center gap-6 md:gap-16 bg-white dark:bg-verse-950 p-8 md:p-16 shadow-xl border-2"
+    class="relative overflow-hidden rounded-[2.5rem] group p-1 transition-all duration-500 hover:scale-[1.01]"
     :class="[
       isToday
-        ? 'border-red-500 dark:border-red-400'
-        : isNext
-          ? 'border-green-500 dark:border-green-400'
-          : 'border-verse-100 dark:border-verse-800',
+        ? 'bg-gradient-to-br from-red-500 via-orange-500 to-yellow-500 shadow-2xl shadow-red-500/20'
+        : 'bg-gradient-to-br from-verse-600 via-verse-500 to-green-500 shadow-2xl shadow-verse-500/20',
     ]"
   >
-    <Logo
-      class="w-32 z-0 dark:text-white transition-all hidden md:block select-none top-0 saturate-100 opacity-100 overflow-hidden text-verse-500"
-    />
-
-    <!-- Badge -->
-    <div v-if="isToday || isNext" class="absolute top-4 right-4">
-      <span
-        v-if="isToday"
-        class="flex items-center gap-1 text-sm font-mono text-red-800 dark:text-red-300 px-3 py-1 rounded-md font-bold bg-red-100 dark:bg-red-900/30"
-      >
-        <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-        TODAY
-      </span>
-      <span
-        v-else-if="isNext"
-        class="bg-green-700 text-sm font-mono text-white px-3 py-1 rounded-md font-bold"
-      >
-        NEXT MEETUP
-      </span>
-    </div>
-
-    <h3
-      class="leading-2 text-xl md:text-5xl font-medium md:h-12 z-20 text-verse-600 dark:text-verse-300 text-center"
-    >
-      <Link :href="`/meetup/${event.id}`" class="w-[300px] md:w-full focus:outline-none">
-        <span class="absolute inset-0" aria-hidden="true" />
-        {{ event?.title }}
-      </Link>
-    </h3>
-
-    <div class="flex flex-col md:flex-row w-full justify-between gap-4 border-gray-100">
-      <span
-        v-if="event.Date"
-        class="inline-flex items-center rounded-lg p-3 ring-4 ring-white dark:ring-white/10 text-green-600 bg-green-50 dark:bg-verse-900 font-bold"
-      >
-        <svg
-          class="mr-2 h-6 w-6"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 32 32"
-          fill="currentColor"
-        >
-          <path
-            d="M26 4h-4V2h-2v2h-8V2h-2v2H6c-1.1 0-2 .9-2 2v20c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 22H6V12h20zm0-16H6V6h4v2h2V6h8v2h2V6h4z"
-          />
-        </svg>
-        <span>{{ formattedDate }}</span>
-      </span>
-
-      <div
-        class="flex gap-1 md:gap-0 items-center justify-start text-xl font-medium text-gray-500 dark:text-gray-100"
-      >
-        <svg
-          class="mr-1.5 h-5 w-5 flex-shrink-0 truncate"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 32 32"
-          fill="currentColor"
-        >
-          <path
-            d="M31 30h-2v-5a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3v5h-2v-5a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5zM24 12a3 3 0 1 1-3 3a3 3 0 0 1 3-3m0-2a5 5 0 1 0 5 5a5 5 0 0 0-5-5M15 22h-2v-5a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v5H1v-5a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5zM8 4a3 3 0 1 1-3 3a3 3 0 0 1 3-3m0-2a5 5 0 1 0 5 5a5 5 0 0 0-5-5"
-          />
-        </svg>
-        <div v-if="event && event?.Attendees !== 0" class="line-clamp-1 md:line-clamp-0">
-          Attendees {{ event?.Attendees }}
+    <div class="relative z-10 bg-white/95 dark:bg-verse-950/90 backdrop-blur-2xl rounded-[2.3rem] p-8 md:p-12 flex flex-col lg:flex-row gap-10 items-center justify-between">
+      
+      <div class="flex-1 space-y-6 text-center lg:text-left">
+        <!-- Status Badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-[0.2em] border-2"
+          :class="[
+            isToday 
+              ? 'bg-red-500/10 border-red-500/20 text-red-600 dark:text-red-400' 
+              : 'bg-green-500/10 border-green-500/20 text-green-600 dark:text-green-400'
+          ]">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-current opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-current"></span>
+          </span>
+          {{ isToday ? "Happening Today" : "Upcoming Experience" }}
         </div>
-        <div v-else>Seats: {{ event?.Attendees || 'TBA' }}</div>
+
+        <!-- Title -->
+        <h3 class="text-4xl md:text-6xl font-black tracking-tight text-gray-900 dark:text-white leading-[1.1]">
+          {{ event?.title }}
+        </h3>
+
+        <!-- Meta info -->
+        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-gray-500 dark:text-gray-400 font-bold">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-verse-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            {{ formattedDate.full }}
+          </div>
+          <div v-if="event.Venue" class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-verse-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            {{ event.Venue }}
+          </div>
+        </div>
+
+        <!-- Speakers & CTA -->
+        <div class="flex flex-col sm:flex-row items-center gap-8 pt-4">
+          <Link
+            :href="`/meetup/${event.id}`"
+            class="w-full sm:w-auto px-10 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all"
+          >
+            {{ isToday ? 'Join Now' : 'Save My Spot' }}
+          </Link>
+
+          <div v-if="speakers.length > 0" class="flex items-center gap-3">
+            <div class="flex -space-x-3">
+              <template v-for="speaker in speakers.slice(0, 3)" :key="speaker?.id">
+                <img
+                  v-if="speaker?.github_account"
+                  :src="`https://avatars.githubusercontent.com/${speaker.github_account}`"
+                  :alt="speaker.name"
+                  class="w-12 h-12 rounded-full border-4 border-white dark:border-verse-950 object-cover ring-2 ring-verse-500/20"
+                />
+              </template>
+              <div v-if="speakers.length > 3" class="w-12 h-12 rounded-full bg-verse-100 dark:bg-verse-900 border-4 border-white dark:border-verse-950 flex items-center justify-center text-xs font-black text-verse-600 dark:text-verse-400 ring-2 ring-verse-500/20">
+                +{{ speakers.length - 3 }}
+              </div>
+            </div>
+            <div class="text-left">
+              <p class="text-xs font-black uppercase tracking-tighter text-gray-400 dark:text-gray-500">Featuring</p>
+              <p class="text-sm font-bold dark:text-gray-300">{{ speakers[0]?.name }} & others</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div
-        v-if="event.Venue"
-        class="flex gap-1 md:gap-0 items-center justify-start text-xl font-medium text-gray-500 dark:text-gray-100"
-      >
-        <svg
-          class="ml-[-1px] mr-1.5 h-5 w-5 flex-shrink-0 truncate"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 32 32"
-          fill="currentColor"
-        >
-          <path
-            d="M16 2A11.013 11.013 0 0 0 5 13a10.889 10.889 0 0 0 2.216 6.6s.3.395.349.452L16 30l8.439-9.953c.044-.053.345-.447.345-.447l.001-.003A10.885 10.885 0 0 0 27 13A11.013 11.013 0 0 0 16 2m0 15a4 4 0 1 1 4-4a4.005 4.005 0 0 1-4 4"
-          />
-        </svg>
-        <div>{{ event.Venue }}</div>
+      <!-- Date Large Display (hidden on mobile) -->
+      <div class="hidden lg:flex flex-col items-center justify-center w-48 h-48 rounded-[2rem] bg-verse-50 dark:bg-verse-900/30 border-2 border-verse-100 dark:border-verse-800 rotate-3 group-hover:rotate-0 transition-transform duration-500">
+        <span class="text-5xl font-black text-verse-500 leading-none">{{ new Date(event.Date).getDate() }}</span>
+        <span class="text-lg font-black uppercase tracking-[0.2em] text-gray-400">{{ new Date(event.Date).toLocaleString('en-US', { month: 'short' }) }}</span>
       </div>
 
-      <div v-else class="text-gray-400">No venue added.</div>
     </div>
-
-    <!-- Speakers -->
-    <div v-if="speakers.length > 0" class="flex -space-x-2">
-      <template v-for="speaker in speakers.slice(0, 5)" :key="speaker?.id">
-        <img
-          v-if="speaker?.github_account"
-          :src="`https://avatars.githubusercontent.com/${speaker.github_account}`"
-          :alt="speaker.name"
-          class="w-10 h-10 rounded-full border-2 border-white dark:border-verse-800 object-cover"
-        />
-      </template>
-      <span
-        v-if="speakers.length > 5"
-        class="w-10 h-10 rounded-full border-2 border-white dark:border-verse-800 bg-verse-200 dark:bg-verse-700 flex items-center justify-center text-xs font-medium"
-      >
-        +{{ speakers.length - 5 }}
-      </span>
-    </div>
-
-    <span
-      class="pointer-events-none absolute top-6 right-6 text-gray-300 group-hover:text-green-500"
-      :class="{ hidden: isToday || isNext }"
-      aria-hidden="true"
-    >
-      <svg
-        class="h-6 w-6"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 32 32"
-        fill="currentColor"
-      >
-        <path
-          d="m10 6l1.41 1.41L7.83 11H28v2H7.83l3.58 3.59L10 18l-6-6z"
-          transform="rotate(180 16 16)"
-        />
-      </svg>
-    </span>
   </div>
 </template>

@@ -3,7 +3,6 @@ import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import type { Meetup } from '~/types'
 import { useMeetups } from '~/composables/useMeetups'
-import BaseHeading from '~/components/base/BaseHeading.vue'
 import EventCardFeatured from '~/components/home/EventCardFeatured.vue'
 import EventCardSmall from '~/components/home/EventCardSmall.vue'
 import EventCardModern from '~/components/home/EventCardModern.vue'
@@ -25,64 +24,78 @@ const remainingUpcomingData = computed(() =>
 </script>
 
 <template>
-  <div class="latest-events-container relative z-20 sm:py-4 md:pt-6 md:px-8 px-0">
-    <div
-      class="latest-events-wrapper mx-auto flex flex-col gap-10 px-4 pt-4 md:max-w-3xl md:px-0 lg:max-w-5xl"
-    >
-      <!-- Today's Meetups -->
-      <div v-if="areThereMeetupsToday">
-        <div class="pb-4">
-          <BaseHeading weight="light"> Today's Meetups </BaseHeading>
+  <section class="relative z-20 py-24 overflow-hidden">
+    <div class="contain mx-auto flex flex-col gap-24">
+      
+      <!-- Featured / Today / Next -->
+      <div v-if="areThereMeetupsToday || nextMeetup" class="space-y-12">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div class="space-y-2">
+            <h2 class="text-4xl md:text-5xl font-black tracking-tight dark:text-white">
+              {{ areThereMeetupsToday ? "Happening Today" : "The Main Event" }}
+            </h2>
+            <p class="text-lg text-gray-500 dark:text-gray-400 font-medium max-w-xl">
+              Don't miss out on our flagship community gatherings. Grab your seat and join the conversation.
+            </p>
+          </div>
         </div>
-        <div class="sm:grid sm:grid-cols-1 gap-8 px-4 md:px-0">
+
+        <div class="grid grid-cols-1 gap-8">
           <EventCardFeatured
-            v-for="meetup in todaysMeetups"
+            v-for="meetup in (areThereMeetupsToday ? todaysMeetups : [nextMeetup])"
             :key="meetup.id"
             :event="meetup"
-            is-today
+            :is-today="areThereMeetupsToday"
+            :is-next="!areThereMeetupsToday"
           />
         </div>
       </div>
 
-      <!-- Next Meetup (only if no meetup today) -->
-      <div v-if="!areThereMeetupsToday && nextMeetup">
-        <div class="pb-4">
-          <BaseHeading weight="light"> Next Meetup </BaseHeading>
+      <!-- Upcoming Queue -->
+      <div v-if="remainingUpcomingData.length > 0" class="space-y-12">
+        <div class="flex items-center gap-4">
+          <h2 class="text-2xl font-black uppercase tracking-[0.2em] text-verse-500">Upcoming</h2>
+          <div class="h-px flex-1 bg-gradient-to-r from-verse-500/20 to-transparent"></div>
         </div>
-        <div class="sm:grid sm:grid-cols-1 gap-8 px-4 md:px-0">
-          <EventCardFeatured :event="nextMeetup" is-next />
-        </div>
-      </div>
-
-      <!-- Upcoming Meetups -->
-      <div v-if="remainingUpcomingData.length > 0">
-        <div class="pb-4">
-          <BaseHeading weight="light"> Upcoming Meetups </BaseHeading>
-        </div>
-        <div class="sm:grid sm:grid-cols-2 gap-8 px-4 md:px-0">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <EventCardSmall v-for="event in remainingUpcomingData" :key="event.id" :event="event" />
         </div>
       </div>
 
-      <!-- Recent Meetups -->
-      <div v-if="pastMeetups.length > 0">
-        <div class="pb-4">
-          <BaseHeading weight="light"> Recent Meetups </BaseHeading>
+      <!-- Historical Meetups -->
+      <div v-if="pastMeetups.length > 0" class="space-y-12">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div class="space-y-2">
+            <h2 class="text-3xl font-black tracking-tight dark:text-white">Recent Memories</h2>
+            <p class="text-gray-500 dark:text-gray-400 font-medium">Catch up on what you missed in our previous sessions.</p>
+          </div>
+          
+          <Link
+            href="/meetups"
+            class="hidden md:inline-flex items-center gap-2 text-verse-500 font-bold hover:gap-3 transition-all"
+          >
+            Explore all meetups
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </Link>
         </div>
-        <div class="sm:grid sm:grid-cols-1 gap-0 px-4 md:px-0">
+
+        <div class="divide-y divide-transparent">
           <EventCardModern v-for="event in pastMeetups" :key="event.id" :event="event" />
+        </div>
+        
+        <div class="flex md:hidden pt-4">
+          <Link
+            href="/meetups"
+            class="w-full text-center py-4 bg-verse-50 dark:bg-verse-900/20 text-verse-600 dark:text-verse-400 rounded-2xl font-bold"
+          >
+            Explore all meetups
+          </Link>
         </div>
       </div>
 
-      <!-- View All Button -->
-      <div class="flex items-center justify-center pt-4 pb-8">
-        <Link
-          href="/meetups"
-          class="text-md w-48 rounded-full bg-verse-600 px-6 py-3.5 text-center font-medium text-white md:w-56 md:px-8 md:py-4 md:text-lg hover:bg-verse-700 transition-colors"
-        >
-          View all meetups
-        </Link>
-      </div>
     </div>
-  </div>
+  </section>
 </template>
