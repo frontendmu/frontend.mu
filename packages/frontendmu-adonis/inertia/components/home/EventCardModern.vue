@@ -27,7 +27,7 @@ const isUpcoming = computed(() => {
 <template>
   <div class="py-2 group">
     <div
-      class="relative rounded-xl flex flex-col md:flex-row p-4 md:p-0 gap-2 group bg-white dark:bg-verse-900/10 dark:border-verse-100/10 group-hover:shadow-lg group-focus-within:shadow-lg transition-all duration-300 border-2 border-verse-100 group-hover:border-verse-400 group-focus-within:border-verse-400 group-hover:scale-105 group-focus-within:scale-105"
+      class="relative rounded-xl flex flex-col md:flex-row p-4 md:p-0 gap-2 group bg-white dark:bg-verse-900/10 dark:border-verse-100/10 group-hover:shadow-lg group-focus-within:shadow-lg transition-all duration-300 border border-verse-200 group-hover:border-verse-400 group-focus-within:border-verse-400 group-hover:scale-[1.02] group-focus-within:scale-[1.02]"
     >
       <!-- Date -->
       <div v-if="event.Date">

@@ -25,13 +25,13 @@ const remainingUpcomingData = computed(() =>
 </script>
 
 <template>
-  <div class="latest-events-container relative z-20 sm:py-6 md:pt-8 md:px-8 px-0">
+  <div class="latest-events-container relative z-20 sm:py-4 md:pt-6 md:px-8 px-0">
     <div
-      class="latest-events-wrapper mx-auto flex flex-col gap-16 px-4 pt-8 md:max-w-3xl md:px-0 lg:max-w-5xl"
+      class="latest-events-wrapper mx-auto flex flex-col gap-10 px-4 pt-4 md:max-w-3xl md:px-0 lg:max-w-5xl"
     >
       <!-- Today's Meetups -->
       <div v-if="areThereMeetupsToday">
-        <div class="py-8">
+        <div class="pb-4">
           <BaseHeading weight="light"> Today's Meetups </BaseHeading>
         </div>
         <div class="sm:grid sm:grid-cols-1 gap-8 px-4 md:px-0">
@@ -46,7 +46,7 @@ const remainingUpcomingData = computed(() =>
 
       <!-- Next Meetup (only if no meetup today) -->
       <div v-if="!areThereMeetupsToday && nextMeetup">
-        <div class="py-8">
+        <div class="pb-4">
           <BaseHeading weight="light"> Next Meetup </BaseHeading>
         </div>
         <div class="sm:grid sm:grid-cols-1 gap-8 px-4 md:px-0">
@@ -56,7 +56,7 @@ const remainingUpcomingData = computed(() =>
 
       <!-- Upcoming Meetups -->
       <div v-if="remainingUpcomingData.length > 0">
-        <div class="py-8">
+        <div class="pb-4">
           <BaseHeading weight="light"> Upcoming Meetups </BaseHeading>
         </div>
         <div class="sm:grid sm:grid-cols-2 gap-8 px-4 md:px-0">
@@ -66,7 +66,7 @@ const remainingUpcomingData = computed(() =>
 
       <!-- Recent Meetups -->
       <div v-if="pastMeetups.length > 0">
-        <div class="py-8">
+        <div class="pb-4">
           <BaseHeading weight="light"> Recent Meetups </BaseHeading>
         </div>
         <div class="sm:grid sm:grid-cols-1 gap-0 px-4 md:px-0">
@@ -75,10 +75,10 @@ const remainingUpcomingData = computed(() =>
       </div>
 
       <!-- View All Button -->
-      <div class="flex h-32 items-center justify-center">
+      <div class="flex items-center justify-center pt-4 pb-8">
         <Link
           href="/meetups"
-          class="text-md w-48 rounded-md bg-verse-600 px-4 py-8 text-center font-medium text-white md:w-64 md:px-8 md:text-xl hover:bg-verse-700 transition-colors"
+          class="text-md w-48 rounded-full bg-verse-600 px-6 py-3.5 text-center font-medium text-white md:w-56 md:px-8 md:py-4 md:text-lg hover:bg-verse-700 transition-colors"
         >
           View all meetups
         </Link>
