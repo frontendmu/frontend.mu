@@ -1,7 +1,8 @@
+import { randomUUID } from 'node:crypto'
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import { BaseModel, column, manyToMany, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, beforeCreate, column, manyToMany, hasMany } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import type { ManyToMany, HasMany } from '@adonisjs/lucid/types/relations'
 import Session from '#models/session'
@@ -20,6 +21,15 @@ const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
 export type AppRole = 'viewer' | 'member' | 'organizer' | 'superadmin'
 
 export default class User extends compose(BaseModel, AuthFinder) {
+  static selfAssignPrimaryKey = true
+
+  @beforeCreate()
+  static assignUuid(user: User) {
+    if (!user.id) {
+      user.id = randomUUID()
+    }
+  }
+
   @column({ isPrimary: true })
   declare id: string
 
