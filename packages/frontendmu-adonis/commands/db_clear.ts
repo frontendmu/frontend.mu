@@ -11,18 +11,20 @@ export default class DbClear extends BaseCommand {
   }
 
   async run() {
-    console.log('🗑️  Database Clear')
-
-    // Docker PostgreSQL configuration
     const dbConfig = {
-      host: 'localhost',
-      port: 5433,
-      user: 'postgres',
-      password: 'postgres',
-      database: 'frontendmu_docker_dev',
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
     }
 
-    console.log(`⚠️  WARNING: This will delete ALL data in ${dbConfig.database}!`)
+    if (!dbConfig.host || !dbConfig.user || !dbConfig.password || !dbConfig.database) {
+      this.logger.error('Missing required DB environment variables (DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE)')
+      process.exit(1)
+    }
+
+    this.logger.warning(`This will delete ALL data in ${dbConfig.database}!`)
 
     // Confirm
     const readline = require('node:readline')
@@ -39,12 +41,12 @@ export default class DbClear extends BaseCommand {
     })
 
     if (!confirmed) {
-      console.log('❌ Operation cancelled')
+      this.logger.info('Operation cancelled')
       process.exit(0)
     }
 
     try {
-      console.log('📋 Terminating active connections...')
+      this.logger.info('Terminating active connections...')
 
       // Terminate connections
       execSync(
@@ -52,7 +54,7 @@ export default class DbClear extends BaseCommand {
         { stdio: 'inherit', shell: '/bin/bash' }
       )
 
-      console.log('🗑️  Dropping database...')
+      this.logger.info('Dropping database...')
 
       // Drop database
       execSync(
@@ -60,7 +62,7 @@ export default class DbClear extends BaseCommand {
         { stdio: 'inherit', shell: '/bin/bash' }
       )
 
-      console.log('🆕 Creating database...')
+      this.logger.info('Creating database...')
 
       // Create database
       execSync(
@@ -68,7 +70,7 @@ export default class DbClear extends BaseCommand {
         { stdio: 'inherit', shell: '/bin/bash' }
       )
 
-      console.log('🔌 Creating UUID extension...')
+      this.logger.info('Creating UUID extension...')
 
       // Create UUID extension
       execSync(
@@ -76,10 +78,10 @@ export default class DbClear extends BaseCommand {
         { stdio: 'inherit', shell: '/bin/bash' }
       )
 
-      console.log(`✅ Database ${dbConfig.database} has been cleared and recreated!`)
-      console.log('💡 Run "node ace migration:run" to set up your schema')
+      this.logger.success(`Database ${dbConfig.database} has been cleared and recreated!`)
+      this.logger.info('Run "node ace migration:run" to set up your schema')
     } catch (error) {
-      console.error('❌ Operation failed:', error.message)
+      this.logger.error(`Operation failed: ${error.message}`)
       process.exit(1)
     }
   }

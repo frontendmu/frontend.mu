@@ -13,15 +13,17 @@ export default class DbBackup extends BaseCommand {
   }
 
   async run() {
-    console.log('🚀 Starting database backup...')
-
-    // Docker PostgreSQL configuration
     const dbConfig = {
-      host: 'localhost',
-      port: 5433,
-      user: 'postgres',
-      password: 'postgres',
-      database: 'frontendmu_docker_dev',
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
+    }
+
+    if (!dbConfig.host || !dbConfig.user || !dbConfig.password || !dbConfig.database) {
+      this.logger.error('Missing required DB environment variables (DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE)')
+      process.exit(1)
     }
 
     // Create backups directory
@@ -34,8 +36,8 @@ export default class DbBackup extends BaseCommand {
     const backupPath = path.join(backupsDir, backupFilename)
 
     try {
-      console.log(`📊 Database: ${dbConfig.database}`)
-      console.log(`📂 Backup location: ${backupPath}`)
+      this.logger.info(`Database: ${dbConfig.database}`)
+      this.logger.info(`Backup location: ${backupPath}`)
 
       const startTime = Date.now()
 
@@ -52,11 +54,11 @@ export default class DbBackup extends BaseCommand {
       const stats = fs.statSync(backupPath)
       const duration = ((Date.now() - startTime) / 1000).toFixed(2)
 
-      console.log(`✅ Backup completed successfully!`)
-      console.log(`📦 Size: ${(stats.size / 1024).toFixed(2)} KB`)
-      console.log(`⏱️  Duration: ${duration}s`)
+      this.logger.success('Backup completed successfully!')
+      this.logger.info(`Size: ${(stats.size / 1024).toFixed(2)} KB`)
+      this.logger.info(`Duration: ${duration}s`)
     } catch (error) {
-      console.error('❌ Backup failed:', error.message)
+      this.logger.error(`Backup failed: ${error.message}`)
 
       // Clean up incomplete backup
       if (fs.existsSync(backupPath)) {

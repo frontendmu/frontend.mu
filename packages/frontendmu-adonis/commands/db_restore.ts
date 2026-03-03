@@ -16,15 +16,17 @@ export default class DbRestore extends BaseCommand {
   declare backupFile?: string
 
   async run() {
-    console.log('🔄 Starting database restore...')
-
-    // Docker PostgreSQL configuration
     const dbConfig = {
-      host: 'localhost',
-      port: 5433,
-      user: 'postgres',
-      password: 'postgres',
-      database: 'frontendmu_docker_dev',
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
+    }
+
+    if (!dbConfig.host || !dbConfig.user || !dbConfig.password || !dbConfig.database) {
+      this.logger.error('Missing required DB environment variables (DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE)')
+      process.exit(1)
     }
 
     const backupsDir = path.join(process.cwd(), 'database', 'backups')
@@ -33,7 +35,7 @@ export default class DbRestore extends BaseCommand {
     if (this.backupFile) {
       selectedBackup = this.backupFile
       if (!fs.existsSync(selectedBackup)) {
-        console.error(`❌ Backup file not found: ${selectedBackup}`)
+        this.logger.error(`Backup file not found: ${selectedBackup}`)
         process.exit(1)
       }
     } else {
@@ -49,15 +51,15 @@ export default class DbRestore extends BaseCommand {
         .sort((a, b) => b.mtime.getTime() - a.mtime.getTime())
 
       if (backups.length === 0) {
-        console.error('❌ No backup files found')
+        this.logger.error('No backup files found')
         process.exit(1)
       }
 
       selectedBackup = backups[0].path
     }
 
-    console.log(`📂 Backup file: ${path.basename(selectedBackup)}`)
-    console.log(`⚠️  This will replace all data in ${dbConfig.database}`)
+    this.logger.info(`Backup file: ${path.basename(selectedBackup)}`)
+    this.logger.warning(`This will replace all data in ${dbConfig.database}`)
 
     // Confirm
     const readline = require('node:readline')
@@ -74,7 +76,7 @@ export default class DbRestore extends BaseCommand {
     })
 
     if (!confirmed) {
-      console.log('❌ Restore cancelled')
+      this.logger.info('Restore cancelled')
       process.exit(0)
     }
 
@@ -92,10 +94,10 @@ export default class DbRestore extends BaseCommand {
 
       const duration = ((Date.now() - startTime) / 1000).toFixed(2)
 
-      console.log(`✅ Restore completed successfully!`)
-      console.log(`⏱️  Duration: ${duration}s`)
+      this.logger.success('Restore completed successfully!')
+      this.logger.info(`Duration: ${duration}s`)
     } catch (error) {
-      console.error('❌ Restore failed:', error.message)
+      this.logger.error(`Restore failed: ${error.message}`)
       process.exit(1)
     }
   }
