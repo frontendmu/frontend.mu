@@ -11,7 +11,7 @@ import IconLinkedin from '~/components/icons/IconLinkedin.vue'
 <template>
   <div class="bg-verse-950 dark:bg-verse-800/80">
     <div
-      class="max-w-6xl mx-auto py-24 grid gap-8 grid-rows-4 grid-cols-1 md:grid-cols-2 md:grid-rows-none px-8 md:px-16"
+      class="max-w-6xl mx-auto py-14 md:py-16 grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-6 md:px-12"
     >
       <SocialCard href="https://discord.gg/WxXW9Jvv6k" class="bg-[#5865f2] text-sm md:text-normal">
         <template #tagline>
