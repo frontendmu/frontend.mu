@@ -5,18 +5,18 @@
 
 /* Custom theme configuration for Tailwind CSS 4 */
 @theme {
-  /* Custom colors - verse palette */
-  --color-verse-50: #f0f9ff;
-  --color-verse-100: #e0f2fe;
-  --color-verse-200: #bae6fd;
-  --color-verse-300: #7dd3fc;
-  --color-verse-400: #38bdf8;
-  --color-verse-500: #0ea5e9;
-  --color-verse-600: #0284c7;
-  --color-verse-700: #0369a1;
-  --color-verse-800: #075985;
-  --color-verse-900: #0c4a6e;
-  --color-verse-950: #082f49;
+  /* Custom colors - verse palette (Obsidian Blue) */
+  --color-verse-50: #f8fafc;
+  --color-verse-100: #f1f5f9;
+  --color-verse-200: #e2e8f0;
+  --color-verse-300: #94a3b8;
+  --color-verse-400: #475569;
+  --color-verse-500: #1e3a8a;
+  --color-verse-600: #172554;
+  --color-verse-700: #0f172a;
+  --color-verse-800: #0c1a3d;
+  --color-verse-900: #060d1f;
+  --color-verse-950: #020617;
 }
 
 html,
