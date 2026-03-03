@@ -10,6 +10,7 @@ const { Client } = pkg
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import crypto from 'crypto'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -25,11 +26,7 @@ const client = new Client({
 
 // Utility functions
 function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0
-    const v = c == 'x' ? r : (r & 0x3 | 0x8)
-    return v.toString(16)
-  })
+  return crypto.randomUUID()
 }
 
 function extractGitHubUsername(url) {
@@ -44,12 +41,22 @@ function loadDataFiles() {
     const peoplePath = path.join(__dirname, '../../../frontendmu-data/data/people.js')
     const peopleContent = fs.readFileSync(peoplePath, 'utf8')
 
-    // Extract the exported arrays from the JS file
+    // Extract the exported arrays from the JS file using Function constructor (safer than eval)
     const organizersMatch = peopleContent.match(/export const organizers = (\[[\s\S]*?\]);/)
     const communityMembersMatch = peopleContent.match(/export const communityMembers = (\[[\s\S]*?\]);/)
 
-    const organizers = organizersMatch ? eval(organizersMatch[1]) : []
-    const communityMembers = communityMembersMatch ? eval(communityMembersMatch[1]) : []
+    let organizers = []
+    let communityMembers = []
+    try {
+      if (organizersMatch) {
+        organizers = new Function(`return ${organizersMatch[1]}`)()
+      }
+      if (communityMembersMatch) {
+        communityMembers = new Function(`return ${communityMembersMatch[1]}`)()
+      }
+    } catch (parseError) {
+      console.error('Failed to parse people data:', parseError.message)
+    }
 
     // Load speakers profile
     const speakersProfilePath = path.join(__dirname, '../../../frontendmu-data/data/speakers-profile.json')
