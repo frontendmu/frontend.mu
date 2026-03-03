@@ -42,7 +42,10 @@ export default class Session extends BaseModel {
     pivotTable: 'session_speakers',
     pivotForeignKey: 'session_id',
     pivotRelatedForeignKey: 'speaker_id',
-    pivotColumns: ['created_at'],
+    pivotTimestamps: {
+      createdAt: 'created_at',
+      updatedAt: false,
+    },
   })
   declare speakers: ManyToMany<typeof User>
 }
