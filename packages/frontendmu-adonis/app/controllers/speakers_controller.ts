@@ -15,9 +15,8 @@ export default class SpeakersController {
         .orderBy('name', 'asc')
 
       speakers = dbSpeakers.map((speaker) => this.serializeSpeaker(speaker))
-    } catch (error) {
-      console.log('Database not available, using empty data')
-      console.log('Error:', error.message || error)
+    } catch {
+      // Database not available, use empty data
     }
 
     return inertia.render('speakers/index', {
@@ -51,9 +50,8 @@ export default class SpeakersController {
             eventDate: session.event?.eventDate?.toFormat('dd MMM yyyy'),
           })) || []
       }
-    } catch (error) {
-      console.log('Database not available, using empty data')
-      console.log('Error:', error.message || error)
+    } catch {
+      // Database not available, use empty data
     }
 
     return inertia.render('speakers/show', {

@@ -17,8 +17,8 @@ export default class SponsorsController {
         sponsorTypes: sponsor.sponsorTypes,
         darkbg: sponsor.darkbg,
       }))
-    } catch (error) {
-      console.log('Error loading sponsors:', error.message || error)
+    } catch {
+      // Failed to load sponsors, use empty data
     }
 
     return inertia.render('sponsors', {
@@ -55,8 +55,8 @@ export default class SponsorsController {
           description: event.description,
         }))
       }
-    } catch (error) {
-      console.log('Error loading sponsor:', error.message || error)
+    } catch {
+      // Failed to load sponsor, use empty data
     }
 
     return inertia.render('sponsor', {

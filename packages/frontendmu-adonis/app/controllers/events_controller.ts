@@ -35,8 +35,8 @@ export default class EventsController {
       if (auth.user) {
         canCreate = await bouncer.with(EventPolicy).allows('create')
       }
-    } catch (error) {
-      console.log('Database not available, using empty data')
+    } catch {
+      // Database not available, use empty data
     }
 
     return inertia.render('meetups/index', {
@@ -107,8 +107,8 @@ export default class EventsController {
           }))
         }
       }
-    } catch (error) {
-      console.log('Database not available, using empty data', error)
+    } catch {
+      // Database not available, use empty data
     }
 
     return inertia.render('meetups/show', {

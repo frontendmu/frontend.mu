@@ -19,8 +19,8 @@ async function loadJson<T>(url: string, localPath: string): Promise<T> {
       if (response.ok) {
         return (await response.json()) as T
       }
-    } catch (error) {
-      console.log('Failed to fetch from GitHub, falling back to local file:', url)
+    } catch {
+      // Failed to fetch from GitHub, fall back to local file
     }
   }
 
@@ -67,8 +67,8 @@ export default class TeamController {
         .orderBy('name', 'asc')
 
       speakers = dbSpeakers.map((user) => this.serializeUser(user))
-    } catch (error) {
-      console.log('Error loading team data:', error.message || error)
+    } catch {
+      // Failed to load team data, use empty arrays
     }
 
     return inertia.render('team', {

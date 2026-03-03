@@ -50,9 +50,8 @@ export default class HomeController {
 
       stats.meetups = Number(totalMeetups[0].$extras.total) || 0
       stats.speakers = Number(totalSpeakers[0].$extras.total) || 0
-    } catch (error) {
+    } catch {
       // Database not available, use empty data
-      console.log('Database not available, using placeholder data', error)
     }
 
     return inertia.render('home', {
