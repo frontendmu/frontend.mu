@@ -61,8 +61,16 @@ const sessionFormProcessing = ref(false)
 const speakerSearch = ref('')
 
 // Form state for event
+const formEventDate = computed(() => {
+  if (!props.event.eventDate) return ''
+  const date = props.event.eventDate
+  if (typeof date === 'string') return DateTime.fromISO(date).toISODate()
+  return DateTime.fromJSDate(date.toJSDate()).toISODate()
+})
+
 const form = useForm({
   title: props.event.title,
+  eventDate: formEventDate.value || '',
   description: props.event.description || '',
   location: props.event.location || '',
   venue: props.event.venue || '',
@@ -372,8 +380,7 @@ const filteredSpeakers = computed(() => {
           <span class="text-verse-500 dark:text-verse-400">Edit</span>
         </nav>
 
-        <BaseHeading :level="1" class="mb-2">Edit Event</BaseHeading>
-        <p class="text-verse-600 dark:text-verse-400 mb-8">Event Date: {{ eventDate }}</p>
+        <BaseHeading :level="1" class="mb-8">Edit Event</BaseHeading>
 
         <!-- Success Message -->
         <div
@@ -586,6 +593,26 @@ const filteredSpeakers = computed(() => {
             />
             <p v-if="form.errors.title" class="mt-1 text-sm text-red-600 dark:text-red-400">
               {{ form.errors.title }}
+            </p>
+          </div>
+
+          <!-- Event Date -->
+          <div>
+            <label
+              for="eventDate"
+              class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
+            >
+              Event Date *
+            </label>
+            <input
+              id="eventDate"
+              v-model="form.eventDate"
+              type="date"
+              required
+              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+            />
+            <p v-if="form.errors.eventDate" class="mt-1 text-sm text-red-600 dark:text-red-400">
+              {{ form.errors.eventDate }}
             </p>
           </div>
 

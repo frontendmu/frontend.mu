@@ -118,6 +118,7 @@ export default class AdminEventsController {
     // Update the event
     event.merge({
       title: data.title,
+      ...(data.eventDate ? { eventDate: DateTime.fromISO(data.eventDate) } : {}),
       description: data.description,
       location: data.location,
       venue: data.venue,
