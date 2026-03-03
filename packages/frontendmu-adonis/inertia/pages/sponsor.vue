@@ -3,6 +3,7 @@ import { Head } from '@inertiajs/vue3'
 import DefaultLayout from '~/layouts/DefaultLayout.vue'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
+import { sanitizeHtml } from '~/composables/useSanitize'
 
 interface Meetup {
   id: number
@@ -114,7 +115,7 @@ function formatDate(dateStr: string): string {
                 <div
                   v-if="meetup.description"
                   class="prose prose-sm dark:prose-invert max-w-none text-verse-700 dark:text-verse-300"
-                  v-html="meetup.description"
+                  v-html="sanitizeHtml(meetup.description)"
                 />
               </div>
             </div>

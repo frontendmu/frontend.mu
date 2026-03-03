@@ -4,6 +4,7 @@ import { DateTime } from 'luxon'
 import { Head, Link, usePage, router } from '@inertiajs/vue3'
 import DefaultLayout from '~/layouts/DefaultLayout.vue'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
+import { sanitizeHtml } from '~/composables/useSanitize'
 import type Event from '#models/event'
 import type Rsvp from '#models/rsvp'
 
@@ -325,7 +326,7 @@ const calendarUrl = computed(() => {
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">About</h2>
                 <div
                   class="prose prose-gray dark:prose-invert prose-p:text-gray-600 dark:prose-p:text-gray-400 prose-headings:text-gray-900 dark:prose-headings:text-gray-100 max-w-none"
-                  v-html="meetup.description" />
+                  v-html="sanitizeHtml(meetup.description)" />
               </section>
 
               <!-- Talks - Combined Sessions & Speakers -->
