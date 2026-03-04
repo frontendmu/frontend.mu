@@ -33,6 +33,7 @@ const links: TMenu = {
     href: '/about',
     class: 'hidden lg:block',
     children: [
+      { title: 'Community', href: '/community' },
       { title: 'History', href: '/history' },
       { title: 'Contribute', href: '/contribute' },
       { title: 'Code of conduct', href: '/code-of-conduct' },
@@ -42,8 +43,8 @@ const links: TMenu = {
     ],
   },
   meetups: { title: 'Meetups', href: '/meetups' },
-  community: { title: 'Community', href: '/community' },
-  team: { title: 'Team', href: '/team', class: 'hidden md:block' },
+  speakers: { title: 'Speakers', href: '/speakers', class: 'hidden lg:block' },
+  team: { title: 'Team', href: '/team', class: 'hidden lg:block' },
   sponsors: { 
     title: 'Sponsors', 
     href: '/sponsors', 
@@ -88,7 +89,7 @@ onMounted(toggleHeader)
 
 <template>
   <div class="menu-wrapper fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 md:pt-6 transition-all duration-500 ease-expo">
-    <div class="menu-inner w-[92%] max-w-5xl bg-white/80 dark:bg-verse-950/60 backdrop-blur-xl border border-gray-100 dark:border-verse-800 rounded-2xl squircle px-4 md:px-6 h-16 flex items-center justify-between shadow-sm">
+    <div class="menu-inner w-[92%] max-w-5xl bg-white/80 dark:bg-verse-950/60 backdrop-blur-xl border border-gray-100 dark:border-verse-800 rounded-2xl squircle px-3 md:px-5 h-16 flex items-center justify-between shadow-sm">
       
       <!-- Brand -->
       <div class="flex items-center">

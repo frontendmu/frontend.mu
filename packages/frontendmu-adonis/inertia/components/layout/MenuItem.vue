@@ -27,8 +27,8 @@ const isActive = computed(() => {
       :href="links[item].href"
       class="flex items-center px-3 py-2 rounded-xl text-sm font-bold transition-all duration-300"
       :class="[
-        isActive 
-          ? 'text-verse-600 dark:text-verse-400 bg-verse-500/5' 
+        isActive
+          ? 'text-verse-500 dark:text-verse-300 bg-verse-500/10 dark:bg-verse-500/15'
           : 'text-gray-600 dark:text-gray-400 hover:text-verse-500 dark:hover:text-verse-300 hover:bg-gray-50 dark:hover:bg-verse-900/40'
       ]"
     >
