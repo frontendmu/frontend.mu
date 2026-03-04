@@ -1,14 +1,16 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { randomUUID } from 'node:crypto'
 import Sponsor from '#models/sponsor'
 import SponsorPolicy from '#policies/sponsor_policy'
 import { sponsorValidator } from '#validators/sponsor_validator'
+import { toSponsorSummary, toSponsor } from '#dtos/factories'
 
 export default class AdminSponsorsController {
   async index({ inertia, bouncer, request }: HttpContext) {
     await bouncer.with(SponsorPolicy).authorize('viewAny')
 
-    const statusFilter = request.input('status', 'all')
+    const allowedStatuses = ['all', 'active', 'inactive'] as const
+    const rawStatus = request.input('status', 'all')
+    const statusFilter = allowedStatuses.includes(rawStatus) ? rawStatus : 'all'
 
     let query = Sponsor.query().orderBy('name', 'asc')
 
@@ -19,7 +21,7 @@ export default class AdminSponsorsController {
     const sponsors = await query
 
     return inertia.render('admin/sponsors/index', {
-      sponsors,
+      sponsors: sponsors.map(toSponsorSummary),
       statusFilter,
     })
   }
@@ -36,7 +38,6 @@ export default class AdminSponsorsController {
     const data = await request.validateUsing(sponsorValidator)
 
     const sponsor = await Sponsor.create({
-      id: randomUUID(),
       name: data.name,
       website: data.website || null,
       description: data.description || null,
@@ -61,7 +62,7 @@ export default class AdminSponsorsController {
 
     return inertia.render('admin/sponsors/edit', {
       sponsor: {
-        ...sponsor.serialize(),
+        ...toSponsor(sponsor),
         eventCount: sponsor.events?.length || 0,
       },
     })

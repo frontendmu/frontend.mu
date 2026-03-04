@@ -21,7 +21,7 @@ export interface EventDto extends EventSummaryDto {
   coverImageUrl: string | null
   parkingLocation: string | null
   mapUrl: string | null
-  status: string
+  status: 'published' | 'draft' | 'cancelled'
   photos: { id: string; photoUrl: string; caption: string | null }[]
 }
 
@@ -85,12 +85,12 @@ export interface SponsorDto extends SponsorSummaryDto {
   description: string | null
   logomarkUrl: string | null
   darkbg: boolean
-  status: string
+  status: 'active' | 'inactive'
 }
 
 export interface RsvpDto {
   id: string
-  status: string
+  status: 'confirmed' | 'waitlist' | 'cancelled'
   notes: string | null
   createdAt: string
 }

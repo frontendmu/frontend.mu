@@ -9,7 +9,9 @@ export default class AdminEventsController {
   async index({ inertia, bouncer, request }: HttpContext) {
     await bouncer.with(EventPolicy).authorize('viewAny')
 
-    const statusFilter = request.input('status', 'all')
+    const allowedStatuses = ['all', 'published', 'draft', 'cancelled'] as const
+    const rawStatus = request.input('status', 'all')
+    const statusFilter = allowedStatuses.includes(rawStatus) ? rawStatus : 'all'
 
     let query = Event.query().orderBy('eventDate', 'desc')
 
