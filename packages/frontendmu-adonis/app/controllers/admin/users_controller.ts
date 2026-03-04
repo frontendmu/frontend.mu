@@ -3,13 +3,13 @@ import User from '#models/user'
 import Role from '#models/role'
 import vine from '@vinejs/vine'
 import UserPolicy from '#policies/user_policy'
+import { resolveAvatarUrl } from '#dtos/factories'
 
-// Validator for updating users
 const updateUserValidator = vine.compile(
   vine.object({
     name: vine.string().trim().minLength(1).maxLength(255),
     email: vine.string().email().optional(),
-    roleIds: vine.array(vine.number()).minLength(1), // New RBAC: array of role IDs
+    roleIds: vine.array(vine.number()).minLength(1),
     githubUsername: vine.string().trim().maxLength(100).optional(),
     bio: vine.string().trim().maxLength(2000).optional(),
     linkedinUrl: vine.string().url().optional(),
@@ -22,27 +22,20 @@ const updateUserValidator = vine.compile(
 )
 
 export default class AdminUsersController {
-  /**
-   * List all users
-   */
-  async index({ inertia, bouncer, response, request }: HttpContext) {
-    if (await bouncer.with(UserPolicy).denies('viewAny')) {
-      return response.forbidden('You are not authorized to view users.')
-    }
+  async index({ inertia, bouncer, request }: HttpContext) {
+    await bouncer.with(UserPolicy).authorize('viewAny')
 
     const roleFilter = request.input('role', 'all')
     const search = request.input('search', '')
 
     let query = User.query().preload('roles').orderBy('createdAt', 'desc')
 
-    // Apply role filter (filter by RBAC role name)
     if (roleFilter !== 'all') {
       query = query.whereHas('roles', (roleQuery) => {
         roleQuery.where('name', roleFilter)
       })
     }
 
-    // Apply search
     if (search) {
       query = query.where((q) => {
         q.whereILike('name', `%${search}%`)
@@ -53,10 +46,8 @@ export default class AdminUsersController {
 
     const users = await query
 
-    // Get all available roles for the filter
     const allRoles = await Role.query().orderBy('name', 'asc')
 
-    // Get role counts using RBAC
     const roleCounts: Record<string, number> = { all: 0 }
     for (const role of allRoles) {
       const count = await User.query()
@@ -71,9 +62,7 @@ export default class AdminUsersController {
       users: users.map((u) => ({
         ...u.serialize(),
         roles: u.roles.map((r) => ({ id: r.id, name: r.name })),
-        avatarUrl:
-          u.avatarUrl ||
-          (u.githubUsername ? `https://avatars.githubusercontent.com/${u.githubUsername}` : null),
+        avatarUrl: resolveAvatarUrl(u),
       })),
       allRoles: allRoles.map((r) => ({ id: r.id, name: r.name, description: r.description })),
       roleFilter,
@@ -82,13 +71,8 @@ export default class AdminUsersController {
     })
   }
 
-  /**
-   * Show the edit form for a user
-   */
-  async edit({ inertia, params, bouncer, response }: HttpContext) {
-    if (await bouncer.with(UserPolicy).denies('edit')) {
-      return response.forbidden('You are not authorized to edit users.')
-    }
+  async edit({ inertia, params, bouncer }: HttpContext) {
+    await bouncer.with(UserPolicy).authorize('edit')
 
     const user = await User.query()
       .where('id', params.id)
@@ -97,10 +81,8 @@ export default class AdminUsersController {
       })
       .firstOrFail()
 
-    // Get all available roles with their permissions
     const allRoles = await Role.query().preload('permissions').orderBy('name', 'asc')
 
-    // Get the user's current permissions (derived from roles)
     const userPermissions = await user.getAllPermissions()
 
     return inertia.render('admin/users/edit', {
@@ -113,11 +95,7 @@ export default class AdminUsersController {
           permissions: r.permissions.map((p) => ({ id: p.id, name: p.name })),
         })),
         permissions: userPermissions,
-        avatarUrl:
-          user.avatarUrl ||
-          (user.githubUsername
-            ? `https://avatars.githubusercontent.com/${user.githubUsername}`
-            : null),
+        avatarUrl: resolveAvatarUrl(user),
       },
       allRoles: allRoles.map((r) => ({
         id: r.id,
@@ -132,20 +110,14 @@ export default class AdminUsersController {
     })
   }
 
-  /**
-   * Update a user
-   */
   async update({ params, request, auth, bouncer, response, session }: HttpContext) {
-    if (await bouncer.with(UserPolicy).denies('update')) {
-      return response.forbidden('You are not authorized to update users.')
-    }
+    await bouncer.with(UserPolicy).authorize('update')
 
     const currentUser = auth.user!
     const user = await User.query().where('id', params.id).preload('roles').firstOrFail()
 
     const data = await request.validateUsing(updateUserValidator)
 
-    // Check if user is trying to remove superadmin role from themselves
     const isSuperadmin = await currentUser.hasRole('superadmin')
     const superadminRole = await Role.findBy('name', 'superadmin')
 
@@ -158,7 +130,6 @@ export default class AdminUsersController {
       return response.badRequest('You cannot remove superadmin role from yourself.')
     }
 
-    // Update basic user info
     user.merge({
       name: data.name,
       email: data.email || null,
@@ -174,38 +145,26 @@ export default class AdminUsersController {
 
     await user.save()
 
-    // Check assign-roles permission before modifying roles
-    if (await bouncer.with(UserPolicy).denies('assignRoles')) {
-      return response.forbidden('You are not authorized to assign roles.')
-    }
+    await bouncer.with(UserPolicy).authorize('assignRoles')
 
-    // Only superadmins can assign the superadmin role
     if (superadminRole && data.roleIds.includes(superadminRole.id) && !isSuperadmin) {
       return response.forbidden('Only superadmins can assign the superadmin role.')
     }
 
-    // Update user's roles using the pivot table
     await user.related('roles').sync(data.roleIds)
 
-    // Clear the RBAC cache since roles changed
     user.clearRbacCache()
 
     session.flash('success', 'User updated successfully!')
-    return response.redirect('/admin/users')
+    return response.redirect().toRoute('admin.users.index')
   }
 
-  /**
-   * Delete a user
-   */
   async destroy({ params, auth, bouncer, response, session }: HttpContext) {
-    if (await bouncer.with(UserPolicy).denies('delete')) {
-      return response.forbidden('You are not authorized to delete users.')
-    }
+    await bouncer.with(UserPolicy).authorize('delete')
 
     const currentUser = auth.user!
     const user = await User.findOrFail(params.id)
 
-    // Prevent deleting yourself
     if (user.id === currentUser.id) {
       return response.badRequest('You cannot delete your own account.')
     }
@@ -213,6 +172,6 @@ export default class AdminUsersController {
     await user.delete()
 
     session.flash('success', 'User deleted successfully!')
-    return response.redirect('/admin/users')
+    return response.redirect().toRoute('admin.users.index')
   }
 }

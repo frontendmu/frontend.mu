@@ -13,7 +13,7 @@ export default class LoginController {
     try {
       const user = await User.verifyCredentials(email, password)
       await auth.use('web').login(user)
-      return response.redirect('/')
+      return response.redirect().toRoute('home')
     } catch (error) {
       session.flash('errors', { login: 'Invalid credentials' })
       return response.redirect().back()

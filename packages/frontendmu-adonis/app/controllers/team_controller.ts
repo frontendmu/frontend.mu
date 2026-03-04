@@ -3,6 +3,7 @@ import User from '#models/user'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
+import { toSpeaker } from '#dtos/factories'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -24,52 +25,38 @@ async function loadJson<T>(url: string, localPath: string): Promise<T> {
     }
   }
 
-  // Fall back to local file
   return JSON.parse(readFileSync(localPath, 'utf-8')) as T
 }
 
 export default class TeamController {
   async index({ inertia }: HttpContext) {
-    let organizers: any[] = []
-    let communityMembers: any[] = []
-    let speakers: any[] = []
-    let contributors: any[] = []
+    const organizersUrl = `${GITHUB_RAW_BASE}/organizers.json`
+    const organizersPath = join(
+      __dirname,
+      '../../../../packages/frontendmu-data/data/organizers.json'
+    )
+    const organizers = await loadJson<any[]>(organizersUrl, organizersPath)
 
-    try {
-      // Load organizers
-      const organizersUrl = `${GITHUB_RAW_BASE}/organizers.json`
-      const organizersPath = join(
-        __dirname,
-        '../../../../packages/frontendmu-data/data/organizers.json'
-      )
-      organizers = await loadJson<any[]>(organizersUrl, organizersPath)
+    const communityMembersUrl = `${GITHUB_RAW_BASE}/community_members.json`
+    const communityMembersPath = join(
+      __dirname,
+      '../../../../packages/frontendmu-data/data/community_members.json'
+    )
+    const communityMembers = await loadJson<any[]>(communityMembersUrl, communityMembersPath)
 
-      // Load community members
-      const communityMembersUrl = `${GITHUB_RAW_BASE}/community_members.json`
-      const communityMembersPath = join(
-        __dirname,
-        '../../../../packages/frontendmu-data/data/community_members.json'
-      )
-      communityMembers = await loadJson<any[]>(communityMembersUrl, communityMembersPath)
+    const contributorsUrl = `${GITHUB_RAW_BASE}/contributors.json`
+    const contributorsPath = join(
+      __dirname,
+      '../../../../packages/frontendmu-data/data/contributors.json'
+    )
+    const contributors = await loadJson<any[]>(contributorsUrl, contributorsPath)
 
-      // Load contributors
-      const contributorsUrl = `${GITHUB_RAW_BASE}/contributors.json`
-      const contributorsPath = join(
-        __dirname,
-        '../../../../packages/frontendmu-data/data/contributors.json'
-      )
-      contributors = await loadJson<any[]>(contributorsUrl, contributorsPath)
+    const dbSpeakers = await User.query()
+      .whereHas('sessions', () => {})
+      .orderBy('featured', 'desc')
+      .orderBy('name', 'asc')
 
-      // Get speakers from database (users with sessions)
-      const dbSpeakers = await User.query()
-        .whereHas('sessions', () => {})
-        .orderBy('featured', 'desc')
-        .orderBy('name', 'asc')
-
-      speakers = dbSpeakers.map((user) => this.serializeUser(user))
-    } catch {
-      // Failed to load team data, use empty arrays
-    }
+    const speakers = dbSpeakers.map(toSpeaker)
 
     return inertia.render('team', {
       organizers,
@@ -77,20 +64,5 @@ export default class TeamController {
       speakers,
       contributors,
     })
-  }
-
-  private serializeUser(user: User) {
-    return {
-      id: user.id,
-      name: user.name,
-      github_account: user.githubUsername,
-      avatar_url:
-        user.avatarUrl ||
-        (user.githubUsername ? `https://github.com/${user.githubUsername}.png` : null),
-      linkedinUrl: user.linkedinUrl,
-      twitterUrl: user.twitterUrl,
-      websiteUrl: user.websiteUrl,
-      role: user.role,
-    }
   }
 }

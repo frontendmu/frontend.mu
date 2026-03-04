@@ -6,6 +6,6 @@ export default class LogoutController {
 
     session.flash('success', 'You have been logged out.')
 
-    return response.redirect('/')
+    return response.redirect().toRoute('home')
   }
 }

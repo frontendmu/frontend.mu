@@ -3,24 +3,16 @@ import { DateTime } from 'luxon'
 import Event from '#models/event'
 import EventPolicy from '#policies/event_policy'
 import { createEventValidator, updateEventValidator } from '#validators/event_validator'
+import { toEvent, toEventSummary } from '#dtos/factories'
 
 export default class AdminEventsController {
-  /**
-   * List all events for admin management
-   */
-  async index({ inertia, bouncer, response, request }: HttpContext) {
-    // Check authorization using policy
-    if (await bouncer.with(EventPolicy).denies('viewAny')) {
-      return response.forbidden('You are not authorized to view events.')
-    }
+  async index({ inertia, bouncer, request }: HttpContext) {
+    await bouncer.with(EventPolicy).authorize('viewAny')
 
-    // Get filter from query string
     const statusFilter = request.input('status', 'all')
 
-    // Build query
     let query = Event.query().orderBy('eventDate', 'desc')
 
-    // Apply status filter
     if (statusFilter !== 'all') {
       query = query.where('status', statusFilter)
     }
@@ -28,36 +20,22 @@ export default class AdminEventsController {
     const events = await query
 
     return inertia.render('admin/events/index', {
-      events,
+      events: events.map(toEventSummary),
       statusFilter,
     })
   }
 
-  /**
-   * Show the create form for a new event
-   */
-  async create({ inertia, bouncer, response }: HttpContext) {
-    // Check authorization using policy
-    if (await bouncer.with(EventPolicy).denies('create')) {
-      return response.forbidden('You are not authorized to create events.')
-    }
+  async create({ inertia, bouncer }: HttpContext) {
+    await bouncer.with(EventPolicy).authorize('create')
 
     return inertia.render('admin/events/create')
   }
 
-  /**
-   * Store a new event
-   */
   async store({ request, bouncer, response, session }: HttpContext) {
-    // Check authorization using policy
-    if (await bouncer.with(EventPolicy).denies('create')) {
-      return response.forbidden('You are not authorized to create events.')
-    }
+    await bouncer.with(EventPolicy).authorize('create')
 
-    // Validate the request
     const data = await request.validateUsing(createEventValidator)
 
-    // Create the event
     const event = await Event.create({
       title: data.title,
       eventDate: DateTime.fromISO(data.eventDate),
@@ -68,7 +46,7 @@ export default class AdminEventsController {
       endTime: data.endTime,
       seatsAvailable: data.seatsAvailable,
       acceptingRsvp: data.acceptingRsvp ?? false,
-      rsvpClosingDate: data.rsvpClosingDate,
+      rsvpClosingDate: data.rsvpClosingDate ? DateTime.fromISO(data.rsvpClosingDate) : null,
       parkingLocation: data.parkingLocation,
       mapUrl: data.mapUrl,
       status: data.status ?? 'draft',
@@ -80,42 +58,27 @@ export default class AdminEventsController {
     return response.redirect().toRoute('admin.events.edit', { id: event.id })
   }
 
-  /**
-   * Show the edit form for an event
-   */
-  async edit({ inertia, params, bouncer, response }: HttpContext) {
+  async edit({ inertia, params, bouncer }: HttpContext) {
     const event = await Event.findOrFail(params.id)
 
-    // Check authorization using policy
-    if (await bouncer.with(EventPolicy).denies('edit', event)) {
-      return response.forbidden('You are not authorized to edit this event.')
-    }
+    await bouncer.with(EventPolicy).authorize('edit', event)
 
-    // Load sessions with speakers for the edit page
     await event.load('sessions', (query) => {
       query.preload('speakers').orderBy('order', 'asc')
     })
 
     return inertia.render('admin/events/edit', {
-      event,
+      event: toEvent(event),
     })
   }
 
-  /**
-   * Update an event
-   */
   async update({ params, request, bouncer, response, session }: HttpContext) {
     const event = await Event.findOrFail(params.id)
 
-    // Check authorization using policy
-    if (await bouncer.with(EventPolicy).denies('update', event)) {
-      return response.forbidden('You are not authorized to update this event.')
-    }
+    await bouncer.with(EventPolicy).authorize('update', event)
 
-    // Validate the request
     const data = await request.validateUsing(updateEventValidator)
 
-    // Update the event
     event.merge({
       title: data.title,
       ...(data.eventDate ? { eventDate: DateTime.fromISO(data.eventDate) } : {}),
@@ -126,7 +89,7 @@ export default class AdminEventsController {
       endTime: data.endTime,
       seatsAvailable: data.seatsAvailable,
       acceptingRsvp: data.acceptingRsvp,
-      rsvpClosingDate: data.rsvpClosingDate,
+      rsvpClosingDate: data.rsvpClosingDate ? DateTime.fromISO(data.rsvpClosingDate) : null,
       parkingLocation: data.parkingLocation,
       mapUrl: data.mapUrl,
       status: data.status,
@@ -136,19 +99,13 @@ export default class AdminEventsController {
 
     session.flash('success', 'Event updated successfully!')
 
-    return response.redirect(`/meetup/${event.id}`)
+    return response.redirect().toRoute('meetups.show', { id: event.id })
   }
 
-  /**
-   * Delete an event
-   */
   async destroy({ params, bouncer, response, session }: HttpContext) {
     const event = await Event.findOrFail(params.id)
 
-    // Check authorization using policy (only superadmins can delete)
-    if (await bouncer.with(EventPolicy).denies('delete', event)) {
-      return response.forbidden('You are not authorized to delete this event.')
-    }
+    await bouncer.with(EventPolicy).authorize('delete', event)
 
     await event.delete()
 

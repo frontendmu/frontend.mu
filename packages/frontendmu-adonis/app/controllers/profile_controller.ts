@@ -1,28 +1,23 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { updateProfileValidator } from '#validators/profile_validator'
+import { toUserProfile } from '#dtos/factories'
 
 export default class ProfileController {
   async show({ inertia, auth, response }: HttpContext) {
     await auth.check()
 
     if (!auth.isAuthenticated || !auth.user) {
-      return response.redirect('/login')
+      return response.redirect().toRoute('auth.login.show')
     }
 
-    // Load user with roles for display
-    const user = await User.query().where('id', auth.user.id).preload('roles').firstOrFail()
+    const user = await User.query()
+      .where('id', auth.user.id)
+      .preload('roles')
+      .firstOrFail()
 
     return inertia.render('profile', {
-      user: {
-        ...user.serialize(),
-        roles: user.roles.map((r) => ({ id: r.id, name: r.name })),
-        avatarUrl:
-          user.avatarUrl ||
-          (user.githubUsername
-            ? `https://avatars.githubusercontent.com/${user.githubUsername}`
-            : null),
-      },
+      user: toUserProfile(user),
     })
   }
 
@@ -30,7 +25,7 @@ export default class ProfileController {
     await auth.check()
 
     if (!auth.isAuthenticated || !auth.user) {
-      return response.redirect('/login')
+      return response.redirect().toRoute('auth.login.show')
     }
 
     const data = await request.validateUsing(updateProfileValidator)
@@ -47,6 +42,6 @@ export default class ProfileController {
 
     session.flash('success', 'Profile updated successfully!')
 
-    return response.redirect('/profile')
+    return response.redirect().toRoute('profile.show')
   }
 }

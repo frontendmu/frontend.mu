@@ -14,7 +14,9 @@ export default class RegisterController {
 
     const existingUser = await User.findBy('email', data.email)
     if (existingUser) {
-      session.flashErrors({ email: 'Unable to create account. Please try a different email or log in.' })
+      session.flashErrors({
+        email: 'Unable to create account. Please try a different email or log in.',
+      })
       return response.redirect().back()
     }
 
@@ -26,7 +28,6 @@ export default class RegisterController {
         role: 'member',
       })
 
-      // Assign RBAC member role
       const memberRole = await Role.findBy('name', 'member')
       if (memberRole) {
         await user.related('roles').attach([memberRole.id])
@@ -41,6 +42,6 @@ export default class RegisterController {
       return response.redirect().back()
     }
 
-    return response.redirect('/')
+    return response.redirect().toRoute('home')
   }
 }

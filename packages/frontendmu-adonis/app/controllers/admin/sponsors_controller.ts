@@ -1,44 +1,12 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { randomUUID } from 'node:crypto'
 import Sponsor from '#models/sponsor'
-import vine from '@vinejs/vine'
 import SponsorPolicy from '#policies/sponsor_policy'
-
-// Validators
-const createSponsorValidator = vine.compile(
-  vine.object({
-    name: vine.string().trim().minLength(1).maxLength(255),
-    website: vine.string().url().optional(),
-    description: vine.string().trim().maxLength(2000).optional(),
-    logoUrl: vine.string().url().optional(),
-    logomarkUrl: vine.string().url().optional(),
-    sponsorTypes: vine.array(vine.string()).optional(),
-    darkbg: vine.boolean().optional(),
-    status: vine.enum(['active', 'inactive']).optional(),
-  })
-)
-
-const updateSponsorValidator = vine.compile(
-  vine.object({
-    name: vine.string().trim().minLength(1).maxLength(255),
-    website: vine.string().url().optional(),
-    description: vine.string().trim().maxLength(2000).optional(),
-    logoUrl: vine.string().url().optional(),
-    logomarkUrl: vine.string().url().optional(),
-    sponsorTypes: vine.array(vine.string()).optional(),
-    darkbg: vine.boolean().optional(),
-    status: vine.enum(['active', 'inactive']).optional(),
-  })
-)
+import { sponsorValidator } from '#validators/sponsor_validator'
 
 export default class AdminSponsorsController {
-  /**
-   * List all sponsors
-   */
-  async index({ inertia, bouncer, response, request }: HttpContext) {
-    if (await bouncer.with(SponsorPolicy).denies('viewAny')) {
-      return response.forbidden('You are not authorized to view sponsors.')
-    }
+  async index({ inertia, bouncer, request }: HttpContext) {
+    await bouncer.with(SponsorPolicy).authorize('viewAny')
 
     const statusFilter = request.input('status', 'all')
 
@@ -56,26 +24,16 @@ export default class AdminSponsorsController {
     })
   }
 
-  /**
-   * Show the create form for a new sponsor
-   */
-  async create({ inertia, bouncer, response }: HttpContext) {
-    if (await bouncer.with(SponsorPolicy).denies('create')) {
-      return response.forbidden('You are not authorized to create sponsors.')
-    }
+  async create({ inertia, bouncer }: HttpContext) {
+    await bouncer.with(SponsorPolicy).authorize('create')
 
     return inertia.render('admin/sponsors/create')
   }
 
-  /**
-   * Store a new sponsor
-   */
   async store({ request, bouncer, response, session }: HttpContext) {
-    if (await bouncer.with(SponsorPolicy).denies('create')) {
-      return response.forbidden('You are not authorized to create sponsors.')
-    }
+    await bouncer.with(SponsorPolicy).authorize('create')
 
-    const data = await request.validateUsing(createSponsorValidator)
+    const data = await request.validateUsing(sponsorValidator)
 
     const sponsor = await Sponsor.create({
       id: randomUUID(),
@@ -90,18 +48,16 @@ export default class AdminSponsorsController {
     })
 
     session.flash('success', 'Sponsor created successfully!')
-    return response.redirect(`/admin/sponsors/${sponsor.id}/edit`)
+    return response.redirect().toRoute('admin.sponsors.edit', { id: sponsor.id })
   }
 
-  /**
-   * Show the edit form for a sponsor
-   */
-  async edit({ inertia, params, bouncer, response }: HttpContext) {
-    if (await bouncer.with(SponsorPolicy).denies('edit')) {
-      return response.forbidden('You are not authorized to edit sponsors.')
-    }
+  async edit({ inertia, params, bouncer }: HttpContext) {
+    await bouncer.with(SponsorPolicy).authorize('edit')
 
-    const sponsor = await Sponsor.query().where('id', params.id).preload('events').firstOrFail()
+    const sponsor = await Sponsor.query()
+      .where('id', params.id)
+      .preload('events')
+      .firstOrFail()
 
     return inertia.render('admin/sponsors/edit', {
       sponsor: {
@@ -111,16 +67,11 @@ export default class AdminSponsorsController {
     })
   }
 
-  /**
-   * Update a sponsor
-   */
   async update({ params, request, bouncer, response, session }: HttpContext) {
-    if (await bouncer.with(SponsorPolicy).denies('update')) {
-      return response.forbidden('You are not authorized to update sponsors.')
-    }
+    await bouncer.with(SponsorPolicy).authorize('update')
 
     const sponsor = await Sponsor.findOrFail(params.id)
-    const data = await request.validateUsing(updateSponsorValidator)
+    const data = await request.validateUsing(sponsorValidator)
 
     sponsor.merge({
       name: data.name,
@@ -136,21 +87,16 @@ export default class AdminSponsorsController {
     await sponsor.save()
 
     session.flash('success', 'Sponsor updated successfully!')
-    return response.redirect(`/sponsor/${sponsor.id}`)
+    return response.redirect().toRoute('sponsors.show', { id: sponsor.id })
   }
 
-  /**
-   * Delete a sponsor
-   */
   async destroy({ params, bouncer, response, session }: HttpContext) {
-    if (await bouncer.with(SponsorPolicy).denies('delete')) {
-      return response.forbidden('You are not authorized to delete sponsors.')
-    }
+    await bouncer.with(SponsorPolicy).authorize('delete')
 
     const sponsor = await Sponsor.findOrFail(params.id)
     await sponsor.delete()
 
     session.flash('success', 'Sponsor deleted successfully!')
-    return response.redirect('/admin/sponsors')
+    return response.redirect().toRoute('admin.sponsors.index')
   }
 }
