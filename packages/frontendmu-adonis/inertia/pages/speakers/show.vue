@@ -27,6 +27,7 @@ interface SpeakerSession {
 interface Props {
   speaker: Speaker | null
   sessions: SpeakerSession[]
+  canEdit?: boolean
 }
 
 const props = defineProps<Props>()
@@ -63,9 +64,15 @@ const props = defineProps<Props>()
                   />
                   
                   <div class="space-y-2">
-                    <h1 class="text-4xl md:text-6xl font-black tracking-tighter dark:text-gray-100 leading-none">
-                      {{ speaker.name }}
-                    </h1>
+                    <div class="flex items-center gap-4">
+                      <h1 class="text-4xl md:text-6xl font-black tracking-tighter dark:text-gray-100 leading-none">
+                        {{ speaker.name }}
+                      </h1>
+                      <Link v-if="canEdit" :href="`/admin/speakers/${speaker.id}/edit`"
+                        class="px-3 py-1.5 text-[10px] font-black uppercase tracking-widest bg-verse-500/10 text-verse-600 dark:text-verse-400 rounded-lg hover:bg-verse-500/20 transition-colors">
+                        Edit
+                      </Link>
+                    </div>
                     <p v-if="speaker.github_account" class="text-sm font-black uppercase tracking-[0.3em] text-verse-500">
                       @{{ speaker.github_account }}
                     </p>
