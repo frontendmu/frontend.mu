@@ -172,8 +172,8 @@ function getFilterButtonClass(roleName: string, isActive: boolean) {
 <template>
   <Head title="Manage Users" />
   <DefaultLayout>
-    <ContentBlock>
-      <div class="py-8 pb-20">
+    <main class="relative min-h-screen pt-40 pb-20">
+      <ContentBlock>
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
@@ -191,11 +191,11 @@ function getFilterButtonClass(roleName: string, isActive: boolean) {
               v-model="searchInput"
               type="text"
               placeholder="Search by name, email, or GitHub username..."
-              class="flex-1 px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              class="flex-1 px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
             />
             <button
               type="submit"
-              class="px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white font-medium rounded-lg transition-colors"
+              class="px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white font-medium squircle rounded-lg transition-colors"
             >
               Search
             </button>
@@ -209,7 +209,7 @@ function getFilterButtonClass(roleName: string, isActive: boolean) {
             :key="filter.name"
             @click="filterByRole(filter.name)"
             :class="[
-              'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+              'px-4 py-2 squircle rounded-lg text-sm font-medium transition-colors',
               getFilterButtonClass(filter.name, roleFilter === filter.name),
             ]"
           >
@@ -219,7 +219,7 @@ function getFilterButtonClass(roleName: string, isActive: boolean) {
 
         <!-- Users Table -->
         <div
-          class="bg-white dark:bg-verse-800/50 rounded-xl border border-verse-200 dark:border-verse-700 overflow-hidden"
+          class="bg-white dark:bg-verse-800/50 squircle rounded-xl border border-verse-200 dark:border-verse-700 overflow-hidden"
         >
           <div class="overflow-x-auto">
             <table class="w-full">
@@ -382,15 +382,15 @@ function getFilterButtonClass(roleName: string, isActive: boolean) {
             </p>
           </div>
         </div>
-      </div>
-    </ContentBlock>
+      </ContentBlock>
+    </main>
 
     <!-- Delete Confirmation Modal -->
     <Teleport to="body">
       <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/50" @click="cancelDelete" />
         <div
-          class="relative bg-white dark:bg-verse-800 rounded-xl shadow-xl max-w-md w-full p-6"
+          class="relative bg-white dark:bg-verse-800 squircle rounded-xl shadow-xl max-w-md w-full p-6"
         >
           <h3 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-2">Delete User</h3>
           <p class="text-verse-600 dark:text-verse-400 mb-4">
@@ -401,14 +401,14 @@ function getFilterButtonClass(roleName: string, isActive: boolean) {
             <button
               @click="cancelDelete"
               :disabled="isDeleting"
-              class="px-4 py-2 text-sm font-medium text-verse-700 dark:text-verse-300 bg-verse-100 dark:bg-verse-700 hover:bg-verse-200 dark:hover:bg-verse-600 rounded-lg transition-colors disabled:opacity-50"
+              class="px-4 py-2 text-sm font-medium text-verse-700 dark:text-verse-300 bg-verse-100 dark:bg-verse-700 hover:bg-verse-200 dark:hover:bg-verse-600 squircle rounded-lg transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               @click="executeDelete"
               :disabled="isDeleting"
-              class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50"
+              class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 squircle rounded-lg transition-colors disabled:opacity-50"
             >
               <span v-if="isDeleting">Deleting...</span>
               <span v-else>Delete</span>

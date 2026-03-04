@@ -63,8 +63,8 @@ function executeDelete() {
 <template>
   <Head title="Manage Speakers" />
   <DefaultLayout>
-    <ContentBlock>
-      <div class="py-8 pb-20">
+    <main class="relative min-h-screen pt-40 pb-20">
+      <ContentBlock>
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
@@ -75,7 +75,7 @@ function executeDelete() {
           </div>
           <Link
             href="/admin/speakers/create"
-            class="inline-flex items-center gap-2 px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white text-sm font-medium rounded-lg transition-colors"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white text-sm font-medium squircle rounded-lg transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
@@ -89,7 +89,7 @@ function executeDelete() {
           <div
             v-for="speaker in speakers"
             :key="speaker.id"
-            class="bg-white dark:bg-verse-800/50 rounded-xl border border-verse-200 dark:border-verse-700 p-6 hover:shadow-lg transition-shadow"
+            class="bg-white dark:bg-verse-800/50 squircle rounded-xl border border-verse-200 dark:border-verse-700 p-6 hover:shadow-lg transition-shadow"
           >
             <div class="flex items-start gap-4">
               <!-- Avatar -->
@@ -172,13 +172,13 @@ function executeDelete() {
           </p>
           <Link
             href="/admin/speakers/create"
-            class="inline-flex items-center gap-2 px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white text-sm font-medium rounded-lg transition-colors"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white text-sm font-medium squircle rounded-lg transition-colors"
           >
             Add your first speaker
           </Link>
         </div>
-      </div>
-    </ContentBlock>
+      </ContentBlock>
+    </main>
 
     <!-- Delete Confirmation Modal -->
     <Teleport to="body">
@@ -187,7 +187,7 @@ function executeDelete() {
         class="fixed inset-0 z-50 flex items-center justify-center p-4"
       >
         <div class="absolute inset-0 bg-black/50" @click="cancelDelete" />
-        <div class="relative bg-white dark:bg-verse-800 rounded-xl shadow-xl max-w-md w-full p-6">
+        <div class="relative bg-white dark:bg-verse-800 squircle rounded-xl shadow-xl max-w-md w-full p-6">
           <h3 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-2">
             Delete Speaker
           </h3>
@@ -198,14 +198,14 @@ function executeDelete() {
             <button
               @click="cancelDelete"
               :disabled="isDeleting"
-              class="px-4 py-2 text-sm font-medium text-verse-700 dark:text-verse-300 bg-verse-100 dark:bg-verse-700 hover:bg-verse-200 dark:hover:bg-verse-600 rounded-lg transition-colors disabled:opacity-50"
+              class="px-4 py-2 text-sm font-medium text-verse-700 dark:text-verse-300 bg-verse-100 dark:bg-verse-700 hover:bg-verse-200 dark:hover:bg-verse-600 squircle rounded-lg transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               @click="executeDelete"
               :disabled="isDeleting"
-              class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50"
+              class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 squircle rounded-lg transition-colors disabled:opacity-50"
             >
               <span v-if="isDeleting">Deleting...</span>
               <span v-else>Delete</span>

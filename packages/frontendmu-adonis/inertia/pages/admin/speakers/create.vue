@@ -23,8 +23,9 @@ function handleSubmit() {
 <template>
   <Head title="Add Speaker" />
   <DefaultLayout>
-    <ContentBlock>
-      <div class="py-8 pb-20 max-w-2xl mx-auto">
+    <main class="relative min-h-screen pt-40 pb-20">
+      <ContentBlock>
+        <div class="max-w-2xl mx-auto">
         <!-- Breadcrumb -->
         <nav class="mb-6 flex items-center gap-2 text-sm">
           <Link href="/admin" class="text-verse-600 hover:text-verse-800 dark:text-verse-400 dark:hover:text-verse-200">
@@ -51,7 +52,7 @@ function handleSubmit() {
               v-model="form.name"
               type="text"
               required
-              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
             />
             <p v-if="form.errors.name" class="mt-1 text-sm text-red-500">{{ form.errors.name }}</p>
           </div>
@@ -65,7 +66,7 @@ function handleSubmit() {
               id="email"
               v-model="form.email"
               type="email"
-              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
             />
             <p v-if="form.errors.email" class="mt-1 text-sm text-red-500">{{ form.errors.email }}</p>
           </div>
@@ -99,7 +100,7 @@ function handleSubmit() {
               id="bio"
               v-model="form.bio"
               rows="4"
-              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
             />
             <p v-if="form.errors.bio" class="mt-1 text-sm text-red-500">{{ form.errors.bio }}</p>
           </div>
@@ -115,7 +116,7 @@ function handleSubmit() {
                 v-model="form.linkedinUrl"
                 type="url"
                 placeholder="https://linkedin.com/in/..."
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
             <div>
@@ -127,7 +128,7 @@ function handleSubmit() {
                 v-model="form.twitterUrl"
                 type="url"
                 placeholder="https://twitter.com/..."
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
             <div>
@@ -139,7 +140,7 @@ function handleSubmit() {
                 v-model="form.websiteUrl"
                 type="url"
                 placeholder="https://..."
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -161,14 +162,14 @@ function handleSubmit() {
           <div class="flex justify-end gap-4 pt-4">
             <Link
               href="/admin/speakers"
-              class="px-6 py-2 text-verse-700 dark:text-verse-300 hover:bg-verse-100 dark:hover:bg-verse-700 rounded-lg transition-colors"
+              class="px-6 py-2 text-verse-700 dark:text-verse-300 hover:bg-verse-100 dark:hover:bg-verse-700 squircle rounded-lg transition-colors"
             >
               Cancel
             </Link>
             <button
               type="submit"
               :disabled="form.processing"
-              class="px-6 py-2 bg-verse-600 hover:bg-verse-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50"
+              class="px-6 py-2 bg-verse-600 hover:bg-verse-700 text-white font-medium squircle rounded-lg transition-colors disabled:opacity-50"
             >
               <span v-if="form.processing">Creating...</span>
               <span v-else>Create Speaker</span>
@@ -177,5 +178,5 @@ function handleSubmit() {
         </form>
       </div>
     </ContentBlock>
-  </DefaultLayout>
+  </main>
 </template>

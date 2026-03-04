@@ -86,8 +86,8 @@ function executeDelete() {
 <template>
   <Head title="Manage Events" />
   <DefaultLayout>
-    <ContentBlock>
-      <div class="py-8 pb-20">
+    <main class="relative min-h-screen pt-40 pb-20">
+      <ContentBlock>
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
@@ -98,7 +98,7 @@ function executeDelete() {
           </div>
           <Link
             href="/admin/events/create"
-            class="inline-flex items-center gap-2 px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white text-sm font-medium rounded-lg transition-colors"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white text-sm font-medium squircle rounded-lg transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
@@ -112,7 +112,7 @@ function executeDelete() {
           <button
             @click="filterByStatus('all')"
             :class="[
-              'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+              'px-4 py-2 squircle rounded-lg text-sm font-medium transition-colors',
               statusFilter === 'all'
                 ? 'bg-verse-600 text-white'
                 : 'bg-verse-100 dark:bg-verse-800 text-verse-700 dark:text-verse-300 hover:bg-verse-200 dark:hover:bg-verse-700'
@@ -123,7 +123,7 @@ function executeDelete() {
           <button
             @click="filterByStatus('published')"
             :class="[
-              'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+              'px-4 py-2 squircle rounded-lg text-sm font-medium transition-colors',
               statusFilter === 'published'
                 ? 'bg-green-600 text-white'
                 : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
@@ -134,7 +134,7 @@ function executeDelete() {
           <button
             @click="filterByStatus('draft')"
             :class="[
-              'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+              'px-4 py-2 squircle rounded-lg text-sm font-medium transition-colors',
               statusFilter === 'draft'
                 ? 'bg-yellow-600 text-white'
                 : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 hover:bg-yellow-200 dark:hover:bg-yellow-900/50'
@@ -145,7 +145,7 @@ function executeDelete() {
           <button
             @click="filterByStatus('cancelled')"
             :class="[
-              'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+              'px-4 py-2 squircle rounded-lg text-sm font-medium transition-colors',
               statusFilter === 'cancelled'
                 ? 'bg-red-600 text-white'
                 : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50'
@@ -156,7 +156,7 @@ function executeDelete() {
         </div>
 
         <!-- Events Table -->
-        <div class="bg-white dark:bg-verse-800/50 rounded-xl border border-verse-200 dark:border-verse-700 overflow-hidden">
+        <div class="bg-white dark:bg-verse-800/50 squircle rounded-xl border border-verse-200 dark:border-verse-700 overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full">
               <thead class="bg-verse-50 dark:bg-verse-800 border-b border-verse-200 dark:border-verse-700">
@@ -273,8 +273,8 @@ function executeDelete() {
             </Link>
           </div>
         </div>
-      </div>
-    </ContentBlock>
+      </ContentBlock>
+    </main>
 
     <!-- Delete Confirmation Modal -->
     <Teleport to="body">
@@ -289,7 +289,7 @@ function executeDelete() {
         />
         
         <!-- Modal -->
-        <div class="relative bg-white dark:bg-verse-800 rounded-xl shadow-xl max-w-md w-full p-6">
+        <div class="relative bg-white dark:bg-verse-800 squircle rounded-xl shadow-xl max-w-md w-full p-6">
           <h3 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-2">
             Delete Event
           </h3>
@@ -301,14 +301,14 @@ function executeDelete() {
             <button
               @click="cancelDelete"
               :disabled="isDeleting"
-              class="px-4 py-2 text-sm font-medium text-verse-700 dark:text-verse-300 bg-verse-100 dark:bg-verse-700 hover:bg-verse-200 dark:hover:bg-verse-600 rounded-lg transition-colors disabled:opacity-50"
+              class="px-4 py-2 text-sm font-medium text-verse-700 dark:text-verse-300 bg-verse-100 dark:bg-verse-700 hover:bg-verse-200 dark:hover:bg-verse-600 squircle rounded-lg transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               @click="executeDelete"
               :disabled="isDeleting"
-              class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50"
+              class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 squircle rounded-lg transition-colors disabled:opacity-50"
             >
               <span v-if="isDeleting">Deleting...</span>
               <span v-else>Delete</span>

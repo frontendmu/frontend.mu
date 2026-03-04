@@ -31,8 +31,9 @@ function handleSubmit() {
 <template>
   <Head title="Create Event" />
   <DefaultLayout>
-    <ContentBlock>
-      <div class="py-8 pb-20 max-w-4xl mx-auto">
+    <main class="relative min-h-screen pt-40 pb-20">
+      <ContentBlock>
+        <div class="max-w-4xl mx-auto">
         <!-- Breadcrumb -->
         <nav class="mb-6 flex items-center gap-2 text-sm">
           <Link
@@ -63,7 +64,7 @@ function handleSubmit() {
               type="text"
               required
               placeholder="e.g., The October Meetup"
-              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
             />
             <p v-if="form.errors.title" class="mt-1 text-sm text-red-600 dark:text-red-400">
               {{ form.errors.title }}
@@ -83,7 +84,7 @@ function handleSubmit() {
               v-model="form.eventDate"
               type="date"
               required
-              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
             />
             <p v-if="form.errors.eventDate" class="mt-1 text-sm text-red-600 dark:text-red-400">
               {{ form.errors.eventDate }}
@@ -103,7 +104,7 @@ function handleSubmit() {
               v-model="form.description"
               rows="4"
               placeholder="Describe the event..."
-              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
             />
             <p v-if="form.errors.description" class="mt-1 text-sm text-red-600 dark:text-red-400">
               {{ form.errors.description }}
@@ -124,7 +125,7 @@ function handleSubmit() {
                 v-model="form.location"
                 type="text"
                 placeholder="e.g., Port Louis, Mauritius"
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
             <div>
@@ -139,7 +140,7 @@ function handleSubmit() {
                 v-model="form.venue"
                 type="text"
                 placeholder="e.g., Caudan Arts Centre"
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -157,7 +158,7 @@ function handleSubmit() {
                 id="startTime"
                 v-model="form.startTime"
                 type="time"
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
             <div>
@@ -171,13 +172,13 @@ function handleSubmit() {
                 id="endTime"
                 v-model="form.endTime"
                 type="time"
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
           </div>
 
           <!-- RSVP Settings -->
-          <div class="p-4 bg-verse-50 dark:bg-verse-800/50 rounded-lg border border-verse-200 dark:border-verse-700">
+          <div class="p-4 bg-verse-50 dark:bg-verse-800/50 squircle rounded-lg border border-verse-200 dark:border-verse-700">
             <h3 class="text-lg font-medium text-verse-900 dark:text-verse-100 mb-4">
               RSVP Settings
             </h3>
@@ -208,7 +209,7 @@ function handleSubmit() {
                     type="number"
                     min="0"
                     placeholder="Leave empty for unlimited"
-                    class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                    class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -222,7 +223,7 @@ function handleSubmit() {
                     id="rsvpClosingDate"
                     v-model="form.rsvpClosingDate"
                     type="date"
-                    class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                    class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -243,7 +244,7 @@ function handleSubmit() {
                 v-model="form.mapUrl"
                 type="url"
                 placeholder="https://maps.google.com/..."
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
             <div>
@@ -258,7 +259,7 @@ function handleSubmit() {
                 v-model="form.parkingLocation"
                 type="url"
                 placeholder="https://maps.google.com/..."
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -274,7 +275,7 @@ function handleSubmit() {
             <select
               id="status"
               v-model="form.status"
-              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
             >
               <option value="draft">Draft</option>
               <option value="published">Published</option>
@@ -290,14 +291,14 @@ function handleSubmit() {
             <button
               type="submit"
               :disabled="form.processing"
-              class="px-6 py-2.5 bg-verse-600 hover:bg-verse-700 disabled:bg-verse-400 text-white font-medium rounded-lg transition-colors"
+              class="px-6 py-2.5 bg-verse-600 hover:bg-verse-700 disabled:bg-verse-400 text-white font-medium squircle rounded-lg transition-colors"
             >
               <span v-if="form.processing">Creating...</span>
               <span v-else>Create Event</span>
             </button>
             <Link
               href="/meetups"
-              class="px-6 py-2.5 border border-verse-300 dark:border-verse-600 text-verse-700 dark:text-verse-300 hover:bg-verse-50 dark:hover:bg-verse-800 font-medium rounded-lg transition-colors"
+              class="px-6 py-2.5 border border-verse-300 dark:border-verse-600 text-verse-700 dark:text-verse-300 hover:bg-verse-50 dark:hover:bg-verse-800 font-medium squircle rounded-lg transition-colors"
             >
               Cancel
             </Link>
@@ -305,5 +306,5 @@ function handleSubmit() {
         </form>
       </div>
     </ContentBlock>
-  </DefaultLayout>
+  </main>
 </template>

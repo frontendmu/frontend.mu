@@ -359,8 +359,9 @@ const filteredSpeakers = computed(() => {
 <template>
   <Head :title="`Edit: ${event.title}`" />
   <DefaultLayout>
-    <ContentBlock>
-      <div class="py-8 pb-20 max-w-4xl mx-auto">
+    <main class="relative min-h-screen pt-40 pb-20">
+      <ContentBlock>
+        <div class="max-w-4xl mx-auto">
         <!-- Breadcrumb -->
         <nav class="mb-6 flex items-center gap-2 text-sm">
           <Link
@@ -385,7 +386,7 @@ const filteredSpeakers = computed(() => {
         <!-- Success Message -->
         <div
           v-if="successMessage"
-          class="mb-6 p-4 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 rounded-lg"
+          class="mb-6 p-4 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 squircle rounded-lg"
         >
           {{ successMessage }}
         </div>
@@ -393,7 +394,7 @@ const filteredSpeakers = computed(() => {
         <!-- Session Form Modal (Native Dialog) -->
         <dialog
           ref="sessionDialog"
-          class="w-full max-w-2xl rounded-lg shadow-xl bg-white dark:bg-verse-800 max-h-[85vh] overflow-hidden"
+          class="w-full max-w-2xl squircle rounded-lg shadow-xl bg-white dark:bg-verse-800 max-h-[85vh] overflow-hidden"
           @close="isDialogOpen = false"
         >
           <div
@@ -405,7 +406,7 @@ const filteredSpeakers = computed(() => {
             <button
               type="button"
               @click="closeSessionForm"
-              class="p-2 text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200 rounded-lg transition-colors"
+              class="p-2 text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200 squircle rounded-lg transition-colors"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -435,7 +436,7 @@ const filteredSpeakers = computed(() => {
                 type="text"
                 required
                 placeholder="e.g., Introduction to Vue 3"
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-700 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-700 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
               <p v-if="sessionFormErrors.title" class="mt-1 text-sm text-red-600 dark:text-red-400">
                 {{ sessionFormErrors.title }}
@@ -455,7 +456,7 @@ const filteredSpeakers = computed(() => {
                 v-model="sessionForm.description"
                 rows="3"
                 placeholder="Describe what this session is about..."
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-700 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-700 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
 
@@ -474,7 +475,7 @@ const filteredSpeakers = computed(() => {
                     v-model="speakerSearch"
                     type="text"
                     placeholder="Search speakers..."
-                    class="w-full px-4 py-2 pl-10 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-700 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent text-sm"
+                    class="w-full px-4 py-2 pl-10 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-700 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent text-sm"
                   />
                   <svg
                     class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-verse-400"
@@ -492,7 +493,7 @@ const filteredSpeakers = computed(() => {
                 </div>
                 <!-- Speaker list -->
                 <div
-                  class="max-h-48 overflow-y-auto border border-verse-300 dark:border-verse-600 rounded-lg"
+                  class="max-h-48 overflow-y-auto border border-verse-300 dark:border-verse-600 squircle rounded-lg"
                 >
                   <div
                     v-for="speaker in filteredSpeakers"
@@ -558,14 +559,14 @@ const filteredSpeakers = computed(() => {
               <button
                 type="button"
                 @click="closeSessionForm"
-                class="px-4 py-2 border border-verse-300 dark:border-verse-600 text-verse-700 dark:text-verse-300 hover:bg-verse-50 dark:hover:bg-verse-700 font-medium rounded-lg transition-colors"
+                class="px-4 py-2 border border-verse-300 dark:border-verse-600 text-verse-700 dark:text-verse-300 hover:bg-verse-50 dark:hover:bg-verse-700 font-medium squircle rounded-lg transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 :disabled="sessionFormProcessing"
-                class="px-4 py-2 bg-verse-600 hover:bg-verse-700 disabled:bg-verse-400 text-white font-medium rounded-lg transition-colors"
+                class="px-4 py-2 bg-verse-600 hover:bg-verse-700 disabled:bg-verse-400 text-white font-medium squircle rounded-lg transition-colors"
               >
                 <span v-if="sessionFormProcessing">Saving...</span>
                 <span v-else>{{ editingSession ? 'Update Session' : 'Create Session' }}</span>
@@ -589,7 +590,7 @@ const filteredSpeakers = computed(() => {
               v-model="form.title"
               type="text"
               required
-              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
             />
             <p v-if="form.errors.title" class="mt-1 text-sm text-red-600 dark:text-red-400">
               {{ form.errors.title }}
@@ -609,7 +610,7 @@ const filteredSpeakers = computed(() => {
               v-model="form.eventDate"
               type="date"
               required
-              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
             />
             <p v-if="form.errors.eventDate" class="mt-1 text-sm text-red-600 dark:text-red-400">
               {{ form.errors.eventDate }}
@@ -628,7 +629,7 @@ const filteredSpeakers = computed(() => {
               id="description"
               v-model="form.description"
               rows="4"
-              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
             />
             <p v-if="form.errors.description" class="mt-1 text-sm text-red-600 dark:text-red-400">
               {{ form.errors.description }}
@@ -648,7 +649,7 @@ const filteredSpeakers = computed(() => {
                 id="location"
                 v-model="form.location"
                 type="text"
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
             <div>
@@ -662,7 +663,7 @@ const filteredSpeakers = computed(() => {
                 id="venue"
                 v-model="form.venue"
                 type="text"
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -680,7 +681,7 @@ const filteredSpeakers = computed(() => {
                 id="startTime"
                 v-model="form.startTime"
                 type="time"
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
             <div>
@@ -694,14 +695,14 @@ const filteredSpeakers = computed(() => {
                 id="endTime"
                 v-model="form.endTime"
                 type="time"
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
           </div>
 
           <!-- RSVP Settings -->
           <div
-            class="p-4 bg-verse-50 dark:bg-verse-800/50 rounded-lg border border-verse-200 dark:border-verse-700"
+            class="p-4 bg-verse-50 dark:bg-verse-800/50 squircle rounded-lg border border-verse-200 dark:border-verse-700"
           >
             <h3 class="text-lg font-medium text-verse-900 dark:text-verse-100 mb-4">
               RSVP Settings
@@ -732,7 +733,7 @@ const filteredSpeakers = computed(() => {
                     v-model.number="form.seatsAvailable"
                     type="number"
                     min="0"
-                    class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                    class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -746,7 +747,7 @@ const filteredSpeakers = computed(() => {
                     id="rsvpClosingDate"
                     v-model="form.rsvpClosingDate"
                     type="date"
-                    class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                    class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -766,7 +767,7 @@ const filteredSpeakers = computed(() => {
                 id="mapUrl"
                 v-model="form.mapUrl"
                 type="url"
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
             <div>
@@ -780,7 +781,7 @@ const filteredSpeakers = computed(() => {
                 id="parkingLocation"
                 v-model="form.parkingLocation"
                 type="url"
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -796,7 +797,7 @@ const filteredSpeakers = computed(() => {
             <select
               id="status"
               v-model="form.status"
-              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
             >
               <option value="draft">Draft</option>
               <option value="published">Published</option>
@@ -809,14 +810,14 @@ const filteredSpeakers = computed(() => {
             <button
               type="submit"
               :disabled="form.processing"
-              class="px-6 py-2.5 bg-verse-600 hover:bg-verse-700 disabled:bg-verse-400 text-white font-medium rounded-lg transition-colors"
+              class="px-6 py-2.5 bg-verse-600 hover:bg-verse-700 disabled:bg-verse-400 text-white font-medium squircle rounded-lg transition-colors"
             >
               <span v-if="form.processing">Saving...</span>
               <span v-else>Save Changes</span>
             </button>
             <Link
               :href="`/meetup/${event.id}`"
-              class="px-6 py-2.5 border border-verse-300 dark:border-verse-600 text-verse-700 dark:text-verse-300 hover:bg-verse-50 dark:hover:bg-verse-800 font-medium rounded-lg transition-colors"
+              class="px-6 py-2.5 border border-verse-300 dark:border-verse-600 text-verse-700 dark:text-verse-300 hover:bg-verse-50 dark:hover:bg-verse-800 font-medium squircle rounded-lg transition-colors"
             >
               Cancel
             </Link>
@@ -825,14 +826,14 @@ const filteredSpeakers = computed(() => {
 
         <!-- Sessions Section -->
         <div
-          class="mt-12 p-4 bg-verse-50 dark:bg-verse-800/50 rounded-lg border border-verse-200 dark:border-verse-700"
+          class="mt-12 p-4 bg-verse-50 dark:bg-verse-800/50 squircle rounded-lg border border-verse-200 dark:border-verse-700"
         >
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-medium text-verse-900 dark:text-verse-100">Sessions</h3>
             <button
               type="button"
               @click="openNewSessionForm"
-              class="px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white text-sm font-medium rounded-lg transition-colors"
+              class="px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white text-sm font-medium squircle rounded-lg transition-colors"
             >
               Add Session
             </button>
@@ -845,7 +846,7 @@ const filteredSpeakers = computed(() => {
               v-for="(session, index) in sessions"
               :key="session.id"
               draggable="true"
-              class="p-4 bg-white dark:bg-verse-700/50 rounded-lg border-2 transition-all cursor-grab active:cursor-grabbing"
+              class="p-4 bg-white dark:bg-verse-700/50 squircle rounded-lg border-2 transition-all cursor-grab active:cursor-grabbing"
               :class="[
                 dragOverIndex === index
                   ? 'border-verse-500 bg-verse-50 dark:bg-verse-600/50'
@@ -902,7 +903,7 @@ const filteredSpeakers = computed(() => {
                   <button
                     type="button"
                     @click="openEditSessionForm(session)"
-                    class="p-2 text-verse-600 hover:text-verse-800 dark:text-verse-400 dark:hover:text-verse-200 hover:bg-verse-100 dark:hover:bg-verse-600 rounded-lg transition-colors"
+                    class="p-2 text-verse-600 hover:text-verse-800 dark:text-verse-400 dark:hover:text-verse-200 hover:bg-verse-100 dark:hover:bg-verse-600 squircle rounded-lg transition-colors"
                     title="Edit session"
                   >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -917,7 +918,7 @@ const filteredSpeakers = computed(() => {
                   <button
                     type="button"
                     @click="deleteSession(session)"
-                    class="p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                    class="p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 hover:bg-red-100 dark:hover:bg-red-900/30 squircle rounded-lg transition-colors"
                     title="Delete session"
                   >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -937,7 +938,7 @@ const filteredSpeakers = computed(() => {
             No sessions yet. Click "Add Session" to create one.
           </p>
         </div>
-      </div>
-    </ContentBlock>
+      </ContentBlock>
+    </main>
   </DefaultLayout>
 </template>

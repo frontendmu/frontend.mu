@@ -154,8 +154,9 @@ const groupedPermissions = computed(() => {
 <template>
   <Head :title="`Edit User: ${user.name}`" />
   <DefaultLayout>
-    <ContentBlock>
-      <div class="py-8 pb-20 max-w-3xl mx-auto">
+    <main class="relative min-h-screen pt-40 pb-20">
+      <ContentBlock>
+        <div class="max-w-3xl mx-auto">
         <!-- Breadcrumb -->
         <nav class="mb-6 flex items-center gap-2 text-sm">
           <Link
@@ -221,7 +222,7 @@ const groupedPermissions = computed(() => {
 
         <form @submit.prevent="handleSubmit" class="space-y-8">
           <!-- Basic Info Section -->
-          <div class="bg-white dark:bg-verse-800 rounded-lg border border-verse-200 dark:border-verse-700 p-6">
+          <div class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6">
             <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-4">
               Basic Information
             </h2>
@@ -240,7 +241,7 @@ const groupedPermissions = computed(() => {
                   v-model="form.name"
                   type="text"
                   required
-                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
                 />
                 <p v-if="form.errors.name" class="mt-1 text-sm text-red-500">
                   {{ form.errors.name }}
@@ -259,7 +260,7 @@ const groupedPermissions = computed(() => {
                   id="email"
                   v-model="form.email"
                   type="email"
-                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
                 />
                 <p v-if="form.errors.email" class="mt-1 text-sm text-red-500">
                   {{ form.errors.email }}
@@ -304,14 +305,14 @@ const groupedPermissions = computed(() => {
                   id="bio"
                   v-model="form.bio"
                   rows="3"
-                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
                 />
               </div>
             </div>
           </div>
 
           <!-- Roles Section -->
-          <div class="bg-white dark:bg-verse-800 rounded-lg border border-verse-200 dark:border-verse-700 p-6">
+          <div class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6">
             <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-2">
               Roles & Permissions
             </h2>
@@ -324,7 +325,7 @@ const groupedPermissions = computed(() => {
                 v-for="role in allRoles"
                 :key="role.id"
                 :class="[
-                  'border rounded-lg overflow-hidden transition-all',
+                  'border squircle rounded-lg overflow-hidden transition-all',
                   isRoleSelected(role.id)
                     ? 'border-verse-500 bg-verse-50 dark:bg-verse-700/50'
                     : 'border-verse-200 dark:border-verse-700',
@@ -407,7 +408,7 @@ const groupedPermissions = computed(() => {
             <!-- Warning for self-edit -->
             <div
               v-if="isTryingToRemoveSuperadmin"
-              class="mt-4 p-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg"
+              class="mt-4 p-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 squircle rounded-lg"
             >
               <p class="text-sm text-amber-800 dark:text-amber-200">
                 You cannot remove the superadmin role from yourself.
@@ -420,7 +421,7 @@ const groupedPermissions = computed(() => {
           </div>
 
           <!-- Effective Permissions Preview -->
-          <div class="bg-verse-50 dark:bg-verse-900 rounded-lg border border-verse-200 dark:border-verse-700 p-6">
+          <div class="bg-verse-50 dark:bg-verse-900 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6">
             <h3 class="text-sm font-semibold text-verse-700 dark:text-verse-300 mb-3">
               Effective Permissions ({{ effectivePermissions.length }})
             </h3>
@@ -446,7 +447,7 @@ const groupedPermissions = computed(() => {
           </div>
 
           <!-- Social Links -->
-          <div class="bg-white dark:bg-verse-800 rounded-lg border border-verse-200 dark:border-verse-700 p-6">
+          <div class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6">
             <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-4">
               Social Links
             </h2>
@@ -463,7 +464,7 @@ const groupedPermissions = computed(() => {
                   v-model="form.linkedinUrl"
                   type="url"
                   placeholder="https://linkedin.com/in/..."
-                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
                 />
               </div>
               <div>
@@ -478,7 +479,7 @@ const groupedPermissions = computed(() => {
                   v-model="form.twitterUrl"
                   type="url"
                   placeholder="https://twitter.com/..."
-                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
                 />
               </div>
               <div>
@@ -493,14 +494,14 @@ const groupedPermissions = computed(() => {
                   v-model="form.websiteUrl"
                   type="url"
                   placeholder="https://..."
-                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
                 />
               </div>
             </div>
           </div>
 
           <!-- Flags -->
-          <div class="bg-white dark:bg-verse-800 rounded-lg border border-verse-200 dark:border-verse-700 p-6">
+          <div class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6">
             <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-4">
               Display Flags
             </h2>
@@ -545,14 +546,14 @@ const groupedPermissions = computed(() => {
           <div class="flex justify-end gap-4 pt-4">
             <Link
               href="/admin/users"
-              class="px-6 py-2 text-verse-700 dark:text-verse-300 hover:bg-verse-100 dark:hover:bg-verse-700 rounded-lg transition-colors"
+              class="px-6 py-2 text-verse-700 dark:text-verse-300 hover:bg-verse-100 dark:hover:bg-verse-700 squircle rounded-lg transition-colors"
             >
               Cancel
             </Link>
             <button
               type="submit"
               :disabled="form.processing || isTryingToRemoveSuperadmin || form.roleIds.length === 0"
-              class="px-6 py-2 bg-verse-600 hover:bg-verse-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              class="px-6 py-2 bg-verse-600 hover:bg-verse-700 text-white font-medium squircle rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span v-if="form.processing">Saving...</span>
               <span v-else>Save Changes</span>
@@ -561,5 +562,5 @@ const groupedPermissions = computed(() => {
         </form>
       </div>
     </ContentBlock>
-  </DefaultLayout>
+  </main>
 </template>

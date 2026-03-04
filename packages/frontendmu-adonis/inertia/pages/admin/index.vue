@@ -78,8 +78,8 @@ const getIcon = (name: string) => {
 <template>
   <Head title="Admin Dashboard" />
   <DefaultLayout>
-    <ContentBlock>
-      <div class="py-8 pb-20">
+    <main class="relative min-h-screen pt-40 pb-20">
+      <ContentBlock>
         <!-- Header -->
         <div class="mb-8">
           <BaseHeading :level="1">Admin Dashboard</BaseHeading>
@@ -90,19 +90,19 @@ const getIcon = (name: string) => {
 
         <!-- Quick Stats -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div class="bg-white dark:bg-verse-800/50 rounded-xl border border-verse-200 dark:border-verse-700 p-4">
+          <div class="bg-white dark:bg-verse-800/50 squircle rounded-xl border border-verse-200 dark:border-verse-700 p-4">
             <div class="text-2xl font-bold text-verse-900 dark:text-verse-100">{{ stats.events.total }}</div>
             <div class="text-sm text-verse-600 dark:text-verse-400">Total Events</div>
           </div>
-          <div class="bg-white dark:bg-verse-800/50 rounded-xl border border-verse-200 dark:border-verse-700 p-4">
+          <div class="bg-white dark:bg-verse-800/50 squircle rounded-xl border border-verse-200 dark:border-verse-700 p-4">
             <div class="text-2xl font-bold text-verse-900 dark:text-verse-100">{{ stats.speakers }}</div>
             <div class="text-sm text-verse-600 dark:text-verse-400">Speakers</div>
           </div>
-          <div class="bg-white dark:bg-verse-800/50 rounded-xl border border-verse-200 dark:border-verse-700 p-4">
+          <div class="bg-white dark:bg-verse-800/50 squircle rounded-xl border border-verse-200 dark:border-verse-700 p-4">
             <div class="text-2xl font-bold text-verse-900 dark:text-verse-100">{{ stats.sponsors }}</div>
             <div class="text-sm text-verse-600 dark:text-verse-400">Sponsors</div>
           </div>
-          <div class="bg-white dark:bg-verse-800/50 rounded-xl border border-verse-200 dark:border-verse-700 p-4">
+          <div class="bg-white dark:bg-verse-800/50 squircle rounded-xl border border-verse-200 dark:border-verse-700 p-4">
             <div class="text-2xl font-bold text-verse-900 dark:text-verse-100">{{ stats.users }}</div>
             <div class="text-sm text-verse-600 dark:text-verse-400">Users</div>
           </div>
@@ -116,7 +116,7 @@ const getIcon = (name: string) => {
               :is="item.disabled ? 'div' : Link"
               :href="item.disabled ? undefined : item.href"
               :class="[
-                'block p-6 bg-white dark:bg-verse-800/50 rounded-xl border border-verse-200 dark:border-verse-700 transition-all',
+                'block p-6 bg-white dark:bg-verse-800/50 squircle rounded-xl border border-verse-200 dark:border-verse-700 transition-all',
                 item.disabled
                   ? 'opacity-50 cursor-not-allowed'
                   : 'hover:shadow-lg hover:border-verse-300 dark:hover:border-verse-600'
@@ -124,7 +124,7 @@ const getIcon = (name: string) => {
             >
               <div class="flex items-start gap-4">
                 <!-- Icon -->
-                <div class="flex-shrink-0 w-12 h-12 bg-verse-100 dark:bg-verse-700 rounded-lg flex items-center justify-center">
+                <div class="flex-shrink-0 w-12 h-12 bg-verse-100 dark:bg-verse-700 squircle rounded-lg flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-verse-600 dark:text-verse-300" viewBox="0 0 32 32" fill="currentColor">
                     <path :d="getIcon(item.icon)" />
                   </svg>
@@ -181,7 +181,7 @@ const getIcon = (name: string) => {
             </component>
           </template>
         </div>
-      </div>
-    </ContentBlock>
+      </ContentBlock>
+    </main>
   </DefaultLayout>
 </template>
