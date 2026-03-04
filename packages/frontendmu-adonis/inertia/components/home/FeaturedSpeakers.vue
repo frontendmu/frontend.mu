@@ -1,17 +1,10 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3'
 import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
-
-interface Speaker {
-  id: string
-  name: string
-  github_account: string | null
-  featured: boolean
-  bio?: string | null
-}
+import type { SpeakerDto } from '~/types'
 
 interface Props {
-  speakers: Speaker[]
+  speakers: SpeakerDto[]
 }
 
 defineProps<Props>()
@@ -58,7 +51,7 @@ defineProps<Props>()
           <SpeakerAvatar
             size="full"
             :name="person.name"
-            :github-username="person.github_account"
+            :github-username="person.githubUsername"
             class="relative z-10 aspect-[4/5] shadow-xl grayscale group-hover:grayscale-0 transition-all duration-700 border border-gray-100 dark:border-verse-800 group-hover:border-verse-500 rounded-[2.5rem]"
           />
           
@@ -85,8 +78,8 @@ defineProps<Props>()
             </h3>
             <div class="flex items-center gap-4">
               <span class="h-0.5 w-6 bg-verse-500 transition-all duration-500 group-hover:w-12"></span>
-              <p v-if="person.github_account" class="text-sm font-black uppercase tracking-[0.25em] text-gray-400 dark:text-gray-500">
-                @{{ person.github_account }}
+              <p v-if="person.githubUsername" class="text-sm font-black uppercase tracking-[0.25em] text-gray-400 dark:text-gray-500">
+                @{{ person.githubUsername }}
               </p>
             </div>
           </div>

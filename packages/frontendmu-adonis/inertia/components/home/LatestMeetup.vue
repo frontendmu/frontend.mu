@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
-import type { Meetup } from '~/types'
+import type { EventSummaryDto } from '~/types'
 import { useMeetups } from '~/composables/useMeetups'
 import EventCardFeatured from '~/components/home/EventCardFeatured.vue'
 import EventCardSmall from '~/components/home/EventCardSmall.vue'
 import EventCardModern from '~/components/home/EventCardModern.vue'
 
 interface Props {
-  events: Meetup[]
+  events: EventSummaryDto[]
 }
 
 const props = defineProps<Props>()

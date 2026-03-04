@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { DateTime } from 'luxon'
 import { Link } from '@inertiajs/vue3'
 import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
-import Event from '#models/event'
+import type { EventSummaryDto } from '~/types'
+import { isDateInFuture } from '~/utils/date'
 
 interface Props {
-  event: Event
+  event: EventSummaryDto
   isNextMeetup?: boolean
   isMeetupToday?: boolean
 }
@@ -16,30 +16,23 @@ const props = withDefaults(defineProps<Props>(), {
   isMeetupToday: false,
 })
 
-const parseEventDate = (date: unknown): DateTime | null => {
-  if (!date) return null
-  if (typeof date === 'string') return DateTime.fromISO(date)
-  if (typeof date === 'object' && 'toJSDate' in date) return DateTime.fromJSDate(date.toJSDate())
-  return DateTime.fromISO(date as unknown as string)
-}
-
-const dt = computed(() => parseEventDate(props.event.eventDate))
-
 const formattedDate = computed(() => {
+  if (!props.event.date) return { day: '', month: '', year: '' }
+  const date = new Date(props.event.date)
   return {
-    day: dt.value?.day ?? '',
-    month: dt.value?.monthShort ?? '',
-    year: dt.value?.year ?? ''
+    day: date.getDate(),
+    month: date.toLocaleString('en-US', { month: 'short' }),
+    year: date.getFullYear(),
   }
 })
 
 const isUpcoming = computed(() => {
-  return dt.value ? dt.value > DateTime.now() : false
+  return props.event.date ? isDateInFuture(new Date(props.event.date)) : false
 })
 
 const speakers = computed(() => {
   return props.event.sessions
-    ?.flatMap((session) => session.speakers || [])
+    ?.flatMap((session) => session.speakers)
     .filter(Boolean) || []
 })
 </script>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Head, Link } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
 import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
-import type { Meetup } from '~/types'
+import type { EventSummaryDto } from '~/types'
 
 interface Props {
-  event: Meetup
+  event: EventSummaryDto
   isNext?: boolean
   isToday?: boolean
 }
@@ -16,8 +16,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const formattedDate = computed(() => {
-  if (!props.event.Date) return ''
-  const date = new Date(props.event.Date)
+  if (!props.event.date) return ''
+  const date = new Date(props.event.date)
   return {
     full: date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
     short: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
@@ -26,7 +26,7 @@ const formattedDate = computed(() => {
 
 const speakers = computed(() => {
   return (
-    props.event.sessions?.flatMap((session) => session.Session_id?.speakers).filter(Boolean) || []
+    props.event.sessions?.flatMap((session) => session.speakers).filter(Boolean) || []
   )
 })
 </script>
@@ -41,7 +41,7 @@ const speakers = computed(() => {
     ]"
   >
     <div class="relative z-10 bg-white dark:bg-verse-950 rounded-[2.3rem] squircle p-6 md:p-10 flex flex-col lg:flex-row gap-10 items-center justify-between">
-      
+
       <div class="flex-1 space-y-6 text-center lg:text-left">
         <!-- Status Badge -->
         <div v-if="isToday" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-[0.2em] border-2 bg-red-500/10 border-red-500/20 text-red-600 dark:text-red-400">
@@ -65,12 +65,12 @@ const speakers = computed(() => {
             </svg>
             {{ formattedDate.full }}
           </div>
-          <div v-if="event.Venue" class="flex items-center gap-2">
+          <div v-if="event.venue" class="flex items-center gap-2">
             <svg class="w-5 h-5 text-verse-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            {{ event.Venue }}
+            {{ event.venue }}
           </div>
         </div>
 
@@ -89,7 +89,8 @@ const speakers = computed(() => {
                 <SpeakerAvatar
                   size="md"
                   :name="speaker.name"
-                  :github-username="speaker.github_account"
+                  :github-username="speaker.githubUsername"
+                  :avatar-url="speaker.avatarUrl"
                   class="border-4 border-white dark:border-verse-950 shadow-lg ring-2 ring-verse-500/20"
                 />
               </template>
@@ -106,9 +107,9 @@ const speakers = computed(() => {
       </div>
 
       <!-- Date Large Display (hidden on mobile) -->
-      <div class="hidden lg:flex flex-col items-center justify-center w-40 h-40 rounded-[2rem] bg-verse-50 dark:bg-verse-900/30 border-2 border-verse-100 dark:border-verse-800 rotate-3 group-hover:rotate-0 transition-transform duration-500">
-        <span class="text-5xl font-black text-verse-500 leading-none">{{ new Date(event.Date).getDate() }}</span>
-        <span class="text-lg font-black uppercase tracking-[0.2em] text-gray-400">{{ new Date(event.Date).toLocaleString('en-US', { month: 'short' }) }}</span>
+      <div v-if="event.date" class="hidden lg:flex flex-col items-center justify-center w-40 h-40 rounded-[2rem] bg-verse-50 dark:bg-verse-900/30 border-2 border-verse-100 dark:border-verse-800 rotate-3 group-hover:rotate-0 transition-transform duration-500">
+        <span class="text-5xl font-black text-verse-500 leading-none">{{ new Date(event.date).getDate() }}</span>
+        <span class="text-lg font-black uppercase tracking-[0.2em] text-gray-400">{{ new Date(event.date).toLocaleString('en-US', { month: 'short' }) }}</span>
       </div>
 
     </div>

@@ -3,11 +3,11 @@ import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import Logo from '~/components/layout/Logo.vue'
 import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
-import type { Meetup } from '~/types'
+import type { EventSummaryDto } from '~/types'
 import { isDateInFuture, isDateToday } from '~/utils/date'
 
 interface Props {
-  featuredEvent?: Meetup
+  featuredEvent?: EventSummaryDto
 }
 
 const props = defineProps<Props>()
@@ -16,8 +16,8 @@ const description =
   'A community of passionate developers in Mauritius. Join us for regular meetups, workshops, and tech talks.'
 
 const eventStatus = computed(() => {
-  if (!props.featuredEvent?.Date) return ''
-  const date = new Date(props.featuredEvent.Date)
+  if (!props.featuredEvent?.date) return ''
+  const date = new Date(props.featuredEvent.date)
   if (isDateToday(date)) return 'Happening Today'
   if (isDateInFuture(date)) return 'Next Event'
   return 'Latest Meetup'
@@ -64,8 +64,8 @@ function formatDate(dateStr: string) {
           <div v-if="featuredEvent" class="flex justify-center lg:justify-start pt-4">
             <Link :href="`/meetup/${featuredEvent.id}`" class="group relative flex items-center gap-5 bg-white/80 dark:bg-verse-900/40 backdrop-blur-xl border border-verse-200 dark:border-verse-800 p-4 pr-10 rounded-[2rem] transition-all hover:scale-[1.02] hover:shadow-xl hover:border-verse-400 dark:hover:border-verse-500 text-left">
               <div class="flex flex-col items-center justify-center w-14 h-14 rounded-2xl bg-verse-500 text-white font-black shrink-0 shadow-lg shadow-verse-500/20">
-                <span class="text-xl leading-none">{{ formatDate(featuredEvent.Date).day }}</span>
-                <span class="text-[10px] uppercase tracking-wider">{{ formatDate(featuredEvent.Date).month }}</span>
+                <span class="text-xl leading-none">{{ formatDate(featuredEvent.date).day }}</span>
+                <span class="text-[10px] uppercase tracking-wider">{{ formatDate(featuredEvent.date).month }}</span>
               </div>
               <div>
                 <p class="text-[10px] font-black uppercase tracking-[0.25em] text-verse-500">{{ eventStatus }}</p>

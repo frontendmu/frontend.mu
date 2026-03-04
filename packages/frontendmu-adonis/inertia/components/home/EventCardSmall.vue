@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Head, Link } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
 import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
-import type { Meetup } from '~/types'
+import type { EventSummaryDto } from '~/types'
 import { isDateInFuture } from '~/utils/date'
 
 interface Props {
-  event: Meetup
+  event: EventSummaryDto
 }
 
 const props = defineProps<Props>()
 
 const formattedDate = computed(() => {
-  if (!props.event.Date) return ''
-  const date = new Date(props.event.Date)
+  if (!props.event.date) return ''
+  const date = new Date(props.event.date)
   return {
     day: date.getDate(),
     month: date.toLocaleString('en-US', { month: 'short' }),
@@ -22,12 +22,12 @@ const formattedDate = computed(() => {
 })
 
 const isUpcoming = computed(() => {
-  return props.event.Date ? isDateInFuture(new Date(props.event.Date)) : false
+  return props.event.date ? isDateInFuture(new Date(props.event.date)) : false
 })
 
 const speakers = computed(() => {
   return props.event.sessions
-    ?.flatMap((session) => session.Session_id?.speakers)
+    ?.flatMap((session) => session.speakers)
     .filter(Boolean) || []
 })
 </script>
@@ -55,14 +55,14 @@ const speakers = computed(() => {
           </div>
 
           <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono text-gray-500 dark:text-gray-400">
-            <div v-if="event.Venue" class="flex items-center gap-1">
+            <div v-if="event.venue" class="flex items-center gap-1">
               <span class="opacity-50 text-verse-500 dark:text-verse-400">@</span>
-              <span class="truncate max-w-[180px]">{{ event.Venue }}</span>
+              <span class="truncate max-w-[180px]">{{ event.venue }}</span>
             </div>
-            
-            <div v-if="event.Attendees" class="flex items-center gap-1">
+
+            <div v-if="event.attendeeCount" class="flex items-center gap-1">
               <span class="opacity-50 text-verse-500 dark:text-verse-400">#</span>
-              {{ event.Attendees }} attendees
+              {{ event.attendeeCount }} attendees
             </div>
           </div>
         </div>
@@ -74,7 +74,8 @@ const speakers = computed(() => {
               <SpeakerAvatar
                 size="sm"
                 :name="speaker.name"
-                :github-username="speaker.github_account"
+                :github-username="speaker.githubUsername"
+                :avatar-url="speaker.avatarUrl"
                 class="border border-white dark:border-verse-950 shadow-sm transition-transform hover:scale-110 hover:z-30"
               />
             </template>
@@ -94,7 +95,7 @@ const speakers = computed(() => {
         </svg>
       </div>
     </div>
-    
+
     <Link :href="`/meetup/${event.id}`" class="absolute inset-0 z-20" aria-label="View event details" />
   </div>
 </template>
