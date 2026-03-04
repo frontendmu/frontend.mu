@@ -19,6 +19,12 @@
   --color-verse-950: #020617;
 }
 
+@utility squircle {
+  corner-shape: squircle;
+  /* Safari 18.2+ supports corner-shape. 
+     For others, we use a large enough radius to approximate the look */
+}
+
 html,
 body,
 #app {

@@ -49,7 +49,7 @@ const fontWeightClasses = computed(() => `font-${props.weight}`)
 <template>
   <component
     :is="Element"
-    class="font-heading tracking-tight text-verse-900 dark:text-verse-200"
+    class="font-heading tracking-tighter text-gray-900 dark:text-white leading-[1.1]"
     :class="[props.class, fontWeightClasses, fontSizeClasses]"
   >
     <slot />
