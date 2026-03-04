@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Head, Link, usePage } from '@inertiajs/vue3'
-import DefaultLayout from '~/layouts/DefaultLayout.vue'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
 
@@ -77,8 +76,7 @@ const getIcon = (name: string) => {
 
 <template>
   <Head title="Admin Dashboard" />
-  <DefaultLayout>
-    <main class="relative min-h-screen pt-40 pb-20">
+  <main class="relative min-h-screen pt-40 pb-20">
       <ContentBlock>
         <!-- Header -->
         <div class="mb-8">
@@ -183,5 +181,4 @@ const getIcon = (name: string) => {
         </div>
       </ContentBlock>
     </main>
-  </DefaultLayout>
 </template>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3'
-import DefaultLayout from '~/layouts/DefaultLayout.vue'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
 
@@ -49,8 +48,7 @@ function handleSubmit() {
 
 <template>
   <Head :title="`Edit: ${speaker.name}`" />
-  <DefaultLayout>
-    <main class="relative min-h-screen pt-40 pb-20">
+  <main class="relative min-h-screen pt-40 pb-20">
       <ContentBlock>
         <div class="max-w-2xl mx-auto">
         <!-- Breadcrumb -->
@@ -238,5 +236,4 @@ function handleSubmit() {
       </div>
     </ContentBlock>
   </main>
-  </DefaultLayout>
 </template>

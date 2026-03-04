@@ -2,13 +2,12 @@
 import { computed, ref } from 'vue'
 import { Head, Link, router, usePage } from '@inertiajs/vue3'
 import { DateTime } from 'luxon'
-import DefaultLayout from '~/layouts/DefaultLayout.vue'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
-import type Event from '#models/event'
+import type { EventSummaryDto } from '~/types'
 
 interface Props {
-  events: Event[]
+  events: EventSummaryDto[]
   statusFilter: string
 }
 
@@ -24,7 +23,7 @@ const canDelete = computed(() => {
 
 // Delete confirmation state
 const showDeleteModal = ref(false)
-const eventToDelete = ref<Event | null>(null)
+const eventToDelete = ref<EventSummaryDto | null>(null)
 const isDeleting = ref(false)
 
 const parseEventDate = (date: unknown): DateTime | null => {
@@ -85,8 +84,7 @@ function executeDelete() {
 
 <template>
   <Head title="Manage Events" />
-  <DefaultLayout>
-    <main class="relative min-h-screen pt-40 pb-20">
+  <main class="relative min-h-screen pt-40 pb-20">
       <ContentBlock>
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
@@ -195,7 +193,7 @@ function executeDelete() {
                     </div>
                   </td>
                   <td class="px-6 py-4 text-sm text-verse-600 dark:text-verse-400">
-                    {{ formatDate(event.eventDate) }}
+                    {{ formatDate(event.date) }}
                   </td>
                   <td class="px-6 py-4">
                     <span
@@ -317,5 +315,4 @@ function executeDelete() {
         </div>
       </div>
     </Teleport>
-  </DefaultLayout>
 </template>

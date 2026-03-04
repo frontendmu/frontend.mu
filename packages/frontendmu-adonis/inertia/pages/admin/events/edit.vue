@@ -2,23 +2,16 @@
 import { ref, computed, watch } from 'vue'
 import { Head, Link, useForm, usePage, router } from '@inertiajs/vue3'
 import { DateTime } from 'luxon'
-import DefaultLayout from '~/layouts/DefaultLayout.vue'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
-import type Event from '#models/event'
-import type Session from '#models/session'
-import type User from '#models/user'
+import type { EventDto, SessionDto, SpeakerSummaryDto } from '~/types'
 
-interface SessionWithSpeakers extends Session {
-  speakers: User[]
-}
-
-interface EventWithSessions extends Event {
-  sessions: SessionWithSpeakers[]
+interface SessionWithSpeakers extends SessionDto {
+  speakers: SpeakerSummaryDto[]
 }
 
 interface Props {
-  event: EventWithSessions
+  event: EventDto & { sessions: SessionWithSpeakers[] }
 }
 
 interface Speaker {
@@ -62,10 +55,8 @@ const speakerSearch = ref('')
 
 // Form state for event
 const formEventDate = computed(() => {
-  if (!props.event.eventDate) return ''
-  const date = props.event.eventDate
-  if (typeof date === 'string') return DateTime.fromISO(date).toISODate()
-  return DateTime.fromJSDate(date.toJSDate()).toISODate()
+  if (!props.event.date) return ''
+  return DateTime.fromISO(props.event.date).toISODate()
 })
 
 const form = useForm({
@@ -87,10 +78,8 @@ const form = useForm({
 })
 
 const eventDate = computed(() => {
-  if (!props.event.eventDate) return ''
-  const date = props.event.eventDate
-  if (typeof date === 'string') return DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL)
-  return DateTime.fromJSDate(date.toJSDate()).toLocaleString(DateTime.DATE_FULL)
+  if (!props.event.date) return ''
+  return DateTime.fromISO(props.event.date).toLocaleString(DateTime.DATE_FULL)
 })
 
 function handleSubmit() {
@@ -358,8 +347,7 @@ const filteredSpeakers = computed(() => {
 
 <template>
   <Head :title="`Edit: ${event.title}`" />
-  <DefaultLayout>
-    <main class="relative min-h-screen pt-40 pb-20">
+  <main class="relative min-h-screen pt-40 pb-20">
       <ContentBlock>
         <div class="max-w-4xl mx-auto">
         <!-- Breadcrumb -->
@@ -938,7 +926,7 @@ const filteredSpeakers = computed(() => {
             No sessions yet. Click "Add Session" to create one.
           </p>
         </div>
+      </div>
       </ContentBlock>
     </main>
-  </DefaultLayout>
 </template>

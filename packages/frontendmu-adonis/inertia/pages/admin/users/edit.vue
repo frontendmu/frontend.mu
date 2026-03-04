@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
-import DefaultLayout from '~/layouts/DefaultLayout.vue'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
 
@@ -153,8 +152,7 @@ const groupedPermissions = computed(() => {
 
 <template>
   <Head :title="`Edit User: ${user.name}`" />
-  <DefaultLayout>
-    <main class="relative min-h-screen pt-40 pb-20">
+  <main class="relative min-h-screen pt-40 pb-20">
       <ContentBlock>
         <div class="max-w-3xl mx-auto">
         <!-- Breadcrumb -->
