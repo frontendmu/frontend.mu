@@ -3,7 +3,6 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { DateTime } from 'luxon'
 import { Head, Link, usePage, router } from '@inertiajs/vue3'
 import DefaultLayout from '~/layouts/DefaultLayout.vue'
-import ContentBlock from '~/components/shared/ContentBlock.vue'
 import { sanitizeHtml } from '~/composables/useSanitize'
 import type Event from '#models/event'
 import type Rsvp from '#models/rsvp'
@@ -214,466 +213,226 @@ const calendarUrl = computed(() => {
 </script>
 
 <template>
-
   <Head :title="meetup?.title || 'Meetup'" />
   <DefaultLayout>
-    <ContentBlock>
-      <div class="py-6 lg:py-10">
+    <main class="relative min-h-screen pt-40 pb-32">
+      <div class="contain relative z-10 max-w-5xl">
         <template v-if="meetup">
-          <!-- Breadcrumb -->
-          <nav class="mb-6">
+          <!-- Header Navigation -->
+          <nav class="mb-12 flex items-center justify-between">
             <Link href="/meetups"
-              class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
-              <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z"
-                  clip-rule="evenodd" />
+              class="group inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-verse-500 transition-colors">
+              <svg class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
               </svg>
-              Back to meetups
+              Archives
+            </Link>
+
+            <Link v-if="canEdit" :href="`/admin/events/${meetup.id}/edit`"
+              class="text-[10px] font-black uppercase tracking-widest text-verse-600 dark:text-verse-400 hover:text-verse-500 transition-colors">
+              Edit Event
             </Link>
           </nav>
 
-          <!-- Two Column Layout -->
-          <div class="lg:grid lg:grid-cols-3 lg:gap-12">
-            <!-- Main Content -->
-            <div class="lg:col-span-2">
-              <!-- Hero Section -->
-              <header class="mb-8">
-                <!-- Status Badge & Edit -->
-                <div class="flex items-center gap-3 mb-4">
-                  <span v-if="isToday"
-                    class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-red-500/10 text-red-600 dark:text-red-400 ring-1 ring-inset ring-red-500/20">
-                    <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                    Happening Today
-                  </span>
-                  <span v-else-if="isUpcoming"
-                    class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-inset ring-emerald-500/20">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    Upcoming
-                  </span>
-                  <span v-else-if="isPast"
-                    class="inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full bg-gray-500/10 text-gray-600 dark:text-gray-400 ring-1 ring-inset ring-gray-500/20">
-                    Past Event
-                  </span>
-
-                  <Link v-if="canEdit" :href="`/admin/events/${meetup.id}/edit`"
-                    class="ml-auto inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 bg-gray-100 dark:bg-gray-800 rounded-full transition-colors">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
-                      <path
-                        d="M2.695 14.763l-1.262 3.154a.5.5 0 00.65.65l3.155-1.262a4 4 0 001.343-.885L17.5 5.5a2.121 2.121 0 00-3-3L3.58 13.42a4 4 0 00-.885 1.343z" />
-                    </svg>
-                    Edit
-                  </Link>
-                </div>
-
-                <!-- Title -->
-                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
+          <!-- Main Layout -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+            <!-- Left Column: Content -->
+            <div class="lg:col-span-7 space-y-12">
+              <header class="space-y-4">
+                <h1 class="text-4xl md:text-6xl font-black tracking-tighter dark:text-gray-100 leading-none">
                   {{ meetup.title }}
                 </h1>
               </header>
 
-              <!-- RSVP Section (Mobile Only) -->
-              <section id="rsvp-section"
-                v-if="isUpcoming || isToday || (featureFlags.rsvpPastEvents && isPast && meetup.acceptingRsvp)"
-                class="lg:hidden mb-8 p-5 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-700">
-                <div class="flex items-center justify-between mb-4">
-                  <div>
-                    <p v-if="hasRsvp && rsvpStatus === 'confirmed'"
-                      class="text-sm font-medium text-emerald-600 dark:text-emerald-400">
-                      You're going
-                    </p>
-                    <p v-else-if="hasRsvp && rsvpStatus === 'waitlist'"
-                      class="text-sm font-medium text-amber-600 dark:text-amber-400">
-                      On waitlist
-                    </p>
-                    <p v-else-if="meetup.seatsAvailable" class="text-sm text-gray-600 dark:text-gray-400">
-                      {{ spotsRemaining }} spots left
-                    </p>
-                    <p v-else class="text-sm text-gray-600 dark:text-gray-400">
-                      {{ rsvpCount }} attending
-                    </p>
-                  </div>
-
-                  <template v-if="!isAuthenticated && canRsvp">
-                    <Link href="/login"
-                      class="px-5 py-2.5 text-sm font-semibold text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
-                      Login to RSVP
-                    </Link>
-                  </template>
-                  <template v-else-if="isAuthenticated && canRsvp">
-                    <button v-if="hasRsvp" @click="handleCancelRsvp" :disabled="isRsvpLoading"
-                      class="px-5 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 disabled:opacity-50 transition-colors">
-                      {{ isRsvpLoading ? 'Cancelling...' : 'Cancel' }}
-                    </button>
-                    <button v-else @click="handleRsvp" :disabled="isRsvpLoading"
-                      class="px-5 py-2.5 text-sm font-semibold text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50 transition-colors">
-                      {{ isRsvpLoading ? 'Processing...' : (isFull ? 'Join Waitlist' : 'RSVP') }}
-                    </button>
-                  </template>
-                </div>
-
-                <!-- Capacity bar -->
-                <div v-if="meetup.seatsAvailable"
-                  class="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                  <div class="h-full rounded-full transition-all duration-500"
-                    :class="capacityPercent >= 90 ? 'bg-amber-500' : 'bg-emerald-500'"
-                    :style="{ width: `${capacityPercent}%` }"></div>
-                </div>
-              </section>
-
               <!-- Description -->
-              <section v-if="meetup.description" class="mb-10">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">About</h2>
+              <section v-if="meetup.description" class="space-y-4">
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Context</span>
+                  <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
+                </div>
                 <div
-                  class="prose prose-gray dark:prose-invert prose-p:text-gray-600 dark:prose-p:text-gray-400 prose-headings:text-gray-900 dark:prose-headings:text-gray-100 max-w-none"
+                  class="prose prose-lg dark:prose-invert max-w-none font-medium leading-relaxed text-gray-600 dark:text-gray-400"
                   v-html="sanitizeHtml(meetup.description)" />
               </section>
 
-              <!-- Talks - Combined Sessions & Speakers -->
-              <section v-if="meetup.sessions.length" class="mb-10">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">Talks</h2>
+              <!-- Sessions/Talks -->
+              <section v-if="meetup.sessions.length" class="space-y-8">
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Agenda</span>
+                  <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
+                </div>
 
-                <div class="space-y-4">
-                  <article v-for="session in meetup.sessions" :key="session.id"
-                    class="p-5 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                      {{ session.title }}
-                    </h3>
+                <div class="divide-y divide-gray-100 dark:divide-verse-900 border-y border-gray-100 dark:border-verse-900">
+                  <article v-for="(session, index) in meetup.sessions" :key="session.id"
+                    class="py-8 group">
+                    <div class="flex gap-6">
+                      <span class="text-lg font-black text-gray-200 dark:text-verse-800 tabular-nums">0{{ index + 1 }}</span>
+                      <div class="flex-1 space-y-6">
+                        <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
+                          {{ session.title }}
+                        </h3>
 
-                    <!-- Speakers for this session -->
-                    <div v-if="session.speakers?.length" class="space-y-3">
-                      <Link v-for="speaker in session.speakers" :key="speaker.id" :href="`/speaker/${speaker.id}`"
-                        class="flex items-center gap-3 group">
-                        <img v-if="speaker.githubUsername"
-                          :src="`https://avatars.githubusercontent.com/${speaker.githubUsername}?size=80`"
-                          :alt="speaker.name"
-                          class="w-10 h-10 rounded-full ring-2 ring-gray-100 dark:ring-gray-700 group-hover:ring-gray-200 dark:group-hover:ring-gray-600 transition-all" />
-                        <div v-else
-                          class="w-10 h-10 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center text-white text-sm font-medium">
-                          {{ speaker.name?.charAt(0).toUpperCase() }}
+                        <div v-if="session.speakers?.length" class="flex flex-wrap gap-6">
+                          <Link v-for="speaker in session.speakers" :key="speaker.id" :href="`/speaker/${speaker.id}`"
+                            class="flex items-center gap-3 group/speaker transition-all">
+                            <SpeakerAvatar
+                              size="md"
+                              :name="speaker.name"
+                              :github-username="speaker.githubUsername"
+                              class="grayscale group-hover/speaker:grayscale-0 transition-all ring-2 ring-gray-100 dark:ring-verse-900 group-hover/speaker:ring-verse-500"
+                            />
+                            <div class="leading-tight">
+                              <p class="text-sm font-bold text-gray-900 dark:text-gray-200 group-hover/speaker:text-verse-500 transition-colors">
+                                {{ speaker.name }}
+                              </p>
+                              <p v-if="speaker.githubUsername" class="text-[10px] font-mono text-gray-400">
+                                @{{ speaker.githubUsername }}
+                              </p>
+                            </div>
+                          </Link>
                         </div>
-                        <div class="flex-1 min-w-0">
-                          <p
-                            class="font-medium text-gray-900 dark:text-gray-100 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
-                            {{ speaker.name }}
-                          </p>
-                          <p v-if="speaker.githubUsername" class="text-sm text-gray-500 dark:text-gray-400">
-                            @{{ speaker.githubUsername }}
-                          </p>
-                        </div>
-                        <svg
-                          class="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-400 dark:group-hover:text-gray-500 transition-colors flex-shrink-0"
-                          viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd"
-                            d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z"
-                            clip-rule="evenodd" />
-                        </svg>
-                      </Link>
+                      </div>
                     </div>
                   </article>
                 </div>
               </section>
-
-              <!-- Sponsors Section (Mobile) -->
-              <section v-if="meetup.sponsors && meetup.sponsors.length" class="lg:hidden mb-10">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Sponsored by</h2>
-                <div class="flex flex-wrap gap-3">
-                  <a v-for="sponsor in meetup.sponsors" :key="sponsor.id" :href="`/sponsor/${sponsor.id}`"
-                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
-                    <span class="font-medium text-gray-900 dark:text-gray-100">{{ sponsor.name }}</span>
-                  </a>
-                </div>
-              </section>
             </div>
 
-            <!-- Sidebar (Desktop) -->
-            <aside class="hidden lg:block">
-              <div class="sticky top-24 space-y-5">
-                <!-- RSVP Card -->
-                <div v-if="isUpcoming || isToday || (featureFlags.rsvpPastEvents && isPast && meetup.acceptingRsvp)"
-                  class="p-6 bg-white dark:bg-gray-800/80 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                  <!-- Status -->
-                  <div class="mb-5">
-                    <div v-if="hasRsvp && rsvpStatus === 'confirmed'"
-                      class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-                      <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                          clip-rule="evenodd" />
-                      </svg>
-                      <span class="font-semibold">You're going!</span>
+            <!-- Right Column: Sidebar -->
+            <aside class="lg:col-span-5">
+              <div class="sticky top-24 space-y-10">
+                <!-- Data Registry Card -->
+                <div class="bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-3xl squircle overflow-hidden shadow-sm">
+                  <div class="p-8 space-y-6">
+                    <div class="grid grid-cols-1 gap-6">
+                      <div class="flex items-baseline justify-between group/item">
+                        <p class="text-[10px] font-mono uppercase tracking-widest text-gray-400 group-hover/item:text-verse-500 transition-colors">Date</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-gray-100">{{ eventDate?.toFormat('dd MMM yyyy') }}</p>
+                      </div>
+                      <div class="flex items-baseline justify-between group/item">
+                        <p class="text-[10px] font-mono uppercase tracking-widest text-gray-400 group-hover/item:text-verse-500 transition-colors">Time</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-gray-100">{{ meetup.startTime || 'TBA' }}</p>
+                      </div>
+                      <div class="flex items-baseline justify-between group/item">
+                        <p class="text-[10px] font-mono uppercase tracking-widest text-gray-400 group-hover/item:text-verse-500 transition-colors">Capacity</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-gray-100">{{ rsvpCount }} / {{ meetup.seatsAvailable || '∞' }}</p>
+                      </div>
                     </div>
-                    <div v-else-if="hasRsvp && rsvpStatus === 'waitlist'"
-                      class="flex items-center gap-2 text-amber-600 dark:text-amber-400">
-                      <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z"
-                          clip-rule="evenodd" />
-                      </svg>
-                      <span class="font-semibold">On the waitlist</span>
+
+                    <div v-if="meetup.venue" class="pt-6 border-t border-gray-100 dark:border-verse-800/50 space-y-1">
+                      <p class="text-[10px] font-mono uppercase tracking-widest text-gray-400">Venue</p>
+                      <p class="text-base font-bold text-gray-900 dark:text-gray-100 leading-snug">{{ meetup.venue }}</p>
+                      <p v-if="meetup.location" class="text-xs text-gray-400 font-medium italic">{{ meetup.location }}</p>
                     </div>
-                    <div v-else>
-                      <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                        <template v-if="daysUntil && daysUntil > 0">
-                          {{ daysUntil }} {{ daysUntil === 1 ? 'day' : 'days' }} to go
+
+                    <!-- Action Area -->
+                    <div class="pt-4 space-y-3">
+                      <div v-if="isUpcoming || isToday || (featureFlags.rsvpPastEvents && isPast && meetup.acceptingRsvp)">
+                        <template v-if="!isAuthenticated && canRsvp">
+                          <Link href="/login"
+                            class="block w-full py-3.5 text-center text-[10px] font-black uppercase tracking-[0.2em] bg-verse-600 text-white rounded-lg hover:bg-verse-700 transition-all">
+                            Authenticate to Register
+                          </Link>
                         </template>
-                        <template v-else-if="isToday">
-                          Today!
+                        <template v-else-if="isAuthenticated && canRsvp">
+                          <button v-if="hasRsvp" @click="handleCancelRsvp" :disabled="isRsvpLoading"
+                            class="w-full py-3.5 text-[10px] font-black uppercase tracking-[0.2em] border border-red-500/50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all disabled:opacity-50">
+                            {{ isRsvpLoading ? '...' : 'Revoke Registration' }}
+                          </button>
+                          <button v-else @click="handleRsvp" :disabled="isRsvpLoading"
+                            class="w-full py-3.5 text-[10px] font-black uppercase tracking-[0.2em] bg-verse-600 text-white rounded-lg hover:bg-verse-700 transition-all disabled:opacity-50 shadow-lg shadow-verse-600/20">
+                            {{ isRsvpLoading ? '...' : (isFull ? 'Join Queue' : 'Initialize Registration') }}
+                          </button>
                         </template>
-                        <template v-else>
-                          Free event
-                        </template>
-                      </p>
-                    </div>
-                  </div>
-
-                  <!-- Capacity -->
-                  <div v-if="meetup.seatsAvailable" class="mb-5">
-                    <div class="flex items-baseline justify-between mb-2">
-                      <span class="text-sm text-gray-600 dark:text-gray-400">
-                        {{ rsvpCount }} / {{ meetup.seatsAvailable }} spots
-                      </span>
-                      <span v-if="spotsRemaining !== null && spotsRemaining <= 10 && spotsRemaining > 0"
-                        class="text-xs font-medium text-amber-600 dark:text-amber-400">
-                        {{ spotsRemaining }} left
-                      </span>
-                    </div>
-                    <div class="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                      <div class="h-full rounded-full transition-all duration-500"
-                        :class="capacityPercent >= 90 ? 'bg-amber-500' : 'bg-emerald-500'"
-                        :style="{ width: `${capacityPercent}%` }"></div>
-                    </div>
-                  </div>
-                  <div v-else class="mb-5">
-                    <span class="text-sm text-gray-600 dark:text-gray-400">
-                      {{ rsvpCount }} {{ rsvpCount === 1 ? 'person' : 'people' }} attending
-                    </span>
-                  </div>
-
-                  <!-- CTA Button -->
-                  <template v-if="!isAuthenticated && canRsvp">
-                    <Link href="/login"
-                      class="block w-full py-3 px-4 text-center font-semibold text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 rounded-xl hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
-                      Login to RSVP
-                    </Link>
-                    <p class="mt-3 text-center text-xs text-gray-500 dark:text-gray-400">
-                      Don't have an account?
-                      <Link href="/register" class="underline hover:text-gray-900 dark:hover:text-gray-100">Register
-                      </Link>
-                    </p>
-                  </template>
-
-                  <template v-else-if="isAuthenticated && canRsvp">
-                    <button v-if="hasRsvp" @click="handleCancelRsvp" :disabled="isRsvpLoading"
-                      class="w-full py-3 px-4 font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/30 disabled:opacity-50 transition-colors">
-                      {{ isRsvpLoading ? 'Cancelling...' : 'Cancel RSVP' }}
-                    </button>
-                    <button v-else @click="handleRsvp" :disabled="isRsvpLoading"
-                      class="w-full py-3 px-4 font-semibold text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 rounded-xl hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50 transition-colors">
-                      {{ isRsvpLoading ? 'Processing...' : (isFull ? 'Join Waitlist' : 'RSVP Now') }}
-                    </button>
-                  </template>
-
-                  <template v-else-if="!canRsvp">
-                    <div
-                      class="py-3 px-4 text-center text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                      RSVPs are closed
-                    </div>
-                  </template>
-
-                  <!-- Messages -->
-                  <div v-if="rsvpSuccess"
-                    class="mt-4 p-3 text-sm text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
-                    {{ rsvpSuccess }}
-                  </div>
-                  <div v-if="rsvpError"
-                    class="mt-4 p-3 text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                    {{ rsvpError }}
-                  </div>
-
-                  <!-- Event Quick Info -->
-                  <div class="mt-5 pt-5 border-t border-gray-100 dark:border-gray-700 space-y-3 text-sm">
-                    <div class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
-                      <svg class="w-4 h-4 text-gray-400 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                          d="M5.75 2a.75.75 0 01.75.75V4h7V2.75a.75.75 0 011.5 0V4h.25A2.75 2.75 0 0118 6.75v8.5A2.75 2.75 0 0115.25 18H4.75A2.75 2.75 0 012 15.25v-8.5A2.75 2.75 0 014.75 4H5V2.75A.75.75 0 015.75 2zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75z"
-                          clip-rule="evenodd" />
-                      </svg>
-                      <span>{{ formattedDate }}</span>
-                    </div>
-                    <div v-if="meetup.startTime" class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
-                      <svg class="w-4 h-4 text-gray-400 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z"
-                          clip-rule="evenodd" />
-                      </svg>
-                      <span>{{ meetup.startTime }}</span>
-                    </div>
-                    <div v-if="meetup.venue" class="flex items-center gap-3 text-gray-600 dark:text-gray-400">
-                      <svg class="w-4 h-4 text-gray-400 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                          d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z"
-                          clip-rule="evenodd" />
-                      </svg>
-                      <span>{{ meetup.venue }}</span>
-                    </div>
-                  </div>
-
-                  <!-- Calendar Link -->
-                  <a v-if="calendarUrl" :href="calendarUrl" target="_blank" rel="noopener noreferrer"
-                    class="mt-4 flex items-center justify-center gap-2 w-full py-2.5 px-4 text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                      <path
-                        d="M5.25 12a.75.75 0 01.75-.75h.01a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75H6a.75.75 0 01-.75-.75V12zM6 13.25a.75.75 0 00-.75.75v.01c0 .414.336.75.75.75h.01a.75.75 0 00.75-.75V14a.75.75 0 00-.75-.75H6zM7.25 12a.75.75 0 01.75-.75h.01a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75H8a.75.75 0 01-.75-.75V12zM8 13.25a.75.75 0 00-.75.75v.01c0 .414.336.75.75.75h.01a.75.75 0 00.75-.75V14a.75.75 0 00-.75-.75H8zM9.25 10a.75.75 0 01.75-.75h.01a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75H10a.75.75 0 01-.75-.75V10zM10 11.25a.75.75 0 00-.75.75v.01c0 .414.336.75.75.75h.01a.75.75 0 00.75-.75V12a.75.75 0 00-.75-.75H10zM9.25 14a.75.75 0 01.75-.75h.01a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75H10a.75.75 0 01-.75-.75V14zM12 9.25a.75.75 0 00-.75.75v.01c0 .414.336.75.75.75h.01a.75.75 0 00.75-.75V10a.75.75 0 00-.75-.75H12zM11.25 12a.75.75 0 01.75-.75h.01a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75H12a.75.75 0 01-.75-.75V12zM12 13.25a.75.75 0 00-.75.75v.01c0 .414.336.75.75.75h.01a.75.75 0 00.75-.75V14a.75.75 0 00-.75-.75H12zM13.25 10a.75.75 0 01.75-.75h.01a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75H14a.75.75 0 01-.75-.75V10zM14 11.25a.75.75 0 00-.75.75v.01c0 .414.336.75.75.75h.01a.75.75 0 00.75-.75V12a.75.75 0 00-.75-.75H14z" />
-                      <path fill-rule="evenodd"
-                        d="M5.75 2a.75.75 0 01.75.75V4h7V2.75a.75.75 0 011.5 0V4h.25A2.75 2.75 0 0118 6.75v8.5A2.75 2.75 0 0115.25 18H4.75A2.75 2.75 0 012 15.25v-8.5A2.75 2.75 0 014.75 4H5V2.75A.75.75 0 015.75 2zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75z"
-                        clip-rule="evenodd" />
-                    </svg>
-                    Add to Calendar
-                  </a>
-                </div>
-
-                <!-- Sponsors Card -->
-                <div v-if="meetup.sponsors && meetup.sponsors.length"
-                  class="p-5 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl border border-amber-200/50 dark:border-amber-700/30">
-                  <div class="flex items-center gap-2 mb-4">
-                    <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" viewBox="0 0 20 20" fill="currentColor">
-                      <path
-                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                    <h3 class="text-sm font-semibold text-amber-900 dark:text-amber-100">Sponsored by</h3>
-                  </div>
-
-                  <div class="space-y-2">
-                    <a v-for="sponsor in meetup.sponsors" :key="sponsor.id" :href="`/sponsor/${sponsor.id}`"
-                      class="flex items-center justify-between p-3 bg-white/60 dark:bg-gray-800/40 rounded-xl hover:bg-white dark:hover:bg-gray-800/60 transition-colors group">
-                      <span class="font-medium text-gray-900 dark:text-gray-100">{{ sponsor.name }}</span>
-                      <svg
-                        class="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-400 dark:group-hover:text-gray-500 transition-colors"
-                        viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                          d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z"
-                          clip-rule="evenodd" />
-                      </svg>
-                    </a>
-                  </div>
-                </div>
-
-                <!-- Attendees Preview -->
-                <div v-if="isAuthenticated && attendees.length > 0"
-                  class="p-5 bg-white dark:bg-gray-800/80 rounded-2xl border border-gray-200 dark:border-gray-700">
-                  <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                    Who's coming
-                  </h3>
-
-                  <!-- Avatar Stack -->
-                  <div class="flex items-center">
-                    <div class="flex -space-x-2">
-                      <template v-for="(attendee, index) in visibleAttendees.slice(0, 5)" :key="attendee.id">
-                        <img v-if="attendee.githubUsername"
-                          :src="`https://avatars.githubusercontent.com/${attendee.githubUsername}?size=40`"
-                          :alt="attendee.name" class="w-8 h-8 rounded-full ring-2 ring-white dark:ring-gray-800"
-                          :style="{ zIndex: 5 - index }" />
-                        <div v-else
-                          class="w-8 h-8 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center text-white text-xs font-medium ring-2 ring-white dark:ring-gray-800"
-                          :style="{ zIndex: 5 - index }">
-                          {{ attendee.name.charAt(0).toUpperCase() }}
+                        <div v-else class="text-center p-3 bg-gray-50 dark:bg-verse-950/40 rounded-lg text-[9px] font-black text-gray-400 uppercase tracking-widest border border-gray-100 dark:border-verse-800">
+                          Registration Closed
                         </div>
-                      </template>
-                    </div>
-                    <span v-if="attendees.length > 5" class="ml-2 text-sm text-gray-500 dark:text-gray-400">
-                      +{{ attendees.length - 5 }} more
-                    </span>
-                  </div>
-
-                  <!-- Full attendee list (expandable) -->
-                  <div v-if="hasMoreAttendees" class="mt-4">
-                    <button @click="showAllAttendees = !showAllAttendees"
-                      class="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
-                      {{ showAllAttendees ? 'Show less' : 'View all attendees' }}
-                    </button>
-                  </div>
-
-                  <div v-if="showAllAttendees" class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-                    <div class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
-                      <div v-for="attendee in attendees" :key="attendee.id"
-                        class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-                        <img v-if="attendee.githubUsername"
-                          :src="`https://avatars.githubusercontent.com/${attendee.githubUsername}?size=24`"
-                          :alt="attendee.name" class="w-5 h-5 rounded-full" />
-                        <div v-else
-                          class="w-5 h-5 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-[10px] font-medium">
-                          {{ attendee.name.charAt(0).toUpperCase() }}
-                        </div>
-                        <span class="truncate">{{ attendee.name }}</span>
+                      </div>
+                      
+                      <div class="flex gap-2">
+                        <a v-if="calendarUrl" :href="calendarUrl" target="_blank"
+                          class="flex-1 flex items-center justify-center gap-2 py-2.5 border border-gray-100 dark:border-verse-800 rounded-lg text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-verse-500 dark:hover:text-verse-400 transition-colors">
+                          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                          Add to Calendar
+                        </a>
+                        <button class="p-2.5 border border-gray-100 dark:border-verse-800 rounded-lg text-gray-400 hover:text-verse-500 transition-colors" aria-label="Share">
+                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
+                        </button>
                       </div>
                     </div>
                   </div>
+                </div>
 
-                  <p class="mt-3 text-[10px] text-gray-400 dark:text-gray-500">
-                    Names partially hidden for privacy
-                  </p>
+                <!-- Attendee Record -->
+                <div v-if="attendees.length > 0" class="space-y-4">
+                  <div class="flex items-center justify-between px-1">
+                    <h3 class="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Attendee Record</h3>
+                    <span class="text-[9px] font-mono text-verse-500">{{ rsvpCount }} entries</span>
+                  </div>
+
+                  <div class="grid grid-cols-6 gap-2">
+                    <template v-for="attendee in visibleAttendees" :key="attendee.id">
+                      <SpeakerAvatar
+                        size="sm"
+                        :name="attendee.name"
+                        :github-username="attendee.githubUsername"
+                        :title="attendee.name"
+                        class="grayscale hover:grayscale-0 transition-all hover:scale-110 hover:z-10"
+                      />
+                    </template>
+                    <button v-if="hasMoreAttendees" @click="showAllAttendees = !showAllAttendees"
+                      class="aspect-square rounded bg-verse-50 dark:bg-verse-900 border border-verse-100 dark:border-verse-800 flex items-center justify-center text-[9px] font-black text-verse-500 hover:bg-verse-500 hover:text-white transition-colors">
+                      {{ showAllAttendees ? '−' : `+${attendees.length - 8}` }}
+                    </button>
+                  </div>
                 </div>
               </div>
             </aside>
           </div>
         </template>
 
-        <!-- Not Found State -->
+        <!-- Not Found -->
         <template v-else>
-          <div class="text-center py-20">
-            <div
-              class="w-16 h-16 mx-auto mb-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-              <svg class="w-8 h-8 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
-                  clip-rule="evenodd" />
+          <div class="text-center py-32 space-y-8">
+            <div class="w-24 h-24 bg-verse-50 dark:bg-verse-900/20 rounded-full flex items-center justify-center mx-auto">
+              <svg class="w-12 h-12 text-verse-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172a4 4 0 0112.728 0M5.657 5.657a8 8 0 0116.97 0M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Meetup not found</h2>
-            <p class="text-gray-500 dark:text-gray-400 mb-6">The meetup you're looking for doesn't exist or has been
-              removed.</p>
+            <h2 class="text-4xl font-black tracking-tight dark:text-white">Meetup not found.</h2>
             <Link href="/meetups"
-              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-              <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z"
-                  clip-rule="evenodd" />
-              </svg>
-              View all meetups
+              class="inline-flex items-center gap-4 px-10 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black uppercase tracking-widest hover:scale-105 transition-all">
+              Return to Archives
             </Link>
           </div>
         </template>
       </div>
-    </ContentBlock>
+    </main>
 
-    <!-- Mobile Sticky RSVP Bar -->
+    <!-- Mobile RSVP Bar -->
     <Teleport to="body">
-      <Transition enter-active-class="transition-transform duration-300 ease-out" enter-from-class="translate-y-full"
-        enter-to-class="translate-y-0" leave-active-class="transition-transform duration-200 ease-in"
+      <Transition enter-active-class="transition-transform duration-500 cubic-bezier(0.87, 0, 0.13, 1)" enter-from-class="translate-y-full"
+        enter-to-class="translate-y-0" leave-active-class="transition-transform duration-300 ease-in"
         leave-from-class="translate-y-0" leave-to-class="translate-y-full">
         <div v-if="showMobileRsvp && meetup && (isUpcoming || isToday) && canRsvp"
-          class="lg:hidden fixed bottom-0 left-0 right-0 z-50 p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 safe-area-bottom">
-          <div class="flex items-center justify-between gap-4">
+          class="lg:hidden fixed bottom-0 left-0 right-0 z-50 p-6 bg-gray-900 text-white shadow-2xl border-t border-white/10 safe-area-bottom rounded-t-[2.5rem]">
+          <div class="flex items-center justify-between gap-6">
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{ meetup.title }}</p>
-              <p class="text-xs text-gray-500 dark:text-gray-400">{{ formattedDateShort }}</p>
+              <p class="text-xs font-black uppercase tracking-widest opacity-50">{{ eventStatus }}</p>
+              <p class="font-bold truncate">{{ meetup.title }}</p>
             </div>
 
             <template v-if="!isAuthenticated">
-              <Link href="/login"
-                class="flex-shrink-0 px-5 py-2.5 text-sm font-semibold text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 rounded-lg">
+              <Link href="/login" class="px-8 py-3 bg-verse-500 text-white font-black uppercase tracking-widest rounded-xl text-sm">
                 Login
               </Link>
             </template>
             <template v-else>
-              <button v-if="hasRsvp" @click="handleCancelRsvp" :disabled="isRsvpLoading"
-                class="flex-shrink-0 px-5 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg disabled:opacity-50">
+              <button v-if="hasRsvp" @click="handleCancelRsvp" :disabled="isRsvpLoading" class="px-8 py-3 bg-red-500 text-white font-black uppercase tracking-widest rounded-xl text-sm">
                 Cancel
               </button>
-              <button v-else @click="handleRsvp" :disabled="isRsvpLoading"
-                class="flex-shrink-0 px-5 py-2.5 text-sm font-semibold text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 rounded-lg disabled:opacity-50">
-                {{ isFull ? 'Waitlist' : 'RSVP' }}
+              <button v-else @click="handleRsvp" :disabled="isRsvpLoading" class="px-8 py-3 bg-verse-500 text-white font-black uppercase tracking-widest rounded-xl text-sm">
+                RSVP
               </button>
             </template>
           </div>
@@ -685,6 +444,6 @@ const calendarUrl = computed(() => {
 
 <style scoped>
 .safe-area-bottom {
-  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
 }
 </style>
