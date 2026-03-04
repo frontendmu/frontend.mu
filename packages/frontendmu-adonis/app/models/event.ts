@@ -3,12 +3,11 @@ import { randomUUID } from 'node:crypto'
 import {
   BaseModel,
   column,
-  belongsTo,
   hasMany,
   manyToMany,
   beforeCreate,
 } from '@adonisjs/lucid/orm'
-import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
+import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Session from '#models/session'
 import Sponsor from '#models/sponsor'
 import EventPhoto from '#models/event_photo'
@@ -88,9 +87,6 @@ export default class Event extends BaseModel {
   @hasMany(() => Session)
   declare sessions: HasMany<typeof Session>
 
-  @belongsTo(() => Event)
-  declare event: BelongsTo<typeof Event>
-
   @hasMany(() => EventPhoto)
   declare photos: HasMany<typeof EventPhoto>
 
@@ -125,46 +121,4 @@ export default class Event extends BaseModel {
     return this.eventDate > DateTime.now()
   }
 
-  /**
-   * API serialization - map model fields to frontend naming convention
-   */
-  get Date(): string | null {
-    return this.eventDate?.toISO() ?? null
-  }
-
-  get Time(): string | null {
-    return this.startTime
-  }
-
-  get Venue(): string | null {
-    return this.venue
-  }
-
-  get Location(): string | null {
-    return this.location
-  }
-
-  get Attendees(): number {
-    return this.attendeeCount
-  }
-
-  get seats_available(): number | null {
-    return this.seatsAvailable
-  }
-
-  get album(): string | null {
-    return this.albumName
-  }
-
-  get map(): string | null {
-    return this.mapUrl
-  }
-
-  get parking_location(): string | null {
-    return this.parkingLocation
-  }
-
-  get accepting_rsvp(): boolean {
-    return this.acceptingRsvp
-  }
 }
