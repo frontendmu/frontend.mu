@@ -10,7 +10,7 @@ export default class SpeakersController {
 
     try {
       const dbSpeakers = await User.query()
-        .where('role', 'speaker')
+        .whereHas('sessions', () => {})
         .orderBy('featured', 'desc')
         .orderBy('name', 'asc')
 

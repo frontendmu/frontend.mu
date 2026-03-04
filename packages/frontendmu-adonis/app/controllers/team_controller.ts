@@ -60,9 +60,9 @@ export default class TeamController {
       )
       contributors = await loadJson<any[]>(contributorsUrl, contributorsPath)
 
-      // Get speakers from database
+      // Get speakers from database (users with sessions)
       const dbSpeakers = await User.query()
-        .where('role', 'speaker')
+        .whereHas('sessions', () => {})
         .orderBy('featured', 'desc')
         .orderBy('name', 'asc')
 
