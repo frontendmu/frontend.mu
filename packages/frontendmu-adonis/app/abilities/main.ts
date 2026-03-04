@@ -5,6 +5,8 @@ import Event from '#models/event'
 import Rsvp from '#models/rsvp'
 import featureFlags from '#config/feature_flags'
 
+// Note: viewEventRsvps and manageRsvp abilities were removed as unused
+
 /**
  * Ability to RSVP to an event
  * - User must be authenticated and have create-rsvp permission
@@ -47,16 +49,3 @@ export const cancelRsvp = Bouncer.ability(async (user: User, rsvp: Rsvp) => {
   return canCancel && user.id === rsvp.userId
 })
 
-/**
- * Ability to view RSVPs for an event (for users with view-rsvps permission)
- */
-export const viewEventRsvps = Bouncer.ability(async (user: User, _event: Event) => {
-  return await user.can('view-rsvps')
-})
-
-/**
- * Ability to manage RSVPs (update status, etc.) - for users with manage-rsvps permission
- */
-export const manageRsvp = Bouncer.ability(async (user: User, _rsvp: Rsvp) => {
-  return await user.can('manage-rsvps')
-})

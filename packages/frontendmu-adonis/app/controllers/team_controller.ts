@@ -1,9 +1,10 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
-import { readFileSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { toSpeaker } from '#dtos/factories'
+import app from '@adonisjs/core/services/app'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -12,9 +13,7 @@ const GITHUB_RAW_BASE =
   'https://raw.githubusercontent.com/frontendmu/frontend.mu/main/packages/frontendmu-data/data'
 
 async function loadJson<T>(url: string, localPath: string): Promise<T> {
-  const isProduction = process.env.NODE_ENV === 'production' || !process.env.NODE_ENV
-
-  if (isProduction) {
+  if (app.inProduction) {
     try {
       const response = await fetch(url)
       if (response.ok) {
@@ -25,7 +24,7 @@ async function loadJson<T>(url: string, localPath: string): Promise<T> {
     }
   }
 
-  return JSON.parse(readFileSync(localPath, 'utf-8')) as T
+  return JSON.parse(await readFile(localPath, 'utf-8')) as T
 }
 
 export default class TeamController {

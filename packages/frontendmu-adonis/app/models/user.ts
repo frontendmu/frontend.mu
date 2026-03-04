@@ -238,12 +238,4 @@ export default class User extends compose(BaseModel, AuthFinder) {
     return this.sessions && this.sessions.length > 0
   }
 
-  /**
-   * @deprecated Use hasRole() or can() instead
-   * Kept for backward compatibility during migration
-   */
-  hasAppRole(minimumRole: AppRole): boolean {
-    const hierarchy: AppRole[] = ['viewer', 'member', 'organizer', 'superadmin']
-    return hierarchy.indexOf(this.role) >= hierarchy.indexOf(minimumRole)
-  }
 }

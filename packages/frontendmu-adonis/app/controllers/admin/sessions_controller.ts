@@ -12,10 +12,7 @@ export default class AdminSessionsController {
   async index({ params, bouncer, response }: HttpContext) {
     const event = await Event.findOrFail(params.eventId)
 
-    // Check authorization - use session policy create as a proxy for viewing event sessions
-    if (await bouncer.with(SessionPolicy).denies('create')) {
-      return response.forbidden('You are not authorized to manage sessions.')
-    }
+    await bouncer.with(SessionPolicy).authorize('create')
 
     await event.load('sessions', (query) => {
       query.preload('speakers').orderBy('order', 'asc')
@@ -32,15 +29,10 @@ export default class AdminSessionsController {
   async store({ params, request, bouncer, response }: HttpContext) {
     const event = await Event.findOrFail(params.eventId)
 
-    // Check authorization using policy
-    if (await bouncer.with(SessionPolicy).denies('create')) {
-      return response.forbidden('You are not authorized to create sessions.')
-    }
+    await bouncer.with(SessionPolicy).authorize('create')
 
-    // Validate the request
     const data = await request.validateUsing(createSessionValidator)
 
-    // Create the session
     const session = await Session.create({
       eventId: event.id,
       title: data.title,
@@ -48,12 +40,10 @@ export default class AdminSessionsController {
       order: data.order,
     })
 
-    // Attach speakers if provided
     if (data.speakerIds && data.speakerIds.length > 0) {
       await session.related('speakers').attach(data.speakerIds)
     }
 
-    // Load speakers for response
     await session.load('speakers')
 
     return response.status(201).json({
@@ -68,10 +58,7 @@ export default class AdminSessionsController {
   async show({ params, bouncer, response }: HttpContext) {
     const session = await Session.findOrFail(params.id)
 
-    // Check authorization using policy
-    if (await bouncer.with(SessionPolicy).denies('edit', session)) {
-      return response.forbidden('You are not authorized to view this session.')
-    }
+    await bouncer.with(SessionPolicy).authorize('edit', session)
 
     await session.load('speakers')
     await session.load('event')
@@ -87,15 +74,10 @@ export default class AdminSessionsController {
   async update({ params, request, bouncer, response }: HttpContext) {
     const session = await Session.findOrFail(params.id)
 
-    // Check authorization using policy
-    if (await bouncer.with(SessionPolicy).denies('update', session)) {
-      return response.forbidden('You are not authorized to update this session.')
-    }
+    await bouncer.with(SessionPolicy).authorize('update', session)
 
-    // Validate the request
     const data = await request.validateUsing(updateSessionValidator)
 
-    // Update the session
     session.merge({
       title: data.title,
       description: data.description,
@@ -104,12 +86,10 @@ export default class AdminSessionsController {
 
     await session.save()
 
-    // Sync speakers if provided
     if (data.speakerIds !== undefined) {
       await session.related('speakers').sync(data.speakerIds)
     }
 
-    // Load speakers for response
     await session.load('speakers')
 
     return response.json({
@@ -124,10 +104,7 @@ export default class AdminSessionsController {
   async destroy({ params, bouncer, response }: HttpContext) {
     const session = await Session.findOrFail(params.id)
 
-    // Check authorization using policy
-    if (await bouncer.with(SessionPolicy).denies('delete', session)) {
-      return response.forbidden('You are not authorized to delete this session.')
-    }
+    await bouncer.with(SessionPolicy).authorize('delete', session)
 
     await session.delete()
 
@@ -142,18 +119,12 @@ export default class AdminSessionsController {
   async addSpeaker({ params, bouncer, response }: HttpContext) {
     const session = await Session.findOrFail(params.id)
 
-    // Check authorization using policy
-    if (await bouncer.with(SessionPolicy).denies('manage', session)) {
-      return response.forbidden('You are not authorized to manage session speakers.')
-    }
+    await bouncer.with(SessionPolicy).authorize('manage', session)
 
-    // Verify the speaker exists
     const speaker = await User.findOrFail(params.speakerId)
 
-    // Attach the speaker (sync with empty array to avoid duplicates)
     await session.related('speakers').attach([speaker.id])
 
-    // Load speakers for response
     await session.load('speakers')
 
     return response.json({
@@ -168,15 +139,10 @@ export default class AdminSessionsController {
   async removeSpeaker({ params, bouncer, response }: HttpContext) {
     const session = await Session.findOrFail(params.id)
 
-    // Check authorization using policy
-    if (await bouncer.with(SessionPolicy).denies('manage', session)) {
-      return response.forbidden('You are not authorized to manage session speakers.')
-    }
+    await bouncer.with(SessionPolicy).authorize('manage', session)
 
-    // Detach the speaker
     await session.related('speakers').detach([params.speakerId])
 
-    // Load speakers for response
     await session.load('speakers')
 
     return response.json({
@@ -187,15 +153,10 @@ export default class AdminSessionsController {
 
   /**
    * Get available speakers for assignment
-   * Returns all users that can be speakers (excludes viewers by default)
    */
   async availableSpeakers({ bouncer, response }: HttpContext) {
-    // Check authorization - must be able to create sessions
-    if (await bouncer.with(SessionPolicy).denies('create')) {
-      return response.forbidden('You are not authorized to view speakers.')
-    }
+    await bouncer.with(SessionPolicy).authorize('create')
 
-    // Get all users — any user can potentially be a speaker
     const speakers = await User.query().orderBy('name', 'asc')
 
     return response.json({

@@ -9,11 +9,8 @@ export default class DashboardController {
   /**
    * Show the admin dashboard
    */
-  async index({ inertia, bouncer, response }: HttpContext) {
-    // Only users with access-admin permission can access the dashboard (checked via viewAny policy)
-    if (await bouncer.with(EventPolicy).denies('viewAny')) {
-      return response.forbidden('You are not authorized to access the admin dashboard.')
-    }
+  async index({ inertia, bouncer }: HttpContext) {
+    await bouncer.with(EventPolicy).authorize('viewAny')
 
     // Get counts for dashboard stats
     const [eventCounts, userCount, speakerCount, sponsorCount] = await Promise.all([
