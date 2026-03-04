@@ -55,10 +55,10 @@ const regularSpeakers = computed(() => props.speakers.filter((s) => !s.featured)
             <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-32 gap-x-12 lg:gap-x-24">
-            <div 
-              v-for="speaker in featuredSpeakers" 
-              :key="speaker.id" 
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-16">
+            <div
+              v-for="speaker in featuredSpeakers"
+              :key="speaker.id"
               class="group relative"
             >
               <SpeakerAvatar
@@ -66,10 +66,10 @@ const regularSpeakers = computed(() => props.speakers.filter((s) => !s.featured)
                 :name="speaker.name"
                 :github-username="speaker.github_account"
                 :avatar-url="speaker.avatar_url"
-                class="relative aspect-[4/5] shadow-xl grayscale group-hover:grayscale-0 transition-all duration-700 border border-gray-100 dark:border-verse-800 group-hover:border-verse-500 rounded-[2.5rem]"
+                class="relative aspect-square shadow-xl grayscale group-hover:grayscale-0 transition-all duration-700 border border-gray-100 dark:border-verse-800 group-hover:border-verse-500 rounded-[2rem]"
               />
               
-              <Link :href="`/speaker/${speaker.id}`" class="absolute inset-0 z-20 rounded-[2.5rem]" />
+              <Link :href="`/speaker/${speaker.id}`" class="absolute inset-0 z-20 rounded-[2rem]" />
 
                 <!-- Social Icons -->
                 <div class="absolute bottom-6 left-6 right-6 z-30 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
@@ -81,11 +81,11 @@ const regularSpeakers = computed(() => props.speakers.filter((s) => !s.featured)
                   </a>
                 </div>
 
-              <div class="mt-8 space-y-2">
-                <h3 class="text-4xl font-black tracking-tight text-gray-900 dark:text-white group-hover:text-verse-500 transition-colors duration-300">
+              <div class="mt-4 space-y-1">
+                <h3 class="text-lg font-black tracking-tight text-gray-900 dark:text-white group-hover:text-verse-500 transition-colors duration-300">
                   {{ speaker.name }}
                 </h3>
-                <p v-if="speaker.github_account" class="text-sm font-black uppercase tracking-[0.25em] text-gray-400 dark:text-gray-500">
+                <p v-if="speaker.github_account" class="text-xs font-bold text-gray-400 dark:text-gray-500">
                   @{{ speaker.github_account }}
                 </p>
               </div>
@@ -100,7 +100,7 @@ const regularSpeakers = computed(() => props.speakers.filter((s) => !s.featured)
             <div class="h-px flex-1 bg-gradient-to-r from-gray-200 dark:from-verse-800 to-transparent"></div>
           </div>
 
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-20">
             <Link
               v-for="speaker in regularSpeakers"
               :key="speaker.id"
