@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3'
-import DefaultLayout from '~/layouts/DefaultLayout.vue'
 </script>
 
 <template>
   <Head title="Register" />
-  <DefaultLayout>
-    <main class="relative min-h-[calc(100vh-5rem)] flex items-center justify-center p-4 md:p-8">
+  <main class="relative min-h-[calc(100vh-5rem)] flex items-center justify-center p-4 md:p-8">
       <div class="relative z-10 w-full max-w-[320px]">
         <div class="bg-white dark:bg-verse-950/40 backdrop-blur-xl border border-gray-100 dark:border-verse-800 rounded-2xl squircle p-6 shadow-sm">
           <div class="space-y-3 mb-8 text-center">
@@ -93,5 +91,4 @@ import DefaultLayout from '~/layouts/DefaultLayout.vue'
         </div>
       </div>
     </main>
-  </DefaultLayout>
 </template>

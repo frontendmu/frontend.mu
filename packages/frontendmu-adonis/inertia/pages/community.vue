@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3'
-import DefaultLayout from '~/layouts/DefaultLayout.vue'
 import SocialCard from '~/components/home/SocialCard.vue'
 import IconDiscord from '~/components/icons/IconDiscord.vue'
 import IconGithub from '~/components/icons/IconGithub.vue'
@@ -20,8 +19,7 @@ import {
 
 <template>
   <Head title="Community" />
-  <DefaultLayout>
-    <main class="relative min-h-screen pt-40 pb-32">
+  <main class="relative min-h-screen pt-40 pb-32">
       <div class="contain relative z-10 max-w-5xl">
         <!-- Page Header -->
         <div class="mb-20 space-y-4">
@@ -78,5 +76,4 @@ import {
         </div>
       </div>
     </main>
-  </DefaultLayout>
 </template>

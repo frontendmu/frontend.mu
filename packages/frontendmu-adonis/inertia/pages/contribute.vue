@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3'
-import DefaultLayout from '~/layouts/DefaultLayout.vue'
 </script>
 
 <template>
   <Head title="Contribute" />
-  <DefaultLayout>
-    <main class="relative min-h-screen pt-40 pb-24">
+  <main class="relative min-h-screen pt-40 pb-24">
       <div class="contain relative z-10">
         <!-- Page Header -->
         <div class="max-w-4xl mb-24 space-y-6">
@@ -123,5 +121,4 @@ import DefaultLayout from '~/layouts/DefaultLayout.vue'
         </div>
       </div>
     </main>
-  </DefaultLayout>
 </template>

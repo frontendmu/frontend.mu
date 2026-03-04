@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Head, useForm, Link } from '@inertiajs/vue3'
-import DefaultLayout from '~/layouts/DefaultLayout.vue'
 
 interface Props {
   user: {
@@ -62,8 +61,7 @@ function getRoleBadgeClass(roleName: string) {
 
 <template>
   <Head title="Profile" />
-  <DefaultLayout>
-    <main class="relative min-h-screen pt-40 pb-24">
+  <main class="relative min-h-screen pt-40 pb-24">
       <div class="contain relative z-10">
         <template v-if="user">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
@@ -196,5 +194,4 @@ function getRoleBadgeClass(roleName: string) {
         </template>
       </div>
     </main>
-  </DefaultLayout>
 </template>
