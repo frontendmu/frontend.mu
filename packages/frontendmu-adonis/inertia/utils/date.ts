@@ -52,3 +52,15 @@ export function formatDate(dateString: string, options?: Intl.DateTimeFormatOpti
 export function getYear(dateString: string): number {
   return new Date(dateString).getFullYear()
 }
+
+/**
+ * Format an ISO date string to a medium date (e.g., "Mar 5, 2026")
+ */
+export function formatEventDate(isoString: string | null): string {
+  if (!isoString) return ''
+  return new Date(isoString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  })
+}

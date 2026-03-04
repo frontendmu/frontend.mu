@@ -27,5 +27,3 @@ export function useApi() {
 
   return { apiFetch }
 }
-
-export default useApi

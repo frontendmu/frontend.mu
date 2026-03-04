@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { Head, Link, router, usePage } from '@inertiajs/vue3'
-import { DateTime } from 'luxon'
+import { Head, Link, router } from '@inertiajs/vue3'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
+import { useAuth } from '~/composables/useAuth'
+import { useDeleteConfirmation } from '~/composables/useDeleteConfirmation'
+import { formatEventDate } from '~/utils/date'
 import type { EventSummaryDto } from '~/types'
 
 interface Props {
@@ -12,31 +13,8 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const page = usePage()
-const user = computed(() => page.props.auth.user)
-
-// Check if user is superadmin (only superadmins can delete)
-const canDelete = computed(() => {
-  if (!user.value) return false
-  return (user.value as any).role === 'superadmin'
-})
-
-// Delete confirmation state
-const showDeleteModal = ref(false)
-const eventToDelete = ref<EventSummaryDto | null>(null)
-const isDeleting = ref(false)
-
-const parseEventDate = (date: unknown): DateTime | null => {
-  if (!date) return null
-  if (typeof date === 'string') return DateTime.fromISO(date)
-  if (typeof date === 'object' && 'toJSDate' in date) return DateTime.fromJSDate(date.toJSDate())
-  return DateTime.fromISO(date as unknown as string)
-}
-
-const formatDate = (date: unknown): string => {
-  const dt = parseEventDate(date)
-  return dt?.toLocaleString(DateTime.DATE_MED) ?? ''
-}
+const { isSuperadmin: canDelete } = useAuth()
+const { showModal: showDeleteModal, itemToDelete: eventToDelete, isDeleting, confirmDelete: confirmDeleteItem, cancelDelete, executeDelete } = useDeleteConfirmation<EventSummaryDto>()
 
 // Status badge styles
 const getStatusBadge = (status: string) => {
@@ -57,28 +35,13 @@ function filterByStatus(status: string) {
   router.get('/admin/events', { status }, { preserveState: true })
 }
 
-// Delete handlers
-function confirmDelete(event: Event) {
-  eventToDelete.value = event
-  showDeleteModal.value = true
+function confirmDelete(event: EventSummaryDto) {
+  confirmDeleteItem(event)
 }
 
-function cancelDelete() {
-  showDeleteModal.value = false
-  eventToDelete.value = null
-}
-
-function executeDelete() {
+function doDelete() {
   if (!eventToDelete.value) return
-  
-  isDeleting.value = true
-  router.delete(`/admin/events/${eventToDelete.value.id}`, {
-    onFinish: () => {
-      isDeleting.value = false
-      showDeleteModal.value = false
-      eventToDelete.value = null
-    },
-  })
+  executeDelete(`/admin/events/${eventToDelete.value.id}`)
 }
 </script>
 
@@ -193,7 +156,7 @@ function executeDelete() {
                     </div>
                   </td>
                   <td class="px-6 py-4 text-sm text-verse-600 dark:text-verse-400">
-                    {{ formatDate(event.date) }}
+                    {{ formatEventDate(event.date) }}
                   </td>
                   <td class="px-6 py-4">
                     <span
@@ -304,7 +267,7 @@ function executeDelete() {
               Cancel
             </button>
             <button
-              @click="executeDelete"
+              @click="doDelete"
               :disabled="isDeleting"
               class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 squircle rounded-lg transition-colors disabled:opacity-50"
             >

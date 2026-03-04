@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { Head, Link, useForm, usePage, router } from '@inertiajs/vue3'
+import { ref, computed, watch, onUnmounted } from 'vue'
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
 import { DateTime } from 'luxon'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
-import type { EventDto, SessionDto, SpeakerSummaryDto } from '~/types'
+import { useApi } from '~/composables/useApi'
+import type { EventDto, SessionDto, SpeakerSummaryDto, SharedProps } from '~/types'
 
 interface SessionWithSpeakers extends SessionDto {
   speakers: SpeakerSummaryDto[]
@@ -23,10 +24,11 @@ interface Speaker {
 }
 
 const props = defineProps<Props>()
-const page = usePage()
+const page = usePage<SharedProps>()
+const { apiFetch } = useApi()
 
 // Flash messages
-const successMessage = computed(() => (page.props as any).flash?.success)
+const successMessage = computed(() => page.props.flash?.success)
 
 // Sessions state
 const sessions = ref<SessionWithSpeakers[]>(props.event.sessions || [])
@@ -40,6 +42,9 @@ const isDialogOpen = ref(false)
 // Lock body scroll when dialog is open
 watch(isDialogOpen, (open) => {
   document.body.style.overflow = open ? 'hidden' : ''
+})
+onUnmounted(() => {
+  document.body.style.overflow = ''
 })
 
 // Session form state
@@ -77,11 +82,6 @@ const form = useForm({
   status: props.event.status,
 })
 
-const eventDate = computed(() => {
-  if (!props.event.date) return ''
-  return DateTime.fromISO(props.event.date).toLocaleString(DateTime.DATE_FULL)
-})
-
 function handleSubmit() {
   form.put(`/admin/events/${props.event.id}`, {
     preserveScroll: true,
@@ -94,9 +94,8 @@ async function loadAvailableSpeakers() {
 
   loadingSpeakers.value = true
   try {
-    const response = await fetch('/admin/speakers/available')
-    if (response.ok) {
-      const data = await response.json()
+    const { ok, data } = await apiFetch<{ speakers: Speaker[] }>('/admin/speakers/available')
+    if (ok) {
       availableSpeakers.value = data.speakers
     }
   } catch (error) {
@@ -194,27 +193,19 @@ function onDragEnd() {
 }
 
 async function saveSessionOrder() {
-  // Update order for each session
   const updates = sessions.value.map((session, index) => ({
     id: session.id,
     order: index + 1,
   }))
 
-  // Save each session's new order
   for (const update of updates) {
     try {
-      await fetch(`/admin/sessions/${update.id}`, {
+      await apiFetch(`/admin/sessions/${update.id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-XSRF-TOKEN': getCsrfToken(),
-        },
         body: JSON.stringify({
           title: sessions.value.find((s) => s.id === update.id)?.title,
           order: update.order,
         }),
-        credentials: 'same-origin',
       })
     } catch (error) {
       console.error('Failed to update session order:', error)
@@ -233,43 +224,28 @@ async function saveSession() {
 
     const method = editingSession.value ? 'PUT' : 'POST'
 
-    // For new sessions, set order to be at the end
     const payload = {
       ...sessionForm.value,
       order: editingSession.value?.order ?? sessions.value.length + 1,
     }
 
-    const response = await fetch(url, {
+    const { ok, data } = await apiFetch<{ session: SessionWithSpeakers; errors?: Record<string, string> }>(url, {
       method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-XSRF-TOKEN': getCsrfToken(),
-      },
       body: JSON.stringify(payload),
-      credentials: 'same-origin',
     })
 
-    if (response.ok) {
-      const data = await response.json()
-
+    if (ok) {
       if (editingSession.value) {
-        // Update existing session in list
         const index = sessions.value.findIndex((s) => s.id === editingSession.value!.id)
         if (index !== -1) {
           sessions.value[index] = data.session
         }
       } else {
-        // Add new session to list
         sessions.value.push(data.session)
       }
-
       closeSessionForm()
-    } else {
-      const errorData = await response.json()
-      if (errorData.errors) {
-        sessionFormErrors.value = errorData.errors
-      }
+    } else if (data.errors) {
+      sessionFormErrors.value = data.errors
     }
   } catch (error) {
     console.error('Failed to save session:', error)
@@ -284,32 +260,15 @@ async function deleteSession(session: SessionWithSpeakers) {
   }
 
   try {
-    const response = await fetch(`/admin/sessions/${session.id}`, {
+    const { ok } = await apiFetch(`/admin/sessions/${session.id}`, {
       method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'X-XSRF-TOKEN': getCsrfToken(),
-      },
-      credentials: 'same-origin',
     })
-
-    if (response.ok) {
+    if (ok) {
       sessions.value = sessions.value.filter((s) => s.id !== session.id)
     }
   } catch (error) {
     console.error('Failed to delete session:', error)
   }
-}
-
-function getCsrfToken(): string {
-  const cookies = document.cookie.split(';')
-  for (const cookie of cookies) {
-    const [name, value] = cookie.trim().split('=')
-    if (name === 'XSRF-TOKEN') {
-      return decodeURIComponent(value)
-    }
-  }
-  return ''
 }
 
 function toggleSpeaker(speakerId: string) {
@@ -325,7 +284,7 @@ function isSpeakerSelected(speakerId: string): boolean {
   return sessionForm.value.speakerIds.includes(speakerId)
 }
 
-function getSpeakerNames(speakers: User[]): string {
+function getSpeakerNames(speakers: SpeakerSummaryDto[]): string {
   if (!speakers || speakers.length === 0) return 'No speakers assigned'
   return speakers.map((s) => s.name).join(', ')
 }

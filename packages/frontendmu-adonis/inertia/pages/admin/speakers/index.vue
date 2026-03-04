@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { Head, Link, router, usePage } from '@inertiajs/vue3'
+import { Head, Link } from '@inertiajs/vue3'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
+import { useAuth } from '~/composables/useAuth'
+import { useDeleteConfirmation } from '~/composables/useDeleteConfirmation'
 
 interface Speaker {
   id: string
@@ -20,42 +21,12 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const page = usePage()
-const user = computed(() => page.props.auth.user)
+const { isSuperadmin: canDelete } = useAuth()
+const { showModal: showDeleteModal, itemToDelete: speakerToDelete, isDeleting, confirmDelete, cancelDelete, executeDelete: execDelete } = useDeleteConfirmation<Speaker>()
 
-// Check if user is superadmin (only superadmins can delete)
-const canDelete = computed(() => {
-  if (!user.value) return false
-  return (user.value as any).role === 'superadmin'
-})
-
-// Delete confirmation state
-const showDeleteModal = ref(false)
-const speakerToDelete = ref<Speaker | null>(null)
-const isDeleting = ref(false)
-
-// Delete handlers
-function confirmDelete(speaker: Speaker) {
-  speakerToDelete.value = speaker
-  showDeleteModal.value = true
-}
-
-function cancelDelete() {
-  showDeleteModal.value = false
-  speakerToDelete.value = null
-}
-
-function executeDelete() {
+function doDelete() {
   if (!speakerToDelete.value) return
-  
-  isDeleting.value = true
-  router.delete(`/admin/speakers/${speakerToDelete.value.id}`, {
-    onFinish: () => {
-      isDeleting.value = false
-      showDeleteModal.value = false
-      speakerToDelete.value = null
-    },
-  })
+  execDelete(`/admin/speakers/${speakerToDelete.value.id}`)
 }
 </script>
 
@@ -201,7 +172,7 @@ function executeDelete() {
               Cancel
             </button>
             <button
-              @click="executeDelete"
+              @click="doDelete"
               :disabled="isDeleting"
               class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 squircle rounded-lg transition-colors disabled:opacity-50"
             >

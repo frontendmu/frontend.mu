@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Head, useForm, Link } from '@inertiajs/vue3'
+import { getRoleBadgeClass } from '~/utils/roles'
 
 interface Props {
   user: {
@@ -45,18 +46,6 @@ function getUserRoles() {
   return []
 }
 
-function getRoleBadgeClass(roleName: string) {
-  switch (roleName) {
-    case 'superadmin':
-      return 'bg-red-500/10 text-red-600 border-red-500/20'
-    case 'organizer':
-      return 'bg-purple-500/10 text-purple-600 border-purple-500/20'
-    case 'member':
-      return 'bg-verse-500/10 text-verse-600 border-verse-500/20'
-    default:
-      return 'bg-gray-500/10 text-gray-600 border-gray-500/20'
-  }
-}
 </script>
 
 <template>
