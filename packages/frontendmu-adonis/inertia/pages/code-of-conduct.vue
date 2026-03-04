@@ -1,97 +1,108 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3'
 import DefaultLayout from '~/layouts/DefaultLayout.vue'
-import ContentBlock from '~/components/shared/ContentBlock.vue'
-import BaseHeading from '~/components/base/BaseHeading.vue'
 </script>
 
 <template>
   <Head title="Code of Conduct" />
   <DefaultLayout>
-    <ContentBlock>
-      <div class="py-8 pb-20 prose dark:prose-invert max-w-none">
-        <BaseHeading :level="1" class="mb-6">Code of Conduct</BaseHeading>
+    <main class="relative min-h-screen pt-40 pb-24">
+      <div class="contain relative z-10">
+        <!-- Page Header -->
+        <div class="max-w-4xl mb-24 space-y-6">
+          <div class="inline-flex items-center gap-3">
+            <span class="h-1 w-12 bg-verse-500 rounded-full"></span>
+            <span class="text-sm font-black uppercase tracking-[0.4em] text-verse-500">Standards</span>
+          </div>
+          
+          <h1 class="text-6xl md:text-8xl font-black tracking-tighter dark:text-white leading-[0.9]">
+            Code of <br />
+            <span class="text-verse-600 dark:text-verse-400">Conduct.</span>
+          </h1>
+          
+          <p class="text-xl text-gray-500 dark:text-gray-400 font-medium max-w-2xl leading-relaxed">
+            Our community is built on mutual respect and shared passion. We maintain a professional and welcoming environment for everyone.
+          </p>
+        </div>
 
-        <BaseHeading :level="2" class="mb-4 mt-8">Our Pledge</BaseHeading>
-        <p class="mb-6">
-          We as members, contributors, and leaders pledge to make participation in the Frontend.mu community a harassment-free experience for everyone.
-        </p>
+        <!-- Content Sections -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
+          <!-- Main Text Column -->
+          <div class="lg:col-span-8 space-y-24">
+            <!-- Our Pledge -->
+            <section class="space-y-8">
+              <div class="flex items-center gap-3">
+                <span class="h-px w-8 bg-verse-500"></span>
+                <h2 class="text-sm font-black uppercase tracking-[0.3em] text-verse-500">Our Pledge</h2>
+              </div>
+              <p class="text-2xl font-bold text-gray-900 dark:text-white leading-relaxed">
+                We as members, contributors, and leaders pledge to make participation in the coders.mu community a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
+              </p>
+            </section>
 
-        <BaseHeading :level="2" class="mb-4 mt-8">Our Standards</BaseHeading>
-        <p class="mb-4">
-          Examples of behavior that contributes to a positive environment for our community include:
-        </p>
-        <ul class="list-disc pl-6 mb-6">
-          <li>Demonstrating empathy and kindness toward other people</li>
-          <li>Being respectful of differing opinions, viewpoints, and experiences</li>
-          <li>Giving and gracefully accepting constructive feedback</li>
-          <li>Accepting responsibility and apologizing to those affected by our mistakes, and learning from the experience</li>
-          <li>Focusing on what is best not just for us as individuals, but for the overall community</li>
-        </ul>
-        <p class="mb-4">
-          Examples of unacceptable behavior include:
-        </p>
-        <ul class="list-disc pl-6 mb-6">
-          <li>The use of sexualized language or imagery, and sexual attention or advances of any kind</li>
-          <li>Trolling, insulting or derogatory comments, and personal or political attacks</li>
-          <li>Public or private harassment</li>
-          <li>Publishing others' private information, such as a physical or email address, without their explicit permission</li>
-          <li>Other conduct which could reasonably be considered inappropriate in a professional setting</li>
-        </ul>
+            <!-- Our Standards -->
+            <section class="space-y-8">
+              <div class="flex items-center gap-3">
+                <span class="h-px w-8 bg-verse-500"></span>
+                <h2 class="text-sm font-black uppercase tracking-[0.3em] text-verse-500">Our Standards</h2>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="p-8 bg-green-500/5 border border-green-500/10 rounded-[2.5rem] space-y-4">
+                  <h3 class="text-xl font-black text-green-600 uppercase tracking-widest">Positive Behavior</h3>
+                  <ul class="space-y-4 text-gray-600 dark:text-gray-400 font-medium">
+                    <li class="flex gap-3"><span>•</span> Demonstrating empathy and kindness</li>
+                    <li class="flex gap-3"><span>•</span> Being respectful of differing viewpoints</li>
+                    <li class="flex gap-3"><span>•</span> Gracefully accepting constructive feedback</li>
+                    <li class="flex gap-3"><span>•</span> Focusing on what is best for the community</li>
+                  </ul>
+                </div>
+                <div class="p-8 bg-red-500/5 border border-red-500/10 rounded-[2.5rem] space-y-4">
+                  <h3 class="text-xl font-black text-red-600 uppercase tracking-widest">Unacceptable</h3>
+                  <ul class="space-y-4 text-gray-600 dark:text-gray-400 font-medium">
+                    <li class="flex gap-3"><span>•</span> Sexualized language or imagery</li>
+                    <li class="flex gap-3"><span>•</span> Trolling, insulting or derogatory comments</li>
+                    <li class="flex gap-3"><span>•</span> Public or private harassment</li>
+                    <li class="flex gap-3"><span>•</span> Publishing others' private information</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
 
-        <BaseHeading :level="2" class="mb-4 mt-8">Enforcement Responsibilities</BaseHeading>
-        <p class="mb-6">
-          Community leaders are responsible for clarifying and enforcing our standards of acceptable behavior and will take appropriate and fair corrective action in response to any behavior that they deem inappropriate, threatening, offensive, or harmful.
-        </p>
-        <p class="mb-6">
-          Community leaders have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned with this Code of Conduct, and will communicate reasons for moderation decisions when appropriate.
-        </p>
+            <!-- Enforcement -->
+            <section class="space-y-8">
+              <div class="flex items-center gap-3">
+                <span class="h-px w-8 bg-verse-500"></span>
+                <h2 class="text-sm font-black uppercase tracking-[0.3em] text-verse-500">Enforcement</h2>
+              </div>
+              <div class="prose prose-xl prose-gray dark:prose-invert max-w-none">
+                <p>Community leaders are responsible for clarifying and enforcing our standards of acceptable behavior and will take appropriate and fair corrective action in response to any behavior that they deem inappropriate, threatening, offensive, or harmful.</p>
+                <p>Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at <a href="mailto:hello@frontend.mu" class="text-verse-500 font-black no-underline hover:underline">hello@frontend.mu</a>.</p>
+              </div>
+            </section>
+          </div>
 
-        <BaseHeading :level="2" class="mb-4 mt-8">Scope</BaseHeading>
-        <p class="mb-6">
-          This Code of Conduct applies within all community spaces, and it also applies when an individual is officially representing the community in public spaces. Examples of representing our community include using an official e-mail address, posting via an official social media account, or acting as an appointed representative at an online or offline event.
-        </p>
+          <!-- Sidebar / Quick Info -->
+          <div class="lg:col-span-4 space-y-8 sticky top-32">
+            <div class="p-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-[3rem] shadow-2xl space-y-6">
+              <h3 class="text-2xl font-black tracking-tight">Need to report?</h3>
+              <p class="font-medium opacity-70">
+                All complaints will be reviewed and investigated promptly and fairly. All community leaders are obligated to respect the privacy and security of the reporter.
+              </p>
+              <a href="mailto:hello@frontend.mu" class="block w-full py-4 bg-verse-500 text-white text-center font-black uppercase tracking-widest rounded-2xl hover:scale-105 active:scale-95 transition-all">
+                Email Leadership
+              </a>
+            </div>
 
-        <BaseHeading :level="2" class="mb-4 mt-8">Enforcement</BaseHeading>
-        <p class="mb-6">
-          Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at <a href="mailto:info@frontend.mu" class="text-primary-500 hover:underline">info@frontend.mu</a>. All complaints will be reviewed and investigated promptly and fairly.
-        </p>
-        <p class="mb-6">
-          All community leaders are obligated to respect the privacy and security of the reporter of any incident.
-        </p>
-
-        <BaseHeading :level="2" class="mb-4 mt-8">Enforcement Guidelines</BaseHeading>
-        <p class="mb-6">
-          Community leaders will follow these Community Impact Guidelines in determining the consequences for any action they deem in violation of this Code of Conduct:
-        </p>
-
-        <BaseHeading :level="3" class="mb-4 mt-6">1. Correction</BaseHeading>
-        <p class="mb-2"><strong>Community Impact</strong>: Use of inappropriate language or other behavior deemed unprofessional or unwelcome in the community.</p>
-        <p class="mb-6"><strong>Consequence</strong>: A private, written warning from community leaders, providing clarity around the nature of the violation and an explanation of why the behavior was inappropriate. A public apology may be requested.</p>
-
-        <BaseHeading :level="3" class="mb-4 mt-6">2. Warning</BaseHeading>
-        <p class="mb-2"><strong>Community Impact</strong>: A violation through a single incident or series of actions.</p>
-        <p class="mb-6"><strong>Consequence</strong>: A warning with consequences for continued behavior. No interaction with the people involved, including unsolicited interaction with those enforcing the Code of Conduct, for a specified period of time. This includes avoiding interactions in community spaces as well as external channels like social media. Violating these terms may lead to a temporary or permanent ban.</p>
-
-        <BaseHeading :level="3" class="mb-4 mt-6">3. Temporary Ban</BaseHeading>
-        <p class="mb-2"><strong>Community Impact</strong>: A serious violation of community standards, including sustained inappropriate behavior.</p>
-        <p class="mb-6"><strong>Consequence</strong>: A temporary ban from any sort of interaction or public communication with the community for a specified period of time. No public or private interaction with the people involved, including unsolicited interaction with those enforcing the Code of Conduct, is allowed during this period. Violating these terms may lead to a permanent ban.</p>
-
-        <BaseHeading :level="3" class="mb-4 mt-6">4. Permanent Ban</BaseHeading>
-        <p class="mb-2"><strong>Community Impact</strong>: Demonstrating a pattern of violation of community standards, including sustained inappropriate behavior, harassment of an individual, or aggression toward or disparagement of classes of individuals.</p>
-        <p class="mb-6"><strong>Consequence</strong>: A permanent ban from any sort of public interaction within the community.</p>
-
-        <BaseHeading :level="2" class="mb-4 mt-8">Attribution</BaseHeading>
-        <p class="mb-4">
-          This Code of Conduct is adapted from the <a href="https://www.contributor-covenant.org" target="_blank" rel="noopener noreferrer" class="text-primary-500 hover:underline">Contributor Covenant</a>, version 2.1, available at <a href="https://www.contributor-covenant.org/version/2/1/code_of_conduct.html" target="_blank" rel="noopener noreferrer" class="text-primary-500 hover:underline">https://www.contributor-covenant.org/version/2/1/code_of_conduct.html</a>.
-        </p>
-        <p class="mb-4">
-          Community Impact Guidelines were inspired by <a href="https://github.com/mozilla/diversity" target="_blank" rel="noopener noreferrer" class="text-primary-500 hover:underline">Mozilla's code of conduct enforcement ladder</a>.
-        </p>
-        <p class="mb-6">
-          For answers to common questions about this code of conduct, see the FAQ at <a href="https://www.contributor-covenant.org/faq" target="_blank" rel="noopener noreferrer" class="text-primary-500 hover:underline">https://www.contributor-covenant.org/faq</a>. Translations are available at <a href="https://www.contributor-covenant.org/translations" target="_blank" rel="noopener noreferrer" class="text-primary-500 hover:underline">https://www.contributor-covenant.org/translations</a>.
-        </p>
+            <div class="p-8 border border-verse-100 dark:border-verse-800 rounded-[3rem] space-y-4 bg-white/50 dark:bg-verse-950/20 backdrop-blur-xl">
+              <h4 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Attribution</h4>
+              <p class="text-xs font-bold text-gray-500 leading-relaxed">
+                This Code of Conduct is adapted from the Contributor Covenant, version 2.1. Community Impact Guidelines were inspired by Mozilla's enforcement ladder.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-    </ContentBlock>
+    </main>
   </DefaultLayout>
 </template>

@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3'
 import DefaultLayout from '~/layouts/DefaultLayout.vue'
-import ContentBlock from '~/components/shared/ContentBlock.vue'
-import BaseHeading from '~/components/base/BaseHeading.vue'
+import SocialCard from '~/components/home/SocialCard.vue'
+import IconDiscord from '~/components/icons/IconDiscord.vue'
+import IconGithub from '~/components/icons/IconGithub.vue'
+import IconWhatsapp from '~/components/icons/IconWhatsapp.vue'
+import IconTwitter from '~/components/icons/IconTwitter.vue'
+import IconInstagram from '~/components/icons/IconInstagram.vue'
+import IconLinkedin from '~/components/icons/IconLinkedin.vue'
 import {
   DISCORD_URL,
   GITHUB_URL,
@@ -16,118 +21,62 @@ import {
 <template>
   <Head title="Community" />
   <DefaultLayout>
-    <ContentBlock>
-      <div class="py-8 pb-20">
-        <BaseHeading :level="1" class="mb-6">Join Our Community</BaseHeading>
-        <p class="text-verse-700 dark:text-verse-300 mb-8">
-          Connect with fellow developers in Mauritius through our various
-          platforms.
-        </p>
+    <main class="relative min-h-screen pt-40 pb-32">
+      <div class="contain relative z-10 max-w-5xl">
+        <!-- Page Header -->
+        <div class="mb-20 space-y-4">
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-black uppercase tracking-[0.3em] text-verse-500 dark:text-verse-300 bg-verse-500/10 px-2 py-0.5 rounded">Connectivity</span>
+          </div>
+          
+          <h1 class="text-5xl md:text-7xl font-black tracking-tighter dark:text-white leading-none">
+            Get Connected<span class="text-verse-600 dark:text-verse-400">.</span>
+          </h1>
+          
+          <p class="text-base text-gray-500 dark:text-gray-400 font-medium max-w-xl leading-relaxed">
+            Join our discussion channels, follow our projects, and stay updated.
+          </p>
+        </div>
 
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Discord -->
-          <a
-            :href="DISCORD_URL"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="p-6 bg-white dark:bg-verse-800/50 rounded-xl shadow-sm border border-verse-100 dark:border-verse-700 hover:border-verse-500 transition-colors"
-          >
-            <h3
-              class="text-xl font-semibold text-verse-900 dark:text-verse-100 mb-2"
-            >
-              Discord
-            </h3>
-            <p class="text-verse-600 dark:text-verse-300">
-              Join our Discord server for real-time discussions
-            </p>
-          </a>
+        <!-- Social Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <SocialCard :href="DISCORD_URL" class="bg-[#5865f2] h-[280px] shadow-lg shadow-[#5865f2]/10">
+            <template #tagline>Discord</template>
+            <template #description>Real-time talk, technical support, and community hangouts.</template>
+            <template #icon><IconDiscord class="w-10 h-10" /></template>
+          </SocialCard>
 
-          <!-- GitHub -->
-          <a
-            :href="GITHUB_URL"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="p-6 bg-white dark:bg-verse-800/50 rounded-xl shadow-sm border border-verse-100 dark:border-verse-700 hover:border-verse-500 transition-colors"
-          >
-            <h3
-              class="text-xl font-semibold text-verse-900 dark:text-verse-100 mb-2"
-            >
-              GitHub
-            </h3>
-            <p class="text-verse-600 dark:text-verse-300">
-              Contribute to our open source projects
-            </p>
-          </a>
+          <SocialCard :href="GITHUB_URL" class="bg-[#181717] h-[280px] shadow-lg shadow-black/10 border border-white/5">
+            <template #tagline>GitHub</template>
+            <template #description>Open source core. Contribute to the site, tools, and experiments.</template>
+            <template #icon><IconGithub class="w-10 h-10" /></template>
+          </SocialCard>
 
-          <!-- WhatsApp -->
-          <a
-            :href="WHATSAPP_URL"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="p-6 bg-white dark:bg-verse-800/50 rounded-xl shadow-sm border border-verse-100 dark:border-verse-700 hover:border-verse-500 transition-colors"
-          >
-            <h3
-              class="text-xl font-semibold text-verse-900 dark:text-verse-100 mb-2"
-            >
-              WhatsApp
-            </h3>
-            <p class="text-verse-600 dark:text-verse-300">
-              Join our WhatsApp community group
-            </p>
-          </a>
+          <SocialCard :href="WHATSAPP_URL" class="bg-[#25D366] h-[280px] shadow-lg shadow-[#25D366]/10">
+            <template #tagline>Whatsapp</template>
+            <template #description>Instant updates and casual networking on the go.</template>
+            <template #icon><IconWhatsapp class="w-10 h-10" /></template>
+          </SocialCard>
 
-          <!-- Twitter -->
-          <a
-            :href="TWITTER_URL"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="p-6 bg-white dark:bg-verse-800/50 rounded-xl shadow-sm border border-verse-100 dark:border-verse-700 hover:border-verse-500 transition-colors"
-          >
-            <h3
-              class="text-xl font-semibold text-verse-900 dark:text-verse-100 mb-2"
-            >
-              Twitter
-            </h3>
-            <p class="text-verse-600 dark:text-verse-300">
-              Follow us for updates and announcements
-            </p>
-          </a>
+          <SocialCard :href="TWITTER_URL" class="bg-[#1DA1F2] h-[280px] shadow-lg shadow-[#1DA1F2]/10">
+            <template #tagline>Twitter</template>
+            <template #description>Quick announcements, tech news, and community highlights.</template>
+            <template #icon><IconTwitter class="w-10 h-10" /></template>
+          </SocialCard>
 
-          <!-- Instagram -->
-          <a
-            :href="INSTAGRAM_URL"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="p-6 bg-white dark:bg-verse-800/50 rounded-xl shadow-sm border border-verse-100 dark:border-verse-700 hover:border-verse-500 transition-colors"
-          >
-            <h3
-              class="text-xl font-semibold text-verse-900 dark:text-verse-100 mb-2"
-            >
-              Instagram
-            </h3>
-            <p class="text-verse-600 dark:text-verse-300">
-              See photos from our events
-            </p>
-          </a>
+          <SocialCard :href="INSTAGRAM_URL" class="bg-gradient-to-br from-[#833ab4] via-[#fd1d1d] to-[#fcb045] h-[280px] shadow-lg shadow-[#fd1d1d]/10">
+            <template #tagline>Instagram</template>
+            <template #description>Visual highlights of meetups and the people behind the code.</template>
+            <template #icon><IconInstagram class="w-10 h-10" /></template>
+          </SocialCard>
 
-          <!-- LinkedIn -->
-          <a
-            :href="LINKEDIN_URL"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="p-6 bg-white dark:bg-verse-800/50 rounded-xl shadow-sm border border-verse-100 dark:border-verse-700 hover:border-verse-500 transition-colors"
-          >
-            <h3
-              class="text-xl font-semibold text-verse-900 dark:text-verse-100 mb-2"
-            >
-              LinkedIn
-            </h3>
-            <p class="text-verse-600 dark:text-verse-300">
-              Connect with us professionally
-            </p>
-          </a>
+          <SocialCard :href="LINKEDIN_URL" class="bg-[#0077b5] h-[280px] shadow-lg shadow-[#0077b5]/10">
+            <template #tagline>LinkedIn</template>
+            <template #description>Professional networking and official industry-facing updates.</template>
+            <template #icon><IconLinkedin class="w-10 h-10" /></template>
+          </SocialCard>
         </div>
       </div>
-    </ContentBlock>
+    </main>
   </DefaultLayout>
 </template>

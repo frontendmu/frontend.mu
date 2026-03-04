@@ -1,71 +1,127 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3'
 import DefaultLayout from '~/layouts/DefaultLayout.vue'
-import ContentBlock from '~/components/shared/ContentBlock.vue'
-import BaseHeading from '~/components/base/BaseHeading.vue'
 </script>
 
 <template>
   <Head title="Contribute" />
   <DefaultLayout>
-    <ContentBlock>
-      <div class="py-8 pb-20 prose dark:prose-invert max-w-none">
-        <BaseHeading :level="1" class="mb-6">Contributing to frontend.mu</BaseHeading>
+    <main class="relative min-h-screen pt-40 pb-24">
+      <div class="contain relative z-10">
+        <!-- Page Header -->
+        <div class="max-w-4xl mb-24 space-y-6">
+          <div class="inline-flex items-center gap-3">
+            <span class="h-1 w-12 bg-verse-500 rounded-full"></span>
+            <span class="text-sm font-black uppercase tracking-[0.4em] text-verse-500">Open Source</span>
+          </div>
+          
+          <h1 class="text-6xl md:text-8xl font-black tracking-tighter dark:text-white leading-[0.9]">
+            Help us <br />
+            <span class="text-verse-600 dark:text-verse-400">Build this.</span>
+          </h1>
+          
+          <p class="text-xl text-gray-500 dark:text-gray-400 font-medium max-w-2xl leading-relaxed">
+            coders.mu is community-driven. Every feature, every talk, and every line of code is a collective effort. Here is how you can play a part.
+          </p>
+        </div>
 
-        <p class="lead">
-          Thank you for your interest in contributing to Frontend.mu! Our community-driven platform thrives on contributions from members like you, whether you're helping to organize events, enhancing the website, or simply sharing knowledge.
-        </p>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+          <!-- Main Content -->
+          <div class="lg:col-span-8 space-y-24">
+            <!-- Ways to Contribute -->
+            <section class="space-y-12">
+              <div class="flex items-center gap-3">
+                <span class="h-px w-8 bg-verse-500"></span>
+                <h2 class="text-sm font-black uppercase tracking-[0.3em] text-verse-500">Avenues of Impact</h2>
+              </div>
 
-        <h2>Code of Conduct</h2>
-        <p>
-          Please read and follow our <Link href="/code-of-conduct" class="text-verse-600 dark:text-verse-400 hover:text-verse-800 dark:hover:text-verse-200">Code of Conduct</Link> to ensure a welcoming and inclusive environment for everyone.
-        </p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="p-8 bg-white dark:bg-verse-950/40 border border-verse-100 dark:border-verse-800 rounded-[2.5rem] space-y-4">
+                  <h3 class="text-xl font-black dark:text-white">Event Curation</h3>
+                  <p class="text-gray-500 dark:text-gray-400 font-medium leading-relaxed">Help us plan, promote, and run meetups. Suggest speakers or volunteer for logistics.</p>
+                </div>
+                <div class="p-8 bg-white dark:bg-verse-950/40 border border-verse-100 dark:border-verse-800 rounded-[2.5rem] space-y-4">
+                  <h3 class="text-xl font-black dark:text-white">Design & Code</h3>
+                  <p class="text-gray-500 dark:text-gray-400 font-medium leading-relaxed">Improve the site UI, fix bugs, or enhance accessibility. Our codebase is your playground.</p>
+                </div>
+                <div class="p-8 bg-white dark:bg-verse-950/40 border border-verse-100 dark:border-verse-800 rounded-[2.5rem] space-y-4">
+                  <h3 class="text-xl font-black dark:text-white">Content Management</h3>
+                  <p class="text-gray-500 dark:text-gray-400 font-medium leading-relaxed">Ensure speakers and sponsors are accurately represented and kept up to date.</p>
+                </div>
+                <div class="p-8 bg-white dark:bg-verse-950/40 border border-verse-100 dark:border-verse-800 rounded-[2.5rem] space-y-4">
+                  <h3 class="text-xl font-black dark:text-white">Community Flow</h3>
+                  <p class="text-gray-500 dark:text-gray-400 font-medium leading-relaxed">Engage with members on Discord and help spread the word about our mission.</p>
+                </div>
+              </div>
+            </section>
 
-        <h2>Ways to Contribute</h2>
-        <p>There are many ways you can contribute to Frontend.mu:</p>
-        <ul>
-          <li><strong>Event Organization:</strong> Help us plan, promote, and run meetups. You can propose topics, suggest speakers, or volunteer to help with logistics.</li>
-          <li><strong>Design and Frontend Development:</strong> Improve the look and feel of our website. Whether it's updating the UI, enhancing accessibility, or fixing bugs, your skills are invaluable.</li>
-          <li><strong>Speaker and Sponsor Management:</strong> Assist in managing the list of speakers and sponsors, ensuring that information is up-to-date and accurately represented.</li>
-          <li><strong>Community Engagement:</strong> Help us grow the community by spreading the word, engaging with attendees, and fostering discussions online and offline.</li>
-        </ul>
+            <!-- Local Setup -->
+            <section class="space-y-12">
+              <div class="flex items-center gap-3">
+                <span class="h-px w-8 bg-verse-500"></span>
+                <h2 class="text-sm font-black uppercase tracking-[0.3em] text-verse-500">Quick Start Guide</h2>
+              </div>
 
-        <h2>Running the Project Locally</h2>
-        <ol>
-          <li><strong>Fork the Repository:</strong> Start by forking the repository to create your own copy on GitHub.</li>
-          <li><strong>Clone Your Fork:</strong> Clone your forked repository to your local machine.</li>
-          <li><strong>Open the Project:</strong> Navigate to the cloned <code>frontend.mu</code> directory in your code editor.</li>
-          <li><strong>Install Dependencies:</strong> Run <code>pnpm install</code> to install the required packages.</li>
-          <li><strong>Set Up Environment Variables:</strong> Copy <code>.env.example</code> to <code>.env.development</code>:
-            <pre><code>cp .env.example .env.development</code></pre>
-          </li>
-          <li><strong>Start the Development Server:</strong> Use <code>pnpm run dev</code> to launch the project locally.</li>
-        </ol>
+              <div class="bg-gray-900 dark:bg-verse-900/20 rounded-[3rem] p-10 space-y-8">
+                <div class="space-y-6">
+                  <div class="flex gap-6">
+                    <span class="text-2xl font-black text-verse-500 opacity-50">01</span>
+                    <div>
+                      <h4 class="text-xl font-bold text-white mb-2">Fork & Clone</h4>
+                      <p class="text-gray-400 font-medium">Create your own copy of the repository on GitHub and pull it to your local machine.</p>
+                    </div>
+                  </div>
+                  <div class="flex gap-6">
+                    <span class="text-2xl font-black text-verse-500 opacity-50">02</span>
+                    <div>
+                      <h4 class="text-xl font-bold text-white mb-2">Install Deps</h4>
+                      <p class="text-gray-400 font-medium">Run <code class="bg-white/5 px-2 py-1 rounded">pnpm install</code> to get the project ready for development.</p>
+                    </div>
+                  </div>
+                  <div class="flex gap-6">
+                    <span class="text-2xl font-black text-verse-500 opacity-50">03</span>
+                    <div>
+                      <h4 class="text-xl font-bold text-white mb-2">Env Setup</h4>
+                      <p class="text-gray-400 font-medium">Copy the example environment file and adjust your local configuration.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="pt-4 border-t border-white/10 flex justify-between items-center">
+                  <p class="text-xs font-mono text-verse-400">pnpm run dev</p>
+                  <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">Spin up the local server</p>
+                </div>
+              </div>
+            </section>
+          </div>
 
-        <h2>Submitting Contributions</h2>
-        <ol>
-          <li><strong>Commit & Push:</strong> Commit your changes and push them to your forked repository.</li>
-          <li><strong>Open a Pull Request:</strong> Head to your fork on GitHub, click on the <code>Contribute</code> button, and then <code>Open a pull request</code> to submit your changes.</li>
-        </ol>
+          <!-- Sidebar -->
+          <aside class="lg:col-span-4 space-y-8">
+            <div class="sticky top-32 space-y-8">
+              <div class="p-8 bg-white dark:bg-verse-950/80 backdrop-blur-xl border border-verse-100 dark:border-verse-800 rounded-[3rem] shadow-2xl space-y-6">
+                <h3 class="text-2xl font-black tracking-tight dark:text-white">Contribution Flow</h3>
+                <div class="space-y-4">
+                  <Link href="/code-of-conduct" class="flex items-center justify-between p-4 bg-gray-50 dark:bg-verse-900/40 rounded-2xl group transition-all hover:border-verse-500 border border-transparent">
+                    <span class="font-bold text-gray-600 dark:text-gray-300 group-hover:text-verse-500">Code of Conduct</span>
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+                  </Link>
+                  <Link href="/coding-guidelines" class="flex items-center justify-between p-4 bg-gray-50 dark:bg-verse-900/40 rounded-2xl group transition-all hover:border-verse-500 border border-transparent">
+                    <span class="font-bold text-gray-600 dark:text-gray-300 group-hover:text-verse-500">Coding Standards</span>
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+                  </Link>
+                </div>
+              </div>
 
-        <h2>Reporting Issues and Suggestions</h2>
-        <p>
-          If you encounter any issues or have ideas for improvements, please open an issue on GitHub. Provide as much detail as possible, including screenshots or logs if applicable.
-        </p>
-
-        <h2>Code Style and Guidelines</h2>
-        <ul>
-          <li>Follow our <Link href="/coding-guidelines" class="text-verse-600 dark:text-verse-400 hover:text-verse-800 dark:hover:text-verse-200">coding standards</Link>.</li>
-          <li>Ensure your code is well-documented and tested.</li>
-          <li>Use clear and concise commit messages.</li>
-          <li>Adhere to accessibility best practices.</li>
-        </ul>
-
-        <h2>Acknowledgements</h2>
-        <p>
-          Thank you for being a part of Frontend.mu! Your contributions help us build a stronger community and better resources for frontend developers in Mauritius. If you have any questions, feel free to reach out to us via GitHub issues, Discord or at our next meetup!
-        </p>
+              <div class="p-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-[3rem] shadow-2xl space-y-6">
+                <h3 class="text-xl font-black tracking-tight">Need help?</h3>
+                <p class="text-sm font-medium opacity-70">Reach out on Discord or open a GitHub issue. We're here to help you get started.</p>
+                <a href="https://github.com/frontendmu" target="_blank" class="block w-full py-4 bg-verse-500 text-white text-center font-black uppercase tracking-widest rounded-2xl hover:scale-105 transition-all">
+                  Open GitHub
+                </a>
+              </div>
+            </div>
+          </aside>
+        </div>
       </div>
-    </ContentBlock>
+    </main>
   </DefaultLayout>
 </template>
