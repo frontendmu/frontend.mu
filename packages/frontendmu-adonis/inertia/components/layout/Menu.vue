@@ -17,7 +17,6 @@ const page = usePage()
 const isAuthenticated = computed(() => page.props.auth.isAuthenticated)
 const user = computed(() => page.props.auth.user)
 
-// Check if user is an admin (organizer or superadmin)
 const isAdmin = computed(() => {
   if (!user.value) return false
   const role = (user.value as any).role
@@ -32,251 +31,113 @@ const links: TMenu = {
   about: {
     title: 'About',
     href: '/about',
-    class: 'hidden md:block',
+    class: 'hidden lg:block',
     children: [
-      {
-        title: 'History',
-        href: '/history',
-        class: '',
-      },
-      {
-        title: 'Contribute',
-        href: '/contribute',
-        class: '',
-      },
-      {
-        title: 'Code of conduct',
-        href: '/code-of-conduct',
-        class: '',
-      },
-      {
-        title: 'Coding Guidelines',
-        href: '/coding-guidelines',
-        class: '',
-      },
-      {
-        title: 'WhatsApp',
-        href: WHATSAPP_URL,
-        class: '',
-      },
-      {
-        title: 'Instagram',
-        href: INSTAGRAM_URL,
-        class: '',
-      },
-      {
-        title: 'LinkedIn',
-        href: LINKEDIN_URL,
-        class: '',
-      },
-      {
-        title: 'Join Discord',
-        href: DISCORD_URL,
-        class: '',
-      },
-      {
-        title: 'GitHub',
-        href: GITHUB_URL,
-        class: '',
-      },
-      {
-        title: 'Twitter',
-        href: TWITTER_URL,
-        class: '',
-      },
-      {
-        title: 'Advent Calendar',
-        href: 'https://advent.coders.mu',
-        class: 'external-link',
-        target: '_blank',
-        rel: 'noopener noreferrer',
-      },
+      { title: 'History', href: '/history' },
+      { title: 'Contribute', href: '/contribute' },
+      { title: 'Code of conduct', href: '/code-of-conduct' },
+      { title: 'Guidelines', href: '/coding-guidelines' },
+      { title: 'Discord', href: DISCORD_URL },
+      { title: 'GitHub', href: GITHUB_URL },
     ],
   },
-  meetups: {
-    title: 'Meetups',
-    href: '/meetups',
-  },
-  community: {
-    title: 'Community',
-    href: '/community',
-  },
-  team: {
-    title: 'Team',
-    href: '/team',
-    class: 'hidden md:block',
-  },
-  sponsors: {
-    title: 'Sponsors',
-    href: '/sponsors',
+  meetups: { title: 'Meetups', href: '/meetups' },
+  community: { title: 'Community', href: '/community' },
+  team: { title: 'Team', href: '/team', class: 'hidden md:block' },
+  sponsors: { 
+    title: 'Sponsors', 
+    href: '/sponsors', 
     class: 'hidden md:block',
     children: [
-      {
-        title: 'Our Sponsors',
-        href: '/sponsors',
-        class: '',
-      },
-      {
-        title: 'Sponsor Us',
-        href: '/sponsor-us',
-        class: '',
-      },
-    ],
+      { title: 'Our Partners', href: '/sponsors' },
+      { title: 'Become a Sponsor', href: '/sponsor-us' },
+    ]
   },
 }
 
 const authLinks = computed(() => {
   if (isAuthenticated.value && user.value) {
-    return [
-      {
-        title: 'Profile',
-        href: '/profile',
-        class: '',
-      },
-    ]
+    return [{ title: 'Profile', href: '/profile' }]
   }
   return [
-    {
-      title: 'Login',
-      href: '/login',
-      class: '',
-    },
-    {
-      title: 'Register',
-      href: '/register',
-      class: '',
-    },
+    { title: 'Login', href: '/login' },
+    { title: 'Register', href: '/register' },
   ]
 })
 
 function toggleHeader() {
   const headerElement = document.querySelector('.menu-wrapper') as HTMLElement
-
-  let headerOffset = 0
   let previousScrollPosition = 0
 
   if (headerElement) {
     const handleScroll = () => {
-      window.requestAnimationFrame(() => {
-        const headerHeight = headerElement.clientHeight
-
-        const currentScrollPosition = window.scrollY || document.documentElement.scrollTop
-
-        const distance = currentScrollPosition - previousScrollPosition
-
-        const nextHeaderOffset = Math.min(Math.max(headerOffset + distance, 0), headerHeight)
-
-        if (currentScrollPosition >= headerHeight && nextHeaderOffset !== headerOffset) {
-          headerOffset = nextHeaderOffset
-          headerElement.style.transform = `translateY(-${headerOffset}px)`
-        }
-
-        if (currentScrollPosition > headerHeight) {
-          headerElement.classList.add(
-            'intersect',
-            'shadow-sm',
-            'dark:bg-verse-900/50',
-            'bg-verse-50/50'
-          )
-        } else {
-          headerElement.classList.remove(
-            'intersect',
-            'shadow-sm',
-            'dark:bg-verse-900/50',
-            'bg-verse-50/50'
-          )
-        }
-
-        previousScrollPosition = currentScrollPosition
-      })
+      const currentScrollPosition = window.scrollY || document.documentElement.scrollTop
+      if (currentScrollPosition > 40) {
+        headerElement.classList.add('scrolled')
+      } else {
+        headerElement.classList.remove('scrolled')
+      }
+      previousScrollPosition = currentScrollPosition
     }
-
     window.addEventListener('scroll', handleScroll, { passive: true })
   }
-}
-
-function handleRightClick(event: MouseEvent) {
-  event.preventDefault()
-  // For Inertia, we'll use window.location for now
-  window.location.href = '/branding'
 }
 
 onMounted(toggleHeader)
 </script>
 
 <template>
-  <div class="menu-wrapper w-full flex sticky top-0 z-30 h-20 items-center">
-    <div class="menu theme-light w-full">
-      <div class="flex justify-between items-center contain">
-        <div class="flex">
-          <Link
-            href="/"
-            class="flex gap-2 text-verse-500 dark:text-verse-200"
-            title="coders.mu"
-            @contextmenu="handleRightClick"
-          >
-            <Logo class="w-10" />
-            <span
-              class="hidden text-lg font-bold leading-none tracking-tighter md:text-3xl md:block"
-            >
-              coders.mu
-            </span>
-          </Link>
-        </div>
-        <nav>
-          <ul
-            class="nav-links text-sm md:text-sm lg:text-base flex md:gap-4 gap-2 font-medium font-heading"
-          >
-            <template v-for="item of Object.keys(links)" :key="item">
-              <MenuItem :links="links" :item="item" />
-            </template>
-          </ul>
-        </nav>
-        <div class="flex items-center md:gap-2 gap-1">
-          <div class="flex items-center justify-center p-2">
-            <slot name="dock-right" />
+  <div class="menu-wrapper fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 md:pt-6 transition-all duration-500 ease-expo">
+    <div class="menu-inner w-[92%] max-w-5xl bg-white/80 dark:bg-verse-950/60 backdrop-blur-xl border border-gray-100 dark:border-verse-800 rounded-2xl squircle px-4 md:px-6 h-16 flex items-center justify-between shadow-sm">
+      
+      <!-- Brand -->
+      <div class="flex items-center">
+        <Link href="/" class="flex items-center gap-2 group">
+          <div class="w-9 h-9 flex items-center justify-center rounded-xl bg-verse-500 text-white shadow-lg shadow-verse-500/20 group-hover:scale-110 transition-all duration-500">
+            <Logo class="w-5 h-5" />
           </div>
-          <ul class="flex items-center md:gap-1 gap-0 text-sm md:text-sm lg:text-base font-medium font-heading">
-            <!-- Admin link for organizers/superadmins -->
-            <li
-              v-if="isAdmin"
-              class="hover:bg-white/10 rounded-md"
-            >
-              <Link
-                href="/admin"
-                class="flex items-center text-verse-100 bg-verse-600 hover:bg-verse-700 rounded-md transition-colors"
-              >
-                <span class="relative z-20 p-2">Admin</span>
+          <span class="hidden sm:block text-lg font-black tracking-tighter dark:text-gray-100 uppercase tracking-[0.1em]">
+            coders<span class="text-verse-500">.mu</span>
+          </span>
+        </Link>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="hidden md:block">
+        <ul class="flex items-center gap-1 lg:gap-2">
+          <template v-for="item of Object.keys(links)" :key="item">
+            <MenuItem :links="links" :item="item" />
+          </template>
+        </ul>
+      </nav>
+
+      <!-- Right Actions -->
+      <div class="flex items-center gap-2 md:gap-4">
+        <slot name="dock-right" />
+        
+        <div class="h-6 w-px bg-gray-100 dark:bg-verse-800"></div>
+
+        <ul class="flex items-center gap-1">
+          <li v-if="isAdmin" class="mr-1">
+            <Link href="/admin" class="px-3 py-1.5 bg-verse-600 text-white rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-verse-700 transition-colors">
+              Admin
+            </Link>
+          </li>
+
+          <template v-for="link in authLinks" :key="link.href">
+            <li>
+              <Link :href="link.href" class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-verse-500 dark:hover:text-verse-300 transition-colors">
+                {{ link.title }}
               </Link>
             </li>
-            <template v-for="link in authLinks" :key="link.href">
-              <li class="hover:bg-white/10 rounded-md text-verse-700 dark:text-verse-300 hover:dark:text-white">
-                <Link
-                  :href="link.href"
-                  class="flex items-center"
-                >
-                  <span class="relative z-20 p-2">{{ link.title }}</span>
-                </Link>
-              </li>
-            </template>
-            <li
-              v-if="isAuthenticated"
-              class="hover:bg-white/10 rounded-md text-verse-700 dark:text-verse-300 hover:dark:text-white"
-            >
-              <button
-                @click="handleLogout"
-                class="flex items-center"
-              >
-                <span class="relative z-20 p-2">Logout</span>
-              </button>
-            </li>
-          </ul>
-        </div>
-        <div
-          class="absolute right-10 top-10 rounded-lg px-4 bg-white/20 shadow-[0px_0px_2px_var(--color-verse-500)]"
-        >
-          <slot name="dock-right-bottom" />
-        </div>
+          </template>
+
+          <li v-if="isAuthenticated">
+            <button @click="handleLogout" class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest text-red-500/70 hover:text-red-500 transition-colors">
+              Logout
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -285,20 +146,19 @@ onMounted(toggleHeader)
 <style scoped>
 @reference 'tailwindcss';
 
-.menu-wrapper {
-  transition: all 0.2s ease-out;
+.menu-wrapper.scrolled {
+  @apply pt-2;
 }
 
-.menu {
-  transition: all 0.2s ease-out;
+.menu-wrapper.scrolled .menu-inner {
+  @apply max-w-4xl shadow-lg border-gray-200;
+
+  &:where(.dark *, .dark) {
+    border-color: var(--color-verse-700);
+  }
 }
 
-.intersect {
-  box-shadow: 0px 0px 2px var(--color-verse-500);
-  backdrop-filter: brightness(1) blur(20px);
-}
-
-.contain {
-  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+.ease-expo {
+  transition-timing-function: cubic-bezier(0.87, 0, 0.13, 1);
 }
 </style>
