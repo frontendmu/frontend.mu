@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 interface Props {
   stats: {
@@ -15,27 +15,27 @@ const numOfSpeakers = ref(props.stats.speakers || 0)
 const numOfMeetups = ref(props.stats.meetups || 0)
 const numOfContributors = ref(props.stats.contributors || 0)
 
+let observer: IntersectionObserver | null = null
+
 function counterAnimation() {
-  const onIntersect = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+  const onIntersect = (entries: IntersectionObserverEntry[], obs: IntersectionObserver) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        let startNum = 0
         const finalNumStr = entry.target.getAttribute('data-final-num')
         if (finalNumStr !== null) {
           const finalNum = parseInt(finalNumStr, 10)
 
           if (finalNum > 0) {
-            const duration = 2000 // 2 seconds total duration
-            const frameDuration = 1000 / 60 // 60fps
+            const duration = 2000
+            const frameDuration = 1000 / 60
             const totalFrames = Math.round(duration / frameDuration)
             let frame = 0
 
             const counter = setInterval(() => {
               frame++
               const progress = frame / totalFrames
-              // Ease out expo
               const currentNum = Math.round(finalNum * (progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)))
-              
+
               entry.target.textContent = `${currentNum}`
 
               if (frame === totalFrames) {
@@ -46,17 +46,20 @@ function counterAnimation() {
           } else {
             entry.target.textContent = '0'
           }
-          observer.unobserve(entry.target)
+          obs.unobserve(entry.target)
         }
       }
     })
   }
 
-  const observer = new IntersectionObserver(onIntersect, { threshold: 0.5 })
-  document.querySelectorAll('.stat-num').forEach((statNum) => observer.observe(statNum))
+  observer = new IntersectionObserver(onIntersect, { threshold: 0.5 })
+  document.querySelectorAll('.stat-num').forEach((statNum) => observer!.observe(statNum))
 }
 
 onMounted(counterAnimation)
+onUnmounted(() => {
+  observer?.disconnect()
+})
 </script>
 
 <template>
