@@ -1,6 +1,8 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 // Home page
 router.get('/', [() => import('#controllers/home_controller'), 'index']).as('home')
 
@@ -8,6 +10,7 @@ router.get('/', [() => import('#controllers/home_controller'), 'index']).as('hom
 router.get('/meetups', [() => import('#controllers/events_controller'), 'index']).as('meetups.index')
 router
   .get('/meetup/:id', [() => import('#controllers/events_controller'), 'show'])
+  .where('id', UUID_REGEX)
   .as('meetups.show')
 
 // Speakers pages
@@ -16,6 +19,7 @@ router
   .as('speakers.index')
 router
   .get('/speaker/:id', [() => import('#controllers/speakers_controller'), 'show'])
+  .where('id', UUID_REGEX)
   .as('speakers.show')
 
 // Sponsors pages
@@ -24,6 +28,7 @@ router
   .as('sponsors.index')
 router
   .get('/sponsor/:id', [() => import('#controllers/sponsors_controller'), 'show'])
+  .where('id', UUID_REGEX)
   .as('sponsors.show')
 
 // Team page
@@ -103,6 +108,7 @@ router
     () => import('#controllers/rsvps_controller'),
     'status',
   ])
+  .where('eventId', UUID_REGEX)
   .as('api.rsvp.status')
 
 // RSVP actions (requires authentication)
@@ -113,12 +119,14 @@ router
         () => import('#controllers/rsvps_controller'),
         'store',
       ])
+      .where('eventId', UUID_REGEX)
       .as('api.rsvp.store')
     router
       .delete('/api/events/:eventId/rsvp', [
         () => import('#controllers/rsvps_controller'),
         'destroy',
       ])
+      .where('eventId', UUID_REGEX)
       .as('api.rsvp.destroy')
   })
   .use(middleware.auth())
@@ -143,15 +151,18 @@ router
       .as('admin.events.store')
     router
       .get('/admin/events/:id/edit', [() => import('#controllers/admin/events_controller'), 'edit'])
+      .where('id', UUID_REGEX)
       .as('admin.events.edit')
     router
       .put('/admin/events/:id', [() => import('#controllers/admin/events_controller'), 'update'])
+      .where('id', UUID_REGEX)
       .as('admin.events.update')
     router
       .delete('/admin/events/:id', [
         () => import('#controllers/admin/events_controller'),
         'destroy',
       ])
+      .where('id', UUID_REGEX)
       .as('admin.events.destroy')
 
     // Session management (nested under events)
@@ -160,27 +171,32 @@ router
         () => import('#controllers/admin/sessions_controller'),
         'index',
       ])
+      .where('eventId', UUID_REGEX)
       .as('admin.sessions.index')
     router
       .post('/admin/events/:eventId/sessions', [
         () => import('#controllers/admin/sessions_controller'),
         'store',
       ])
+      .where('eventId', UUID_REGEX)
       .as('admin.sessions.store')
     router
       .get('/admin/sessions/:id', [() => import('#controllers/admin/sessions_controller'), 'show'])
+      .where('id', UUID_REGEX)
       .as('admin.sessions.show')
     router
       .put('/admin/sessions/:id', [
         () => import('#controllers/admin/sessions_controller'),
         'update',
       ])
+      .where('id', UUID_REGEX)
       .as('admin.sessions.update')
     router
       .delete('/admin/sessions/:id', [
         () => import('#controllers/admin/sessions_controller'),
         'destroy',
       ])
+      .where('id', UUID_REGEX)
       .as('admin.sessions.destroy')
 
     // Speaker management for sessions
@@ -189,12 +205,16 @@ router
         () => import('#controllers/admin/sessions_controller'),
         'addSpeaker',
       ])
+      .where('id', UUID_REGEX)
+      .where('speakerId', UUID_REGEX)
       .as('admin.sessions.addSpeaker')
     router
       .delete('/admin/sessions/:id/speakers/:speakerId', [
         () => import('#controllers/admin/sessions_controller'),
         'removeSpeaker',
       ])
+      .where('id', UUID_REGEX)
+      .where('speakerId', UUID_REGEX)
       .as('admin.sessions.removeSpeaker')
 
     // Get available speakers for assignment
@@ -223,18 +243,21 @@ router
         () => import('#controllers/admin/speakers_controller'),
         'edit',
       ])
+      .where('id', UUID_REGEX)
       .as('admin.speakers.edit')
     router
       .put('/admin/speakers/:id', [
         () => import('#controllers/admin/speakers_controller'),
         'update',
       ])
+      .where('id', UUID_REGEX)
       .as('admin.speakers.update')
     router
       .delete('/admin/speakers/:id', [
         () => import('#controllers/admin/speakers_controller'),
         'destroy',
       ])
+      .where('id', UUID_REGEX)
       .as('admin.speakers.destroy')
 
     // Sponsor management
@@ -255,18 +278,21 @@ router
         () => import('#controllers/admin/sponsors_controller'),
         'edit',
       ])
+      .where('id', UUID_REGEX)
       .as('admin.sponsors.edit')
     router
       .put('/admin/sponsors/:id', [
         () => import('#controllers/admin/sponsors_controller'),
         'update',
       ])
+      .where('id', UUID_REGEX)
       .as('admin.sponsors.update')
     router
       .delete('/admin/sponsors/:id', [
         () => import('#controllers/admin/sponsors_controller'),
         'destroy',
       ])
+      .where('id', UUID_REGEX)
       .as('admin.sponsors.destroy')
 
     // User management
@@ -275,12 +301,15 @@ router
       .as('admin.users.index')
     router
       .get('/admin/users/:id/edit', [() => import('#controllers/admin/users_controller'), 'edit'])
+      .where('id', UUID_REGEX)
       .as('admin.users.edit')
     router
       .put('/admin/users/:id', [() => import('#controllers/admin/users_controller'), 'update'])
+      .where('id', UUID_REGEX)
       .as('admin.users.update')
     router
       .delete('/admin/users/:id', [() => import('#controllers/admin/users_controller'), 'destroy'])
+      .where('id', UUID_REGEX)
       .as('admin.users.destroy')
   })
   .use(middleware.auth())
