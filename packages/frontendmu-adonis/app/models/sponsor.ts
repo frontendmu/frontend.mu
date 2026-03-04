@@ -1,13 +1,21 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
+import { randomUUID } from 'node:crypto'
+import { BaseModel, column, manyToMany, beforeCreate } from '@adonisjs/lucid/orm'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import Event from '#models/event'
 
 export type SponsorStatus = 'active' | 'inactive'
 
 export default class Sponsor extends BaseModel {
+  static selfAssignPrimaryKey = true
+
   @column({ isPrimary: true })
   declare id: string
+
+  @beforeCreate()
+  static assignUuid(sponsor: Sponsor) {
+    sponsor.id = sponsor.id || randomUUID()
+  }
 
   @column()
   declare name: string

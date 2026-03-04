@@ -16,6 +16,8 @@ import Rsvp from '#models/rsvp'
 export type EventStatus = 'published' | 'draft' | 'cancelled'
 
 export default class Event extends BaseModel {
+  static selfAssignPrimaryKey = true
+
   @column({ isPrimary: true })
   declare id: string
 

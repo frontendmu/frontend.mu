@@ -6,6 +6,8 @@ import Event from '#models/event'
 import User from '#models/user'
 
 export default class Session extends BaseModel {
+  static selfAssignPrimaryKey = true
+
   @column({ isPrimary: true })
   declare id: string
 
