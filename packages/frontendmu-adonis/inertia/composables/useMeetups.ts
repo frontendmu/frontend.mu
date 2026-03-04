@@ -1,27 +1,30 @@
 import { computed, type ComputedRef } from 'vue'
 import { isDateInFuture, isDateInPast, isDateToday } from '../utils/date.js'
-import type { Meetup } from '../types/index.js'
+import type { EventSummaryDto } from '../types/index.js'
 
 interface UseMeetupsOptions {
   pastMeetupsLimit?: number
 }
 
 interface UseMeetupsReturn {
-  meetupsGroupedByYear: ComputedRef<Record<number, Meetup[]>>
-  sortedMeetups: ComputedRef<Meetup[]>
-  upcomingMeetups: ComputedRef<Meetup[]>
-  todaysMeetups: ComputedRef<Meetup[]>
-  pastMeetups: ComputedRef<Meetup[]>
-  nextMeetup: ComputedRef<Meetup | undefined>
+  meetupsGroupedByYear: ComputedRef<Record<number, EventSummaryDto[]>>
+  sortedMeetups: ComputedRef<EventSummaryDto[]>
+  upcomingMeetups: ComputedRef<EventSummaryDto[]>
+  todaysMeetups: ComputedRef<EventSummaryDto[]>
+  pastMeetups: ComputedRef<EventSummaryDto[]>
+  nextMeetup: ComputedRef<EventSummaryDto | undefined>
   areThereMeetupsToday: ComputedRef<boolean>
 }
 
-export function useMeetups(meetups: Meetup[], options: UseMeetupsOptions = {}): UseMeetupsReturn {
+export function useMeetups(
+  meetups: EventSummaryDto[],
+  options: UseMeetupsOptions = {}
+): UseMeetupsReturn {
   const { pastMeetupsLimit = 10 } = options
 
   const meetupsGroupedByYear = computed(() => {
-    return meetups.reduce((acc: Record<number, Meetup[]>, event) => {
-      const year = new Date(event.Date).getFullYear()
+    return meetups.reduce((acc: Record<number, EventSummaryDto[]>, event) => {
+      const year = event.date ? new Date(event.date).getFullYear() : 0
       if (!acc[year]) {
         acc[year] = []
       }
@@ -32,25 +35,25 @@ export function useMeetups(meetups: Meetup[], options: UseMeetupsOptions = {}): 
 
   const sortedMeetups = computed(() => {
     return [...meetups].sort((a, b) => {
-      return new Date(b.Date).getTime() - new Date(a.Date).getTime()
+      return new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime()
     })
   })
 
   const upcomingMeetups = computed(() => {
     return sortedMeetups.value.filter((item) => {
-      return isDateInFuture(new Date(item.Date))
+      return item.date ? isDateInFuture(new Date(item.date)) : false
     })
   })
 
   const todaysMeetups = computed(() => {
     return sortedMeetups.value.filter((item) => {
-      return isDateToday(new Date(item.Date))
+      return item.date ? isDateToday(new Date(item.date)) : false
     })
   })
 
   const pastMeetups = computed(() => {
     const pastMeetupsData = sortedMeetups.value.filter((item) => {
-      return isDateInPast(new Date(item.Date))
+      return item.date ? isDateInPast(new Date(item.date)) : false
     })
 
     return pastMeetupsData.slice(0, pastMeetupsLimit)
