@@ -1,4 +1,4 @@
-import { computed, type ComputedRef } from 'vue'
+import { computed, toValue, type ComputedRef, type MaybeRefOrGetter } from 'vue'
 import { isDateInFuture, isDateInPast, isDateToday } from '../utils/date.js'
 import type { EventSummaryDto } from '../types/index.js'
 
@@ -17,13 +17,13 @@ interface UseMeetupsReturn {
 }
 
 export function useMeetups(
-  meetups: EventSummaryDto[],
+  meetups: MaybeRefOrGetter<EventSummaryDto[]>,
   options: UseMeetupsOptions = {}
 ): UseMeetupsReturn {
   const { pastMeetupsLimit = 10 } = options
 
   const meetupsGroupedByYear = computed(() => {
-    return meetups.reduce((acc: Record<number, EventSummaryDto[]>, event) => {
+    return toValue(meetups).reduce((acc: Record<number, EventSummaryDto[]>, event) => {
       const year = event.date ? new Date(event.date).getFullYear() : 0
       if (!acc[year]) {
         acc[year] = []
@@ -34,7 +34,7 @@ export function useMeetups(
   })
 
   const sortedMeetups = computed(() => {
-    return [...meetups].sort((a, b) => {
+    return [...toValue(meetups)].sort((a, b) => {
       return new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime()
     })
   })
@@ -77,5 +77,3 @@ export function useMeetups(
     areThereMeetupsToday,
   }
 }
-
-export default useMeetups

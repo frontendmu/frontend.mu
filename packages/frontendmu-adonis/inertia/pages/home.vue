@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import type { EventSummaryDto, SpeakerDto, SponsorSummaryDto } from '~/types'
 import { useMeetups } from '~/composables/useMeetups'
@@ -23,9 +24,11 @@ const props = defineProps<Props>()
 
 const { nextMeetup, todaysMeetups, areThereMeetupsToday, pastMeetups } = useMeetups(props.events)
 
-const featuredEvent = areThereMeetupsToday.value
-  ? todaysMeetups.value[0]
-  : (nextMeetup.value || pastMeetups.value[0])
+const featuredEvent = computed(() => {
+  if (areThereMeetupsToday.value) return todaysMeetups.value[0]
+  if (nextMeetup.value) return nextMeetup.value
+  return pastMeetups.value[0]
+})
 </script>
 
 <template>
