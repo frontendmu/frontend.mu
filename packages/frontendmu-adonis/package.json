@@ -15,6 +15,7 @@
     "clean:ports": "lsof -t -i:3333 | xargs kill && lsof -t -i:24678 | xargs kill"
   },
   "imports": {
+    "#dtos/*": "./app/dtos/*.js",
     "#controllers/*": "./app/controllers/*.js",
     "#exceptions/*": "./app/exceptions/*.js",
     "#models/*": "./app/models/*.js",
