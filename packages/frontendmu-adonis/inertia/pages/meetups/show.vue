@@ -5,7 +5,7 @@ import { Head, Link, usePage, router } from '@inertiajs/vue3'
 import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
 import { sanitizeHtml } from '~/composables/useSanitize'
 import { useApi } from '~/composables/useApi'
-import type { EventDto, RsvpDto, PublicAttendeeDto } from '~/types'
+import type { EventDto, RsvpDto, PublicAttendeeDto, SharedProps } from '~/types'
 
 interface Props {
   meetup: EventDto | null
@@ -17,10 +17,10 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const page = usePage()
+const page = usePage<SharedProps>()
 const { apiFetch } = useApi()
 const isAuthenticated = computed(() => page.props.auth?.isAuthenticated)
-const featureFlags = computed(() => (page.props as any).featureFlags || {})
+const featureFlags = computed(() => page.props.featureFlags)
 
 // RSVP state
 const isRsvpLoading = ref(false)
@@ -130,6 +130,12 @@ const isToday = computed(() =>
 const isPast = computed(() =>
   eventDate.value ? eventDate.value < DateTime.now() && !isToday.value : false
 )
+
+const eventStatus = computed(() => {
+  if (isToday.value) return 'Today'
+  if (isUpcoming.value) return 'Upcoming'
+  return 'Past'
+})
 
 const formattedDate = computed(() =>
   eventDate.value?.toFormat('EEEE, MMMM d, yyyy') ?? ''
@@ -265,7 +271,7 @@ const calendarUrl = computed(() => {
             </div>
 
             <!-- Right Column: Sidebar -->
-            <aside class="lg:col-span-5">
+            <aside id="rsvp-section" class="lg:col-span-5">
               <div class="sticky top-24 space-y-10">
                 <!-- Data Registry Card -->
                 <div class="bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-3xl squircle overflow-hidden shadow-sm">

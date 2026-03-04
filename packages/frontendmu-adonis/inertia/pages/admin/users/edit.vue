@@ -3,6 +3,8 @@ import { computed, ref } from 'vue'
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
+import { getRoleBadgeClass } from '~/utils/roles'
+import type { SharedProps } from '~/types'
 
 interface Permission {
   id: number
@@ -40,8 +42,8 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const page = usePage()
-const currentUser = computed(() => page.props.auth.user as any)
+const page = usePage<SharedProps>()
+const currentUser = computed(() => page.props.auth.user)
 const isEditingSelf = computed(() => props.user.id === currentUser.value?.id)
 
 // Track which role is expanded for permission viewing
@@ -107,22 +109,6 @@ const isTryingToRemoveSuperadmin = computed(() => {
   const hasSuperadmin = form.roleIds.includes(superadminRole.id)
   return hadSuperadmin && !hasSuperadmin
 })
-
-// Role badge colors
-function getRoleBadgeClass(roleName: string) {
-  switch (roleName) {
-    case 'superadmin':
-      return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-    case 'organizer':
-      return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-    case 'member':
-      return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-    case 'viewer':
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
-    default:
-      return 'bg-verse-100 text-verse-800 dark:bg-verse-700 dark:text-verse-200'
-  }
-}
 
 // Permission category grouping
 function getPermissionCategory(permName: string) {

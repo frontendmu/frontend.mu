@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
+import type { SharedProps } from '~/types'
 
 interface Stats {
   events: {
@@ -21,8 +22,8 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const page = usePage()
-const user = computed(() => page.props.auth.user as any)
+const page = usePage<SharedProps>()
+const user = computed(() => page.props.auth.user)
 const isSuperadmin = computed(() => user.value?.role === 'superadmin')
 
 // Admin menu items

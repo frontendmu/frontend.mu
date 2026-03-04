@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { Head, Link, router, usePage } from '@inertiajs/vue3'
+import { Head, Link, router } from '@inertiajs/vue3'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
+import { useAuth } from '~/composables/useAuth'
+import { useDeleteConfirmation } from '~/composables/useDeleteConfirmation'
+import { getRoleBadgeClass } from '~/utils/roles'
+import { formatEventDate } from '~/utils/date'
 
 interface Role {
   id: number
@@ -32,32 +36,11 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const page = usePage()
-const currentUser = computed(() => page.props.auth.user as any)
+const { user: currentUser } = useAuth()
+const { showModal: showDeleteModal, itemToDelete: userToDelete, isDeleting, confirmDelete, cancelDelete, executeDelete } = useDeleteConfirmation<User>()
 
 // Search input
 const searchInput = ref(props.search)
-
-// Delete confirmation state
-const showDeleteModal = ref(false)
-const userToDelete = ref<User | null>(null)
-const isDeleting = ref(false)
-
-// Role badge styles
-const getRoleBadge = (roleName: string) => {
-  switch (roleName) {
-    case 'superadmin':
-      return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-    case 'organizer':
-      return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
-    case 'member':
-      return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-    case 'viewer':
-      return 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
-    default:
-      return 'bg-verse-100 text-verse-600 dark:bg-verse-800 dark:text-verse-400'
-  }
-}
 
 // Get the primary role (first role or highest priority)
 function getPrimaryRole(user: User): string {
@@ -84,42 +67,17 @@ function handleSearch() {
   )
 }
 
-// Delete handlers
-function confirmDelete(user: User) {
-  userToDelete.value = user
-  showDeleteModal.value = true
+function handleDelete(user: User) {
+  confirmDelete(user)
 }
 
-function cancelDelete() {
-  showDeleteModal.value = false
-  userToDelete.value = null
-}
-
-function executeDelete() {
+function doDelete() {
   if (!userToDelete.value) return
-
-  isDeleting.value = true
-  router.delete(`/admin/users/${userToDelete.value.id}`, {
-    onFinish: () => {
-      isDeleting.value = false
-      showDeleteModal.value = false
-      userToDelete.value = null
-    },
-  })
+  executeDelete(`/admin/users/${userToDelete.value.id}`)
 }
 
-// Check if user can be deleted (not self)
 function canDeleteUser(user: User) {
   return user.id !== currentUser.value?.id
-}
-
-// Format date
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
 }
 
 // Available role filters
@@ -312,7 +270,7 @@ function getFilterButtonClass(roleName: string, isActive: boolean) {
                         :key="role.id"
                         :class="[
                           'px-2 py-0.5 rounded-full text-xs font-medium',
-                          getRoleBadge(role.name),
+                          getRoleBadgeClass(role.name),
                         ]"
                       >
                         {{ role.name }}
@@ -326,7 +284,7 @@ function getFilterButtonClass(roleName: string, isActive: boolean) {
                     </div>
                   </td>
                   <td class="px-6 py-4 text-sm text-verse-600 dark:text-verse-400">
-                    {{ formatDate(user.createdAt) }}
+                    {{ formatEventDate(user.createdAt) }}
                   </td>
                   <td class="px-6 py-4 text-right">
                     <div class="flex items-center justify-end gap-2">
@@ -348,7 +306,7 @@ function getFilterButtonClass(roleName: string, isActive: boolean) {
                       </Link>
                       <button
                         v-if="canDeleteUser(user)"
-                        @click="confirmDelete(user)"
+                        @click="handleDelete(user)"
                         class="p-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
                         title="Delete"
                       >
@@ -404,7 +362,7 @@ function getFilterButtonClass(roleName: string, isActive: boolean) {
               Cancel
             </button>
             <button
-              @click="executeDelete"
+              @click="doDelete"
               :disabled="isDeleting"
               class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 squircle rounded-lg transition-colors disabled:opacity-50"
             >

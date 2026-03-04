@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, onUnmounted, computed } from 'vue'
 import { Link, usePage, router } from '@inertiajs/vue3'
 import Logo from '~/components/layout/Logo.vue'
 import MenuItem from '~/components/layout/MenuItem.vue'
@@ -11,16 +11,15 @@ import {
   TWITTER_URL,
   WHATSAPP_URL,
 } from '~/constants'
-import type { TMenu } from '~/types'
+import type { TMenu, SharedProps } from '~/types'
 
-const page = usePage()
+const page = usePage<SharedProps>()
 const isAuthenticated = computed(() => page.props.auth.isAuthenticated)
 const user = computed(() => page.props.auth.user)
 
 const isAdmin = computed(() => {
   if (!user.value) return false
-  const role = (user.value as any).role
-  return role === 'organizer' || role === 'superadmin'
+  return user.value.role === 'organizer' || user.value.role === 'superadmin'
 })
 
 function handleLogout() {
@@ -66,25 +65,30 @@ const authLinks = computed(() => {
   ]
 })
 
+let scrollHandler: (() => void) | null = null
+
 function toggleHeader() {
   const headerElement = document.querySelector('.menu-wrapper') as HTMLElement
-  let previousScrollPosition = 0
 
   if (headerElement) {
-    const handleScroll = () => {
+    scrollHandler = () => {
       const currentScrollPosition = window.scrollY || document.documentElement.scrollTop
       if (currentScrollPosition > 40) {
         headerElement.classList.add('scrolled')
       } else {
         headerElement.classList.remove('scrolled')
       }
-      previousScrollPosition = currentScrollPosition
     }
-    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener('scroll', scrollHandler, { passive: true })
   }
 }
 
 onMounted(toggleHeader)
+onUnmounted(() => {
+  if (scrollHandler) {
+    window.removeEventListener('scroll', scrollHandler)
+  }
+})
 </script>
 
 <template>

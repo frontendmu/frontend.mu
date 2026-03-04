@@ -5,13 +5,14 @@ import LayoutBackdrop from '~/components/layout/LayoutBackdrop.vue'
 import SiteNavigation from '~/components/layout/Navigation.vue'
 import SiteFooter from '~/components/layout/Footer.vue'
 import SponsorHighlight from '~/components/home/SponsorHighlight.vue'
+import type { SharedProps } from '~/types'
 
-const page = usePage()
+const page = usePage<SharedProps>()
 const flash = ref<{ success?: string; error?: string }>({})
 const showFlash = ref(false)
 
 watch(
-  () => (page.props as any).flash,
+  () => page.props.flash,
   (val) => {
     if (val?.success || val?.error) {
       flash.value = val

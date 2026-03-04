@@ -14,6 +14,30 @@ export type {
   PublicAttendeeDto,
 } from '../../app/dtos/index.js'
 
+// Shared Inertia page props (matches config/inertia.ts sharedData)
+export interface SharedProps {
+  auth: {
+    isAuthenticated: boolean
+    user: {
+      id: string
+      name: string
+      email: string | null
+      avatarUrl: string | null
+      githubUsername: string | null
+      role: string
+    } | null
+    csrfToken: string
+  }
+  flash: {
+    success?: string
+    error?: string
+  }
+  errors?: Record<string, string>
+  featureFlags: {
+    rsvpPastEvents: boolean
+  }
+}
+
 // UI-only types
 
 export interface BrandingAsset {
