@@ -4,6 +4,7 @@
     "jsx": "preserve",
     "module": "ESNext",
     "jsxImportSource": "vue",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "paths": {
       "~/*": ["./*"],
     },

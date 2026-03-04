@@ -7,11 +7,25 @@ const inertiaConfig = defineConfig({
 
   sharedData: {
     errors: (ctx) => ctx.session!.flashMessages.get('errors'),
+    flash: (ctx) => ({
+      success: ctx.session?.flashMessages.get('success') as string | undefined,
+      error: ctx.session?.flashMessages.get('error') as string | undefined,
+    }),
     auth: async (ctx) => {
       await ctx.auth.check()
+      const user = ctx.auth.user
       return {
         isAuthenticated: ctx.auth.isAuthenticated,
-        user: ctx.auth.user || null,
+        user: user
+          ? {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              avatarUrl: user.avatarUrl,
+              githubUsername: user.githubUsername,
+              role: user.role,
+            }
+          : null,
         csrfToken: ctx.request.csrfToken,
       }
     },

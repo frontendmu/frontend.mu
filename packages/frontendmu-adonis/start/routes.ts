@@ -2,76 +2,124 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 
 // Home page
-router.get('/', [() => import('#controllers/home_controller'), 'index'])
+router.get('/', [() => import('#controllers/home_controller'), 'index']).as('home')
 
 // Meetups pages
-router.get('/meetups', [() => import('#controllers/events_controller'), 'index'])
-router.get('/meetup/:id', [() => import('#controllers/events_controller'), 'show'])
+router.get('/meetups', [() => import('#controllers/events_controller'), 'index']).as('meetups.index')
+router
+  .get('/meetup/:id', [() => import('#controllers/events_controller'), 'show'])
+  .as('meetups.show')
 
 // Speakers pages
-router.get('/speakers', [() => import('#controllers/speakers_controller'), 'index'])
-router.get('/speaker/:id', [() => import('#controllers/speakers_controller'), 'show'])
+router
+  .get('/speakers', [() => import('#controllers/speakers_controller'), 'index'])
+  .as('speakers.index')
+router
+  .get('/speaker/:id', [() => import('#controllers/speakers_controller'), 'show'])
+  .as('speakers.show')
 
 // Sponsors pages
-router.get('/sponsors', [() => import('#controllers/sponsors_controller'), 'index'])
-router.get('/sponsor/:id', [() => import('#controllers/sponsors_controller'), 'show'])
+router
+  .get('/sponsors', [() => import('#controllers/sponsors_controller'), 'index'])
+  .as('sponsors.index')
+router
+  .get('/sponsor/:id', [() => import('#controllers/sponsors_controller'), 'show'])
+  .as('sponsors.show')
 
 // Team page
-router.get('/team', [() => import('#controllers/team_controller'), 'index'])
+router.get('/team', [() => import('#controllers/team_controller'), 'index']).as('team')
 
 // Static pages
-router.get('/sponsor-us', [() => import('#controllers/pages_controller'), 'sponsorUs'])
-router.get('/about', [() => import('#controllers/pages_controller'), 'about'])
-router.get('/community', [() => import('#controllers/pages_controller'), 'community'])
-router.get('/branding', [() => import('#controllers/pages_controller'), 'branding'])
-router.get('/history', [() => import('#controllers/pages_controller'), 'history'])
-router.get('/contribute', [() => import('#controllers/pages_controller'), 'contribute'])
-router.get('/code-of-conduct', [() => import('#controllers/pages_controller'), 'codeOfConduct'])
-router.get('/coding-guidelines', [
-  () => import('#controllers/pages_controller'),
-  'codingGuidelines',
-])
+router
+  .get('/sponsor-us', [() => import('#controllers/pages_controller'), 'sponsorUs'])
+  .as('pages.sponsorUs')
+router.get('/about', [() => import('#controllers/pages_controller'), 'about']).as('pages.about')
+router
+  .get('/community', [() => import('#controllers/pages_controller'), 'community'])
+  .as('pages.community')
+router
+  .get('/branding', [() => import('#controllers/pages_controller'), 'branding'])
+  .as('pages.branding')
+router
+  .get('/history', [() => import('#controllers/pages_controller'), 'history'])
+  .as('pages.history')
+router
+  .get('/contribute', [() => import('#controllers/pages_controller'), 'contribute'])
+  .as('pages.contribute')
+router
+  .get('/code-of-conduct', [() => import('#controllers/pages_controller'), 'codeOfConduct'])
+  .as('pages.codeOfConduct')
+router
+  .get('/coding-guidelines', [
+    () => import('#controllers/pages_controller'),
+    'codingGuidelines',
+  ])
+  .as('pages.codingGuidelines')
 
 // Auth routes
-router.get('/login', [() => import('#controllers/auth/login_controller'), 'show'])
-router.post('/login', [() => import('#controllers/auth/login_controller'), 'store'])
-router.get('/register', [() => import('#controllers/auth/register_controller'), 'show'])
-router.post('/register', [() => import('#controllers/auth/register_controller'), 'store'])
-router.post('/logout', [() => import('#controllers/auth/logout_controller'), 'handle'])
+router
+  .get('/login', [() => import('#controllers/auth/login_controller'), 'show'])
+  .as('auth.login.show')
+router
+  .post('/login', [() => import('#controllers/auth/login_controller'), 'store'])
+  .as('auth.login.store')
+router
+  .get('/register', [() => import('#controllers/auth/register_controller'), 'show'])
+  .as('auth.register.show')
+router
+  .post('/register', [() => import('#controllers/auth/register_controller'), 'store'])
+  .as('auth.register.store')
+router
+  .post('/logout', [() => import('#controllers/auth/logout_controller'), 'handle'])
+  .as('auth.logout')
 
 // Google OAuth routes
-router.get('/auth/google', [() => import('#controllers/auth/google_controller'), 'redirect'])
-router.get('/auth/google/callback', [
-  () => import('#controllers/auth/google_controller'),
-  'callback',
-])
+router
+  .get('/auth/google', [() => import('#controllers/auth/google_controller'), 'redirect'])
+  .as('auth.google.redirect')
+router
+  .get('/auth/google/callback', [
+    () => import('#controllers/auth/google_controller'),
+    'callback',
+  ])
+  .as('auth.google.callback')
 
 // Profile routes (requires authentication)
 router
   .group(() => {
-    router.get('/profile', [() => import('#controllers/profile_controller'), 'show'])
-    router.put('/profile', [() => import('#controllers/profile_controller'), 'update'])
+    router
+      .get('/profile', [() => import('#controllers/profile_controller'), 'show'])
+      .as('profile.show')
+    router
+      .put('/profile', [() => import('#controllers/profile_controller'), 'update'])
+      .as('profile.update')
   })
   .use(middleware.auth())
 
 // RSVP routes
 // Get RSVP status (public - returns null if not authenticated)
-router.get('/api/events/:eventId/rsvp/status', [
-  () => import('#controllers/rsvps_controller'),
-  'status',
-])
+router
+  .get('/api/events/:eventId/rsvp/status', [
+    () => import('#controllers/rsvps_controller'),
+    'status',
+  ])
+  .as('api.rsvp.status')
 
 // RSVP actions (requires authentication)
 router
   .group(() => {
-    router.post('/api/events/:eventId/rsvp', [
-      () => import('#controllers/rsvps_controller'),
-      'store',
-    ])
-    router.delete('/api/events/:eventId/rsvp', [
-      () => import('#controllers/rsvps_controller'),
-      'destroy',
-    ])
+    router
+      .post('/api/events/:eventId/rsvp', [
+        () => import('#controllers/rsvps_controller'),
+        'store',
+      ])
+      .as('api.rsvp.store')
+    router
+      .delete('/api/events/:eventId/rsvp', [
+        () => import('#controllers/rsvps_controller'),
+        'destroy',
+      ])
+      .as('api.rsvp.destroy')
   })
   .use(middleware.auth())
 
