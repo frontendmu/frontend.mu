@@ -1,30 +1,22 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { DateTime } from 'luxon'
 import { Head, Link } from '@inertiajs/vue3'
-import DefaultLayout from '~/layouts/DefaultLayout.vue'
 import EventCard from '~/components/event/EventCard.vue'
-import type Event from '#models/event'
+import type { EventSummaryDto } from '~/types'
+import { isDateInFuture, isDateToday } from '~/utils/date'
 
 interface Props {
-  meetups: Event[]
+  meetups: EventSummaryDto[]
   canCreate: boolean
 }
 
 const props = defineProps<Props>()
 
-const parseEventDate = (date: unknown): DateTime | null => {
-  if (!date) return null
-  if (typeof date === 'string') return DateTime.fromISO(date)
-  if (typeof date === 'object' && 'toJSDate' in date) return DateTime.fromJSDate(date.toJSDate())
-  return DateTime.fromISO(date as unknown as string)
-}
-
 // Group meetups by year
 const meetupsGroupedByYear = computed(() => {
-  return props.meetups.reduce((acc: Record<number, Event[]>, event) => {
-    const dt = parseEventDate(event.eventDate)
-    const year = dt?.year ?? 0
+  return props.meetups.reduce((acc: Record<number, EventSummaryDto[]>, event) => {
+    if (!event.date) return acc
+    const year = new Date(event.date).getFullYear()
     if (!acc[year]) {
       acc[year] = []
     }
@@ -43,17 +35,14 @@ const years = computed(() =>
 // Get upcoming meetups
 const upcomingMeetups = computed(() =>
   props.meetups.filter((meetup) => {
-    const dt = parseEventDate(meetup.eventDate)
-    return dt ? dt > DateTime.now() : false
+    return meetup.date ? isDateInFuture(new Date(meetup.date)) : false
   })
 )
 
 // Get next meetup
 const nextMeetup = computed(() => {
   const sorted = [...upcomingMeetups.value].sort((a, b) => {
-    const dateA = parseEventDate(a.eventDate)
-    const dateB = parseEventDate(b.eventDate)
-    return (dateA?.toMillis() ?? 0) - (dateB?.toMillis() ?? 0)
+    return new Date(a.date!).getTime() - new Date(b.date!).getTime()
   })
   return sorted[0]
 })
@@ -61,8 +50,7 @@ const nextMeetup = computed(() => {
 // Get today's meetups
 const todaysMeetups = computed(() =>
   props.meetups.filter((meetup) => {
-    const dt = parseEventDate(meetup.eventDate)
-    return dt ? dt.hasSame(DateTime.now(), 'day') : false
+    return meetup.date ? isDateToday(new Date(meetup.date)) : false
   })
 )
 
@@ -71,7 +59,6 @@ const nextMeetupId = computed(() => nextMeetup.value?.id)
 
 <template>
   <Head title="All Meetups" />
-  <DefaultLayout>
     <main class="relative min-h-screen pt-40 pb-32">
       <div class="contain relative z-10 max-w-5xl">
         <!-- Page Header -->
@@ -142,7 +129,6 @@ const nextMeetupId = computed(() => nextMeetup.value?.id)
         </div>
       </div>
     </main>
-  </DefaultLayout>
 </template>
 
 <style scoped>

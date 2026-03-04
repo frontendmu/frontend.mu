@@ -1,29 +1,11 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3'
-import DefaultLayout from '~/layouts/DefaultLayout.vue'
 import { sanitizeHtml } from '~/composables/useSanitize'
-
-interface Meetup {
-  id: number
-  title: string
-  date: string
-  location: string
-  venue: string
-  description: string | null
-}
-
-interface Sponsor {
-  id: string
-  name: string
-  website: string | null
-  description: string | null
-  sponsorTypes: string[]
-  darkbg: boolean
-}
+import type { SponsorDto, EventSummaryDto } from '~/types'
 
 interface Props {
-  sponsor: Sponsor | null
-  meetups: Meetup[]
+  sponsor: SponsorDto | null
+  meetups: EventSummaryDto[]
 }
 
 defineProps<Props>()
@@ -40,7 +22,6 @@ function formatDate(dateStr: string): string {
 
 <template>
   <Head :title="sponsor?.name || 'Sponsor'" />
-  <DefaultLayout>
     <main class="relative min-h-screen pt-40 pb-32">
       <div class="contain relative z-10 max-w-5xl">
         <nav class="mb-12">
@@ -126,7 +107,6 @@ function formatDate(dateStr: string): string {
             </div>
           </section>
         </template>
-        </template>
 
         <template v-else>
           <div class="text-center py-32 space-y-8">
@@ -143,5 +123,4 @@ function formatDate(dateStr: string): string {
         </template>
       </div>
     </main>
-  </DefaultLayout>
 </template>

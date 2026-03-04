@@ -2,30 +2,23 @@
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { DateTime } from 'luxon'
 import { Head, Link, usePage, router } from '@inertiajs/vue3'
-import DefaultLayout from '~/layouts/DefaultLayout.vue'
 import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
 import { sanitizeHtml } from '~/composables/useSanitize'
-import type Event from '#models/event'
-import type Rsvp from '#models/rsvp'
-
-interface PublicAttendee {
-  id: string
-  name: string
-  avatarUrl: string | null
-  githubUsername: string | null
-}
+import { useApi } from '~/composables/useApi'
+import type { EventDto, RsvpDto, PublicAttendeeDto } from '~/types'
 
 interface Props {
-  meetup: Event | null
-  userRsvp: Rsvp | null
+  meetup: EventDto | null
+  userRsvp: RsvpDto | null
   rsvpCount: number
   canEdit: boolean
-  attendees: PublicAttendee[]
+  attendees: PublicAttendeeDto[]
 }
 
 const props = defineProps<Props>()
 
 const page = usePage()
+const { apiFetch } = useApi()
 const isAuthenticated = computed(() => page.props.auth?.isAuthenticated)
 const featureFlags = computed(() => (page.props as any).featureFlags || {})
 
@@ -46,9 +39,7 @@ const canRsvp = computed(() => {
   if (!props.meetup.acceptingRsvp) return false
   if (!featureFlags.value.rsvpPastEvents && isPast.value) return false
   if (props.meetup.rsvpClosingDate) {
-    const closingDate = typeof props.meetup.rsvpClosingDate === 'string'
-      ? DateTime.fromISO(props.meetup.rsvpClosingDate)
-      : DateTime.fromJSDate(props.meetup.rsvpClosingDate.toJSDate())
+    const closingDate = DateTime.fromISO(props.meetup.rsvpClosingDate)
     if (closingDate < DateTime.now()) return false
   }
   return true
@@ -81,22 +72,11 @@ async function handleRsvp() {
   rsvpSuccess.value = null
 
   try {
-    const response = await fetch(`/api/events/${props.meetup.id}/rsvp`, {
+    const { ok, data } = await apiFetch<{ message: string }>(`/api/events/${props.meetup.id}/rsvp`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-XSRF-TOKEN': decodeURIComponent(
-          document.cookie
-            .split('; ')
-            .find((row) => row.startsWith('XSRF-TOKEN='))
-            ?.split('=')[1] || ''
-        ),
-      },
     })
 
-    const data = await response.json()
-
-    if (response.ok) {
+    if (ok) {
       rsvpSuccess.value = data.message
       router.reload()
     } else {
@@ -117,22 +97,11 @@ async function handleCancelRsvp() {
   rsvpSuccess.value = null
 
   try {
-    const response = await fetch(`/api/events/${props.meetup.id}/rsvp`, {
+    const { ok, data } = await apiFetch<{ message: string }>(`/api/events/${props.meetup.id}/rsvp`, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-XSRF-TOKEN': decodeURIComponent(
-          document.cookie
-            .split('; ')
-            .find((row) => row.startsWith('XSRF-TOKEN='))
-            ?.split('=')[1] || ''
-        ),
-      },
     })
 
-    const data = await response.json()
-
-    if (response.ok) {
+    if (ok) {
       rsvpSuccess.value = data.message
       router.reload()
     } else {
@@ -146,11 +115,8 @@ async function handleCancelRsvp() {
 }
 
 const eventDate = computed(() => {
-  if (!props.meetup?.eventDate) return null
-  const date = props.meetup.eventDate
-  if (typeof date === 'string') return DateTime.fromISO(date)
-  if (typeof date === 'object' && 'toJSDate' in date) return DateTime.fromJSDate(date.toJSDate())
-  return DateTime.fromISO(date as unknown as string)
+  if (!props.meetup?.date) return null
+  return DateTime.fromISO(props.meetup.date)
 })
 
 const isUpcoming = computed(() =>
@@ -215,7 +181,6 @@ const calendarUrl = computed(() => {
 
 <template>
   <Head :title="meetup?.title || 'Meetup'" />
-  <DefaultLayout>
     <main class="relative min-h-screen pt-40 pb-32">
       <div class="contain relative z-10 max-w-5xl">
         <template v-if="meetup">
@@ -440,7 +405,6 @@ const calendarUrl = computed(() => {
         </div>
       </Transition>
     </Teleport>
-  </DefaultLayout>
 </template>
 
 <style scoped>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3'
-import DefaultLayout from '~/layouts/DefaultLayout.vue'
 import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
 
 interface Organizer {
@@ -21,8 +20,8 @@ interface CommunityMember {
 interface Speaker {
   id: string
   name: string
-  github_account: string | null
-  avatar_url: string | null
+  githubUsername: string | null
+  avatarUrl: string | null
 }
 
 interface Contributor {
@@ -46,8 +45,7 @@ function getGithubUrl(username: string) {
 
 <template>
   <Head title="Team" />
-  <DefaultLayout>
-    <main class="relative min-h-screen pt-40 pb-32">
+  <main class="relative min-h-screen pt-40 pb-32">
       <div class="contain relative z-10 max-w-5xl">
         <!-- Page Header -->
         <div class="mb-20 space-y-4">
@@ -120,8 +118,8 @@ function getGithubUrl(username: string) {
                 <SpeakerAvatar
                   size="full"
                   :name="speaker.name"
-                  :github-username="speaker.github_account"
-                  :avatar-url="speaker.avatar_url"
+                  :github-username="speaker.githubUsername"
+                  :avatar-url="speaker.avatarUrl"
                   class="w-full aspect-square grayscale group-hover:grayscale-0"
                 />
                 <p class="text-[9px] font-bold text-center text-gray-400 group-hover:text-verse-500 transition-colors truncate">
@@ -172,5 +170,4 @@ function getGithubUrl(username: string) {
         </div>
       </div>
     </main>
-  </DefaultLayout>
 </template>

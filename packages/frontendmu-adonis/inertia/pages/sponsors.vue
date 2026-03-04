@@ -1,18 +1,9 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3'
-import DefaultLayout from '~/layouts/DefaultLayout.vue'
-
-interface Sponsor {
-  id: string
-  name: string
-  website: string | null
-  description: string | null
-  sponsorTypes: string[]
-  darkbg: boolean
-}
+import type { SponsorDto } from '~/types'
 
 interface Props {
-  sponsors: Sponsor[]
+  sponsors: SponsorDto[]
 }
 
 defineProps<Props>()
@@ -20,7 +11,6 @@ defineProps<Props>()
 
 <template>
   <Head title="Sponsors" />
-  <DefaultLayout>
     <main class="relative min-h-screen pt-40 pb-32">
       <div class="contain relative z-10 max-w-5xl">
         <!-- Page Header -->
@@ -90,5 +80,4 @@ defineProps<Props>()
         </div>
       </div>
     </main>
-  </DefaultLayout>
 </template>
