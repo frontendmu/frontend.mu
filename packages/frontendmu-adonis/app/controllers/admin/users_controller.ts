@@ -1,32 +1,22 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import Role from '#models/role'
-import vine from '@vinejs/vine'
 import UserPolicy from '#policies/user_policy'
 import { resolveAvatarUrl } from '#dtos/factories'
-
-const updateUserValidator = vine.compile(
-  vine.object({
-    name: vine.string().trim().minLength(1).maxLength(255),
-    email: vine.string().email().optional(),
-    roleIds: vine.array(vine.number()).minLength(1),
-    githubUsername: vine.string().trim().maxLength(100).optional(),
-    bio: vine.string().trim().maxLength(2000).optional(),
-    linkedinUrl: vine.string().url().optional(),
-    twitterUrl: vine.string().url().optional(),
-    websiteUrl: vine.string().url().optional(),
-    featured: vine.boolean().optional(),
-    isOrganizer: vine.boolean().optional(),
-    isCommunityMember: vine.boolean().optional(),
-  })
-)
+import { updateUserValidator } from '#validators/user_validator'
+import db from '@adonisjs/lucid/services/db'
 
 export default class AdminUsersController {
   async index({ inertia, bouncer, request }: HttpContext) {
     await bouncer.with(UserPolicy).authorize('viewAny')
 
-    const roleFilter = request.input('role', 'all')
+    const rawRole = request.input('role', 'all')
     const search = request.input('search', '')
+
+    // Validate role filter against actual roles in DB
+    const allRoles = await Role.query().orderBy('name', 'asc')
+    const validRoleNames = ['all', ...allRoles.map((r) => r.name)]
+    const roleFilter = validRoleNames.includes(rawRole) ? rawRole : 'all'
 
     let query = User.query().preload('roles').orderBy('createdAt', 'desc')
 
@@ -45,8 +35,6 @@ export default class AdminUsersController {
     }
 
     const users = await query
-
-    const allRoles = await Role.query().orderBy('name', 'asc')
 
     const roleCounts: Record<string, number> = { all: 0 }
     for (const role of allRoles) {
@@ -130,28 +118,31 @@ export default class AdminUsersController {
       return response.badRequest('You cannot remove superadmin role from yourself.')
     }
 
-    user.merge({
-      name: data.name,
-      email: data.email || null,
-      githubUsername: data.githubUsername || null,
-      bio: data.bio || null,
-      linkedinUrl: data.linkedinUrl || null,
-      twitterUrl: data.twitterUrl || null,
-      websiteUrl: data.websiteUrl || null,
-      featured: data.featured || false,
-      isOrganizer: data.isOrganizer || false,
-      isCommunityMember: data.isCommunityMember || false,
-    })
-
-    await user.save()
-
+    // Authorize role assignment before saving anything
     await bouncer.with(UserPolicy).authorize('assignRoles')
 
     if (superadminRole && data.roleIds.includes(superadminRole.id) && !isSuperadmin) {
       return response.forbidden('Only superadmins can assign the superadmin role.')
     }
 
-    await user.related('roles').sync(data.roleIds)
+    // Wrap save + role sync in transaction
+    await db.transaction(async (trx) => {
+      user.useTransaction(trx)
+      user.merge({
+        name: data.name,
+        email: data.email || null,
+        githubUsername: data.githubUsername || null,
+        bio: data.bio || null,
+        linkedinUrl: data.linkedinUrl || null,
+        twitterUrl: data.twitterUrl || null,
+        websiteUrl: data.websiteUrl || null,
+        featured: data.featured || false,
+        isOrganizer: data.isOrganizer || false,
+        isCommunityMember: data.isCommunityMember || false,
+      })
+      await user.save()
+      await user.related('roles').sync(data.roleIds)
+    })
 
     user.clearRbacCache()
 

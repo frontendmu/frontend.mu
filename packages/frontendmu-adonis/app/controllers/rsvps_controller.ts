@@ -1,15 +1,16 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Event from '#models/event'
 import Rsvp from '#models/rsvp'
-import User from '#models/user'
 import { rsvpToEvent, cancelRsvp } from '#abilities/main'
+import { toRsvp } from '#dtos/factories'
+import db from '@adonisjs/lucid/services/db'
 
 export default class RsvpsController {
   /**
    * Create a new RSVP for the authenticated user
    */
   async store({ auth, bouncer, params, response }: HttpContext) {
-    const user = auth.user as User
+    const user = auth.getUserOrFail()
     const event = await Event.findOrFail(params.eventId)
 
     // Check if user is authorized to RSVP to this event
@@ -32,46 +33,57 @@ export default class RsvpsController {
         await existingRsvp.save()
         return response.ok({
           message: 'Your RSVP has been reactivated.',
-          rsvp: existingRsvp,
+          rsvp: toRsvp(existingRsvp),
         })
       }
 
       return response.conflict({
         message: 'You have already RSVPd to this event.',
-        rsvp: existingRsvp,
+        rsvp: toRsvp(existingRsvp),
       })
     }
 
-    // Check if event has seat limit
-    let status: 'confirmed' | 'waitlist' = 'confirmed'
-    if (event.seatsAvailable) {
-      const confirmedCount = await Rsvp.query()
-        .where('eventId', event.id)
-        .where('status', 'confirmed')
-        .count('* as total')
-        .first()
+    // Wrap seat check + RSVP creation in a transaction with FOR UPDATE lock
+    const result = await db.transaction(async (trx) => {
+      const lockedEvent = await Event.query({ client: trx })
+        .where('id', params.eventId)
+        .forUpdate()
+        .firstOrFail()
 
-      const totalConfirmed = Number(confirmedCount?.$extras.total || 0)
-      if (totalConfirmed >= event.seatsAvailable) {
-        status = 'waitlist'
+      let status: 'confirmed' | 'waitlist' = 'confirmed'
+      if (lockedEvent.seatsAvailable) {
+        const confirmedCount = await Rsvp.query({ client: trx })
+          .where('eventId', lockedEvent.id)
+          .where('status', 'confirmed')
+          .count('* as total')
+          .first()
+
+        const totalConfirmed = Number(confirmedCount?.$extras.total || 0)
+        if (totalConfirmed >= lockedEvent.seatsAvailable) {
+          status = 'waitlist'
+        }
       }
-    }
 
-    // Create the RSVP
-    const rsvp = await Rsvp.create({
-      userId: user.id,
-      eventId: event.id,
-      status,
+      const rsvp = await Rsvp.create(
+        {
+          userId: user.id,
+          eventId: lockedEvent.id,
+          status,
+        },
+        { client: trx }
+      )
+
+      return { rsvp, status }
     })
 
     const message =
-      status === 'confirmed'
+      result.status === 'confirmed'
         ? 'You have successfully RSVPd to this event!'
         : 'The event is full. You have been added to the waitlist.'
 
     return response.created({
       message,
-      rsvp,
+      rsvp: toRsvp(result.rsvp),
     })
   }
 
@@ -79,7 +91,7 @@ export default class RsvpsController {
    * Cancel the authenticated user's RSVP
    */
   async destroy({ auth, bouncer, params, response }: HttpContext) {
-    const user = auth.user as User
+    const user = auth.getUserOrFail()
 
     const rsvp = await Rsvp.query()
       .where('userId', user.id)
@@ -115,7 +127,6 @@ export default class RsvpsController {
       if (waitlistRsvp) {
         waitlistRsvp.status = 'confirmed'
         await waitlistRsvp.save()
-        // TODO: Send notification to promoted user
       }
     }
 
@@ -128,7 +139,8 @@ export default class RsvpsController {
    * Get RSVP status for the authenticated user for a specific event
    */
   async status({ auth, params, response }: HttpContext) {
-    const user = auth.user as User | undefined
+    await auth.check()
+    const user = auth.user
 
     if (!user) {
       return response.ok({
@@ -145,7 +157,7 @@ export default class RsvpsController {
 
     return response.ok({
       hasRsvp: !!rsvp,
-      rsvp,
+      rsvp: rsvp ? toRsvp(rsvp) : null,
     })
   }
 }

@@ -4,15 +4,9 @@ import { updateProfileValidator } from '#validators/profile_validator'
 import { toUserProfile } from '#dtos/factories'
 
 export default class ProfileController {
-  async show({ inertia, auth, response }: HttpContext) {
-    await auth.check()
-
-    if (!auth.isAuthenticated || !auth.user) {
-      return response.redirect().toRoute('auth.login.show')
-    }
-
+  async show({ inertia, auth }: HttpContext) {
     const user = await User.query()
-      .where('id', auth.user.id)
+      .where('id', auth.user!.id)
       .preload('roles')
       .firstOrFail()
 
@@ -22,15 +16,9 @@ export default class ProfileController {
   }
 
   async update({ request, response, auth, session }: HttpContext) {
-    await auth.check()
-
-    if (!auth.isAuthenticated || !auth.user) {
-      return response.redirect().toRoute('auth.login.show')
-    }
-
     const data = await request.validateUsing(updateProfileValidator)
 
-    const user = await User.findOrFail(auth.user.id)
+    const user = await User.findOrFail(auth.user!.id)
     user.merge({
       name: data.name,
       bio: data.bio || null,
