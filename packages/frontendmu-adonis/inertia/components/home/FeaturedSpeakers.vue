@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3'
+import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
 
 interface Speaker {
   id: string
@@ -14,11 +15,6 @@ interface Props {
 }
 
 defineProps<Props>()
-
-function getGithubUrl(username: string | null): string {
-  if (!username) return 'https://ui-avatars.com/api/?name=Speaker&background=random'
-  return `https://avatars.githubusercontent.com/${username}`
-}
 </script>
 
 <template>
@@ -47,42 +43,40 @@ function getGithubUrl(username: string | null): string {
       </div>
 
       <!-- Editorial Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-32 gap-x-12 lg:gap-x-24">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-48 gap-x-12 lg:gap-x-24">
         <div 
           v-for="(person, index) in speakers" 
           :key="person.id" 
           class="group relative"
-          :class="{ 'lg:translate-y-24': index % 3 === 1, 'lg:translate-y-48': index % 3 === 2 }"
+          :class="{ 'lg:translate-y-16': index % 3 === 1, 'lg:translate-y-32': index % 3 === 2 }"
         >
           <!-- Decorative Numbering -->
           <div class="absolute -top-12 -left-6 text-8xl font-black text-gray-100 dark:text-verse-900/50 group-hover:text-verse-500/20 transition-colors z-0 select-none">
             {{ (index + 1).toString().padStart(2, '0') }}
           </div>
 
-          <!-- Custom Frame Container -->
-          <div class="relative z-10 aspect-[4/5] overflow-hidden rounded-[3rem] bg-gray-50 dark:bg-verse-900 shadow-2xl transition-all duration-700 group-hover:rounded-[1rem] group-hover:scale-[1.02]">
-            <img
-              class="w-full h-full object-cover transition-all duration-1000 grayscale group-hover:grayscale-0 group-hover:scale-110"
-              :src="getGithubUrl(person.github_account)"
-              :alt="person.name"
-            />
-            
-            <!-- Link Overlay -->
-            <Link 
-              :href="`/speaker/${person.id}`" 
-              class="absolute inset-0 z-20"
-              aria-label="View speaker profile"
-            />
+          <SpeakerAvatar
+            size="full"
+            :name="person.name"
+            :github-username="person.github_account"
+            class="relative z-10 aspect-[4/5] shadow-xl grayscale group-hover:grayscale-0 transition-all duration-700 border border-gray-100 dark:border-verse-800 group-hover:border-verse-500 rounded-[2.5rem]"
+          />
+          
+          <!-- Link Overlay -->
+          <Link 
+            :href="`/speaker/${person.id}`" 
+            class="absolute inset-0 z-20 rounded-[2.5rem]"
+            aria-label="View speaker profile"
+          />
 
             <!-- Hover Branding -->
             <div class="absolute top-6 right-6 z-30 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
-               <div class="bg-white/90 dark:bg-verse-950/90 backdrop-blur-md p-3 rounded-2xl shadow-xl border border-white/20">
-                 <svg class="w-6 h-6 text-verse-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               <div class="bg-white/90 dark:bg-verse-950/90 backdrop-blur-md p-3 rounded-2xl shadow-xl border border-white/20 dark:border-white/10">
+                 <svg class="w-6 h-6 text-verse-500 dark:text-verse-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                  </svg>
                </div>
             </div>
-          </div>
 
           <!-- Text Details -->
           <div class="mt-12 space-y-3 relative z-10">
@@ -107,7 +101,7 @@ function getGithubUrl(username: string | null): string {
           class="group relative inline-flex items-center gap-6 px-16 py-6 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full font-black uppercase tracking-[0.2em] overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-black/20 dark:shadow-white/10"
         >
           <span class="relative z-10">See all speakers</span>
-          <svg class="w-6 h-6 relative z-10 transition-transform group-hover:translate-x-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 relative z-10 text-white dark:text-gray-900 transition-transform group-hover:translate-x-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
           </svg>
           <div class="absolute inset-0 bg-verse-500 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-expo"></div>

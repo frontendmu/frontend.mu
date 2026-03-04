@@ -11,7 +11,7 @@ defineProps<Props>()
     :href="href"
     target="_blank"
     rel="noopener noreferrer"
-    class="group relative flex flex-col justify-between overflow-hidden rounded-[2rem] p-8 text-white transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl active:scale-95"
+    class="group relative flex flex-col justify-between overflow-hidden rounded-[2rem] squircle p-8 text-white transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl active:scale-95"
   >
     <!-- Glow Effect -->
     <div class="absolute -right-4 -top-4 h-32 w-32 rounded-full bg-white/20 blur-3xl transition-all duration-500 group-hover:scale-150 group-hover:bg-white/30"></div>

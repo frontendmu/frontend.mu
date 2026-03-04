@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Link } from '@inertiajs/vue3'
+import { Head, Link } from '@inertiajs/vue3'
+import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
 import type { Meetup } from '~/types'
 import { isDateInFuture } from '~/utils/date'
 
@@ -23,49 +24,77 @@ const formattedDate = computed(() => {
 const isUpcoming = computed(() => {
   return props.event.Date ? isDateInFuture(new Date(props.event.Date)) : false
 })
+
+const speakers = computed(() => {
+  return props.event.sessions
+    ?.flatMap((session) => session.Session_id?.speakers)
+    .filter(Boolean) || []
+})
 </script>
 
 <template>
   <div
-    class="group relative bg-white dark:bg-verse-900/20 border border-verse-100 dark:border-verse-800 rounded-3xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-verse-500/5 hover:-translate-y-1"
+    class="group relative bg-white dark:bg-verse-900/40 border border-verse-100 dark:border-verse-800 rounded-xl squircle p-4 transition-all duration-200 hover:border-verse-500/50 hover:bg-verse-50/30 dark:hover:bg-verse-800/40 shadow-sm dark:shadow-none"
   >
-    <Link :href="`/meetup/${event.id}`" class="absolute inset-0 z-10" />
-    
-    <div class="flex items-start gap-4">
-      <!-- Date Badge -->
-      <div class="flex flex-col items-center justify-center w-14 h-14 rounded-2xl bg-verse-50 dark:bg-verse-900 text-verse-600 dark:text-verse-400 font-black shrink-0 border border-verse-100 dark:border-verse-800">
-        <span class="text-xl leading-none">{{ formattedDate.day }}</span>
-        <span class="text-[10px] uppercase tracking-wider">{{ formattedDate.month }}</span>
+    <div class="flex items-center gap-4">
+      <!-- Minimal Date -->
+      <div class="flex flex-col items-center justify-center w-14 shrink-0 text-gray-400 dark:text-gray-400 group-hover:text-verse-500 transition-colors">
+        <span class="text-2xl font-black leading-none tracking-tighter">{{ formattedDate.day }}</span>
+        <span class="text-xs font-bold uppercase tracking-widest">{{ formattedDate.month }}</span>
       </div>
 
-      <div class="flex-1 space-y-3">
-        <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-verse-500 transition-colors line-clamp-2">
-          {{ event.title }}
-        </h3>
-
-        <div class="flex flex-wrap items-center gap-3 text-sm font-medium text-gray-500 dark:text-gray-400">
-          <div v-if="event.Venue" class="flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-verse-500/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <span class="truncate max-w-[120px]">{{ event.Venue }}</span>
+      <div class="flex-1 min-w-0 space-y-3">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 truncate">
+              {{ event.title }}
+            </h3>
+            <span v-if="isUpcoming" class="shrink-0 text-[10px] font-black uppercase tracking-widest bg-green-500 text-white px-2 py-0.5 rounded">
+              Upcoming
+            </span>
           </div>
-          
-          <div v-if="event.Attendees" class="flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-verse-500/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-            {{ event.Attendees }}
+
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono text-gray-500 dark:text-gray-400">
+            <div v-if="event.Venue" class="flex items-center gap-1">
+              <span class="opacity-50 text-verse-500 dark:text-verse-400">@</span>
+              <span class="truncate max-w-[180px]">{{ event.Venue }}</span>
+            </div>
+            
+            <div v-if="event.Attendees" class="flex items-center gap-1">
+              <span class="opacity-50 text-verse-500 dark:text-verse-400">#</span>
+              {{ event.Attendees }} attendees
+            </div>
           </div>
         </div>
+
+        <!-- Speakers Prominent Row -->
+        <div v-if="speakers.length > 0" class="flex items-center gap-3 relative z-20">
+          <div class="flex -space-x-2">
+            <template v-for="speaker in speakers.slice(0, 4)" :key="speaker?.id">
+              <SpeakerAvatar
+                size="sm"
+                :name="speaker.name"
+                :github-username="speaker.github_account"
+                class="border border-white dark:border-verse-950 shadow-sm transition-transform hover:scale-110 hover:z-30"
+              />
+            </template>
+            <div v-if="speakers.length > 4" class="w-8 h-8 rounded-full bg-verse-50 dark:bg-verse-900 border border-white dark:border-verse-950 flex items-center justify-center text-[10px] font-black text-verse-600">
+              +{{ speakers.length - 4 }}
+            </div>
+          </div>
+          <span class="text-xs font-bold text-gray-500 dark:text-gray-400">
+            {{ speakers[0].name }}<template v-if="speakers.length > 1"> & {{ speakers.length - 1 }} others</template>
+          </span>
+        </div>
+      </div>
+
+      <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+        <svg class="w-4 h-4 text-verse-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
       </div>
     </div>
-
-    <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-      <svg class="w-5 h-5 text-verse-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-      </svg>
-    </div>
+    
+    <Link :href="`/meetup/${event.id}`" class="absolute inset-0 z-20" aria-label="View event details" />
   </div>
 </template>

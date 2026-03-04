@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { DateTime } from 'luxon'
 import { Link } from '@inertiajs/vue3'
+import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
 import Event from '#models/event'
 
 interface Props {
@@ -15,10 +16,6 @@ const props = withDefaults(defineProps<Props>(), {
   isMeetupToday: false,
 })
 
-const isHighlightedEvent = computed(
-  () => props.isNextMeetup || props.isMeetupToday
-)
-
 const parseEventDate = (date: unknown): DateTime | null => {
   if (!date) return null
   if (typeof date === 'string') return DateTime.fromISO(date)
@@ -26,128 +23,90 @@ const parseEventDate = (date: unknown): DateTime | null => {
   return DateTime.fromISO(date as unknown as string)
 }
 
-const isUpcoming = computed(() => {
-  const dt = parseEventDate(props.event.eventDate)
-  return dt ? dt > DateTime.now() : false
-})
+const dt = computed(() => parseEventDate(props.event.eventDate))
 
 const formattedDate = computed(() => {
-  const dt = parseEventDate(props.event.eventDate)
-  return dt?.toFormat('dd MMM yyyy') ?? ''
+  return {
+    day: dt.value?.day ?? '',
+    month: dt.value?.monthShort ?? '',
+    year: dt.value?.year ?? ''
+  }
+})
+
+const isUpcoming = computed(() => {
+  return dt.value ? dt.value > DateTime.now() : false
 })
 
 const speakers = computed(() => {
   return props.event.sessions
-    .flatMap((session) => session.speakers || [])
-    .filter(Boolean)
+    ?.flatMap((session) => session.speakers || [])
+    .filter(Boolean) || []
 })
 </script>
 
 <template>
   <div
-    class="group group/event in-card bg-white dark:bg-verse-700/30 dark:backdrop-blur-sm border-2 rounded-xl overflow-hidden hover:border-verse-500 transition-all duration-300"
-    :class="[
-      event?.album ? 'col-span-2 md:col-span-1' : 'md:col-span-1 col-span-2',
-      isHighlightedEvent
-        ? 'border-green-600 dark:border-green-500'
-        : 'border-verse-50 dark:border-white/10',
-    ]">
-    <div
-      class="relative flex overflow-clip h-full flex-col md:flex-row justify-between w-full transition-all duration-300 group-hover[.in-card]:shadow-lg">
-      <!-- Background gradient -->
-      <div
-        class="inset-0 absolute z-0 bg-gradient-to-r from-white via-white dark:from-verse-900 dark:via-verse-900 to-transparent" />
+    class="group relative bg-white dark:bg-verse-900/40 border border-verse-100 dark:border-verse-800 rounded-xl squircle p-4 transition-all duration-200 hover:border-verse-500/50 hover:bg-verse-50/30 dark:hover:bg-verse-800/40 shadow-sm dark:shadow-none"
+  >
+    <div class="flex items-center gap-4">
+      <!-- Minimal Date -->
+      <div class="flex flex-col items-center justify-center w-14 shrink-0 text-gray-400 dark:text-gray-400 group-hover:text-verse-500 transition-colors">
+        <span class="text-2xl font-black leading-none tracking-tighter">{{ formattedDate.day }}</span>
+        <span class="text-xs font-bold uppercase tracking-widest">{{ formattedDate.month }}</span>
+      </div>
 
-      <!-- Link overlay -->
-      <Link class="absolute inset-0 z-10" :href="`/meetup/${event.id}`">
-        <span class="sr-only">View details for {{ event?.title }}</span>
-      </Link>
-
-      <div class="relative z-5 flex flex-col p-4 w-full justify-between gap-4">
-        <template v-if="event.eventDate">
-          <div class="flex flex-col font-mono text-sm font-medium gap-2 w-full justify-between" :class="[
-            isMeetupToday || isUpcoming
-              ? 'text-green-600 font-bold'
-              : 'text-verse-900 dark:text-verse-300',
-          ]">
-            <!-- Title -->
-            <div class="flex items-center justify-between">
-              <h3
-                class="text-2xl font-semibold text-verse-500 dark:text-white group-hover[.in-card]:text-verse-500 w-75 max-w-full md:w-96 focus:outline-none"
-                :title="`Meetup ${event?.title}`">
-                {{ event?.title }}
-              </h3>
-
-              <template v-if="isNextMeetup">
-                <span class="bg-green-700 text-sm font-mono justify-end text-white px-3 rounded-md font-bold">
-                  NEXT MEETUP
-                </span>
-              </template>
-
-              <template v-if="isMeetupToday">
-                <span aria-label="This meetup is happening today"
-                  class="flex flex-row items-center gap-1 text-sm font-mono justify-end text-red-800 dark:text-red-300 ps-2 pe-3 rounded-md font-bold outline outline-1">
-                  <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                  <span>TODAY</span>
-                </span>
-              </template>
-            </div>
-
-            <div class="flex items-center gap-2">
-              <!-- Date -->
-              <div class="flex items-center">
-                <svg class="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor">
-                  <path
-                    d="M26 4h-4V2h-2v2h-8V2h-2v2H6c-1.1 0-2 .9-2 2v20c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 22H6V12h20zm0-16H6V6h4v2h2V6h8v2h2V6h4z" />
-                </svg>
-                <span>{{ formattedDate }}</span>
-              </div>
-
-              <div v-if="event.venue"
-                class="flex gap-1 md:gap-0 items-center justify-start text-base font-medium leading-3 md:leading-5">
-                <svg class="mr-1.5 h-4 w-4 flex-shrink-0 truncate" xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 32 32" fill="currentColor">
-                  <path
-                    d="M16 2A11.013 11.013 0 0 0 5 13a10.889 10.889 0 0 0 2.216 6.6s.3.395.349.452L16 30l8.439-9.953c.044-.053.345-.447.345-.447l.001-.003A10.885 10.885 0 0 0 27 13A11.013 11.013 0 0 0 16 2m0 15a4 4 0 1 1 4-4a4.005 4.005 0 0 1-4 4" />
-                </svg>
-                <div class="pt-[2px] line-clamp-1 md:line-clamp-none">
-                  {{ event.venue }}
-                </div>
-              </div>
+      <div class="flex-1 min-w-0 space-y-3">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 truncate">
+              {{ event.title }}
+            </h3>
+            <div v-if="isMeetupToday || isNextMeetup" class="shrink-0 flex gap-1">
+              <span v-if="isMeetupToday" class="text-[10px] font-black uppercase tracking-widest bg-red-500 text-white px-2 py-0.5 rounded">
+                Today
+              </span>
+              <span v-else-if="isNextMeetup" class="text-[10px] font-black uppercase tracking-widest bg-green-500 text-white px-2 py-0.5 rounded">
+                Next
+              </span>
             </div>
           </div>
-        </template>
 
-        <div class="flex justify-between items-end">
-          <!-- Speakers -->
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono text-gray-500 dark:text-gray-400">
+            <div v-if="event.venue" class="flex items-center gap-1">
+              <span class="opacity-50 text-verse-500 dark:text-verse-300">@</span>
+              <span class="truncate max-w-[180px]">{{ event.venue }}</span>
+            </div>
+            
+            <div v-if="event.attendeeCount" class="flex items-center gap-1">
+              <span class="opacity-50 text-verse-500 dark:text-verse-300">#</span>
+              {{ event.attendeeCount }} attendees
+            </div>
+          </div>
+        </div>
+
+        <!-- Speakers Prominent Row -->
+        <div v-if="speakers.length > 0" class="flex items-center gap-3 relative z-20">
           <div class="flex -space-x-2">
-            <template v-for="speaker in speakers.slice(0, 5)" :key="speaker?.id">
-              <img v-if="speaker?.githubUsername"
-                :src="`https://avatars.githubusercontent.com/${speaker.githubUsername}`" :alt="speaker.name"
-                class="w-8 h-8 rounded-full border-2 border-white dark:border-verse-800 object-cover" />
+            <template v-for="speaker in speakers.slice(0, 4)" :key="speaker?.id">
+              <SpeakerAvatar
+                size="sm"
+                :name="speaker.name"
+                :github-username="speaker.githubUsername"
+                :avatar-url="speaker.avatarUrl"
+                class="border border-white dark:border-verse-950 shadow-sm transition-transform hover:scale-110 hover:z-30"
+              />
             </template>
-            <span v-if="speakers.length > 5"
-              class="w-8 h-8 rounded-full border-2 border-white dark:border-verse-800 bg-verse-200 dark:bg-verse-700 flex items-center justify-center text-xs font-medium">
-              +{{ speakers.length - 5 }}
-            </span>
-          </div>
-
-          <!-- Attendees -->
-          <template v-if="event.attendeeCount">
-            <div class="flex items-center border-gray-100 bg-white/70 dark:bg-verse-950/60 rounded-full px-2"
-              title="Attendees">
-              <svg class="mr-1.5 h-4 w-4 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"
-                fill="currentColor">
-                <path
-                  d="M31 30h-2v-5a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3v5h-2v-5a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5zM24 12a3 3 0 1 1-3 3a3 3 0 0 1 3-3m0-2a5 5 0 1 0 5 5a5 5 0 0 0-5-5M15 22h-2v-5a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v5H1v-5a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5zM8 4a3 3 0 1 1-3 3a3 3 0 0 1 3-3m0-2a5 5 0 1 0 5 5a5 5 0 0 0-5-5" />
-              </svg>
-              <div class="pt-[2px] line-clamp-1 md:line-clamp-none">
-                {{ event?.attendeeCount === 0 ? 'No' : event?.attendeeCount }}
-              </div>
+            <div v-if="speakers.length > 4" class="w-8 h-8 rounded-lg bg-verse-50 dark:bg-verse-900 border border-white dark:border-verse-950 flex items-center justify-center text-[10px] font-black text-verse-600">
+              +{{ speakers.length - 4 }}
             </div>
-          </template>
+          </div>
+          <span class="text-xs font-bold text-gray-500 dark:text-gray-400">
+            {{ speakers[0].name }}<template v-if="speakers.length > 1"> & {{ speakers.length - 1 }} others</template>
+          </span>
         </div>
       </div>
     </div>
+    
+    <Link :href="`/meetup/${event.id}`" class="absolute inset-0 z-20" aria-label="View event details" />
   </div>
 </template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Link } from '@inertiajs/vue3'
+import { Head, Link } from '@inertiajs/vue3'
+import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
 import type { Meetup } from '~/types'
 
 interface Props {
@@ -32,37 +33,32 @@ const speakers = computed(() => {
 
 <template>
   <div
-    class="relative overflow-hidden rounded-[2.5rem] group p-1 transition-all duration-500 hover:scale-[1.01]"
+    class="relative overflow-hidden rounded-[2.5rem] squircle group transition-all duration-500 hover:scale-[1.01] border-2"
     :class="[
       isToday
-        ? 'bg-gradient-to-br from-red-500 via-orange-500 to-yellow-500 shadow-2xl shadow-red-500/20'
-        : 'bg-gradient-to-br from-verse-600 via-verse-500 to-green-500 shadow-2xl shadow-verse-500/20',
+        ? 'border-red-500/50 shadow-2xl shadow-red-500/10'
+        : 'border-verse-500/50 shadow-2xl shadow-verse-500/10',
     ]"
   >
-    <div class="relative z-10 bg-white/95 dark:bg-verse-950/90 backdrop-blur-2xl rounded-[2.3rem] p-8 md:p-12 flex flex-col lg:flex-row gap-10 items-center justify-between">
+    <div class="relative z-10 bg-white dark:bg-verse-950 rounded-[2.3rem] squircle p-6 md:p-10 flex flex-col lg:flex-row gap-10 items-center justify-between">
       
       <div class="flex-1 space-y-6 text-center lg:text-left">
         <!-- Status Badge -->
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-[0.2em] border-2"
-          :class="[
-            isToday 
-              ? 'bg-red-500/10 border-red-500/20 text-red-600 dark:text-red-400' 
-              : 'bg-green-500/10 border-green-500/20 text-green-600 dark:text-green-400'
-          ]">
+        <div v-if="isToday" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-[0.2em] border-2 bg-red-500/10 border-red-500/20 text-red-600 dark:text-red-400">
           <span class="relative flex h-2 w-2">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-current opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2 w-2 bg-current"></span>
           </span>
-          {{ isToday ? "Happening Today" : "Upcoming Experience" }}
+          Happening Today
         </div>
 
         <!-- Title -->
-        <h3 class="text-4xl md:text-6xl font-black tracking-tight text-gray-900 dark:text-white leading-[1.1]">
+        <h3 class="text-5xl md:text-7xl font-black tracking-tight text-gray-900 dark:text-white leading-[1.1]">
           {{ event?.title }}
         </h3>
 
         <!-- Meta info -->
-        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-gray-500 dark:text-gray-400 font-bold">
+        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-gray-500 dark:text-gray-400 font-bold text-lg">
           <div class="flex items-center gap-2">
             <svg class="w-5 h-5 text-verse-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -82,19 +78,19 @@ const speakers = computed(() => {
         <div class="flex flex-col sm:flex-row items-center gap-8 pt-4">
           <Link
             :href="`/meetup/${event.id}`"
-            class="w-full sm:w-auto px-10 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all"
+            class="relative z-20 w-full sm:w-auto px-10 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all"
           >
             {{ isToday ? 'Join Now' : 'Save My Spot' }}
           </Link>
 
-          <div v-if="speakers.length > 0" class="flex items-center gap-3">
+          <div v-if="speakers.length > 0" class="relative z-20 flex items-center gap-3">
             <div class="flex -space-x-3">
               <template v-for="speaker in speakers.slice(0, 3)" :key="speaker?.id">
-                <img
-                  v-if="speaker?.github_account"
-                  :src="`https://avatars.githubusercontent.com/${speaker.github_account}`"
-                  :alt="speaker.name"
-                  class="w-12 h-12 rounded-full border-4 border-white dark:border-verse-950 object-cover ring-2 ring-verse-500/20"
+                <SpeakerAvatar
+                  size="md"
+                  :name="speaker.name"
+                  :github-username="speaker.github_account"
+                  class="border-4 border-white dark:border-verse-950 shadow-lg ring-2 ring-verse-500/20"
                 />
               </template>
               <div v-if="speakers.length > 3" class="w-12 h-12 rounded-full bg-verse-100 dark:bg-verse-900 border-4 border-white dark:border-verse-950 flex items-center justify-center text-xs font-black text-verse-600 dark:text-verse-400 ring-2 ring-verse-500/20">
@@ -110,11 +106,12 @@ const speakers = computed(() => {
       </div>
 
       <!-- Date Large Display (hidden on mobile) -->
-      <div class="hidden lg:flex flex-col items-center justify-center w-48 h-48 rounded-[2rem] bg-verse-50 dark:bg-verse-900/30 border-2 border-verse-100 dark:border-verse-800 rotate-3 group-hover:rotate-0 transition-transform duration-500">
+      <div class="hidden lg:flex flex-col items-center justify-center w-40 h-40 rounded-[2rem] bg-verse-50 dark:bg-verse-900/30 border-2 border-verse-100 dark:border-verse-800 rotate-3 group-hover:rotate-0 transition-transform duration-500">
         <span class="text-5xl font-black text-verse-500 leading-none">{{ new Date(event.Date).getDate() }}</span>
         <span class="text-lg font-black uppercase tracking-[0.2em] text-gray-400">{{ new Date(event.Date).toLocaleString('en-US', { month: 'short' }) }}</span>
       </div>
 
     </div>
+    <Link :href="`/meetup/${event.id}`" class="absolute inset-0 z-10" aria-label="View event details" />
   </div>
 </template>

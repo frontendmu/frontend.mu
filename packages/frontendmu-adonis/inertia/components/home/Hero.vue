@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import Logo from '~/components/layout/Logo.vue'
+import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
 import type { Meetup } from '~/types'
 import { isDateInFuture, isDateToday } from '~/utils/date'
 
@@ -33,15 +34,6 @@ function formatDate(dateStr: string) {
 
 <template>
   <section class="relative min-h-[calc(100vh-5rem)] flex items-center overflow-hidden">
-    <!-- Abstract Background - Minimal Pattern Focused -->
-    <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-      <!-- Grid pattern overlay -->
-      <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM5QzYyRDAiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTAgMGg0MHY0MEgwVjB6bTIwIDIwdjIwSDBWMjBoMjB6bTIwIDB2MjBIMjBWMjBoMjB6TTAgMGgyMHYyMEgwVjB6bTIwIDBoMjB2MjBIMjBWMHoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40 dark:opacity-60"></div>
-
-      <!-- Grain Texture Overlay -->
-      <div class="absolute inset-0 opacity-[0.1] dark:opacity-[0.2] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
-    </div>
-
     <div class="contain relative z-10 w-full">
       <div class="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-24">
         <!-- Text Content -->
@@ -68,6 +60,27 @@ function formatDate(dateStr: string) {
             {{ description }}
           </p>
 
+          <!-- Dynamic Event Card -->
+          <div v-if="featuredEvent" class="flex justify-center lg:justify-start pt-4">
+            <Link :href="`/meetup/${featuredEvent.id}`" class="group relative flex items-center gap-5 bg-white/80 dark:bg-verse-900/40 backdrop-blur-xl border border-verse-200 dark:border-verse-800 p-4 pr-10 rounded-[2rem] transition-all hover:scale-[1.02] hover:shadow-xl hover:border-verse-400 dark:hover:border-verse-500 text-left">
+              <div class="flex flex-col items-center justify-center w-14 h-14 rounded-2xl bg-verse-500 text-white font-black shrink-0 shadow-lg shadow-verse-500/20">
+                <span class="text-xl leading-none">{{ formatDate(featuredEvent.Date).day }}</span>
+                <span class="text-[10px] uppercase tracking-wider">{{ formatDate(featuredEvent.Date).month }}</span>
+              </div>
+              <div>
+                <p class="text-[10px] font-black uppercase tracking-[0.25em] text-verse-500">{{ eventStatus }}</p>
+                <h3 class="font-bold text-gray-900 dark:text-white line-clamp-1 group-hover:text-verse-600 dark:group-hover:text-verse-400 transition-colors">
+                  {{ featuredEvent.title }}
+                </h3>
+              </div>
+              <div class="absolute -right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white dark:bg-verse-800 border border-verse-200 dark:border-verse-700 flex items-center justify-center shadow-md group-hover:bg-verse-500 group-hover:text-white transition-all">
+                <svg class="w-4 h-4 text-verse-500 dark:text-verse-300 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
+          </div>
+
           <!-- CTAs -->
           <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
             <Link
@@ -88,27 +101,6 @@ function formatDate(dateStr: string) {
               Join Discord
             </a>
           </div>
-
-          <!-- Dynamic Event Card -->
-          <div v-if="featuredEvent" class="flex justify-center lg:justify-start pt-4">
-            <Link :href="`/meetup/${featuredEvent.id}`" class="group relative flex items-center gap-5 bg-white/80 dark:bg-verse-900/40 backdrop-blur-xl border border-verse-200 dark:border-verse-800 p-4 pr-10 rounded-[2rem] transition-all hover:scale-[1.02] hover:shadow-xl hover:border-verse-400 dark:hover:border-verse-500 text-left">
-              <div class="flex flex-col items-center justify-center w-14 h-14 rounded-2xl bg-verse-500 text-white font-black shrink-0 shadow-lg shadow-verse-500/20">
-                <span class="text-xl leading-none">{{ formatDate(featuredEvent.Date).day }}</span>
-                <span class="text-[10px] uppercase tracking-wider">{{ formatDate(featuredEvent.Date).month }}</span>
-              </div>
-              <div>
-                <p class="text-[10px] font-black uppercase tracking-[0.25em] text-verse-500">{{ eventStatus }}</p>
-                <h3 class="font-bold text-gray-900 dark:text-white line-clamp-1 group-hover:text-verse-600 dark:group-hover:text-verse-400 transition-colors">
-                  {{ featuredEvent.title }}
-                </h3>
-              </div>
-              <div class="absolute -right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white dark:bg-verse-800 border border-verse-200 dark:border-verse-700 flex items-center justify-center shadow-md group-hover:bg-verse-500 group-hover:text-white transition-all">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            </Link>
-          </div>
         </div>
 
         <!-- Visual Element -->
@@ -116,7 +108,7 @@ function formatDate(dateStr: string) {
           <div class="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96">
             <div class="absolute inset-0 rounded-full border-2 border-dashed border-verse-500/20 animate-spin-slow"></div>
             <div class="absolute inset-6 rounded-full border border-verse-500/10 animate-spin-reverse-slow"></div>
-            <div class="absolute inset-12 rounded-[3.5rem] bg-white dark:bg-verse-900/40 backdrop-blur-2xl border border-verse-200 dark:border-verse-700 flex items-center justify-center shadow-2xl p-12 rotate-3 transition-transform hover:rotate-0 duration-500 group/logo">
+            <div class="absolute inset-12 rounded-[3.5rem] squircle bg-white dark:bg-verse-900/40 backdrop-blur-2xl border border-verse-200 dark:border-verse-700 flex items-center justify-center shadow-2xl p-12 rotate-3 transition-transform hover:rotate-0 duration-500 group/logo">
               <Logo class="w-full h-full text-verse-500 dark:text-white transition-transform duration-500 group-hover/logo:scale-110" />
             </div>
             <div class="absolute -top-4 -right-4 w-12 h-12 bg-red-500 rounded-2xl animate-float opacity-80 shadow-lg"></div>
