@@ -132,9 +132,9 @@ const isPast = computed(() =>
 )
 
 const eventStatus = computed(() => {
-  if (isToday.value) return 'Today'
-  if (isUpcoming.value) return 'Upcoming'
-  return 'Past'
+  if (isToday.value) return 'Live'
+  if (isUpcoming.value) return 'Scheduled'
+  return 'Past Record'
 })
 
 const formattedDate = computed(() =>
@@ -153,10 +153,10 @@ const daysUntil = computed(() => {
 
 const visibleAttendees = computed(() => {
   if (showAllAttendees.value) return props.attendees
-  return props.attendees.slice(0, 8)
+  return props.attendees.slice(0, 12)
 })
 
-const hasMoreAttendees = computed(() => props.attendees.length > 8)
+const hasMoreAttendees = computed(() => props.attendees.length > 12)
 
 // Handle scroll for mobile sticky bar
 function handleScroll() {
@@ -187,37 +187,21 @@ const calendarUrl = computed(() => {
 
 <template>
   <Head :title="meetup?.title || 'Meetup'" />
-    <main class="relative min-h-screen pt-40 pb-32">
+  <main class="relative min-h-screen pt-40 pb-32">
       <div class="contain relative z-10 max-w-5xl">
         <template v-if="meetup">
-          <!-- Header Navigation -->
-          <nav class="mb-12 flex items-center justify-between">
-            <Link href="/meetups"
-              class="group inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-verse-500 transition-colors">
-              <svg class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
-              </svg>
-              Archives
-            </Link>
-
-            <Link v-if="canEdit" :href="`/admin/events/${meetup.id}/edit`"
-              class="text-[10px] font-black uppercase tracking-widest text-verse-600 dark:text-verse-400 hover:text-verse-500 transition-colors">
-              Edit Event
-            </Link>
-          </nav>
-
           <!-- Main Layout -->
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
             <!-- Left Column: Content -->
-            <div class="lg:col-span-7 space-y-12">
-              <header class="space-y-4">
-                <h1 class="text-4xl md:text-6xl font-black tracking-tighter dark:text-gray-100 leading-none">
+            <div class="lg:col-span-7 space-y-16">
+              <header class="space-y-6">
+                <h1 class="text-5xl md:text-7xl font-black tracking-tighter dark:text-gray-100 leading-[0.9]">
                   {{ meetup.title }}
                 </h1>
               </header>
 
               <!-- Description -->
-              <section v-if="meetup.description" class="space-y-4">
+              <section v-if="meetup.description" class="space-y-6">
                 <div class="flex items-center gap-2">
                   <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Context</span>
                   <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
@@ -228,19 +212,26 @@ const calendarUrl = computed(() => {
               </section>
 
               <!-- Sessions/Talks -->
-              <section v-if="meetup.sessions.length" class="space-y-8">
+              <section v-if="meetup.sessions.length" class="space-y-10">
                 <div class="flex items-center gap-2">
                   <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Agenda</span>
                   <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
                 </div>
 
-                <div class="divide-y divide-gray-100 dark:divide-verse-900 border-y border-gray-100 dark:border-verse-900">
+                <div class="space-y-12">
                   <article v-for="(session, index) in meetup.sessions" :key="session.id"
-                    class="py-8 group">
-                    <div class="flex gap-6">
-                      <span class="text-lg font-black text-gray-200 dark:text-verse-800 tabular-nums">0{{ index + 1 }}</span>
+                    class="relative group">
+                    <div class="flex gap-8">
+                      <!-- Numbering -->
+                      <div class="relative shrink-0 flex flex-col items-center">
+                        <div class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-verse-900 border border-gray-100 dark:border-verse-800 flex items-center justify-center text-lg font-black text-gray-300 dark:text-verse-800 group-hover:text-verse-500 group-hover:border-verse-500 transition-colors">
+                          {{ (index + 1).toString().padStart(2, '0') }}
+                        </div>
+                        <div v-if="index !== meetup.sessions.length - 1" class="absolute top-10 bottom-[-3rem] w-px bg-gray-100 dark:bg-verse-900"></div>
+                      </div>
+
                       <div class="flex-1 space-y-6">
-                        <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
+                        <h3 class="text-2xl md:text-3xl font-black tracking-tight text-gray-900 dark:text-gray-100 leading-tight">
                           {{ session.title }}
                         </h3>
 
@@ -257,7 +248,7 @@ const calendarUrl = computed(() => {
                               <p class="text-sm font-bold text-gray-900 dark:text-gray-200 group-hover/speaker:text-verse-500 transition-colors">
                                 {{ speaker.name }}
                               </p>
-                              <p v-if="speaker.githubUsername" class="text-[10px] font-mono text-gray-400">
+                              <p v-if="speaker.githubUsername" class="text-[10px] font-mono text-gray-400 uppercase tracking-widest mt-0.5">
                                 @{{ speaker.githubUsername }}
                               </p>
                             </div>
@@ -275,6 +266,10 @@ const calendarUrl = computed(() => {
               <div class="sticky top-24 space-y-10">
                 <!-- Data Registry Card -->
                 <div class="bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-3xl squircle overflow-hidden shadow-sm">
+                  <div class="px-8 py-4 bg-gray-50 dark:bg-verse-900/60 border-b border-gray-100 dark:border-verse-800 flex justify-between items-center">
+                    <h3 class="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Data Registry</h3>
+                    <span class="text-[9px] font-mono text-verse-500">ID: {{ meetup.id.slice(0,8) }}</span>
+                  </div>
                   <div class="p-8 space-y-6">
                     <div class="grid grid-cols-1 gap-6">
                       <div class="flex items-baseline justify-between group/item">
@@ -302,8 +297,8 @@ const calendarUrl = computed(() => {
                       <div v-if="isUpcoming || isToday || (featureFlags.rsvpPastEvents && isPast && meetup.acceptingRsvp)">
                         <template v-if="!isAuthenticated && canRsvp">
                           <Link href="/login"
-                            class="block w-full py-3.5 text-center text-[10px] font-black uppercase tracking-[0.2em] bg-verse-600 text-white rounded-lg hover:bg-verse-700 transition-all">
-                            Authenticate to Register
+                            class="block w-full py-3.5 text-center text-[10px] font-black uppercase tracking-[0.2em] bg-verse-600 text-white rounded-lg hover:bg-verse-700 transition-all shadow-lg shadow-verse-600/20">
+                            Identify to Register
                           </Link>
                         </template>
                         <template v-else-if="isAuthenticated && canRsvp">
@@ -317,7 +312,7 @@ const calendarUrl = computed(() => {
                           </button>
                         </template>
                         <div v-else class="text-center p-3 bg-gray-50 dark:bg-verse-950/40 rounded-lg text-[9px] font-black text-gray-400 uppercase tracking-widest border border-gray-100 dark:border-verse-800">
-                          Registration Closed
+                          Registry Closed
                         </div>
                       </div>
                       
@@ -325,7 +320,7 @@ const calendarUrl = computed(() => {
                         <a v-if="calendarUrl" :href="calendarUrl" target="_blank"
                           class="flex-1 flex items-center justify-center gap-2 py-2.5 border border-gray-100 dark:border-verse-800 rounded-lg text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-verse-500 dark:hover:text-verse-400 transition-colors">
                           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                          Add to Calendar
+                          Log to Calendar
                         </a>
                         <button class="p-2.5 border border-gray-100 dark:border-verse-800 rounded-lg text-gray-400 hover:text-verse-500 transition-colors" aria-label="Share">
                           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
@@ -348,13 +343,14 @@ const calendarUrl = computed(() => {
                         size="sm"
                         :name="attendee.name"
                         :github-username="attendee.githubUsername"
+                        :avatar-url="attendee.avatarUrl"
                         :title="attendee.name"
                         class="grayscale hover:grayscale-0 transition-all hover:scale-110 hover:z-10"
                       />
                     </template>
                     <button v-if="hasMoreAttendees" @click="showAllAttendees = !showAllAttendees"
-                      class="aspect-square rounded bg-verse-50 dark:bg-verse-900 border border-verse-100 dark:border-verse-800 flex items-center justify-center text-[9px] font-black text-verse-500 hover:bg-verse-500 hover:text-white transition-colors">
-                      {{ showAllAttendees ? '−' : `+${attendees.length - 8}` }}
+                      class="aspect-square rounded-full bg-verse-50 dark:bg-verse-900 border border-verse-100 dark:border-verse-800 flex items-center justify-center text-[9px] font-black text-verse-500 hover:bg-verse-500 hover:text-white transition-colors">
+                      {{ showAllAttendees ? '−' : `+${attendees.length - 12}` }}
                     </button>
                   </div>
                 </div>
