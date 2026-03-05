@@ -156,7 +156,7 @@ onUnmounted(() => {
 }
 
 .menu-wrapper.scrolled .menu-inner {
-  @apply max-w-4xl shadow-lg border-gray-200;
+  @apply shadow-lg border-gray-200;
 
   &:where(.dark *, .dark) {
     border-color: var(--color-verse-700);
