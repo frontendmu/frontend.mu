@@ -11,7 +11,7 @@ const shieldConfig = defineConfig({
       defaultSrc: [`'self'`],
       scriptSrc: [`'self'`, `'nonce-@nonce'`],
       styleSrc: [`'self'`, `'unsafe-inline'`],
-      imgSrc: [`'self'`, 'data:', 'https://avatars.githubusercontent.com', 'https://github.com', 'https://lh3.googleusercontent.com'],
+      imgSrc: [`'self'`, 'data:', 'blob:', 'https://avatars.githubusercontent.com', 'https://github.com', 'https://lh3.googleusercontent.com'],
       fontSrc: [`'self'`],
       connectSrc: [`'self'`],
       frameSrc: [`'none'`],

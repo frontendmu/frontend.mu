@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
+import BaseImageUpload from '~/components/base/BaseImageUpload.vue'
 
 interface Sponsor {
   id: string
@@ -30,6 +31,10 @@ const form = useForm({
   description: props.sponsor.description || '',
   logoUrl: props.sponsor.logoUrl || '',
   logomarkUrl: props.sponsor.logomarkUrl || '',
+  logoFile: null as File | null,
+  logomarkFile: null as File | null,
+  clearLogo: false,
+  clearLogomark: false,
   sponsorTypes: [...(props.sponsor.sponsorTypes || [])],
   darkbg: props.sponsor.darkbg,
   status: props.sponsor.status,
@@ -45,7 +50,9 @@ function toggleSponsorType(type: string) {
 }
 
 function handleSubmit() {
-  form.put(`/admin/sponsors/${props.sponsor.id}`)
+  form.put(`/admin/sponsors/${props.sponsor.id}`, {
+    forceFormData: true,
+  })
 }
 </script>
 
@@ -71,7 +78,7 @@ function handleSubmit() {
         <div class="flex items-center gap-4 mb-8">
           <div
             v-if="sponsor.logoUrl"
-            :class="['w-16 h-16 squircle rounded-lg flex items-center justify-center p-2', sponsor.darkbg ? 'bg-verse-800' : 'bg-white border border-verse-200']"
+            :class="['w-16 h-16 squircle rounded-lg flex items-center justify-center p-2', sponsor.darkbg ? 'bg-verse-800' : 'bg-white dark:bg-white border border-verse-200']"
           >
             <img :src="sponsor.logoUrl" :alt="sponsor.name" class="max-w-full max-h-full object-contain" />
           </div>
@@ -131,30 +138,35 @@ function handleSubmit() {
             <p v-if="form.errors.description" class="mt-1 text-sm text-red-500">{{ form.errors.description }}</p>
           </div>
 
-          <!-- Logo URLs -->
-          <div class="grid md:grid-cols-2 gap-4">
+          <!-- Logo Upload -->
+          <div class="grid md:grid-cols-2 gap-6">
             <div>
-              <label for="logoUrl" class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2">
-                Logo URL
+              <label class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2">
+                Logo
               </label>
-              <input
-                id="logoUrl"
-                v-model="form.logoUrl"
-                type="url"
-                placeholder="https://..."
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              <BaseImageUpload
+                v-model="form.logoFile"
+                :current-url="sponsor.logoUrl"
+                :dark-preview="form.darkbg"
+                :error="form.errors.logoFile || form.errors.logoUrl"
+                @update:url="(v) => { form.logoUrl = v; form.clearLogo = false }"
+                @update:model-value="() => { form.clearLogo = false }"
+                @clear="form.clearLogo = true"
               />
             </div>
+
             <div>
-              <label for="logomarkUrl" class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2">
-                Logomark URL
+              <label class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2">
+                Logomark
               </label>
-              <input
-                id="logomarkUrl"
-                v-model="form.logomarkUrl"
-                type="url"
-                placeholder="https://..."
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              <BaseImageUpload
+                v-model="form.logomarkFile"
+                :current-url="sponsor.logomarkUrl"
+                :dark-preview="form.darkbg"
+                :error="form.errors.logomarkFile || form.errors.logomarkUrl"
+                @update:url="(v) => { form.logomarkUrl = v; form.clearLogomark = false }"
+                @update:model-value="() => { form.clearLogomark = false }"
+                @clear="form.clearLogomark = true"
               />
             </div>
           </div>

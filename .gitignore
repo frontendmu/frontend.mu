@@ -30,3 +30,5 @@ plan-*.md
 packages/frontendmu-adonis/database/backups/directus.sqlite
 packages/frontendmu-adonis/database/backups/*.json
 packages/frontendmu-adonis/database/backups/*.sql
+packages/frontendmu-adonis/public/uploads/
+!packages/frontendmu-adonis/public/uploads/sponsors/.gitkeep

@@ -1,8 +1,60 @@
+import { randomUUID } from 'node:crypto'
+import { unlink } from 'node:fs/promises'
+import { join } from 'node:path'
 import type { HttpContext } from '@adonisjs/core/http'
+import app from '@adonisjs/core/services/app'
 import Sponsor from '#models/sponsor'
 import SponsorPolicy from '#policies/sponsor_policy'
 import { sponsorValidator } from '#validators/sponsor_validator'
 import { toSponsorSummary, toSponsor } from '#dtos/factories'
+
+const UPLOAD_DIR = 'uploads/sponsors'
+const FILE_RULES = { size: '2mb' as const, extnames: ['svg', 'png', 'jpg', 'jpeg', 'webp'] }
+
+async function clearLogoFile(
+  existingUrl: string | null
+): Promise<{ url: null; error?: string }> {
+  if (existingUrl?.startsWith('/uploads/')) {
+    const oldPath = join(app.publicPath(), existingUrl)
+    await unlink(oldPath).catch(() => {})
+  }
+  return { url: null }
+}
+
+async function handleLogoUpload(
+  request: HttpContext['request'],
+  fieldName: string,
+  urlValue: string | undefined,
+  existingUrl: string | null = null
+): Promise<{ url: string | null; error?: string }> {
+  const file = request.file(fieldName, FILE_RULES)
+
+  if (file) {
+    if (file.hasErrors) {
+      return { url: existingUrl, error: file.errors[0]?.message }
+    }
+
+    // Delete old local file if replacing
+    if (existingUrl?.startsWith('/uploads/')) {
+      const oldPath = join(app.publicPath(), existingUrl)
+      await unlink(oldPath).catch(() => {})
+    }
+
+    const fileName = `${randomUUID()}.${file.extname}`
+    await file.move(app.publicPath(UPLOAD_DIR), { name: fileName })
+    return { url: `/${UPLOAD_DIR}/${fileName}` }
+  }
+
+  if (urlValue) {
+    if (existingUrl?.startsWith('/uploads/') && urlValue !== existingUrl) {
+      const oldPath = join(app.publicPath(), existingUrl)
+      await unlink(oldPath).catch(() => {})
+    }
+    return { url: urlValue }
+  }
+
+  return { url: existingUrl ?? null }
+}
 
 export default class AdminSponsorsController {
   async index({ inertia, bouncer, request }: HttpContext) {
@@ -37,12 +89,24 @@ export default class AdminSponsorsController {
 
     const data = await request.validateUsing(sponsorValidator)
 
+    const logo = await handleLogoUpload(request, 'logoFile', data.logoUrl)
+    const logomark = await handleLogoUpload(request, 'logomarkFile', data.logomarkUrl)
+
+    if (logo.error || logomark.error) {
+      session.flashAll()
+      session.flashErrors({
+        ...(logo.error ? { logoFile: logo.error } : {}),
+        ...(logomark.error ? { logomarkFile: logomark.error } : {}),
+      })
+      return response.redirect().back()
+    }
+
     const sponsor = await Sponsor.create({
       name: data.name,
       website: data.website || null,
       description: data.description || null,
-      logoUrl: data.logoUrl || null,
-      logomarkUrl: data.logomarkUrl || null,
+      logoUrl: logo.url,
+      logomarkUrl: logomark.url,
       sponsorTypes: data.sponsorTypes || [],
       darkbg: data.darkbg || false,
       status: data.status || 'active',
@@ -74,12 +138,28 @@ export default class AdminSponsorsController {
     const sponsor = await Sponsor.findOrFail(params.id)
     const data = await request.validateUsing(sponsorValidator)
 
+    const logo = data.clearLogo
+      ? await clearLogoFile(sponsor.logoUrl)
+      : await handleLogoUpload(request, 'logoFile', data.logoUrl, sponsor.logoUrl)
+    const logomark = data.clearLogomark
+      ? await clearLogoFile(sponsor.logomarkUrl)
+      : await handleLogoUpload(request, 'logomarkFile', data.logomarkUrl, sponsor.logomarkUrl)
+
+    if (logo.error || logomark.error) {
+      session.flashAll()
+      session.flashErrors({
+        ...(logo.error ? { logoFile: logo.error } : {}),
+        ...(logomark.error ? { logomarkFile: logomark.error } : {}),
+      })
+      return response.redirect().back()
+    }
+
     sponsor.merge({
       name: data.name,
       website: data.website || null,
       description: data.description || null,
-      logoUrl: data.logoUrl || null,
-      logomarkUrl: data.logomarkUrl || null,
+      logoUrl: logo.url,
+      logomarkUrl: logomark.url,
       sponsorTypes: data.sponsorTypes || [],
       darkbg: data.darkbg || false,
       status: data.status || 'active',
@@ -95,6 +175,15 @@ export default class AdminSponsorsController {
     await bouncer.with(SponsorPolicy).authorize('delete')
 
     const sponsor = await Sponsor.findOrFail(params.id)
+
+    // Clean up uploaded files
+    for (const url of [sponsor.logoUrl, sponsor.logomarkUrl]) {
+      if (url?.startsWith('/uploads/')) {
+        const filePath = join(app.publicPath(), url)
+        await unlink(filePath).catch(() => {})
+      }
+    }
+
     await sponsor.delete()
 
     session.flash('success', 'Sponsor deleted successfully!')

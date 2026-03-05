@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
+import BaseImageUpload from '~/components/base/BaseImageUpload.vue'
 
 const sponsorTypeOptions = ['venue', 'food', 'drinks', 'swag', 'gold', 'silver', 'bronze', 'platinum']
 
@@ -11,6 +12,8 @@ const form = useForm({
   description: '',
   logoUrl: '',
   logomarkUrl: '',
+  logoFile: null as File | null,
+  logomarkFile: null as File | null,
   sponsorTypes: [] as string[],
   darkbg: false,
   status: 'active' as 'active' | 'inactive',
@@ -26,7 +29,7 @@ function toggleSponsorType(type: string) {
 }
 
 function handleSubmit() {
-  form.post('/admin/sponsors')
+  form.post('/admin/sponsors', { forceFormData: true })
 }
 </script>
 
@@ -95,30 +98,29 @@ function handleSubmit() {
             <p v-if="form.errors.description" class="mt-1 text-sm text-red-500">{{ form.errors.description }}</p>
           </div>
 
-          <!-- Logo URLs -->
-          <div class="grid md:grid-cols-2 gap-4">
+          <!-- Logo Upload -->
+          <div class="grid md:grid-cols-2 gap-6">
             <div>
-              <label for="logoUrl" class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2">
-                Logo URL
+              <label class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2">
+                Logo
               </label>
-              <input
-                id="logoUrl"
-                v-model="form.logoUrl"
-                type="url"
-                placeholder="https://..."
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              <BaseImageUpload
+                v-model="form.logoFile"
+                :dark-preview="form.darkbg"
+                :error="form.errors.logoFile || form.errors.logoUrl"
+                @update:url="(v) => form.logoUrl = v"
               />
             </div>
+
             <div>
-              <label for="logomarkUrl" class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2">
-                Logomark URL
+              <label class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2">
+                Logomark
               </label>
-              <input
-                id="logomarkUrl"
-                v-model="form.logomarkUrl"
-                type="url"
-                placeholder="https://..."
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              <BaseImageUpload
+                v-model="form.logomarkFile"
+                :dark-preview="form.darkbg"
+                :error="form.errors.logomarkFile || form.errors.logomarkUrl"
+                @update:url="(v) => form.logomarkUrl = v"
               />
             </div>
           </div>
