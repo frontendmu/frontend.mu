@@ -22,9 +22,9 @@ const finalAvatarUrl = computed(() => {
 const sizeClasses = {
   sm: 'w-8 h-8 rounded-full',
   md: 'w-12 h-12 rounded-2xl',
-  lg: 'w-20 h-20 rounded-[2rem]',
-  xl: 'w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem]',
-  full: 'w-full h-full rounded-[2.5rem]',
+  lg: 'w-20 h-20 rounded-[2.5rem]',
+  xl: 'w-32 h-32 md:w-40 md:h-40 rounded-[3.5rem]',
+  full: 'w-full h-full rounded-[3rem]',
 }
 
 const logoSizeClasses = {
