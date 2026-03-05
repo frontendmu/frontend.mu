@@ -26,4 +26,12 @@ yarn-error.log
 
 # Database backups
 database/backups/*.sql
+database/backups/*.dump
 *_backup_*.sql
+
+# AI tool workspace configs
+.gemini/
+
+# Uploaded files
+public/uploads/*
+!public/uploads/**/.gitkeep
