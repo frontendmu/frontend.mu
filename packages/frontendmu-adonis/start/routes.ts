@@ -225,6 +225,30 @@ router
       ])
       .as('admin.speakers.available')
 
+    // Sponsor management for events
+    router
+      .get('/admin/sponsors/available', [
+        () => import('#controllers/admin/events_controller'),
+        'availableSponsors',
+      ])
+      .as('admin.sponsors.available')
+    router
+      .post('/admin/events/:id/sponsors/:sponsorId', [
+        () => import('#controllers/admin/events_controller'),
+        'addSponsor',
+      ])
+      .where('id', UUID_REGEX)
+      .where('sponsorId', UUID_REGEX)
+      .as('admin.events.addSponsor')
+    router
+      .delete('/admin/events/:id/sponsors/:sponsorId', [
+        () => import('#controllers/admin/events_controller'),
+        'removeSponsor',
+      ])
+      .where('id', UUID_REGEX)
+      .where('sponsorId', UUID_REGEX)
+      .as('admin.events.removeSponsor')
+
     // Speaker management
     router
       .get('/admin/speakers', [() => import('#controllers/admin/speakers_controller'), 'index'])

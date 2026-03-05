@@ -1,9 +1,10 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { DateTime } from 'luxon'
 import Event from '#models/event'
+import Sponsor from '#models/sponsor'
 import EventPolicy from '#policies/event_policy'
 import { createEventValidator, updateEventValidator } from '#validators/event_validator'
-import { toEvent, toEventSummary } from '#dtos/factories'
+import { toEvent, toEventSummary, toSponsorSummary } from '#dtos/factories'
 
 export default class AdminEventsController {
   async index({ inertia, bouncer, request }: HttpContext) {
@@ -68,6 +69,7 @@ export default class AdminEventsController {
     await event.load('sessions', (query) => {
       query.preload('speakers').orderBy('order', 'asc')
     })
+    await event.load('sponsors')
 
     return inertia.render('admin/events/edit', {
       event: toEvent(event),
@@ -114,5 +116,44 @@ export default class AdminEventsController {
     session.flash('success', 'Event deleted successfully!')
 
     return response.redirect().toRoute('admin.events.index')
+  }
+
+  async availableSponsors({ bouncer, response }: HttpContext) {
+    await bouncer.with(EventPolicy).authorize('create')
+
+    const sponsors = await Sponsor.query().orderBy('name', 'asc')
+
+    return response.json({
+      sponsors: sponsors.map(toSponsorSummary),
+    })
+  }
+
+  async addSponsor({ params, bouncer, response }: HttpContext) {
+    const event = await Event.findOrFail(params.id)
+
+    await bouncer.with(EventPolicy).authorize('manage', event)
+
+    await Sponsor.findOrFail(params.sponsorId)
+    await event.related('sponsors').attach([params.sponsorId])
+    await event.load('sponsors')
+
+    return response.json({
+      message: 'Sponsor added to event successfully',
+      sponsors: event.sponsors.map(toSponsorSummary),
+    })
+  }
+
+  async removeSponsor({ params, bouncer, response }: HttpContext) {
+    const event = await Event.findOrFail(params.id)
+
+    await bouncer.with(EventPolicy).authorize('manage', event)
+
+    await event.related('sponsors').detach([params.sponsorId])
+    await event.load('sponsors')
+
+    return response.json({
+      message: 'Sponsor removed from event successfully',
+      sponsors: event.sponsors.map(toSponsorSummary),
+    })
   }
 }

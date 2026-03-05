@@ -121,6 +121,7 @@ export function toSponsorSummary(sponsor: Sponsor): SponsorSummaryDto {
     website: sponsor.website,
     logoUrl: sponsor.logoUrl,
     sponsorTypes: sponsor.sponsorTypes || [],
+    darkbg: sponsor.darkbg,
   }
 }
 

@@ -79,6 +79,7 @@ export interface SponsorSummaryDto {
   website: string | null
   logoUrl: string | null
   sponsorTypes: string[]
+  darkbg: boolean
 }
 
 export interface SponsorDto extends SponsorSummaryDto {

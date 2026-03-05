@@ -95,6 +95,7 @@ export default class Event extends BaseModel {
   // Many-to-many with sponsors through event_sponsors table
   @manyToMany(() => Sponsor, {
     pivotTable: 'event_sponsors',
+    pivotTimestamps: { createdAt: 'created_at', updatedAt: false },
   })
   declare sponsors: ManyToMany<typeof Sponsor>
 

@@ -5,14 +5,14 @@ import { DateTime } from 'luxon'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
 import { useApi } from '~/composables/useApi'
-import type { EventDto, SessionDto, SpeakerSummaryDto, SharedProps } from '~/types'
+import type { EventDto, SessionDto, SpeakerSummaryDto, SponsorSummaryDto, SharedProps } from '~/types'
 
 interface SessionWithSpeakers extends SessionDto {
   speakers: SpeakerSummaryDto[]
 }
 
 interface Props {
-  event: EventDto & { sessions: SessionWithSpeakers[] }
+  event: EventDto & { sessions: SessionWithSpeakers[]; sponsors: SponsorSummaryDto[] }
 }
 
 interface Speaker {
@@ -302,6 +302,72 @@ const filteredSpeakers = computed(() => {
       speaker.githubUsername?.toLowerCase().includes(search)
   )
 })
+
+// Sponsors state
+const sponsors = ref<SponsorSummaryDto[]>(props.event.sponsors || [])
+const availableSponsors = ref<SponsorSummaryDto[]>([])
+const loadingSponsors = ref(false)
+const sponsorPickerOpen = ref(false)
+const sponsorSearch = ref('')
+
+const filteredAvailableSponsors = computed(() => {
+  const attachedIds = new Set(sponsors.value.map((s) => s.id))
+  let list = availableSponsors.value.filter((s) => !attachedIds.has(s.id))
+  if (sponsorSearch.value.trim()) {
+    const search = sponsorSearch.value.toLowerCase()
+    list = list.filter((s) => s.name.toLowerCase().includes(search))
+  }
+  return list
+})
+
+async function loadAvailableSponsors() {
+  if (availableSponsors.value.length > 0) return
+  loadingSponsors.value = true
+  try {
+    const { ok, data } = await apiFetch<{ sponsors: SponsorSummaryDto[] }>('/admin/sponsors/available')
+    if (ok) {
+      availableSponsors.value = data.sponsors
+    }
+  } catch (error) {
+    console.error('Failed to load sponsors:', error)
+  } finally {
+    loadingSponsors.value = false
+  }
+}
+
+function openSponsorPicker() {
+  sponsorSearch.value = ''
+  sponsorPickerOpen.value = true
+  loadAvailableSponsors()
+}
+
+async function attachSponsor(sponsor: SponsorSummaryDto) {
+  try {
+    const { ok, data } = await apiFetch<{ sponsors: SponsorSummaryDto[] }>(
+      `/admin/events/${props.event.id}/sponsors/${sponsor.id}`,
+      { method: 'POST' }
+    )
+    if (ok) {
+      sponsors.value = data.sponsors
+    }
+  } catch (error) {
+    console.error('Failed to attach sponsor:', error)
+  }
+}
+
+async function removeSponsor(sponsorId: string) {
+  try {
+    const { ok, data } = await apiFetch<{ sponsors: SponsorSummaryDto[] }>(
+      `/admin/events/${props.event.id}/sponsors/${sponsorId}`,
+      { method: 'DELETE' }
+    )
+    if (ok) {
+      sponsors.value = data.sponsors
+    }
+  } catch (error) {
+    console.error('Failed to remove sponsor:', error)
+  }
+}
 </script>
 
 <template>
@@ -883,6 +949,131 @@ const filteredSpeakers = computed(() => {
           </div>
           <p v-else class="text-center py-8 text-verse-500 dark:text-verse-400">
             No sessions yet. Click "Add Session" to create one.
+          </p>
+        </div>
+
+        <!-- Sponsors Section -->
+        <div
+          class="mt-12 p-4 bg-verse-50 dark:bg-verse-800/50 squircle rounded-lg border border-verse-200 dark:border-verse-700"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-verse-900 dark:text-verse-100">Sponsors</h3>
+            <button
+              type="button"
+              @click="openSponsorPicker"
+              class="px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white text-sm font-medium squircle rounded-lg transition-colors"
+            >
+              Add Sponsor
+            </button>
+          </div>
+
+          <!-- Sponsor Picker -->
+          <div
+            v-if="sponsorPickerOpen"
+            class="mb-4 p-4 bg-white dark:bg-verse-700/50 squircle rounded-lg border border-verse-200 dark:border-verse-600"
+          >
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium text-verse-700 dark:text-verse-300">Select a sponsor</span>
+              <button
+                type="button"
+                @click="sponsorPickerOpen = false"
+                class="p-1 text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div class="relative mb-2">
+              <input
+                v-model="sponsorSearch"
+                type="text"
+                placeholder="Search sponsors..."
+                class="w-full px-4 py-2 pl-10 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-700 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent text-sm"
+              />
+              <svg
+                class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-verse-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <div v-if="loadingSponsors" class="text-center py-4">
+              <span class="text-verse-500 dark:text-verse-400 text-sm">Loading sponsors...</span>
+            </div>
+            <div v-else class="max-h-48 overflow-y-auto">
+              <div
+                v-for="sponsor in filteredAvailableSponsors"
+                :key="sponsor.id"
+                @click="attachSponsor(sponsor)"
+                class="flex items-center gap-3 p-2 cursor-pointer hover:bg-verse-50 dark:hover:bg-verse-600 squircle rounded-lg transition-colors"
+              >
+                <img
+                  v-if="sponsor.logoUrl"
+                  :src="sponsor.logoUrl"
+                  :alt="sponsor.name"
+                  class="w-8 h-8 rounded object-contain bg-white"
+                />
+                <div
+                  v-else
+                  class="w-8 h-8 rounded bg-verse-300 dark:bg-verse-600 flex items-center justify-center text-verse-600 dark:text-verse-300 text-sm font-medium"
+                >
+                  {{ sponsor.name.charAt(0).toUpperCase() }}
+                </div>
+                <span class="text-sm text-verse-900 dark:text-verse-100">{{ sponsor.name }}</span>
+              </div>
+              <p
+                v-if="filteredAvailableSponsors.length === 0"
+                class="text-sm text-verse-500 dark:text-verse-400 py-4 text-center"
+              >
+                {{ sponsorSearch ? `No sponsors found matching "${sponsorSearch}"` : 'All sponsors are already attached' }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Attached Sponsors List -->
+          <div v-if="sponsors.length > 0" class="space-y-2">
+            <div
+              v-for="sponsor in sponsors"
+              :key="sponsor.id"
+              class="flex items-center justify-between p-3 bg-white dark:bg-verse-700/50 squircle rounded-lg border border-verse-200 dark:border-verse-600"
+            >
+              <div class="flex items-center gap-3 min-w-0">
+                <img
+                  v-if="sponsor.logoUrl"
+                  :src="sponsor.logoUrl"
+                  :alt="sponsor.name"
+                  class="w-8 h-8 rounded object-contain bg-white"
+                />
+                <div
+                  v-else
+                  class="w-8 h-8 rounded bg-verse-300 dark:bg-verse-600 flex items-center justify-center text-verse-600 dark:text-verse-300 text-sm font-medium"
+                >
+                  {{ sponsor.name.charAt(0).toUpperCase() }}
+                </div>
+                <div class="min-w-0">
+                  <p class="text-sm font-medium text-verse-900 dark:text-verse-100 truncate">{{ sponsor.name }}</p>
+                  <p v-if="sponsor.sponsorTypes?.length" class="text-xs text-verse-500 dark:text-verse-400">
+                    {{ sponsor.sponsorTypes.join(', ') }}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                @click="removeSponsor(sponsor.id)"
+                class="p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 hover:bg-red-100 dark:hover:bg-red-900/30 squircle rounded-lg transition-colors"
+                title="Remove sponsor"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <p v-else class="text-center py-8 text-verse-500 dark:text-verse-400">
+            No sponsors attached. Click "Add Sponsor" to add one.
           </p>
         </div>
       </div>
