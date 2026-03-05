@@ -63,37 +63,34 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="relative py-32 bg-verse-50 dark:bg-verse-900/10 overflow-hidden">
-    <div class="contain relative z-10">
+  <section class="relative py-24 bg-verse-50 dark:bg-verse-900/10 overflow-hidden">
+    <div class="contain relative z-10 max-w-5xl">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 text-center">
         <!-- Speakers -->
-        <div class="space-y-4">
+        <div class="space-y-2">
           <div class="relative inline-block">
-            <span class="stat-num text-7xl md:text-9xl font-black tracking-tighter text-gray-900 dark:text-white leading-none" :data-final-num="numOfSpeakers">0</span>
-            <span class="absolute -top-4 -right-8 text-4xl font-black text-verse-500">+</span>
+            <span class="stat-num text-6xl md:text-8xl font-black tracking-tighter text-gray-900 dark:text-white leading-none" :data-final-num="numOfSpeakers">0</span>
+            <span class="absolute -top-2 -right-6 text-2xl font-black text-verse-500">+</span>
           </div>
-          <h3 class="text-xl md:text-2xl font-bold uppercase tracking-widest text-verse-600 dark:text-verse-400">Speakers</h3>
-          <p class="text-gray-500 dark:text-gray-400 font-medium max-w-[200px] mx-auto">Diverse voices sharing expert insights.</p>
+          <h3 class="text-sm font-black uppercase tracking-[0.2em] text-verse-600 dark:text-verse-400">Speakers</h3>
         </div>
 
         <!-- Meetups -->
-        <div class="space-y-4">
+        <div class="space-y-2">
           <div class="relative inline-block">
-            <span class="stat-num text-7xl md:text-9xl font-black tracking-tighter text-gray-900 dark:text-white leading-none" :data-final-num="numOfMeetups">0</span>
-            <span class="absolute -top-4 -right-8 text-4xl font-black text-verse-500">+</span>
+            <span class="stat-num text-6xl md:text-8xl font-black tracking-tighter text-gray-900 dark:text-white leading-none" :data-final-num="numOfMeetups">0</span>
+            <span class="absolute -top-2 -right-6 text-2xl font-black text-verse-500">+</span>
           </div>
-          <h3 class="text-xl md:text-2xl font-bold uppercase tracking-widest text-verse-600 dark:text-verse-400">Events</h3>
-          <p class="text-gray-500 dark:text-gray-400 font-medium max-w-[200px] mx-auto">Memorable sessions since 2016.</p>
+          <h3 class="text-sm font-black uppercase tracking-[0.2em] text-verse-600 dark:text-verse-400">Events</h3>
         </div>
 
         <!-- Contributors -->
-        <div class="space-y-4">
+        <div class="space-y-2">
           <div class="relative inline-block">
-            <span class="stat-num text-7xl md:text-9xl font-black tracking-tighter text-gray-900 dark:text-white leading-none" :data-final-num="numOfContributors">0</span>
-            <span class="absolute -top-4 -right-8 text-4xl font-black text-verse-500">+</span>
+            <span class="stat-num text-6xl md:text-8xl font-black tracking-tighter text-gray-900 dark:text-white leading-none" :data-final-num="numOfContributors">0</span>
+            <span class="absolute -top-2 -right-6 text-2xl font-black text-verse-500">+</span>
           </div>
-          <h3 class="text-xl md:text-2xl font-bold uppercase tracking-widest text-verse-600 dark:text-verse-400">Contributors</h3>
-          <p class="text-gray-500 dark:text-gray-400 font-medium max-w-[200px] mx-auto">Passionate builders behind the scenes.</p>
+          <h3 class="text-sm font-black uppercase tracking-[0.2em] text-verse-600 dark:text-verse-400">Contributors</h3>
         </div>
       </div>
     </div>
