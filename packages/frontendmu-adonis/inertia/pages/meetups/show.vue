@@ -224,7 +224,7 @@ const calendarUrl = computed(() => {
 <template>
   <Head :title="meetup?.title || 'Meetup'" />
   <main class="relative min-h-screen pt-32 pb-32">
-    <div class="contain relative z-10 max-w-5xl">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <template v-if="meetup">
         <!-- ===== HERO ZONE ===== -->
         <section id="rsvp-section" class="pb-12">
@@ -271,26 +271,24 @@ const calendarUrl = computed(() => {
               </div>
 
               <!-- CTA + Spots Remaining -->
-              <div class="flex flex-wrap items-center gap-4">
-                <template v-if="(isUpcoming || isToday) && canRsvp">
-                  <template v-if="!isAuthenticated">
-                    <Link href="/login"
-                      class="px-8 py-3 text-sm font-bold bg-verse-600 text-white rounded-xl hover:bg-verse-700 transition-all shadow-lg shadow-verse-600/20">
-                      Login to RSVP
-                    </Link>
-                  </template>
-                  <template v-else>
-                    <button v-if="hasRsvp" @click="handleCancelRsvp" :disabled="isRsvpLoading"
-                      class="px-8 py-3 text-sm font-bold border-2 border-red-500/50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all disabled:opacity-50">
-                      {{ isRsvpLoading ? 'Cancelling...' : 'Cancel RSVP' }}
-                    </button>
-                    <button v-else @click="handleRsvp" :disabled="isRsvpLoading"
-                      class="px-8 py-3 text-sm font-bold bg-verse-600 text-white rounded-xl hover:bg-verse-700 transition-all disabled:opacity-50 shadow-lg shadow-verse-600/20">
-                      {{ isRsvpLoading ? 'Submitting...' : (isFull ? 'Join Waitlist' : 'RSVP Now') }}
-                    </button>
-                  </template>
+              <div v-if="(isUpcoming || isToday) && canRsvp" class="flex flex-wrap items-center gap-4">
+                <template v-if="!isAuthenticated">
+                  <Link href="/login"
+                    class="px-8 py-3 text-sm font-bold bg-verse-600 text-white rounded-xl hover:bg-verse-700 transition-all shadow-lg shadow-verse-600/20">
+                    Login to RSVP
+                  </Link>
                 </template>
-                <span v-if="spotsRemaining !== null && canRsvp" class="text-sm font-semibold" :class="spotsRemaining <= 5 ? 'text-red-500' : 'text-gray-400 dark:text-gray-500'">
+                <template v-else>
+                  <button v-if="hasRsvp" @click="handleCancelRsvp" :disabled="isRsvpLoading"
+                    class="px-8 py-3 text-sm font-bold border-2 border-red-500/50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all disabled:opacity-50">
+                    {{ isRsvpLoading ? 'Cancelling...' : 'Cancel RSVP' }}
+                  </button>
+                  <button v-else @click="handleRsvp" :disabled="isRsvpLoading"
+                    class="px-8 py-3 text-sm font-bold bg-verse-600 text-white rounded-xl hover:bg-verse-700 transition-all disabled:opacity-50 shadow-lg shadow-verse-600/20">
+                    {{ isRsvpLoading ? 'Submitting...' : (isFull ? 'Join Waitlist' : 'RSVP Now') }}
+                  </button>
+                </template>
+                <span v-if="spotsRemaining !== null" class="text-sm font-semibold" :class="spotsRemaining <= 5 ? 'text-red-500' : 'text-gray-400 dark:text-gray-500'">
                   {{ spotsRemaining === 0 ? 'No spots left' : `${spotsRemaining} spot${spotsRemaining !== 1 ? 's' : ''} remaining` }}
                 </span>
               </div>
@@ -324,20 +322,21 @@ const calendarUrl = computed(() => {
             </div>
 
             <!-- Right: Sponsors -->
-            <div v-if="meetup.sponsors.length" class="lg:w-64 shrink-0 space-y-4 lg:pt-2">
+            <div v-if="meetup.sponsors.length" class="lg:w-64 shrink-0 space-y-4 lg:pt-[9.5rem]">
               <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Sponsored by</p>
               <div class="flex flex-wrap lg:flex-col gap-3">
-                <a
+                <Link
                   v-for="sponsor in meetup.sponsors"
                   :key="sponsor.id"
-                  :href="sponsor.website || undefined"
-                  :target="sponsor.website ? '_blank' : undefined"
-                  :rel="sponsor.website ? 'noopener noreferrer' : undefined"
-                  class="flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-100 dark:border-verse-800 bg-white dark:bg-verse-900/30 hover:border-verse-500/50 transition-colors group/sponsor"
+                  :href="`/sponsor/${sponsor.id}`"
+                  class="flex items-center justify-center px-4 py-3 rounded-xl border hover:border-verse-500/50 transition-colors group/sponsor"
+                  :class="sponsor.darkbg
+                    ? 'border-verse-800 bg-verse-900 dark:bg-verse-900'
+                    : 'border-gray-100 dark:border-verse-800 bg-white dark:bg-white'"
                 >
-                  <img v-if="sponsor.logoUrl" :src="sponsor.logoUrl" :alt="sponsor.name" class="h-6 w-auto object-contain" />
-                  <span class="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover/sponsor:text-verse-500 transition-colors">{{ sponsor.name }}</span>
-                </a>
+                  <img v-if="sponsor.logoUrl" :src="sponsor.logoUrl" :alt="sponsor.name" class="h-14 w-auto object-contain" />
+                  <span v-else class="text-sm font-bold text-gray-700 dark:text-gray-300">{{ sponsor.name }}</span>
+                </Link>
               </div>
             </div>
           </div>
@@ -379,7 +378,7 @@ const calendarUrl = computed(() => {
                   <div class="flex gap-6">
                     <!-- Numbering -->
                     <div class="relative shrink-0 flex flex-col items-center">
-                      <div class="w-9 h-9 rounded-xl bg-gray-50 dark:bg-verse-900 border border-gray-100 dark:border-verse-800 flex items-center justify-center text-sm font-black text-gray-300 dark:text-verse-700 group-hover:text-verse-500 group-hover:border-verse-500 transition-colors">
+                      <div class="w-9 h-9 rounded-xl bg-gray-50 dark:bg-verse-900 border border-gray-100 dark:border-verse-800 flex items-center justify-center text-sm font-black text-gray-500 dark:text-verse-400">
                         {{ (index + 1).toString().padStart(2, '0') }}
                       </div>
                       <div v-if="index !== meetup.sessions.length - 1" class="absolute top-9 bottom-[-2.5rem] w-px bg-gray-100 dark:bg-verse-900"></div>
@@ -397,7 +396,7 @@ const calendarUrl = computed(() => {
                             size="sm"
                             :name="speaker.name"
                             :github-username="speaker.githubUsername"
-                            class="grayscale group-hover/speaker:grayscale-0 transition-all ring-2 ring-gray-100 dark:ring-verse-900 group-hover/speaker:ring-verse-500"
+                            class="ring-2 ring-gray-100 dark:ring-verse-900 group-hover/speaker:ring-verse-500 transition-all"
                           />
                           <div class="leading-tight">
                             <p class="text-sm font-bold text-gray-900 dark:text-gray-200 group-hover/speaker:text-verse-500 transition-colors">
