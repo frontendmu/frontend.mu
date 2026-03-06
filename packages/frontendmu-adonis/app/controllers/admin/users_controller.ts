@@ -70,6 +70,9 @@ export default class AdminUsersController {
       .preload('sessions', (query) => {
         query.preload('event')
       })
+      .preload('rsvps', (query) => {
+        query.preload('event').orderBy('createdAt', 'desc')
+      })
       .firstOrFail()
 
     const allRoles = await Role.query().preload('permissions').orderBy('name', 'asc')
@@ -91,6 +94,15 @@ export default class AdminUsersController {
         permissions: userPermissions,
         avatarUrl: resolveAvatarUrl(user),
         sessions: user.sessions?.map(toSpeakerSession) || [],
+        rsvps: user.rsvps
+          ?.filter((r) => r.event)
+          .map((r) => ({
+            id: r.id,
+            eventId: r.event.id,
+            eventTitle: r.event.title,
+            eventDate: r.event.eventDate?.toFormat('dd MMM yyyy') ?? null,
+            status: r.status,
+          })) || [],
       },
       allRoles: allRoles.map((r) => ({
         id: r.id,

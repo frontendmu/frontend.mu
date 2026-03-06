@@ -27,6 +27,14 @@ interface Session {
   eventDate: string | null
 }
 
+interface Rsvp {
+  id: string
+  eventId: string
+  eventTitle: string
+  eventDate: string | null
+  status: string
+}
+
 interface User {
   id: string
   name: string
@@ -44,6 +52,7 @@ interface User {
   title: string | null
   avatarUrl: string | null
   sessions: Session[]
+  rsvps: Rsvp[]
 }
 
 interface Props {
@@ -582,6 +591,47 @@ const groupedPermissions = computed(() => {
                 >
                   View event
                 </Link>
+              </div>
+            </div>
+          </div>
+
+          <!-- RSVPs (read-only) -->
+          <div v-if="user.rsvps.length" class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6">
+            <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-4">
+              RSVPs ({{ user.rsvps.length }})
+            </h2>
+            <div class="space-y-2">
+              <div
+                v-for="rsvp in user.rsvps"
+                :key="rsvp.id"
+                class="flex items-center justify-between p-3 bg-verse-50 dark:bg-verse-900/50 squircle rounded-lg"
+              >
+                <div class="min-w-0">
+                  <p class="font-medium text-verse-900 dark:text-verse-100 truncate">{{ rsvp.eventTitle }}</p>
+                  <p v-if="rsvp.eventDate" class="text-sm text-verse-500 dark:text-verse-400">
+                    {{ rsvp.eventDate }}
+                  </p>
+                </div>
+                <div class="flex items-center gap-3 ml-3 shrink-0">
+                  <span
+                    :class="[
+                      'px-2 py-0.5 text-xs font-medium rounded-full',
+                      rsvp.status === 'confirmed'
+                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                        : rsvp.status === 'waitlist'
+                          ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400'
+                          : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                    ]"
+                  >
+                    {{ rsvp.status }}
+                  </span>
+                  <Link
+                    :href="`/admin/events/${rsvp.eventId}/edit`"
+                    class="text-xs text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200 transition-colors"
+                  >
+                    View event
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
