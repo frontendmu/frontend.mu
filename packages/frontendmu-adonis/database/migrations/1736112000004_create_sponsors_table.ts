@@ -11,7 +11,7 @@ export default class extends BaseSchema {
       table.text('description').nullable()
       table.string('logo_url').nullable()
       table.string('logomark_url').nullable()
-      table.jsonb('sponsor_types').notNullable()
+      table.json('sponsor_types').notNullable()
       table.boolean('darkbg').defaultTo(false).notNullable()
       table.enum('status', ['active', 'inactive']).defaultTo('active').notNullable()
 
@@ -20,7 +20,6 @@ export default class extends BaseSchema {
 
       table.index('name')
       table.index('status')
-      table.index(['sponsor_types'], 'gin', 'btree')
     })
   }
 

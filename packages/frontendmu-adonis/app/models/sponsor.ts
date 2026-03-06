@@ -32,7 +32,10 @@ export default class Sponsor extends BaseModel {
   @column()
   declare logomarkUrl: string | null
 
-  @column()
+  @column({
+    prepare: (value: string[]) => JSON.stringify(value),
+    consume: (value: string | string[]) => (typeof value === 'string' ? JSON.parse(value) : value),
+  })
   declare sponsorTypes: string[]
 
   @column()

@@ -27,6 +27,10 @@ export default defineConfig({
     target: 'esnext',
   },
 
+  server: {
+    allowedHosts: ['chotadon.tail1d66.ts.net']
+  },
+
   optimizeDeps: {
     exclude: ['@libsql/sqlite3', 'oracledb', 'knex-dynamic-connection'],
     esbuildOptions: {

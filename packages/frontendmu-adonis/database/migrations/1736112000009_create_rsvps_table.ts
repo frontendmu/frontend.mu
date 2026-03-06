@@ -5,7 +5,7 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.uuid('id').primary().defaultTo(this.raw('gen_random_uuid()'))
+      table.uuid('id').primary()
       table.uuid('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE')
       table.uuid('event_id').notNullable().references('id').inTable('events').onDelete('CASCADE')
       table.enum('status', ['confirmed', 'waitlist', 'cancelled']).defaultTo('confirmed')

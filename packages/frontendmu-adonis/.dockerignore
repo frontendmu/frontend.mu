@@ -1,0 +1,8 @@
+node_modules
+build
+tmp
+database/backups
+database/exports
+.env
+.env.*
+.git

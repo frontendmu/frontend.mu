@@ -24,9 +24,10 @@ yarn-error.log
 # Platform specific
 .DS_Store
 
-# Database backups
-database/backups/*.sql
-database/backups/*.dump
+# Database (keep database/db.local.sqlite3 for dev seed data)
+tmp/db.production.sqlite3
+database/backups/
+database/exports/*.json
 *_backup_*.sql
 
 # AI tool workspace configs

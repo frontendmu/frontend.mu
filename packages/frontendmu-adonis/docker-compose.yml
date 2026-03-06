@@ -1,29 +1,29 @@
 services:
-  postgres:
-    image: postgres:15-alpine
-    container_name: frontendmu-postgres-docker
+  app:
+    build: .
+    env_file: .env
     environment:
-      POSTGRES_DB: frontendmu_docker_dev
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - '127.0.0.1:5433:5432'
+      - HOST=0.0.0.0
+      - PORT=3333
+      - DB_DATABASE=tmp/db.production.sqlite3
     volumes:
-      - postgres-docker-data:/var/lib/postgresql/data
-      - ./database/init:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres -d frontendmu_docker_dev']
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      - app_data:/app/tmp
+    restart: unless-stopped
 
-  adminer:
-    image: adminer:latest
+  caddy:
+    image: caddy:2
     ports:
-      - '127.0.0.1:8989:8080'
-    depends_on:
-      - postgres
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+    restart: unless-stopped
 
 volumes:
-  postgres-docker-data:
-    name: frontendmu-postgres-docker-data
+  app_data:
+  caddy_data:
+  caddy_config:

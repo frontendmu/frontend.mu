@@ -9,6 +9,6 @@
     },
     "types": ["@inertiajs/vue3", "@adonisjs/inertia", "vite/client"],
   },
-  "include": ["./inertia/**/*", "./app/**/*"],
+  "include": ["./inertia/**/*", "./app/**/*", "./bin/**/*"],
   "exclude": ["node_modules", "build"],
 }
