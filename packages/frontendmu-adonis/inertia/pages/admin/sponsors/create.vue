@@ -15,7 +15,7 @@ const form = useForm({
   logoFile: null as File | null,
   logomarkFile: null as File | null,
   sponsorTypes: [] as string[],
-  darkbg: false,
+  logoBg: '' as string,
   status: 'active' as 'active' | 'inactive',
 })
 
@@ -106,7 +106,7 @@ function handleSubmit() {
               </label>
               <BaseImageUpload
                 v-model="form.logoFile"
-                :dark-preview="form.darkbg"
+                :dark-preview="!!form.logoBg"
                 :error="form.errors.logoFile || form.errors.logoUrl"
                 @update:url="(v) => form.logoUrl = v"
               />
@@ -118,7 +118,7 @@ function handleSubmit() {
               </label>
               <BaseImageUpload
                 v-model="form.logomarkFile"
-                :dark-preview="form.darkbg"
+                :dark-preview="!!form.logoBg"
                 :error="form.errors.logomarkFile || form.errors.logomarkUrl"
                 @update:url="(v) => form.logomarkUrl = v"
               />
@@ -148,17 +148,60 @@ function handleSubmit() {
             </div>
           </div>
 
-          <!-- Dark Background -->
-          <div class="flex items-center gap-3">
-            <input
-              id="darkbg"
-              v-model="form.darkbg"
-              type="checkbox"
-              class="h-4 w-4 text-verse-600 focus:ring-verse-500 border-verse-300 rounded"
-            />
-            <label for="darkbg" class="text-sm font-medium text-verse-700 dark:text-verse-300">
-              Logo requires dark background
+          <!-- Logo Background -->
+          <div>
+            <label class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2">
+              Logo Background
             </label>
+            <div class="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                @click="form.logoBg = ''"
+                :class="[
+                  'px-3 py-1.5 squircle rounded-lg text-sm font-medium transition-colors',
+                  !form.logoBg
+                    ? 'bg-verse-600 text-white'
+                    : 'bg-verse-100 dark:bg-verse-700 text-verse-700 dark:text-verse-300 hover:bg-verse-200 dark:hover:bg-verse-600'
+                ]"
+              >
+                Transparent
+              </button>
+              <button
+                type="button"
+                @click="form.logoBg = '#ffffff'"
+                :class="[
+                  'px-3 py-1.5 squircle rounded-lg text-sm font-medium transition-colors',
+                  form.logoBg === '#ffffff'
+                    ? 'bg-verse-600 text-white'
+                    : 'bg-verse-100 dark:bg-verse-700 text-verse-700 dark:text-verse-300 hover:bg-verse-200 dark:hover:bg-verse-600'
+                ]"
+              >
+                White
+              </button>
+              <button
+                type="button"
+                @click="form.logoBg = '#111827'"
+                :class="[
+                  'px-3 py-1.5 squircle rounded-lg text-sm font-medium transition-colors',
+                  form.logoBg === '#111827'
+                    ? 'bg-verse-600 text-white'
+                    : 'bg-verse-100 dark:bg-verse-700 text-verse-700 dark:text-verse-300 hover:bg-verse-200 dark:hover:bg-verse-600'
+                ]"
+              >
+                Black
+              </button>
+              <div class="flex items-center gap-2">
+                <input
+                  type="color"
+                  :value="form.logoBg || '#ffffff'"
+                  @input="form.logoBg = ($event.target as HTMLInputElement).value"
+                  class="w-8 h-8 rounded cursor-pointer border border-verse-300 dark:border-verse-600"
+                />
+                <span v-if="form.logoBg && !['#ffffff', '#111827', ''].includes(form.logoBg)" class="text-xs font-mono text-verse-500">
+                  {{ form.logoBg }}
+                </span>
+              </div>
+            </div>
           </div>
 
           <!-- Status -->

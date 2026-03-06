@@ -12,7 +12,7 @@ interface Sponsor {
   description: string | null
   logoUrl: string | null
   sponsorTypes: string[]
-  darkbg: boolean
+  logoBg: string | null
   status: 'active' | 'inactive'
 }
 
@@ -137,7 +137,8 @@ function doDelete() {
                     <div class="flex items-center gap-3">
                       <div
                         v-if="sponsor.logoUrl"
-                        :class="['w-10 h-10 squircle rounded-lg flex items-center justify-center p-1', sponsor.darkbg ? 'bg-verse-800' : 'bg-white']"
+                        :class="['w-10 h-10 squircle rounded-lg flex items-center justify-center p-1', sponsor.logoBg ? '' : 'bg-white']"
+                        :style="sponsor.logoBg ? { backgroundColor: sponsor.logoBg } : {}"
                       >
                         <img :src="sponsor.logoUrl" :alt="sponsor.name" class="max-w-full max-h-full object-contain" />
                       </div>

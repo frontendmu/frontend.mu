@@ -12,7 +12,7 @@ interface Sponsor {
   logoUrl: string | null
   logomarkUrl: string | null
   sponsorTypes: string[]
-  darkbg: boolean
+  logoBg: string | null
   status: 'active' | 'inactive'
   eventCount: number
 }
@@ -36,7 +36,7 @@ const form = useForm({
   clearLogo: false,
   clearLogomark: false,
   sponsorTypes: [...(props.sponsor.sponsorTypes || [])],
-  darkbg: props.sponsor.darkbg,
+  logoBg: props.sponsor.logoBg || '',
   status: props.sponsor.status,
 })
 
@@ -78,7 +78,8 @@ function handleSubmit() {
         <div class="flex items-center gap-4 mb-8">
           <div
             v-if="sponsor.logoUrl"
-            :class="['w-16 h-16 squircle rounded-lg flex items-center justify-center p-2', sponsor.darkbg ? 'bg-verse-800' : 'bg-white dark:bg-white border border-verse-200']"
+            :class="['w-16 h-16 squircle rounded-lg flex items-center justify-center p-2', sponsor.logoBg ? '' : 'bg-white dark:bg-white border border-verse-200']"
+            :style="sponsor.logoBg ? { backgroundColor: sponsor.logoBg } : {}"
           >
             <img :src="sponsor.logoUrl" :alt="sponsor.name" class="max-w-full max-h-full object-contain" />
           </div>
@@ -147,7 +148,7 @@ function handleSubmit() {
               <BaseImageUpload
                 v-model="form.logoFile"
                 :current-url="sponsor.logoUrl"
-                :dark-preview="form.darkbg"
+                :dark-preview="!!form.logoBg"
                 :error="form.errors.logoFile || form.errors.logoUrl"
                 @update:url="(v) => { form.logoUrl = v; form.clearLogo = false }"
                 @update:model-value="() => { form.clearLogo = false }"
@@ -162,7 +163,7 @@ function handleSubmit() {
               <BaseImageUpload
                 v-model="form.logomarkFile"
                 :current-url="sponsor.logomarkUrl"
-                :dark-preview="form.darkbg"
+                :dark-preview="!!form.logoBg"
                 :error="form.errors.logomarkFile || form.errors.logomarkUrl"
                 @update:url="(v) => { form.logomarkUrl = v; form.clearLogomark = false }"
                 @update:model-value="() => { form.clearLogomark = false }"
@@ -194,17 +195,60 @@ function handleSubmit() {
             </div>
           </div>
 
-          <!-- Dark Background -->
-          <div class="flex items-center gap-3">
-            <input
-              id="darkbg"
-              v-model="form.darkbg"
-              type="checkbox"
-              class="h-4 w-4 text-verse-600 focus:ring-verse-500 border-verse-300 rounded"
-            />
-            <label for="darkbg" class="text-sm font-medium text-verse-700 dark:text-verse-300">
-              Logo requires dark background
+          <!-- Logo Background -->
+          <div>
+            <label class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2">
+              Logo Background
             </label>
+            <div class="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                @click="form.logoBg = ''"
+                :class="[
+                  'px-3 py-1.5 squircle rounded-lg text-sm font-medium transition-colors',
+                  !form.logoBg
+                    ? 'bg-verse-600 text-white'
+                    : 'bg-verse-100 dark:bg-verse-700 text-verse-700 dark:text-verse-300 hover:bg-verse-200 dark:hover:bg-verse-600'
+                ]"
+              >
+                Transparent
+              </button>
+              <button
+                type="button"
+                @click="form.logoBg = '#ffffff'"
+                :class="[
+                  'px-3 py-1.5 squircle rounded-lg text-sm font-medium transition-colors',
+                  form.logoBg === '#ffffff'
+                    ? 'bg-verse-600 text-white'
+                    : 'bg-verse-100 dark:bg-verse-700 text-verse-700 dark:text-verse-300 hover:bg-verse-200 dark:hover:bg-verse-600'
+                ]"
+              >
+                White
+              </button>
+              <button
+                type="button"
+                @click="form.logoBg = '#111827'"
+                :class="[
+                  'px-3 py-1.5 squircle rounded-lg text-sm font-medium transition-colors',
+                  form.logoBg === '#111827'
+                    ? 'bg-verse-600 text-white'
+                    : 'bg-verse-100 dark:bg-verse-700 text-verse-700 dark:text-verse-300 hover:bg-verse-200 dark:hover:bg-verse-600'
+                ]"
+              >
+                Black
+              </button>
+              <div class="flex items-center gap-2">
+                <input
+                  type="color"
+                  :value="form.logoBg || '#ffffff'"
+                  @input="form.logoBg = ($event.target as HTMLInputElement).value"
+                  class="w-8 h-8 rounded cursor-pointer border border-verse-300 dark:border-verse-600"
+                />
+                <span v-if="form.logoBg && !['#ffffff', '#111827', ''].includes(form.logoBg)" class="text-xs font-mono text-verse-500">
+                  {{ form.logoBg }}
+                </span>
+              </div>
+            </div>
           </div>
 
           <!-- Status -->
