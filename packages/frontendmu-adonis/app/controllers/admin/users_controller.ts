@@ -2,7 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import Role from '#models/role'
 import UserPolicy from '#policies/user_policy'
-import { resolveAvatarUrl } from '#dtos/factories'
+import { resolveAvatarUrl, toSpeakerSession } from '#dtos/factories'
 import { updateUserValidator } from '#validators/user_validator'
 import db from '@adonisjs/lucid/services/db'
 
@@ -28,9 +28,9 @@ export default class AdminUsersController {
 
     if (search) {
       query = query.where((q) => {
-        q.whereILike('name', `%${search}%`)
-          .orWhereILike('email', `%${search}%`)
-          .orWhereILike('githubUsername', `%${search}%`)
+        q.whereLike('name', `%${search}%`)
+          .orWhereLike('email', `%${search}%`)
+          .orWhereLike('githubUsername', `%${search}%`)
       })
     }
 
@@ -67,6 +67,9 @@ export default class AdminUsersController {
       .preload('roles', (query) => {
         query.preload('permissions')
       })
+      .preload('sessions', (query) => {
+        query.preload('event')
+      })
       .firstOrFail()
 
     const allRoles = await Role.query().preload('permissions').orderBy('name', 'asc')
@@ -76,6 +79,9 @@ export default class AdminUsersController {
     return inertia.render('admin/users/edit', {
       user: {
         ...user.serialize(),
+        featured: !!user.featured,
+        isOrganizer: !!user.isOrganizer,
+        isCommunityMember: !!user.isCommunityMember,
         roles: user.roles.map((r) => ({
           id: r.id,
           name: r.name,
@@ -84,6 +90,7 @@ export default class AdminUsersController {
         })),
         permissions: userPermissions,
         avatarUrl: resolveAvatarUrl(user),
+        sessions: user.sessions?.map(toSpeakerSession) || [],
       },
       allRoles: allRoles.map((r) => ({
         id: r.id,
@@ -136,9 +143,10 @@ export default class AdminUsersController {
         linkedinUrl: data.linkedinUrl || null,
         twitterUrl: data.twitterUrl || null,
         websiteUrl: data.websiteUrl || null,
-        featured: data.featured || false,
-        isOrganizer: data.isOrganizer || false,
-        isCommunityMember: data.isCommunityMember || false,
+        featured: data.featured === true,
+        isOrganizer: data.isOrganizer === true,
+        isCommunityMember: data.isCommunityMember === true,
+        title: data.title || null,
       })
       await user.save()
       await user.related('roles').sync(data.roleIds)

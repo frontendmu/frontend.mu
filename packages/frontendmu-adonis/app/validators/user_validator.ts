@@ -10,8 +10,9 @@ export const updateUserValidator = vine.compile(
     linkedinUrl: vine.string().url().optional(),
     twitterUrl: vine.string().url().optional(),
     websiteUrl: vine.string().url().optional(),
-    featured: vine.boolean().optional(),
-    isOrganizer: vine.boolean().optional(),
-    isCommunityMember: vine.boolean().optional(),
+    featured: vine.boolean(),
+    isOrganizer: vine.boolean(),
+    isCommunityMember: vine.boolean(),
+    title: vine.string().trim().maxLength(100).optional(),
   })
 )

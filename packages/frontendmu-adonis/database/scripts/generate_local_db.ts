@@ -141,7 +141,7 @@ async function generate() {
   })
 
   const adminId = randomUUID()
-  const now = new Date().toISOString()
+  const now = new Date().toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, '')
 
   await db('users').insert({
     id: adminId,
@@ -216,6 +216,26 @@ async function generate() {
   }
 
   console.log(`  dummy users: ${dummyUsers.length}, dummy RSVPs: ${rsvpCount}`)
+
+  // Assign viewer role to all users without a role
+  const viewerRole = await db('roles').where('name', 'viewer').first()
+  if (viewerRole) {
+    const usersWithoutRoles = await db('users')
+      .leftJoin('user_roles', 'users.id', 'user_roles.user_id')
+      .whereNull('user_roles.user_id')
+      .select('users.id')
+
+    if (usersWithoutRoles.length > 0) {
+      await db('user_roles').insert(
+        usersWithoutRoles.map((u) => ({
+          user_id: u.id,
+          role_id: viewerRole.id,
+          created_at: now,
+        }))
+      )
+    }
+    console.log(`  viewer role assigned: ${usersWithoutRoles.length} users`)
+  }
 
   // Set organizer titles and linkedin URLs from organizers.json
   const organizersPath = join(__dirname, '..', 'data', 'organizers.json')
