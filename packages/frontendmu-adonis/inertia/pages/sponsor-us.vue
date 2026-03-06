@@ -30,19 +30,19 @@ import { Head, Link } from '@inertiajs/vue3'
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="p-6 bg-white dark:bg-verse-950/40 border border-gray-100 dark:border-verse-800 rounded-2xl shadow-sm">
-                  <h3 class="text-lg font-black mb-3 dark:text-gray-100">Talent Acquisition</h3>
+                  <h3 class="text-lg font-bold mb-3 dark:text-gray-100">Talent Acquisition</h3>
                   <p class="text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed">Connect directly with the most active and ambitious developers in Mauritius.</p>
                 </div>
                 <div class="p-6 bg-white dark:bg-verse-950/40 border border-gray-100 dark:border-verse-800 rounded-2xl shadow-sm">
-                  <h3 class="text-lg font-black mb-3 dark:text-gray-100">Brand Visibility</h3>
+                  <h3 class="text-lg font-bold mb-3 dark:text-gray-100">Brand Visibility</h3>
                   <p class="text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed">Position your organization as a key player in the local tech revolution.</p>
                 </div>
                 <div class="p-6 bg-white dark:bg-verse-950/40 border border-gray-100 dark:border-verse-800 rounded-2xl shadow-sm">
-                  <h3 class="text-lg font-black mb-3 dark:text-gray-100">Community Support</h3>
+                  <h3 class="text-lg font-bold mb-3 dark:text-gray-100">Community Support</h3>
                   <p class="text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed">Show your commitment to continuous learning and professional growth.</p>
                 </div>
                 <div class="p-6 bg-white dark:bg-verse-950/40 border border-gray-100 dark:border-verse-800 rounded-2xl shadow-sm">
-                  <h3 class="text-lg font-black mb-3 dark:text-gray-100">Networking</h3>
+                  <h3 class="text-lg font-bold mb-3 dark:text-gray-100">Networking</h3>
                   <p class="text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed">Build meaningful relationships with other tech leaders and community organizers.</p>
                 </div>
               </div>
@@ -52,7 +52,7 @@ import { Head, Link } from '@inertiajs/vue3'
           <div class="lg:col-span-5 space-y-8">
             <!-- Contact Card -->
             <div class="p-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl shadow-2xl space-y-6">
-              <h3 class="text-2xl font-black tracking-tight leading-tight">Let's talk partnerships.</h3>
+              <h3 class="text-2xl font-display tracking-tight leading-tight">Let's talk partnerships.</h3>
               <p class="text-base font-medium opacity-70 leading-relaxed">
                 Every sponsorship is a custom partnership. We'll work with you to ensure your goals are met.
               </p>
@@ -75,7 +75,7 @@ import { Head, Link } from '@inertiajs/vue3'
               <ul class="space-y-4">
                 <li class="flex items-center justify-between font-bold text-sm">
                   <span class="text-gray-600 dark:text-gray-300">Venue Hosting</span>
-                  <span class="text-[9px] font-black uppercase tracking-widest text-verse-500 bg-verse-500/10 px-2 py-0.5 rounded">Popular</span>
+                  <span class="text-[10px] font-bold text-verse-500 bg-verse-500/10 px-2.5 py-0.5 rounded">Popular</span>
                 </li>
                 <li class="h-px w-full bg-gray-50 dark:bg-verse-800"></li>
                 <li class="flex items-center justify-between font-bold text-sm text-gray-600 dark:text-gray-300">

@@ -55,10 +55,10 @@ const speakers = computed(() => {
               {{ event.title }}
             </h3>
             <div v-if="isMeetupToday || isNextMeetup" class="shrink-0 flex gap-1">
-              <span v-if="isMeetupToday" class="text-[10px] font-black uppercase tracking-widest bg-red-500 text-white px-2 py-0.5 rounded">
+              <span v-if="isMeetupToday" class="text-[10px] font-bold uppercase tracking-wider bg-red-500 text-white px-2 py-0.5 rounded">
                 Today
               </span>
-              <span v-else-if="isNextMeetup" class="text-[10px] font-black uppercase tracking-widest bg-green-500 text-white px-2 py-0.5 rounded">
+              <span v-else-if="isNextMeetup" class="text-[10px] font-bold uppercase tracking-wider bg-green-500 text-white px-2 py-0.5 rounded">
                 Next
               </span>
             </div>

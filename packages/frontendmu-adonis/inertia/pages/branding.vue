@@ -25,7 +25,7 @@ import { Head } from '@inertiajs/vue3'
             <!-- Logos -->
             <section class="space-y-12">
               <div class="flex items-center gap-4">
-                <h2 class="text-2xl font-black uppercase tracking-[0.2em] text-verse-500">Core Logos</h2>
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-500">Core Logos</h2>
                 <div class="h-px flex-1 bg-gradient-to-r from-verse-500/20 to-transparent"></div>
               </div>
 
@@ -52,34 +52,34 @@ import { Head } from '@inertiajs/vue3'
             <!-- Color Palette -->
             <section class="space-y-12">
               <div class="flex items-center gap-4">
-                <h2 class="text-2xl font-black uppercase tracking-[0.2em] text-verse-500">Color Palette</h2>
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-500">Color Palette</h2>
                 <div class="h-px flex-1 bg-gradient-to-r from-verse-500/20 to-transparent"></div>
               </div>
 
               <div class="grid grid-cols-2 md:grid-cols-5 gap-8">
                 <div class="space-y-4">
-                  <div class="aspect-square bg-verse-500 rounded-3xl shadow-xl shadow-verse-500/20 transition-transform hover:scale-105"></div>
-                  <p class="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white">Primary</p>
+                  <div class="aspect-square bg-verse-500 rounded-2xl shadow-lg shadow-verse-500/20 transition-transform hover:scale-105"></div>
+                  <p class="text-sm font-bold text-gray-900 dark:text-white">Primary</p>
                   <p class="text-xs font-mono text-gray-400">#1e3a8a</p>
                 </div>
                 <div class="space-y-4">
-                  <div class="aspect-square bg-verse-700 rounded-3xl shadow-xl shadow-verse-700/20 transition-transform hover:scale-105"></div>
-                  <p class="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white">Deep</p>
+                  <div class="aspect-square bg-verse-700 rounded-2xl shadow-lg shadow-verse-700/20 transition-transform hover:scale-105"></div>
+                  <p class="text-sm font-bold text-gray-900 dark:text-white">Deep</p>
                   <p class="text-xs font-mono text-gray-400">#0f172a</p>
                 </div>
                 <div class="space-y-4">
-                  <div class="aspect-square bg-verse-950 rounded-3xl shadow-xl shadow-black/20 transition-transform hover:scale-105 border border-verse-800"></div>
-                  <p class="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white">Obsidian</p>
+                  <div class="aspect-square bg-verse-950 rounded-2xl shadow-lg shadow-black/20 transition-transform hover:scale-105 border border-verse-800"></div>
+                  <p class="text-sm font-bold text-gray-900 dark:text-white">Obsidian</p>
                   <p class="text-xs font-mono text-gray-400">#020617</p>
                 </div>
                 <div class="space-y-4">
-                  <div class="aspect-square bg-verse-300 rounded-3xl shadow-xl shadow-verse-300/20 transition-transform hover:scale-105"></div>
-                  <p class="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white">Steel</p>
+                  <div class="aspect-square bg-verse-300 rounded-2xl shadow-lg shadow-verse-300/20 transition-transform hover:scale-105"></div>
+                  <p class="text-sm font-bold text-gray-900 dark:text-white">Steel</p>
                   <p class="text-xs font-mono text-gray-400">#94a3b8</p>
                 </div>
                 <div class="space-y-4">
-                  <div class="aspect-square bg-verse-100 rounded-3xl shadow-xl shadow-verse-100/20 transition-transform hover:scale-105"></div>
-                  <p class="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white">Mist</p>
+                  <div class="aspect-square bg-verse-100 rounded-2xl shadow-lg shadow-verse-100/20 transition-transform hover:scale-105"></div>
+                  <p class="text-sm font-bold text-gray-900 dark:text-white">Mist</p>
                   <p class="text-xs font-mono text-gray-400">#f1f5f9</p>
                 </div>
               </div>
@@ -90,7 +90,7 @@ import { Head } from '@inertiajs/vue3'
           <aside class="lg:col-span-4 space-y-8">
             <div class="sticky top-32 space-y-8">
               <div class="p-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl shadow-2xl space-y-6">
-                <h3 class="text-2xl font-black tracking-tight">Need Assets?</h3>
+                <h3 class="text-2xl font-display tracking-tight">Need Assets?</h3>
                 <p class="font-medium opacity-70 leading-relaxed">
                   We're working on a full brand kit. In the meantime, you can inspect the SVG logos on this page for high-fidelity vector versions.
                 </p>
@@ -100,7 +100,7 @@ import { Head } from '@inertiajs/vue3'
               </div>
 
               <div class="p-8 border border-verse-100 dark:border-verse-800 rounded-2xl space-y-6 bg-white/50 dark:bg-verse-950/20 backdrop-blur-xl">
-                <h4 class="text-xs font-black uppercase tracking-widest text-gray-400">Usage Rules</h4>
+                <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-400">Usage Rules</h4>
                 <ul class="space-y-4 text-xs font-bold text-gray-500 leading-relaxed italic">
                   <li>• Maintain generous whitespace around the logo.</li>
                   <li>• Do not distort or stretch the icon.</li>

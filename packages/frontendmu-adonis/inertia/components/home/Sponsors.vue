@@ -42,8 +42,8 @@ const grid = computed(() => {
   <section v-if="sponsors.length > 0" class="relative py-16 overflow-x-clip">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
       <div class="flex items-center justify-between">
-        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 dark:text-gray-500">Trusted by</p>
-        <Link href="/sponsors" class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 hover:text-verse-500 dark:hover:text-verse-400 transition-colors">
+        <p class="text-xs font-semibold text-gray-400 dark:text-gray-500">Trusted by</p>
+        <Link href="/sponsors" class="text-xs font-semibold text-gray-400 dark:text-gray-500 hover:text-verse-500 dark:hover:text-verse-400 transition-colors">
           View all
         </Link>
       </div>

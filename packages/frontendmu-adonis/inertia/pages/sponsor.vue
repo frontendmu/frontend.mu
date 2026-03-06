@@ -40,7 +40,7 @@ function formatDateShort(dateStr: string): string {
       <nav class="mb-12">
         <Link
           href="/sponsors"
-          class="group inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-verse-500 transition-colors"
+          class="group inline-flex items-center gap-2 text-xs font-semibold text-gray-400 hover:text-verse-500 transition-colors"
         >
           <svg
             class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 transition-transform group-hover:-translate-x-1"
@@ -78,7 +78,7 @@ function formatDateShort(dateStr: string): string {
             />
             <span
               v-else
-              class="text-3xl font-black tracking-tight text-gray-900 dark:text-gray-100 text-center px-4"
+              class="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 text-center px-4"
             >
               {{ sponsor.name }}
             </span>
@@ -88,14 +88,14 @@ function formatDateShort(dateStr: string): string {
           <div class="flex-1 space-y-5 text-center lg:text-left">
             <div class="inline-flex items-center gap-2">
               <span
-                class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-300 bg-verse-500/10 px-2 py-0.5 rounded"
+                class="text-xs font-semibold text-verse-500 dark:text-verse-300 bg-verse-500/10 px-2.5 py-0.5 rounded"
               >
                 Partner Spotlight
               </span>
             </div>
 
             <h1
-              class="text-5xl md:text-7xl font-black tracking-tighter dark:text-gray-100 leading-none"
+              class="text-5xl md:text-7xl font-display tracking-tight dark:text-gray-100 leading-none"
             >
               {{ sponsor.name }}
             </h1>
@@ -108,7 +108,7 @@ function formatDateShort(dateStr: string): string {
               <span
                 v-for="type in sponsor.sponsorTypes"
                 :key="type"
-                class="px-3 py-1 bg-verse-500/10 text-verse-600 dark:text-verse-400 border border-verse-500/20 rounded-full text-[9px] font-black uppercase tracking-widest"
+                class="px-3 py-1 bg-verse-500/10 text-verse-600 dark:text-verse-400 border border-verse-500/20 rounded-full text-[10px] font-bold uppercase tracking-wider"
               >
                 {{ type }}
               </span>
@@ -165,7 +165,7 @@ function formatDateShort(dateStr: string): string {
         <section v-if="sponsor.description" class="mb-16">
           <div class="flex items-center gap-3 mb-6">
             <span
-              class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400"
+              class="text-sm font-semibold text-verse-500 dark:text-verse-400"
             >
               About
             </span>
@@ -182,13 +182,13 @@ function formatDateShort(dateStr: string): string {
         <section v-if="meetups.length" class="space-y-8">
           <div class="flex items-center gap-3">
             <span
-              class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400"
+              class="text-sm font-semibold text-verse-500 dark:text-verse-400"
             >
               Shared Experiences
             </span>
             <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
             <span
-              class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500"
+              class="text-xs font-medium text-gray-400 dark:text-gray-500"
             >
               {{ meetups.length }} meetup{{ meetups.length === 1 ? '' : 's' }}
             </span>
@@ -206,7 +206,7 @@ function formatDateShort(dateStr: string): string {
                 class="px-6 pt-5 pb-3 flex items-center justify-between"
               >
                 <p
-                  class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400"
+                  class="text-sm font-semibold text-verse-500 dark:text-verse-400"
                 >
                   {{ meetup.date ? formatDateShort(meetup.date) : 'TBA' }}
                 </p>
@@ -232,7 +232,7 @@ function formatDateShort(dateStr: string): string {
               <!-- Content -->
               <div class="px-6 pb-6 flex-1 flex flex-col gap-3">
                 <h3
-                  class="text-lg font-black tracking-tight text-gray-900 dark:text-gray-100 leading-snug group-hover:text-verse-500 transition-colors"
+                  class="text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100 leading-snug group-hover:text-verse-500 transition-colors"
                 >
                   {{ meetup.title }}
                 </h3>
@@ -258,7 +258,7 @@ function formatDateShort(dateStr: string): string {
                     />
                   </svg>
                   <p
-                    class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest"
+                    class="text-xs font-medium text-gray-400 dark:text-gray-500"
                   >
                     {{ meetup.venue }}
                   </p>
@@ -295,12 +295,12 @@ function formatDateShort(dateStr: string): string {
               />
             </svg>
           </div>
-          <h2 class="text-4xl font-black tracking-tight dark:text-white">
+          <h2 class="text-4xl font-display tracking-tight dark:text-white">
             Partner not found.
           </h2>
           <Link
             href="/sponsors"
-            class="inline-flex items-center gap-4 px-10 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black uppercase tracking-widest hover:scale-105 transition-all"
+            class="inline-flex items-center gap-3 px-8 py-3.5 bg-verse-600 text-white rounded-xl font-bold text-sm hover:bg-verse-700 transition-colors"
           >
             Return to Partners
           </Link>

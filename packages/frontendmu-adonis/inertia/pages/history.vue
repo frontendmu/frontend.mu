@@ -27,8 +27,8 @@ import { Head } from '@inertiajs/vue3'
           <!-- Phase 1 -->
           <div class="relative grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div class="md:text-right space-y-4">
-              <span class="text-xs font-black uppercase tracking-widest text-verse-500">2016 — 2018</span>
-              <h2 class="text-4xl font-black tracking-tight dark:text-white">The Genesis</h2>
+              <span class="text-sm font-semibold text-verse-500">2016 — 2018</span>
+              <h2 class="text-4xl font-display tracking-tight dark:text-white">The Genesis</h2>
               <p class="text-lg text-gray-500 dark:text-gray-400 font-medium leading-relaxed max-w-md md:ml-auto">
                 Founded by <strong class="text-gray-900 dark:text-white">David Dias</strong>. The community was born out of a need for front-end specialized knowledge in Mauritius.
               </p>
@@ -44,8 +44,8 @@ import { Head } from '@inertiajs/vue3'
               <div class="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-verse-500 shadow-[0_0_15px_rgba(30,58,138,0.5)]"></div>
             </div>
             <div class="space-y-4">
-              <span class="text-xs font-black uppercase tracking-widest text-verse-500">2018 — 2022</span>
-              <h2 class="text-4xl font-black tracking-tight dark:text-white">Growth & Scaling</h2>
+              <span class="text-sm font-semibold text-verse-500">2018 — 2022</span>
+              <h2 class="text-4xl font-display tracking-tight dark:text-white">Growth & Scaling</h2>
               <p class="text-lg text-gray-500 dark:text-gray-400 font-medium leading-relaxed max-w-md">
                 Led by <strong class="text-gray-900 dark:text-white">Cedric Poilly</strong> and <strong class="text-gray-900 dark:text-white">Sandeep Ramgolam</strong>. This era saw the scaling of meetups and the establishment of a regular cadence.
               </p>
@@ -55,8 +55,8 @@ import { Head } from '@inertiajs/vue3'
           <!-- Phase 3 -->
           <div class="relative grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div class="md:text-right space-y-4">
-              <span class="text-xs font-black uppercase tracking-widest text-verse-500">2022 — Present</span>
-              <h2 class="text-4xl font-black tracking-tight dark:text-white">Modern Era</h2>
+              <span class="text-sm font-semibold text-verse-500">2022 — Present</span>
+              <h2 class="text-4xl font-display tracking-tight dark:text-white">Modern Era</h2>
               <p class="text-lg text-gray-500 dark:text-gray-400 font-medium leading-relaxed max-w-md md:ml-auto">
                 Current leadership: <strong class="text-gray-900 dark:text-white">Sandeep Ramgolam</strong>, <strong class="text-gray-900 dark:text-white">Kushul Soomaree</strong>, and <strong class="text-gray-900 dark:text-white">Cedric Poilly</strong>. Evolving into a full-stack community under the coders.mu banner.
               </p>

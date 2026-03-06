@@ -49,7 +49,7 @@ const speakers = computed(() => {
             <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 truncate">
               {{ event.title }}
             </h3>
-            <span v-if="isUpcoming" class="shrink-0 text-[10px] font-black uppercase tracking-widest bg-green-500 text-white px-2 py-0.5 rounded">
+            <span v-if="isUpcoming" class="shrink-0 text-[10px] font-bold uppercase tracking-wider bg-green-500 text-white px-2 py-0.5 rounded">
               Upcoming
             </span>
           </div>

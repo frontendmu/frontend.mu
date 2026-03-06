@@ -68,7 +68,7 @@ const { isAdmin } = useAuth()
             />
             <span
               v-else
-              class="text-2xl font-black tracking-tight text-center"
+              class="text-2xl font-bold tracking-tight text-center"
               :class="sponsor.logoBg && sponsor.logoBg !== '#ffffff' ? 'text-gray-100' : 'text-gray-900'"
             >
               {{ sponsor.name }}
@@ -78,7 +78,7 @@ const { isAdmin } = useAuth()
           <!-- Info Area -->
           <div class="flex flex-col gap-3 p-5">
             <h3
-              class="text-base font-black tracking-tight text-gray-900 dark:text-gray-100 leading-snug group-hover:text-verse-500 transition-colors"
+              class="text-base font-bold tracking-tight text-gray-900 dark:text-gray-100 leading-snug group-hover:text-verse-500 transition-colors"
             >
               {{ sponsor.name }}
             </h3>
@@ -90,7 +90,7 @@ const { isAdmin } = useAuth()
               <span
                 v-for="type in sponsor.sponsorTypes"
                 :key="type"
-                class="px-2 py-0.5 bg-verse-500/10 text-verse-600 dark:text-verse-400 border border-verse-500/20 rounded-full text-[9px] font-black uppercase tracking-widest"
+                class="px-2 py-0.5 bg-verse-500/10 text-verse-600 dark:text-verse-400 border border-verse-500/20 rounded-full text-[10px] font-bold uppercase tracking-wider"
               >
                 {{ type }}
               </span>
@@ -139,7 +139,7 @@ const { isAdmin } = useAuth()
         >
           <div class="max-w-xl space-y-4 text-center lg:text-left">
             <h2
-              class="text-3xl md:text-5xl font-black tracking-tight leading-none"
+              class="text-3xl md:text-5xl font-display tracking-tight leading-none"
             >
               Empower the next generation.
             </h2>

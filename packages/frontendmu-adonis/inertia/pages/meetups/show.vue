@@ -226,7 +226,7 @@ const calendarUrl = computed(() => {
               <!-- Status Badge -->
               <div class="flex items-center gap-3">
                 <span
-                  class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-[0.15em] border"
+                  class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border"
                   :class="isToday
                     ? 'bg-red-500/10 border-red-500/20 text-red-600 dark:text-red-400'
                     : isUpcoming
@@ -373,17 +373,15 @@ const calendarUrl = computed(() => {
               <div class="space-y-10">
                 <article v-for="(session, index) in meetup.sessions" :key="session.id"
                   class="relative group">
-                  <div class="flex gap-6">
-                    <!-- Numbering -->
-                    <div class="relative shrink-0 flex flex-col items-center">
-                      <div class="w-9 h-9 rounded-xl bg-gray-50 dark:bg-verse-900 border border-gray-100 dark:border-verse-800 flex items-center justify-center text-sm font-black text-gray-500 dark:text-verse-400">
-                        {{ (index + 1).toString().padStart(2, '0') }}
-                      </div>
-                      <div v-if="index !== meetup.sessions.length - 1" class="absolute top-9 bottom-[-2.5rem] w-px bg-gray-100 dark:bg-verse-900"></div>
+                  <div class="flex gap-5">
+                    <!-- Timeline dot -->
+                    <div class="relative shrink-0 flex flex-col items-center pt-2">
+                      <div class="w-2.5 h-2.5 rounded-full bg-verse-500"></div>
+                      <div v-if="index !== meetup.sessions.length - 1" class="absolute top-4 bottom-[-2.5rem] w-px bg-gray-100 dark:bg-verse-900"></div>
                     </div>
 
                     <div class="flex-1 space-y-4">
-                      <h3 class="text-xl md:text-2xl font-black tracking-tight text-gray-900 dark:text-gray-100 leading-tight">
+                      <h3 class="text-xl md:text-2xl font-display tracking-tight text-gray-900 dark:text-gray-100 leading-tight">
                         {{ session.title }}
                       </h3>
 
@@ -400,7 +398,7 @@ const calendarUrl = computed(() => {
                             <p class="text-sm font-bold text-gray-900 dark:text-gray-200 group-hover/speaker:text-verse-500 transition-colors">
                               {{ speaker.name }}
                             </p>
-                            <p v-if="speaker.githubUsername" class="text-[10px] font-mono text-gray-400 uppercase tracking-widest mt-0.5">
+                            <p v-if="speaker.githubUsername" class="text-xs text-gray-400 mt-0.5">
                               @{{ speaker.githubUsername }}
                             </p>
                           </div>
@@ -544,9 +542,9 @@ const calendarUrl = computed(() => {
                 :name="attendee.name"
                 :github-username="attendee.githubUsername"
                 :avatar-url="attendee.avatarUrl"
-                class="grayscale group-hover:grayscale-0 transition-all group-hover:scale-110"
+                class="transition-transform group-hover:scale-110"
               />
-              <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 text-center leading-tight truncate w-full group-hover:text-verse-500 transition-colors">
+              <p class="text-[11px] font-medium text-gray-500 dark:text-gray-400 text-center leading-tight truncate w-full group-hover:text-verse-500 transition-colors">
                 {{ attendee.name }}
               </p>
             </div>
@@ -564,9 +562,9 @@ const calendarUrl = computed(() => {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172a4 4 0 0112.728 0M5.657 5.657a8 8 0 0116.97 0M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h2 class="text-4xl font-black tracking-tight dark:text-white">Meetup not found.</h2>
+          <h2 class="text-4xl font-display tracking-tight dark:text-white">Meetup not found.</h2>
           <Link href="/meetups"
-            class="inline-flex items-center gap-4 px-10 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black uppercase tracking-widest hover:scale-105 transition-all">
+            class="inline-flex items-center gap-3 px-8 py-3.5 bg-verse-600 text-white rounded-xl font-bold text-sm hover:bg-verse-700 transition-colors">
             Return to Archives
           </Link>
         </div>
@@ -580,10 +578,10 @@ const calendarUrl = computed(() => {
       enter-to-class="translate-y-0" leave-active-class="transition-transform duration-300 ease-in"
       leave-from-class="translate-y-0" leave-to-class="translate-y-full">
       <div v-if="showMobileRsvp && meetup && (isUpcoming || isToday) && canRsvp"
-        class="lg:hidden fixed bottom-0 left-0 right-0 z-50 p-6 bg-gray-900 text-white shadow-2xl border-t border-white/10 safe-area-bottom rounded-t-[2.5rem]">
+        class="lg:hidden fixed bottom-0 left-0 right-0 z-50 p-5 bg-gray-900 text-white shadow-2xl border-t border-white/10 safe-area-bottom rounded-t-2xl">
         <div class="flex items-center justify-between gap-6">
           <div class="flex-1 min-w-0">
-            <p class="text-xs font-black uppercase tracking-widest opacity-50">{{ eventStatus }}</p>
+            <p class="text-[10px] font-semibold uppercase tracking-wider opacity-50">{{ eventStatus }}</p>
             <p class="font-bold truncate">{{ meetup.title }}</p>
           </div>
 

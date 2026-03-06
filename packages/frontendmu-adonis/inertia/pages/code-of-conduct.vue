@@ -43,7 +43,7 @@ import { Head } from '@inertiajs/vue3'
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="p-8 bg-green-500/5 border border-green-500/10 rounded-xl space-y-4">
-                  <h3 class="text-xl font-black text-green-600 uppercase tracking-widest">Positive Behavior</h3>
+                  <h3 class="text-sm font-semibold text-green-600 uppercase tracking-wider">Positive Behavior</h3>
                   <ul class="space-y-4 text-gray-600 dark:text-gray-400 font-medium">
                     <li class="flex gap-3"><span>•</span> Demonstrating empathy and kindness</li>
                     <li class="flex gap-3"><span>•</span> Being respectful of differing viewpoints</li>
@@ -52,7 +52,7 @@ import { Head } from '@inertiajs/vue3'
                   </ul>
                 </div>
                 <div class="p-8 bg-red-500/5 border border-red-500/10 rounded-xl space-y-4">
-                  <h3 class="text-xl font-black text-red-600 uppercase tracking-widest">Unacceptable</h3>
+                  <h3 class="text-sm font-semibold text-red-600 uppercase tracking-wider">Unacceptable</h3>
                   <ul class="space-y-4 text-gray-600 dark:text-gray-400 font-medium">
                     <li class="flex gap-3"><span>•</span> Sexualized language or imagery</li>
                     <li class="flex gap-3"><span>•</span> Trolling, insulting or derogatory comments</li>
@@ -79,7 +79,7 @@ import { Head } from '@inertiajs/vue3'
           <!-- Sidebar / Quick Info -->
           <div class="lg:col-span-4 space-y-8 sticky top-32">
             <div class="p-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl shadow-2xl space-y-6">
-              <h3 class="text-2xl font-black tracking-tight">Need to report?</h3>
+              <h3 class="text-2xl font-display tracking-tight">Need to report?</h3>
               <p class="font-medium opacity-70">
                 All complaints will be reviewed and investigated promptly and fairly. All community leaders are obligated to respect the privacy and security of the reporter.
               </p>

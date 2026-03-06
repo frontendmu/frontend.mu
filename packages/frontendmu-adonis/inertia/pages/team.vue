@@ -74,7 +74,7 @@ function getGithubUrl(username: string) {
               class="group"
             >
               <Link :href="person.id ? `/speaker/${person.id}` : '#'" class="block space-y-4">
-                <div class="relative aspect-square overflow-hidden rounded-[2.5rem] squircle bg-gray-50 dark:bg-verse-900 border border-gray-100 dark:border-verse-800 transition-all duration-300 group-hover:border-verse-500 shadow-sm">
+                <div class="relative aspect-square overflow-hidden rounded-2xl bg-gray-50 dark:bg-verse-900 border border-gray-100 dark:border-verse-800 transition-all duration-300 group-hover:border-verse-500 shadow-sm">
                   <img
                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     :src="person.imageUrl"
@@ -118,7 +118,7 @@ function getGithubUrl(username: string) {
                   :name="speaker.name"
                   :github-username="speaker.githubUsername"
                   :avatar-url="speaker.avatarUrl"
-                  class="w-full aspect-square grayscale group-hover:grayscale-0"
+                  class="w-full aspect-square"
                 />
                 <p class="text-[9px] font-bold text-center text-gray-400 group-hover:text-verse-500 transition-colors truncate">
                   {{ speaker.name.split(' ')[0] }}

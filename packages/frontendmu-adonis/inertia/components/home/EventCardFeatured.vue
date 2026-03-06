@@ -44,7 +44,7 @@ const speakers = computed(() => {
 
       <div class="flex-1 space-y-4 md:space-y-6 text-center lg:text-left">
         <!-- Status Badge -->
-        <div v-if="isToday" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-[0.2em] border-2 bg-red-500/10 border-red-500/20 text-red-600 dark:text-red-400">
+        <div v-if="isToday" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border-2 bg-red-500/10 border-red-500/20 text-red-600 dark:text-red-400">
           <span class="relative flex h-2 w-2">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-current opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2 w-2 bg-current"></span>
@@ -99,7 +99,7 @@ const speakers = computed(() => {
               </div>
             </div>
             <div class="text-left">
-              <p class="text-xs font-black uppercase tracking-tighter text-gray-400 dark:text-gray-500">Featuring</p>
+              <p class="text-xs font-semibold text-gray-400 dark:text-gray-500">Featuring</p>
               <p class="text-sm font-bold dark:text-gray-300">{{ speakers[0]?.name }} & others</p>
             </div>
           </div>

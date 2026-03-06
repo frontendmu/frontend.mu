@@ -85,7 +85,7 @@ function getUserRoles() {
                 v-for="role in getUserRoles()"
                 :key="role.id"
                 :class="[
-                  'px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border',
+                  'px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border',
                   getRoleBadgeClass(role.name),
                 ]"
               >
@@ -198,8 +198,8 @@ function getUserRoles() {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h2 class="text-4xl font-black tracking-tight dark:text-white">Authentication required.</h2>
-          <Link href="/login" class="inline-flex items-center gap-4 px-10 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black uppercase tracking-widest hover:scale-105 transition-all">
+          <h2 class="text-4xl font-display tracking-tight dark:text-white">Authentication required.</h2>
+          <Link href="/login" class="inline-flex items-center gap-3 px-8 py-3.5 bg-verse-600 text-white rounded-xl font-bold text-sm hover:bg-verse-700 transition-colors">
             Sign In to View
           </Link>
         </div>
