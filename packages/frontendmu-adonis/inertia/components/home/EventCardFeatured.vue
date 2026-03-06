@@ -40,9 +40,9 @@ const speakers = computed(() => {
         : 'border-verse-500/50 shadow-2xl shadow-verse-500/10',
     ]"
   >
-    <div class="relative z-10 bg-white dark:bg-verse-950 rounded-[2.3rem] squircle p-6 md:p-10 flex flex-col lg:flex-row gap-10 items-center justify-between">
+    <div class="relative z-10 bg-white dark:bg-verse-950 rounded-[2.3rem] squircle p-5 md:p-10 flex flex-col lg:flex-row gap-6 md:gap-10 items-center justify-between">
 
-      <div class="flex-1 space-y-6 text-center lg:text-left">
+      <div class="flex-1 space-y-4 md:space-y-6 text-center lg:text-left">
         <!-- Status Badge -->
         <div v-if="isToday" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-[0.2em] border-2 bg-red-500/10 border-red-500/20 text-red-600 dark:text-red-400">
           <span class="relative flex h-2 w-2">
@@ -53,12 +53,12 @@ const speakers = computed(() => {
         </div>
 
         <!-- Title -->
-        <h3 class="text-5xl md:text-7xl font-black tracking-tight text-gray-900 dark:text-white leading-[1.1]">
+        <h3 class="text-3xl md:text-5xl lg:text-7xl font-black tracking-tight text-gray-900 dark:text-white leading-[1.1]">
           {{ event?.title }}
         </h3>
 
         <!-- Meta info -->
-        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-gray-500 dark:text-gray-400 font-bold text-lg">
+        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 md:gap-6 text-gray-500 dark:text-gray-400 font-bold text-sm md:text-lg">
           <div class="flex items-center gap-2">
             <svg class="w-5 h-5 text-verse-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -75,10 +75,10 @@ const speakers = computed(() => {
         </div>
 
         <!-- Speakers & CTA -->
-        <div class="flex flex-col sm:flex-row items-center gap-8 pt-4">
+        <div class="flex flex-col sm:flex-row items-center gap-4 md:gap-8 pt-2 md:pt-4">
           <Link
             :href="`/meetup/${event.id}`"
-            class="relative z-20 w-full sm:w-auto px-10 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all"
+            class="relative z-20 w-full sm:w-auto px-8 py-3 md:px-10 md:py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black uppercase tracking-widest text-sm md:text-base hover:scale-105 active:scale-95 transition-all"
           >
             {{ isToday ? 'Join Now' : 'Save My Spot' }}
           </Link>

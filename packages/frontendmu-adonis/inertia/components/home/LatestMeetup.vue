@@ -31,10 +31,10 @@ const remainingUpcomingData = computed(() =>
       <div v-if="areThereMeetupsToday || nextMeetup" class="space-y-8">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div class="space-y-2">
-            <h2 class="text-4xl md:text-5xl font-black tracking-tight dark:text-white">
+            <h2 class="text-3xl md:text-5xl font-black tracking-tight dark:text-white">
               {{ areThereMeetupsToday ? "Happening Today" : "Next event" }}
             </h2>
-            <p class="text-lg text-gray-500 dark:text-gray-400 font-medium max-w-xl">
+            <p class="text-base md:text-lg text-gray-500 dark:text-gray-400 font-medium max-w-xl">
               Join our next session to learn from local experts and connect with the community.
             </p>
           </div>
