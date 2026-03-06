@@ -75,18 +75,14 @@ onUnmounted(() => {
         <div class="hero-content w-full lg:w-[55%] text-center lg:text-left space-y-5">
 
           <div class="flex flex-col">
-            <!-- Simple Static Role -->
-            <span class="text-base md:text-xl lg:text-2xl font-black uppercase tracking-[0.4em] text-verse-500 block leading-none mb-3 lg:mb-4">
-              Frontend
+            <span class="text-xs md:text-sm font-semibold uppercase tracking-[0.3em] text-verse-500/80 block leading-none mb-4 lg:mb-5">
+              Frontend Coders
             </span>
 
-            <h1 class="hero-heading relative z-10 font-black tracking-tighter leading-[0.8] dark:text-white pointer-events-auto cursor-default">
-              <span class="block">Coders</span>
-              <span class="relative inline-block">
-                <span class="text-verse-600 dark:text-verse-400">Mauritius</span>
-                <svg class="absolute -bottom-2 left-0 w-full h-4 text-verse-500/30 dark:text-verse-400/20" viewBox="0 0 100 10" preserveAspectRatio="none">
-                  <path d="M0 5 Q 25 0, 50 5 T 100 5" fill="none" stroke="currentColor" stroke-width="4" />
-                </svg>
+            <h1 class="hero-heading font-display relative z-10 tracking-tight leading-[0.85] dark:text-white pointer-events-auto cursor-default">
+              <span class="block">Mauritius</span>
+              <span class="relative inline-block font-display-italic text-verse-600 dark:text-verse-400">
+                dev community
               </span>
             </h1>
           </div>
@@ -189,13 +185,13 @@ onUnmounted(() => {
 
 /* Fluid heading: scales with both viewport width and height */
 .hero-heading {
-  font-size: clamp(2.75rem, 6vw + 1rem, 4.5rem);
+  font-size: clamp(3.25rem, 7vw + 1rem, 5.5rem);
 }
 
 /* Fluid vertical spacing for content */
 @media (min-width: 1024px) {
   .hero-heading {
-    font-size: clamp(3rem, 8vh + 1rem, 8rem);
+    font-size: clamp(3.5rem, 9vh + 1rem, 8.5rem);
   }
 
   .hero-content {

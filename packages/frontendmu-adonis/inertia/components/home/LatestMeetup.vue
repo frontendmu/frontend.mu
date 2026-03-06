@@ -31,10 +31,10 @@ const remainingUpcomingData = computed(() =>
       <div v-if="areThereMeetupsToday || nextMeetup" class="space-y-8">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div class="space-y-2">
-            <h2 class="text-3xl md:text-5xl font-black tracking-tight dark:text-white">
+            <h2 class="text-3xl md:text-5xl font-display tracking-tight dark:text-white">
               {{ areThereMeetupsToday ? "Happening Today" : "Next event" }}
             </h2>
-            <p class="text-base md:text-lg text-gray-500 dark:text-gray-400 font-medium max-w-xl">
+            <p class="text-sm md:text-base text-gray-500 dark:text-gray-400 font-medium max-w-xl">
               Join our next session to learn from local experts and connect with the community.
             </p>
           </div>
@@ -54,7 +54,7 @@ const remainingUpcomingData = computed(() =>
       <!-- Upcoming Queue -->
       <div v-if="remainingUpcomingData.length > 0" class="space-y-8">
         <div class="flex items-center gap-4">
-          <h2 class="text-2xl font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Upcoming</h2>
+          <h2 class="text-lg font-semibold text-verse-500 dark:text-verse-400">Upcoming</h2>
           <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
         </div>
         
@@ -67,8 +67,8 @@ const remainingUpcomingData = computed(() =>
       <div v-if="pastMeetups.length > 0" class="space-y-8">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div class="space-y-2">
-            <h2 class="text-3xl font-black tracking-tight dark:text-white">Recent Memories</h2>
-            <p class="text-gray-500 dark:text-gray-400 font-medium">Catch up on what you missed in our previous sessions.</p>
+            <h2 class="text-2xl md:text-3xl font-display tracking-tight dark:text-white">Previous meetups</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Catch up on what you missed in our previous sessions.</p>
           </div>
           
           <Link

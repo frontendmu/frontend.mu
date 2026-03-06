@@ -33,14 +33,14 @@ const speakers = computed(() => {
 
 <template>
   <div
-    class="relative overflow-hidden rounded-[2.5rem] squircle group transition-all duration-500 hover:scale-[1.01] border-2"
+    class="relative overflow-hidden rounded-2xl group transition-all duration-300 border"
     :class="[
       isToday
-        ? 'border-red-500/50 shadow-2xl shadow-red-500/10'
-        : 'border-verse-500/50 shadow-2xl shadow-verse-500/10',
+        ? 'border-red-500/40 shadow-lg shadow-red-500/5'
+        : 'border-verse-500/30 shadow-lg shadow-verse-500/5',
     ]"
   >
-    <div class="relative z-10 bg-white dark:bg-verse-950 rounded-[2.3rem] squircle p-5 md:p-10 flex flex-col lg:flex-row gap-6 md:gap-10 items-center justify-between">
+    <div class="relative z-10 bg-white dark:bg-verse-950 rounded-[0.9rem] p-5 md:p-8 flex flex-col lg:flex-row gap-6 md:gap-10 items-center justify-between">
 
       <div class="flex-1 space-y-4 md:space-y-6 text-center lg:text-left">
         <!-- Status Badge -->
@@ -53,7 +53,7 @@ const speakers = computed(() => {
         </div>
 
         <!-- Title -->
-        <h3 class="text-3xl md:text-5xl lg:text-7xl font-black tracking-tight text-gray-900 dark:text-white leading-[1.1]">
+        <h3 class="text-2xl md:text-4xl lg:text-5xl font-display tracking-tight text-gray-900 dark:text-white leading-[1.1]">
           {{ event?.title }}
         </h3>
 
@@ -78,7 +78,7 @@ const speakers = computed(() => {
         <div class="flex flex-col sm:flex-row items-center gap-4 md:gap-8 pt-2 md:pt-4">
           <Link
             :href="`/meetup/${event.id}`"
-            class="relative z-20 w-full sm:w-auto px-8 py-3 md:px-10 md:py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black uppercase tracking-widest text-sm md:text-base hover:scale-105 active:scale-95 transition-all"
+            class="relative z-20 w-full sm:w-auto px-7 py-3 bg-verse-600 text-white rounded-lg font-bold text-sm hover:bg-verse-700 active:scale-[0.98] transition-all"
           >
             {{ isToday ? 'Join Now' : 'Save My Spot' }}
           </Link>
@@ -107,9 +107,9 @@ const speakers = computed(() => {
       </div>
 
       <!-- Date Large Display (hidden on mobile) -->
-      <div v-if="event.date" class="hidden lg:flex flex-col items-center justify-center w-40 h-40 rounded-[2rem] bg-verse-50 dark:bg-verse-900/30 border-2 border-verse-100 dark:border-verse-800 rotate-3 group-hover:rotate-0 transition-transform duration-500">
-        <span class="text-5xl font-black text-verse-500 leading-none">{{ new Date(event.date).getDate() }}</span>
-        <span class="text-lg font-black uppercase tracking-[0.2em] text-gray-400">{{ new Date(event.date).toLocaleString('en-US', { month: 'short' }) }}</span>
+      <div v-if="event.date" class="hidden lg:flex flex-col items-center justify-center w-32 h-32 rounded-xl bg-verse-50 dark:bg-verse-900/30 border border-verse-100 dark:border-verse-800">
+        <span class="text-4xl font-display text-verse-500 leading-none">{{ new Date(event.date).getDate() }}</span>
+        <span class="text-sm font-medium uppercase tracking-wider text-gray-400 mt-1">{{ new Date(event.date).toLocaleString('en-US', { month: 'short' }) }}</span>
       </div>
 
     </div>
