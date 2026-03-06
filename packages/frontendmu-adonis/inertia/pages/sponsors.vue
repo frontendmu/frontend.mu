@@ -61,11 +61,8 @@ const { isAdmin } = useAuth()
           <!-- Logo Area -->
           <div
             class="flex items-center justify-center p-8 h-44 rounded-t-2xl"
-            :class="
-              sponsor.darkbg
-                ? 'bg-gray-900 dark:bg-black/60'
-                : 'bg-white dark:bg-white'
-            "
+            :class="sponsor.logoBg ? '' : 'bg-white dark:bg-white'"
+            :style="sponsor.logoBg ? { backgroundColor: sponsor.logoBg } : {}"
           >
             <img
               v-if="sponsor.logoUrl"
@@ -76,7 +73,7 @@ const { isAdmin } = useAuth()
             <span
               v-else
               class="text-2xl font-black tracking-tight text-center"
-              :class="sponsor.darkbg ? 'text-gray-100' : 'text-gray-900'"
+              :class="sponsor.logoBg && sponsor.logoBg !== '#ffffff' ? 'text-gray-100' : 'text-gray-900'"
             >
               {{ sponsor.name }}
             </span>

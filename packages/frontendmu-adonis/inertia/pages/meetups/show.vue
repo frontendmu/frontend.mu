@@ -232,7 +232,7 @@ const calendarUrl = computed(() => {
             <!-- Left: Main hero content -->
             <div class="flex-1 space-y-8 min-w-0">
               <!-- Status Badge -->
-              <div>
+              <div class="flex items-center gap-3">
                 <span
                   class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-[0.15em] border"
                   :class="isToday
@@ -247,6 +247,11 @@ const calendarUrl = computed(() => {
                   </span>
                   {{ statusLabel }}
                 </span>
+                <Link v-if="canEdit" :href="`/admin/events/${meetup.id}/edit`"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-gray-200 dark:border-verse-800 text-gray-500 dark:text-gray-400 hover:border-verse-500 hover:text-verse-500 dark:hover:text-verse-400 transition-colors">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                  Edit
+                </Link>
               </div>
 
               <!-- Title -->
@@ -330,9 +335,10 @@ const calendarUrl = computed(() => {
                   :key="sponsor.id"
                   :href="`/sponsor/${sponsor.id}`"
                   class="flex items-center justify-center px-4 py-3 rounded-xl border hover:border-verse-500/50 transition-colors group/sponsor"
-                  :class="sponsor.darkbg
-                    ? 'border-verse-800 bg-verse-900 dark:bg-verse-900'
+                  :class="sponsor.logoBg
+                    ? 'border-verse-800'
                     : 'border-gray-100 dark:border-verse-800 bg-white dark:bg-white'"
+                  :style="sponsor.logoBg ? { backgroundColor: sponsor.logoBg } : {}"
                 >
                   <img v-if="sponsor.logoUrl" :src="sponsor.logoUrl" :alt="sponsor.name" class="h-14 w-auto object-contain" />
                   <span v-else class="text-sm font-bold text-gray-700 dark:text-gray-300">{{ sponsor.name }}</span>

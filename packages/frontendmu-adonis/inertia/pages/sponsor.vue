@@ -67,11 +67,8 @@ function formatDateShort(dateStr: string): string {
           <!-- Logo Container -->
           <div
             class="shrink-0 flex items-center justify-center w-48 h-48 lg:w-56 lg:h-56 rounded-3xl border border-gray-100 dark:border-verse-800 shadow-sm"
-            :class="
-              sponsor.darkbg
-                ? 'bg-gray-900 dark:bg-black/60'
-                : 'bg-white dark:bg-white'
-            "
+            :class="sponsor.logoBg ? '' : 'bg-white dark:bg-white'"
+            :style="sponsor.logoBg ? { backgroundColor: sponsor.logoBg } : {}"
           >
             <img
               v-if="sponsor.logoUrl"
