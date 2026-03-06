@@ -49,8 +49,9 @@ node ace migration:run
 If the schema or production data changes (new events, sponsors, etc.):
 
 ```bash
-# 1. Pull the production DB from the server
+# 1. Pull the production DB and uploads from the server
 scp user@your-server:/path/to/tmp/db.production.sqlite3 tmp/db.production.sqlite3
+scp -r user@your-server:/path/to/public/uploads/ public/uploads/
 
 # 2. Export latest data to JSON
 npx tsx database/scripts/export_sqlite_data.ts
@@ -62,49 +63,66 @@ DB_DATABASE=database/db.local.sqlite3 node ace migration:fresh
 npx tsx database/scripts/generate_local_db.ts
 ```
 
-### Database Backup & Restore
+### Backup & Restore
+
+Backups include both the SQLite database and uploaded files (sponsor logos, etc.).
 
 ```bash
-# Create a backup (saved to database/backups/)
-node ace db:backup
+# On the server: create a backup
+docker compose exec app node ace db:backup
 
-# Restore the latest backup
-node ace db:restore
+# On the server: restore the latest backup
+docker compose exec app node ace db:restore
 
-# Restore a specific backup
-node ace db:restore database/backups/db_backup_20260306T171026.sqlite3
+# On the server: restore a specific backup by timestamp
+docker compose exec app node ace db:restore 20260306T171026
+```
+
+### Pulling Production Data Locally
+
+```bash
+# Pull uploaded files (sponsor logos, etc.)
+scp -r user@your-server:/path/to/public/uploads/ public/uploads/
+
+# Pull the production database
+scp user@your-server:/path/to/tmp/db.production.sqlite3 tmp/db.production.sqlite3
+
+# Or pull a backup archive instead
+ssh user@your-server "cd /path/to && docker compose exec app node ace db:backup"
+scp -r user@your-server:/path/to/database/backups/ database/backups/
 ```
 
 ## Production (Docker + Caddy)
 
+Deployments are automated via GitHub Actions. Pushing to the `production` branch builds a Docker image, pushes it to GHCR, and deploys to the VPS.
+
+### First-Time Setup
+
 ```bash
 # Clone the repo on your VPS
-git clone <repo-url>
+git clone -b production https://github.com/frontendmu/frontend.mu.git
 cd frontend.mu/packages/frontendmu-adonis
 
 # Create .env with production values
 cp .env.example .env
 # Edit .env: set APP_KEY, DOMAIN, GOOGLE_CLIENT_ID, etc.
 
-# Copy the production database (first deploy only)
-scp tmp/db.production.sqlite3 user@your-server:frontend.mu/packages/frontendmu-adonis/tmp/
+# Copy the production database and uploads
+mkdir -p tmp public/uploads
+# (scp files from your local machine)
 
 # Start everything
-DOMAIN=coders.mu docker compose up -d --build
+DOMAIN=coders.mu docker compose up -d
 
-# Run migrations (after deploy or schema changes)
+# Run migrations
 docker compose exec app node ace migration:run --force
-
-# Backup the database
-docker compose exec app node ace db:backup
 ```
 
-Caddy automatically handles HTTPS via Let's Encrypt. The SQLite database is persisted in a Docker volume (`app_data`).
-
-### Updating
+### Manual Deploy
 
 ```bash
 git pull
-docker compose up -d --build
+docker pull ghcr.io/frontendmu/frontend.mu/adonis:latest
+DOMAIN=coders.mu docker compose up -d
 docker compose exec app node ace migration:run --force
 ```
