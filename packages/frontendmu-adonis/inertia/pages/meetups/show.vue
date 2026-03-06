@@ -26,7 +26,6 @@ const featureFlags = computed(() => page.props.featureFlags)
 const isRsvpLoading = ref(false)
 const rsvpError = ref<string | null>(null)
 const rsvpSuccess = ref<string | null>(null)
-const showAllAttendees = ref(false)
 const showMobileRsvp = ref(false)
 
 // Check if user has an active RSVP
@@ -186,13 +185,6 @@ const daysUntil = computed(() => {
   const diff = eventDate.value.diff(DateTime.now(), 'days').days
   return Math.ceil(diff)
 })
-
-const visibleAttendees = computed(() => {
-  if (showAllAttendees.value) return props.attendees
-  return props.attendees.slice(0, 12)
-})
-
-const hasMoreAttendees = computed(() => props.attendees.length > 12)
 
 // Handle scroll for mobile sticky bar
 function handleScroll() {
@@ -543,7 +535,7 @@ const calendarUrl = computed(() => {
 
           <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
             <div
-              v-for="attendee in visibleAttendees"
+              v-for="attendee in attendees"
               :key="attendee.id"
               class="flex flex-col items-center gap-2 group"
             >
@@ -560,14 +552,7 @@ const calendarUrl = computed(() => {
             </div>
           </div>
 
-          <div v-if="hasMoreAttendees" class="flex justify-center">
-            <button
-              @click="showAllAttendees = !showAllAttendees"
-              class="px-6 py-2.5 text-xs font-black uppercase tracking-widest border border-gray-200 dark:border-verse-800 rounded-xl text-gray-400 hover:border-verse-500 hover:text-verse-500 transition-colors"
-            >
-              {{ showAllAttendees ? 'Show less' : `Show all ${attendees.length} attendees` }}
-            </button>
-          </div>
+
         </section>
       </template>
 
