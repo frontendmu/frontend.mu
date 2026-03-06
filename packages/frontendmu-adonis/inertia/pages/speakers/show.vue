@@ -46,7 +46,7 @@ const props = defineProps<Props>()
                       <h1 class="text-4xl md:text-6xl font-black tracking-tighter dark:text-gray-100 leading-none">
                         {{ speaker.name }}
                       </h1>
-                      <Link v-if="canEdit" :href="`/admin/speakers/${speaker.id}/edit`"
+                      <Link v-if="canEdit" :href="`/admin/users/${speaker.id}/edit`"
                         class="px-3 py-1.5 text-[10px] font-black uppercase tracking-widest bg-verse-500/10 text-verse-600 dark:text-verse-400 rounded-lg hover:bg-verse-500/20 transition-colors">
                         Edit
                       </Link>

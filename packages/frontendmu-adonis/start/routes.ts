@@ -263,20 +263,6 @@ router
       .post('/admin/speakers', [() => import('#controllers/admin/speakers_controller'), 'store'])
       .as('admin.speakers.store')
     router
-      .get('/admin/speakers/:id/edit', [
-        () => import('#controllers/admin/speakers_controller'),
-        'edit',
-      ])
-      .where('id', UUID_REGEX)
-      .as('admin.speakers.edit')
-    router
-      .put('/admin/speakers/:id', [
-        () => import('#controllers/admin/speakers_controller'),
-        'update',
-      ])
-      .where('id', UUID_REGEX)
-      .as('admin.speakers.update')
-    router
       .delete('/admin/speakers/:id', [
         () => import('#controllers/admin/speakers_controller'),
         'destroy',

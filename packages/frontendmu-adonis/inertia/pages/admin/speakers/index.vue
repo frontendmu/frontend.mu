@@ -112,7 +112,7 @@ function doDelete() {
                 </svg>
               </Link>
               <Link
-                :href="`/admin/speakers/${speaker.id}/edit`"
+                :href="`/admin/users/${speaker.id}/edit`"
                 class="p-2 text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200 transition-colors"
                 title="Edit"
               >

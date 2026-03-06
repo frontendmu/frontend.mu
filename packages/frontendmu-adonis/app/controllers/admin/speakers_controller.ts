@@ -4,7 +4,7 @@ import db from '@adonisjs/lucid/services/db'
 import User from '#models/user'
 import SpeakerPolicy from '#policies/speaker_policy'
 import { speakerValidator } from '#validators/speaker_validator'
-import { toAdminSpeaker, toSpeaker, toSpeakerSession } from '#dtos/factories'
+import { toAdminSpeaker } from '#dtos/factories'
 
 export default class AdminSpeakersController {
   async index({ inertia, bouncer }: HttpContext) {
@@ -48,49 +48,7 @@ export default class AdminSpeakersController {
     })
 
     session.flash('success', 'Speaker created successfully!')
-    return response.redirect().toRoute('admin.speakers.edit', { id: speaker.id })
-  }
-
-  async edit({ inertia, params, bouncer }: HttpContext) {
-    await bouncer.with(SpeakerPolicy).authorize('edit')
-
-    const dbSpeaker = await User.query()
-      .where('id', params.id)
-      .preload('sessions', (query) => {
-        query.preload('event')
-      })
-      .firstOrFail()
-
-    return inertia.render('admin/speakers/edit', {
-      speaker: {
-        ...toSpeaker(dbSpeaker),
-        email: dbSpeaker.email,
-        sessions: dbSpeaker.sessions?.map(toSpeakerSession) || [],
-      },
-    })
-  }
-
-  async update({ params, request, bouncer, response, session }: HttpContext) {
-    await bouncer.with(SpeakerPolicy).authorize('update')
-
-    const speaker = await User.findOrFail(params.id)
-    const data = await request.validateUsing(speakerValidator)
-
-    speaker.merge({
-      name: data.name,
-      email: data.email || null,
-      githubUsername: data.githubUsername || null,
-      bio: data.bio || null,
-      linkedinUrl: data.linkedinUrl || null,
-      twitterUrl: data.twitterUrl || null,
-      websiteUrl: data.websiteUrl || null,
-      featured: data.featured || false,
-    })
-
-    await speaker.save()
-
-    session.flash('success', 'Speaker updated successfully!')
-    return response.redirect().toRoute('speakers.show', { id: speaker.id })
+    return response.redirect().toRoute('admin.users.edit', { id: speaker.id })
   }
 
   async destroy({ params, auth, bouncer, response, session }: HttpContext) {
