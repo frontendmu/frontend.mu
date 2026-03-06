@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import Logo from '~/components/layout/Logo.vue'
 import type { EventSummaryDto } from '~/types'
@@ -30,6 +30,41 @@ function formatDate(dateStr: string) {
     month: date.toLocaleString('en-US', { month: 'short' }),
   }
 }
+
+const isOrbitHovered = ref(false)
+const isShapeHovered = ref(false)
+const ring1 = ref<HTMLElement>()
+const ring2 = ref<HTMLElement>()
+const shapesContainer = ref<HTMLElement>()
+
+let angle1 = 0
+let angle2 = 0
+let shapesAngle = 0
+let speed = 1
+let rafId: number
+
+function animateOrbit() {
+  const targetSpeed = isShapeHovered.value ? 0.3 : isOrbitHovered.value ? 15 : 1
+  speed += (targetSpeed - speed) * 0.02
+
+  angle1 += 0.12 * speed
+  angle2 -= 0.1 * speed
+  shapesAngle += 0.15 * speed
+
+  if (ring1.value) ring1.value.style.transform = `rotate(${angle1}deg)`
+  if (ring2.value) ring2.value.style.transform = `rotate(${angle2}deg)`
+  if (shapesContainer.value) shapesContainer.value.style.transform = `rotate(${shapesAngle}deg)`
+
+  rafId = requestAnimationFrame(animateOrbit)
+}
+
+onMounted(() => {
+  rafId = requestAnimationFrame(animateOrbit)
+})
+
+onUnmounted(() => {
+  cancelAnimationFrame(rafId)
+})
 </script>
 
 <template>
@@ -103,16 +138,23 @@ function formatDate(dateStr: string) {
         </div>
 
         <!-- Visual Element -->
-        <div class="hidden lg:flex w-full lg:w-[45%] lg:translate-x-12 xl:translate-x-20 justify-center items-center relative">
+        <div
+          class="hidden lg:flex w-full lg:w-[45%] lg:translate-x-12 xl:translate-x-20 justify-center items-center relative"
+          @mouseenter="isOrbitHovered = true"
+          @mouseleave="isOrbitHovered = false"
+        >
           <div class="relative w-72 h-72 lg:w-96 lg:h-96">
-            <div class="absolute inset-0 rounded-full border-2 border-dashed border-verse-500/20 animate-spin-slow"></div>
-            <div class="absolute inset-6 rounded-full border border-verse-500/10 animate-spin-reverse-slow"></div>
+            <div ref="ring1" class="absolute inset-0 rounded-full border-2 border-dashed border-verse-500/20"></div>
+            <div ref="ring2" class="absolute inset-6 rounded-full border border-verse-500/10"></div>
             <div class="absolute inset-12 rounded-[3.5rem] squircle bg-white dark:bg-verse-900/40 backdrop-blur-2xl border border-verse-200 dark:border-verse-700 flex items-center justify-center shadow-2xl p-12 rotate-3 transition-transform hover:rotate-0 duration-500 group/logo">
               <Logo class="w-full h-full text-verse-500 dark:text-white transition-transform duration-500 group-hover/logo:scale-110" />
             </div>
-            <div class="absolute -top-4 -right-4 w-12 h-12 bg-red-500 rounded-2xl animate-float opacity-80 shadow-lg"></div>
-            <div class="absolute bottom-10 -left-6 w-8 h-8 bg-green-500 rounded-full animate-float-slow opacity-80 shadow-lg" style="animation-delay: 1s"></div>
-            <div class="absolute -bottom-2 right-12 w-10 h-10 bg-yellow-400 rounded-xl animate-float opacity-80 shadow-lg" style="animation-delay: 2s"></div>
+            <div ref="shapesContainer" class="absolute inset-0">
+              <div class="absolute -top-4 -right-4 w-12 h-12 bg-[#EA2839] rounded-2xl animate-float opacity-80 shadow-lg transition-transform duration-300 hover:scale-125" @mouseenter="isShapeHovered = true" @mouseleave="isShapeHovered = false"></div>
+              <div class="absolute top-8 -left-6 w-8 h-8 bg-[#1A206D] rounded-full animate-float-slow opacity-80 shadow-lg transition-transform duration-300 hover:scale-125" style="animation-delay: 0.5s" @mouseenter="isShapeHovered = true" @mouseleave="isShapeHovered = false"></div>
+              <div class="absolute bottom-10 -left-2 w-10 h-10 bg-[#FFD600] rounded-xl animate-float opacity-80 shadow-lg transition-transform duration-300 hover:scale-125" style="animation-delay: 1.5s" @mouseenter="isShapeHovered = true" @mouseleave="isShapeHovered = false"></div>
+              <div class="absolute -bottom-2 right-12 w-9 h-9 bg-[#00A551] rounded-lg animate-float-slow opacity-80 shadow-lg transition-transform duration-300 hover:scale-125" style="animation-delay: 2.5s" @mouseenter="isShapeHovered = true" @mouseleave="isShapeHovered = false"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -122,14 +164,6 @@ function formatDate(dateStr: string) {
 
 <style scoped>
 @reference 'tailwindcss';
-
-.animate-spin-slow {
-  animation: spin 35s linear infinite;
-}
-
-.animate-spin-reverse-slow {
-  animation: spin-reverse 40s linear infinite;
-}
 
 .animate-float {
   animation: float 6s ease-in-out infinite;
@@ -141,11 +175,6 @@ function formatDate(dateStr: string) {
 
 .animate-fade-in {
   animation: fade-in 1s ease-out forwards;
-}
-
-@keyframes spin-reverse {
-  from { transform: rotate(360deg); }
-  to { transform: rotate(0deg); }
 }
 
 @keyframes float {
