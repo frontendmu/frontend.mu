@@ -402,7 +402,7 @@ async function migrateSponsors(data) {
           description: sponsor.description,
           logoUrl: `/img/sponsors/${sponsor.logo}`,
           sponsorTypes,
-          darkbg: false,
+          logoBg: null,
           status: 'active',
         })
       })
@@ -418,7 +418,7 @@ async function migrateSponsors(data) {
     const sponsorId = generateUUID()
 
     await client.query(`
-      INSERT INTO sponsors (id, name, website, description, logo_url, logomark_url, sponsor_types, darkbg, status, created_at, updated_at)
+      INSERT INTO sponsors (id, name, website, description, logo_url, logomark_url, sponsor_types, logo_bg, status, created_at, updated_at)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
     `, [
       sponsorId,
@@ -428,7 +428,7 @@ async function migrateSponsors(data) {
       sponsor.logoUrl,
       null, // logomark_url
       JSON.stringify(sponsor.sponsorTypes),
-      sponsor.darkbg,
+      sponsor.logoBg,
       sponsor.status,
     ])
 

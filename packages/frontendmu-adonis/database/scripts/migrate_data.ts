@@ -273,7 +273,7 @@ async function migrateSponsors() {
           description: sponsor.description,
           logoUrl: `/img/sponsors/${sponsor.logo}`,
           sponsorTypes,
-          darkbg: false,
+          logoBg: null,
           status: 'active' as const,
         })
       })

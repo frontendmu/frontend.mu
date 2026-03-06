@@ -171,7 +171,7 @@ async function importSponsors() {
     } else {
       // Insert sponsor
       await client.query(
-        `INSERT INTO sponsors (id, name, website, description, logo_url, logomark_url, sponsor_types, darkbg, status, created_at)
+        `INSERT INTO sponsors (id, name, website, description, logo_url, logomark_url, sponsor_types, logo_bg, status, created_at)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'active', NOW())
          ON CONFLICT (id) DO NOTHING`,
         [
@@ -182,7 +182,7 @@ async function importSponsors() {
           sponsor.logo,
           sponsor.logomark,
           JSON.stringify(sponsor.sponsor_type),
-          sponsor.darkbg,
+          sponsor.darkbg ? '#111827' : null,
         ]
       )
       sponsorsImported++
