@@ -10,70 +10,117 @@ defineProps<Props>()
 </script>
 
 <template>
-  <section v-if="sponsors.length > 0" class="relative py-24 overflow-hidden">
-    <div class="contain relative z-10 max-w-5xl">
-      <!-- Section Header -->
-      <div class="relative mb-16 space-y-4">
-        <div class="flex items-center gap-2">
-          <span class="text-[10px] font-black uppercase tracking-[0.3em] text-verse-500 dark:text-verse-300 bg-verse-500/10 px-2 py-0.5 rounded">Partners</span>
-        </div>
-        <h2 class="text-4xl md:text-6xl font-black tracking-tighter dark:text-white leading-none">
-          Backed by<br />
-          <span class="text-verse-600 dark:text-verse-400">the best.</span>
-        </h2>
-        <p class="text-base text-gray-500 dark:text-gray-400 font-medium max-w-xl leading-relaxed">
-          These organizations support the growth of our developer community.
-        </p>
+  <section v-if="sponsors.length > 0" class="relative py-12 overflow-hidden">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+      <div class="flex items-center justify-between">
+        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 dark:text-gray-500">Trusted by</p>
+        <Link href="/sponsors" class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 hover:text-verse-500 dark:hover:text-verse-400 transition-colors">
+          View all
+        </Link>
       </div>
+    </div>
 
-      <!-- Sponsor Logos Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+    <!-- Marquee with edge fade -->
+    <div class="sponsor-marquee relative">
+      <!-- Edge fades -->
+      <div class="absolute left-0 top-0 bottom-0 w-24 sm:w-40 z-10 pointer-events-none bg-gradient-to-r from-white dark:from-verse-950 to-transparent"></div>
+      <div class="absolute right-0 top-0 bottom-0 w-24 sm:w-40 z-10 pointer-events-none bg-gradient-to-l from-white dark:from-verse-950 to-transparent"></div>
+
+      <!-- Scrolling track (duplicated for seamless loop) -->
+      <div class="sponsor-track flex items-center gap-12 w-max">
         <Link
           v-for="sponsor in sponsors"
           :key="sponsor.id"
           :href="`/sponsor/${sponsor.id}`"
-          class="group relative flex items-center justify-center h-28 px-6 border border-gray-100 dark:border-verse-800 rounded-2xl transition-all duration-200 hover:border-verse-500 hover:shadow-lg hover:-translate-y-0.5"
+          class="sponsor-item flex items-center justify-center shrink-0 h-12 px-8 rounded-lg transition-opacity duration-300 hover:opacity-100"
           :class="sponsor.darkbg
-            ? 'bg-gray-900 dark:bg-black/60'
-            : 'bg-white dark:bg-white'"
+            ? 'bg-gray-900 dark:bg-gray-900'
+            : ''"
         >
           <img
             v-if="sponsor.logoUrl"
             :src="sponsor.logoUrl"
             :alt="sponsor.name"
-            class="max-w-[140px] max-h-[48px] object-contain transition-transform duration-200 group-hover:scale-105"
+            class="max-h-[28px] w-auto object-contain"
+            :class="sponsor.darkbg
+              ? ''
+              : 'dark:invert dark:brightness-200'"
           />
           <span
             v-else
-            class="text-lg font-black tracking-tight text-center group-hover:text-verse-500 transition-colors"
-            :class="sponsor.darkbg ? 'text-gray-100' : 'text-gray-900'"
+            class="text-sm font-bold tracking-tight whitespace-nowrap"
+            :class="sponsor.darkbg ? 'text-white' : 'text-gray-900 dark:text-gray-100'"
+          >
+            {{ sponsor.name }}
+          </span>
+        </Link>
+
+        <!-- Duplicate set for seamless loop -->
+        <Link
+          v-for="sponsor in sponsors"
+          :key="'dup-' + sponsor.id"
+          :href="`/sponsor/${sponsor.id}`"
+          class="sponsor-item flex items-center justify-center shrink-0 h-12 px-8 rounded-lg transition-opacity duration-300 hover:opacity-100"
+          :class="sponsor.darkbg
+            ? 'bg-gray-900 dark:bg-gray-900'
+            : ''"
+          aria-hidden="true"
+        >
+          <img
+            v-if="sponsor.logoUrl"
+            :src="sponsor.logoUrl"
+            :alt="sponsor.name"
+            class="max-h-[28px] w-auto object-contain"
+            :class="sponsor.darkbg
+              ? ''
+              : 'dark:invert dark:brightness-200'"
+          />
+          <span
+            v-else
+            class="text-sm font-bold tracking-tight whitespace-nowrap"
+            :class="sponsor.darkbg ? 'text-white' : 'text-gray-900 dark:text-gray-100'"
           >
             {{ sponsor.name }}
           </span>
         </Link>
       </div>
-
-      <!-- CTA Footer -->
-      <div class="mt-16 flex flex-col items-center gap-8">
-        <div class="h-px w-full bg-gray-100 dark:bg-verse-900"></div>
-        <div class="flex flex-wrap items-center justify-center gap-4">
-          <Link
-            href="/sponsors"
-            class="group inline-flex items-center gap-3 px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full font-black uppercase tracking-[0.2em] text-[10px] transition-all hover:scale-105 active:scale-95 shadow-xl shadow-black/10"
-          >
-            <span>View all partners</span>
-            <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </Link>
-          <Link
-            href="/sponsor-us"
-            class="group inline-flex items-center gap-2 px-8 py-3 border-2 border-gray-200 dark:border-verse-700 text-gray-700 dark:text-gray-200 rounded-full font-black uppercase tracking-[0.2em] text-[10px] transition-all hover:border-verse-500 hover:text-verse-500 active:scale-95"
-          >
-            <span>Become a partner</span>
-          </Link>
-        </div>
-      </div>
     </div>
   </section>
 </template>
+
+<style scoped>
+.sponsor-track {
+  animation: scroll 30s linear infinite;
+}
+
+.sponsor-track:hover {
+  animation-play-state: paused;
+}
+
+.sponsor-item {
+  opacity: 0.5;
+}
+
+.sponsor-item:hover {
+  opacity: 1;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sponsor-track {
+    animation: none;
+  }
+
+  .sponsor-item {
+    opacity: 0.7;
+  }
+}
+</style>

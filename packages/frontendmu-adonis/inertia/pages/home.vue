@@ -36,9 +36,9 @@ const featuredEvent = computed(() => {
   <Head title="Home" />
   <main class="pb-8">
     <Hero :featured-event="featuredEvent" />
+    <Sponsors :sponsors="sponsors" />
     <LatestMeetup :events="events" />
     <FeaturedSpeakers :speakers="featuredSpeakers" />
-    <Sponsors :sponsors="sponsors" />
     <SocialPresence />
     <StatsCounter :stats="stats" />
   </main>
