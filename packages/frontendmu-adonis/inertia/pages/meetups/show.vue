@@ -529,33 +529,46 @@ const calendarUrl = computed(() => {
                 </div>
               </div>
 
-              <!-- Attendees -->
-              <div v-if="attendees.length > 0" class="space-y-4">
-                <div class="flex items-center justify-between px-1">
-                  <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Attendees</h3>
-                  <span class="text-[10px] font-mono text-verse-500">{{ rsvpCount }}</span>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <template v-for="attendee in visibleAttendees" :key="attendee.id">
-                    <SpeakerAvatar
-                      size="sm"
-                      :name="attendee.name"
-                      :github-username="attendee.githubUsername"
-                      :avatar-url="attendee.avatarUrl"
-                      :title="attendee.name"
-                      class="grayscale hover:grayscale-0 transition-all hover:scale-110 hover:z-10"
-                    />
-                  </template>
-                  <button v-if="hasMoreAttendees" @click="showAllAttendees = !showAllAttendees"
-                    class="aspect-square rounded-full bg-verse-50 dark:bg-verse-900 border border-verse-100 dark:border-verse-800 flex items-center justify-center text-[9px] font-black text-verse-500 hover:bg-verse-500 hover:text-white transition-colors">
-                    {{ showAllAttendees ? '−' : `+${attendees.length - 12}` }}
-                  </button>
-                </div>
-              </div>
             </div>
           </aside>
         </div>
+
+        <!-- ===== ATTENDEES (full-width) ===== -->
+        <section v-if="attendees.length > 0" class="mt-16 space-y-8">
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Attendees</span>
+            <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
+            <span class="text-xs font-bold text-gray-400">{{ rsvpCount }} RSVP'd</span>
+          </div>
+
+          <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+            <div
+              v-for="attendee in visibleAttendees"
+              :key="attendee.id"
+              class="flex flex-col items-center gap-2 group"
+            >
+              <SpeakerAvatar
+                size="md"
+                :name="attendee.name"
+                :github-username="attendee.githubUsername"
+                :avatar-url="attendee.avatarUrl"
+                class="grayscale group-hover:grayscale-0 transition-all group-hover:scale-110"
+              />
+              <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 text-center leading-tight truncate w-full group-hover:text-verse-500 transition-colors">
+                {{ attendee.name }}
+              </p>
+            </div>
+          </div>
+
+          <div v-if="hasMoreAttendees" class="flex justify-center">
+            <button
+              @click="showAllAttendees = !showAllAttendees"
+              class="px-6 py-2.5 text-xs font-black uppercase tracking-widest border border-gray-200 dark:border-verse-800 rounded-xl text-gray-400 hover:border-verse-500 hover:text-verse-500 transition-colors"
+            >
+              {{ showAllAttendees ? 'Show less' : `Show all ${attendees.length} attendees` }}
+            </button>
+          </div>
+        </section>
       </template>
 
       <!-- Not Found -->
