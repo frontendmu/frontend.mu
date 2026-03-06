@@ -7,6 +7,7 @@ import Hero from '~/components/home/Hero.vue'
 import LatestMeetup from '~/components/home/LatestMeetup.vue'
 import FeaturedSpeakers from '~/components/home/FeaturedSpeakers.vue'
 import SocialPresence from '~/components/home/SocialPresence.vue'
+import Sponsors from '~/components/home/Sponsors.vue'
 import StatsCounter from '~/components/home/StatsCounter.vue'
 
 interface Props {
@@ -37,6 +38,7 @@ const featuredEvent = computed(() => {
     <Hero :featured-event="featuredEvent" />
     <LatestMeetup :events="events" />
     <FeaturedSpeakers :speakers="featuredSpeakers" />
+    <Sponsors :sponsors="sponsors" />
     <SocialPresence />
     <StatsCounter :stats="stats" />
   </main>
