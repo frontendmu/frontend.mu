@@ -26,7 +26,13 @@ export default class SpeakersController {
       .firstOrFail()
 
     const speaker = toSpeaker(dbSpeaker)
-    const sessions = dbSpeaker.sessions?.map(toSpeakerSession) || []
+    const sessions = (dbSpeaker.sessions ?? [])
+      .sort((a, b) => {
+        const dateA = a.event?.eventDate?.toMillis() ?? 0
+        const dateB = b.event?.eventDate?.toMillis() ?? 0
+        return dateB - dateA
+      })
+      .map(toSpeakerSession)
 
     let canEdit = false
     await auth.check()
