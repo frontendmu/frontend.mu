@@ -6,7 +6,7 @@ import * as path from 'node:path'
 
 export default class DbBackup extends BaseCommand {
   static commandName = 'db:backup'
-  static description = 'Create a backup of the SQLite database'
+  static description = 'Backup the SQLite database and uploaded files'
 
   static options: CommandOptions = {
     startApp: false,
@@ -25,27 +25,31 @@ export default class DbBackup extends BaseCommand {
     fs.mkdirSync(backupsDir, { recursive: true })
 
     const timestamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\..+/, '')
-    const backupFilename = `db_backup_${timestamp}.sqlite3`
-    const backupPath = path.join(backupsDir, backupFilename)
 
     try {
-      this.logger.info(`Database: ${dbPath}`)
-      this.logger.info(`Backup location: ${backupPath}`)
-
       const startTime = Date.now()
 
-      execSync(`sqlite3 "${fullDbPath}" ".backup '${backupPath}'"`)
+      // Backup database
+      const dbBackupPath = path.join(backupsDir, `db_backup_${timestamp}.sqlite3`)
+      execSync(`sqlite3 "${fullDbPath}" ".backup '${dbBackupPath}'"`)
+      const dbSize = (fs.statSync(dbBackupPath).size / 1024).toFixed(2)
+      this.logger.success(`Database: ${dbSize} KB → ${dbBackupPath}`)
 
-      const stats = fs.statSync(backupPath)
-      const sizeKb = (stats.size / 1024).toFixed(2)
+      // Backup uploads
+      const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
+      if (fs.existsSync(uploadsDir)) {
+        const uploadsBackupPath = path.join(backupsDir, `uploads_backup_${timestamp}.tar.gz`)
+        execSync(`tar -czf "${uploadsBackupPath}" -C public uploads`)
+        const uploadsSize = (fs.statSync(uploadsBackupPath).size / 1024).toFixed(2)
+        this.logger.success(`Uploads: ${uploadsSize} KB → ${uploadsBackupPath}`)
+      } else {
+        this.logger.info('No uploads directory found, skipping')
+      }
+
       const duration = ((Date.now() - startTime) / 1000).toFixed(2)
-
-      this.logger.success(`Backup completed! (${sizeKb} KB, ${duration}s)`)
+      this.logger.success(`Backup completed in ${duration}s`)
     } catch (error) {
       this.logger.error(`Backup failed: ${error.message}`)
-      if (fs.existsSync(backupPath)) {
-        fs.unlinkSync(backupPath)
-      }
       process.exit(1)
     }
   }
