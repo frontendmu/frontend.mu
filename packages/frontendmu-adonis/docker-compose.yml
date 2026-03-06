@@ -7,7 +7,7 @@ services:
       - PORT=3333
       - DB_DATABASE=tmp/db.production.sqlite3
     volumes:
-      - app_data:/app/tmp
+      - ./tmp:/app/tmp
     restart: unless-stopped
 
   caddy:
@@ -24,6 +24,5 @@ services:
     restart: unless-stopped
 
 volumes:
-  app_data:
   caddy_data:
   caddy_config:
