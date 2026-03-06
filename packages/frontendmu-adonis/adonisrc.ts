@@ -110,6 +110,10 @@ export default defineConfig({
       pattern: 'public/**',
       reloadServer: false,
     },
+    {
+      pattern: 'database/data/**',
+      reloadServer: false,
+    },
   ],
 
   assetsBundler: false,
