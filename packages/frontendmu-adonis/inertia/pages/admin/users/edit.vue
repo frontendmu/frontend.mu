@@ -19,6 +19,14 @@ interface Role {
   permissions: Permission[]
 }
 
+interface Session {
+  id: string
+  title: string
+  eventId: string | null
+  eventTitle: string | null
+  eventDate: string | null
+}
+
 interface User {
   id: string
   name: string
@@ -33,7 +41,9 @@ interface User {
   featured: boolean
   isOrganizer: boolean
   isCommunityMember: boolean
+  title: string | null
   avatarUrl: string | null
+  sessions: Session[]
 }
 
 interface Props {
@@ -61,6 +71,7 @@ const form = useForm({
   featured: props.user.featured,
   isOrganizer: props.user.isOrganizer,
   isCommunityMember: props.user.isCommunityMember,
+  title: props.user.title || '',
 })
 
 function handleSubmit() {
@@ -274,6 +285,26 @@ const groupedPermissions = computed(() => {
                 </div>
                 <p class="mt-1 text-xs text-verse-500 dark:text-verse-400">
                   Used to fetch avatar from GitHub
+                </p>
+              </div>
+
+              <!-- Title -->
+              <div>
+                <label
+                  for="title"
+                  class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
+                >
+                  Title
+                </label>
+                <input
+                  id="title"
+                  v-model="form.title"
+                  type="text"
+                  placeholder="e.g. Lead Organiser, Co-Organiser, Software Engineer"
+                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                />
+                <p class="mt-1 text-xs text-verse-500 dark:text-verse-400">
+                  Displayed on the team page under the user's name
                 </p>
               </div>
 
@@ -498,7 +529,7 @@ const groupedPermissions = computed(() => {
                   class="h-4 w-4 text-verse-600 focus:ring-verse-500 border-verse-300 rounded"
                 />
                 <label for="featured" class="text-sm text-verse-700 dark:text-verse-300">
-                  Featured user
+                  Featured (shown prominently on speakers page)
                 </label>
               </div>
               <div class="flex items-center gap-3">
@@ -522,6 +553,35 @@ const groupedPermissions = computed(() => {
                 <label for="isCommunityMember" class="text-sm text-verse-700 dark:text-verse-300">
                   Show as community member
                 </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sessions (read-only) -->
+          <div v-if="user.sessions.length" class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6">
+            <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-4">
+              Sessions ({{ user.sessions.length }})
+            </h2>
+            <div class="space-y-2">
+              <div
+                v-for="session in user.sessions"
+                :key="session.id"
+                class="flex items-center justify-between p-3 bg-verse-50 dark:bg-verse-900/50 squircle rounded-lg"
+              >
+                <div>
+                  <p class="font-medium text-verse-900 dark:text-verse-100">{{ session.title }}</p>
+                  <p v-if="session.eventTitle" class="text-sm text-verse-500 dark:text-verse-400">
+                    {{ session.eventTitle }}
+                    <span v-if="session.eventDate"> — {{ session.eventDate }}</span>
+                  </p>
+                </div>
+                <Link
+                  v-if="session.eventId"
+                  :href="`/admin/events/${session.eventId}/edit`"
+                  class="text-xs text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200 transition-colors"
+                >
+                  View event
+                </Link>
               </div>
             </div>
           </div>
