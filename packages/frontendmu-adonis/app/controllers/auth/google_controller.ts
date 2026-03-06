@@ -56,9 +56,20 @@ export default class GoogleController {
       const existingUser = await User.query().where('email', googleUser.email!).first()
 
       if (existingUser) {
-        // Do NOT auto-link — the user must log in with their existing credentials first
-        session.flash('error', 'An account with this email already exists. Please log in with your password first, then link your Google account from your profile.')
-        return response.redirect('/login')
+        if (!existingUser.password) {
+          // Unclaimed account (e.g. imported speaker) — safe to auto-link
+          existingUser.googleId = googleUser.id
+          existingUser.avatarUrl = existingUser.avatarUrl || googleUser.avatarUrl
+          await existingUser.save()
+          user = existingUser
+        } else {
+          // Account has a password — user must log in with credentials first
+          session.flash(
+            'error',
+            'An account with this email already exists. Please log in with your password first, then link your Google account from your profile.'
+          )
+          return response.redirect('/login')
+        }
       }
     }
 
