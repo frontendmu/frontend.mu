@@ -10,7 +10,7 @@ COPY package.json ./
 RUN npm install
 
 COPY . .
-RUN npx ace build --ignore-ts-errors
+RUN node ace build --ignore-ts-errors
 
 # --- Production stage ---
 FROM base
