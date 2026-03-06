@@ -838,14 +838,6 @@
         "location": "NeXTeracom Tower I - 12th floor, Ebène, Maurice 72201",
         "venue": "Novity Mauritius",
         "description": null
-      },
-      {
-        "id": 71,
-        "title": "The September Meetup",
-        "date": "2026-09-19",
-        "location": null,
-        "venue": null,
-        "description": null
       }
     ]
   },
@@ -914,14 +906,6 @@
         "location": "Vivéa Business Park, 1st FLoor, Mountain View Building, St Pierre 81430",
         "venue": "Spoon Consulting",
         "description": null
-      },
-      {
-        "id": 68,
-        "title": "The February Meetup",
-        "date": "2026-02-28",
-        "location": "Mountain View Vivéa Business Park, 81430 Saint Pierre, Moka - Mauritius.",
-        "venue": "Spoon Consulting Offices",
-        "description": "A collaboration between Coders.mu / CloudNative Foundation Mauritius / Laravel Moris"
       }
     ]
   }

@@ -1,0 +1,94 @@
+@import 'tailwindcss';
+
+/* Enable dark mode with class strategy */
+@variant dark (&:where(.dark, .dark *));
+
+/* Custom theme configuration for Tailwind CSS 4 */
+@theme {
+  /* Custom colors - verse palette (Obsidian Blue) */
+  --color-verse-50: #f8fafc;
+  --color-verse-100: #f1f5f9;
+  --color-verse-200: #e2e8f0;
+  --color-verse-300: #94a3b8;
+  --color-verse-400: #475569;
+  --color-verse-500: #1e3a8a;
+  --color-verse-600: #172554;
+  --color-verse-700: #0f172a;
+  --color-verse-800: #0c1a3d;
+  --color-verse-900: #060d1f;
+  --color-verse-950: #020617;
+}
+
+@utility squircle {
+  corner-shape: squircle;
+  /* Safari 18.2+ supports corner-shape. 
+     For others, we use a large enough radius to approximate the look */
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  width: 100%;
+}
+
+/* Dark mode support */
+html.dark {
+  color-scheme: dark;
+}
+
+/* Font configuration */
+.font-heading {
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+}
+
+/* Animation utilities */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Custom utilities */
+.contain {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Native dialog styling */
+dialog {
+  border: none;
+  padding: 0;
+  margin: auto;
+  position: fixed;
+  inset: 0;
+  height: fit-content;
+}
+
+dialog:not([open]) {
+  display: none;
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  position: fixed;
+  inset: 0;
+}
+
+dialog[open] {
+  display: flex;
+  flex-direction: column;
+}

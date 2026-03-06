@@ -1,0 +1,29 @@
+services:
+  app:
+    image: ghcr.io/frontendmu/frontend.mu/adonis:latest
+    env_file: .env
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3333
+      - DB_DATABASE=tmp/db.production.sqlite3
+    volumes:
+      - ./tmp:/app/tmp
+      - ./public/uploads:/app/public/uploads
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:
