@@ -217,6 +217,22 @@ async function generate() {
 
   console.log(`  dummy users: ${dummyUsers.length}, dummy RSVPs: ${rsvpCount}`)
 
+  // Set organizer titles and linkedin URLs from organizers.json
+  const organizersPath = join(__dirname, '..', 'data', 'organizers.json')
+  if (existsSync(organizersPath)) {
+    const organizers = JSON.parse(readFileSync(organizersPath, 'utf-8'))
+    for (const org of organizers) {
+      if (org.id) {
+        await db('users').where('id', org.id).update({
+          title: org.role || null,
+          linkedin_url: org.linkedin || null,
+          is_organizer: true,
+        })
+      }
+    }
+    console.log(`  organizer titles: ${organizers.length} updated`)
+  }
+
   await db.destroy()
   console.log(`\nGenerated: database/db.local.sqlite3`)
   console.log('This file can be committed to the repo for local development.')

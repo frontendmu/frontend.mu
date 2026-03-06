@@ -1,7 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { readFile } from 'node:fs/promises'
-import { toSpeaker } from '#dtos/factories'
+import { resolveAvatarUrl, toSpeaker } from '#dtos/factories'
 import app from '@adonisjs/core/services/app'
 
 const GITHUB_RAW_BASE =
@@ -22,15 +22,29 @@ async function loadJson<T>(url: string, localPath: string): Promise<T> {
   return JSON.parse(await readFile(localPath, 'utf-8')) as T
 }
 
+function toTeamMember(user: User, defaultRole: string) {
+  return {
+    id: user.id,
+    name: user.name,
+    role: user.title || defaultRole,
+    imageUrl: resolveAvatarUrl(user),
+    linkedin: user.linkedinUrl,
+  }
+}
+
 export default class TeamController {
   async index({ inertia }: HttpContext) {
-    const organizersUrl = `${GITHUB_RAW_BASE}/organizers.json`
-    const organizersPath = app.makePath('database/data/organizers.json')
-    const organizers = await loadJson<any[]>(organizersUrl, organizersPath)
+    const dbOrganizers = await User.query()
+      .where('isOrganizer', true)
+      .orderBy('name', 'asc')
 
-    const communityMembersUrl = `${GITHUB_RAW_BASE}/community_members.json`
-    const communityMembersPath = app.makePath('database/data/community_members.json')
-    const communityMembers = await loadJson<any[]>(communityMembersUrl, communityMembersPath)
+    const organizers = dbOrganizers.map((u) => toTeamMember(u, 'Organizer'))
+
+    const dbCommunityMembers = await User.query()
+      .where('isCommunityMember', true)
+      .orderBy('name', 'asc')
+
+    const communityMembers = dbCommunityMembers.map((u) => toTeamMember(u, 'Community Member'))
 
     const contributorsUrl = `${GITHUB_RAW_BASE}/contributors.json`
     const contributorsPath = app.makePath('database/data/contributors.json')
