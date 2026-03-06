@@ -9,23 +9,23 @@ interface Props {
 
 const props = defineProps<Props>()
 
-// Build honeycomb rows, distributing sponsors with empty gaps
+// Build honeycomb rows wide enough to fill the viewport
 const grid = computed(() => {
-  const rowSizes = [9, 8, 9]
+  const cols = 15
+  const rowSizes = [cols, cols - 1, cols]
   const result: { sponsor: SponsorSummaryDto | null }[][] = []
   let idx = 0
 
   for (let r = 0; r < rowSizes.length; r++) {
     const row: { sponsor: SponsorSummaryDto | null }[] = []
     for (let c = 0; c < rowSizes[r]; c++) {
-      // Spread sponsors across the grid with gaps
       const fill = (r + c) % 2 === 0 && idx < props.sponsors.length
       row.push({ sponsor: fill ? props.sponsors[idx++] : null })
     }
     result.push(row)
   }
 
-  // If we still have sponsors, fill remaining empty cells
+  // Fill remaining empty cells with leftover sponsors
   for (let r = 0; r < result.length && idx < props.sponsors.length; r++) {
     for (let c = 0; c < result[r].length && idx < props.sponsors.length; c++) {
       if (!result[r][c].sponsor) {
@@ -39,7 +39,7 @@ const grid = computed(() => {
 </script>
 
 <template>
-  <section v-if="sponsors.length > 0" class="relative py-16 overflow-hidden">
+  <section v-if="sponsors.length > 0" class="relative py-16 overflow-x-clip">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
       <div class="flex items-center justify-between">
         <p class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 dark:text-gray-500">Trusted by</p>
@@ -55,14 +55,13 @@ const grid = computed(() => {
         v-for="(row, rowIdx) in grid"
         :key="rowIdx"
         class="hex-row"
-        :class="{ 'hex-row--offset': rowIdx % 2 === 1 }"
       >
         <template v-for="(cell, colIdx) in row" :key="colIdx">
           <Link
             v-if="cell.sponsor"
             :href="`/sponsor/${cell.sponsor.id}`"
             class="hex-cell hex-cell--filled"
-            :class="cell.sponsor.darkbg ? 'hex-cell--dark' : ''"
+            :style="cell.sponsor.logoBg ? { '--hex-fill': cell.sponsor.logoBg } as any : {}"
           >
             <img
               v-if="cell.sponsor.logoUrl"
@@ -70,7 +69,7 @@ const grid = computed(() => {
               :alt="cell.sponsor.name"
               class="hex-logo"
             />
-            <span v-else class="hex-name" :class="cell.sponsor.darkbg ? 'text-white' : ''">
+            <span v-else class="hex-name" :class="cell.sponsor.logoBg && cell.sponsor.logoBg !== '#ffffff' ? 'text-white' : ''">
               {{ cell.sponsor.name }}
             </span>
           </Link>
@@ -83,22 +82,25 @@ const grid = computed(() => {
 
 <style scoped>
 .hex-grid {
-  --hex-size: 120px;
+  --hex-size: 140px;
   --hex-gap: 6px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: calc(var(--hex-gap) - var(--hex-size) * 0.25);
+  gap: 0;
+  width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
 }
 
 .hex-row {
   display: flex;
-  gap: var(--hex-gap);
+  gap: calc(var(--hex-size) * 0.12);
 }
 
-.hex-row--offset {
-  margin-top: calc(var(--hex-size) * -0.125);
+.hex-row + .hex-row {
+  margin-top: calc(var(--hex-size) * -0.14);
 }
 
 .hex-cell {
@@ -108,11 +110,11 @@ const grid = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease, filter 0.3s ease;
+  position: relative;
 }
 
 .hex-cell--empty {
-  background: #f5f5f5;
+  background: #f0f0f0;
 }
 
 :is(.dark) .hex-cell--empty {
@@ -120,33 +122,36 @@ const grid = computed(() => {
 }
 
 .hex-cell--filled {
-  background: white;
+  background: rgba(0, 0, 0, 0.08);
   cursor: pointer;
 }
 
+.hex-cell--filled::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: var(--hex-fill, #f7f7f7);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  z-index: -1;
+}
+
+:is(.dark) .hex-cell--filled {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+:is(.dark) .hex-cell--filled::after {
+  background: var(--hex-fill, rgba(255, 255, 255, 0.04));
+}
+
 .hex-cell--filled:hover {
-  transform: scale(1.08);
   z-index: 1;
 }
 
-.hex-cell--filled.hex-cell--dark {
-  background: #111827;
-}
-
-:is(.dark) .hex-cell--filled:not(.hex-cell--dark) {
-  background: white;
-}
 
 .hex-logo {
-  max-width: 60%;
-  max-height: 32px;
+  width: 70%;
+  height: 40%;
   object-fit: contain;
-  opacity: 0.6;
-  transition: opacity 0.3s ease;
-}
-
-.hex-cell--filled:hover .hex-logo {
-  opacity: 1;
 }
 
 .hex-name {
@@ -156,12 +161,6 @@ const grid = computed(() => {
   text-align: center;
   padding: 0 8px;
   color: #111827;
-  opacity: 0.6;
-  transition: opacity 0.3s ease;
-}
-
-.hex-cell--filled:hover .hex-name {
-  opacity: 1;
 }
 
 /* Responsive hex sizing */
