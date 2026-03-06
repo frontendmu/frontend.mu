@@ -10,7 +10,7 @@ export const sponsorValidator = vine.compile(
     clearLogo: vine.boolean().optional(),
     clearLogomark: vine.boolean().optional(),
     sponsorTypes: vine.array(vine.string()).optional(),
-    darkbg: vine.boolean().optional(),
+    logoBg: vine.string().trim().maxLength(20).optional(),
     status: vine.enum(['active', 'inactive']).optional(),
   })
 )

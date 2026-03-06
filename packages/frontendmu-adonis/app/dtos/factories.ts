@@ -121,7 +121,7 @@ export function toSponsorSummary(sponsor: Sponsor): SponsorSummaryDto {
     website: sponsor.website,
     logoUrl: sponsor.logoUrl,
     sponsorTypes: sponsor.sponsorTypes || [],
-    darkbg: sponsor.darkbg,
+    logoBg: sponsor.logoBg,
   }
 }
 
@@ -130,7 +130,6 @@ export function toSponsor(sponsor: Sponsor): SponsorDto {
     ...toSponsorSummary(sponsor),
     description: sponsor.description,
     logomarkUrl: sponsor.logomarkUrl,
-    darkbg: sponsor.darkbg,
     status: sponsor.status,
   }
 }

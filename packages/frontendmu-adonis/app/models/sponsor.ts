@@ -36,7 +36,7 @@ export default class Sponsor extends BaseModel {
   declare sponsorTypes: string[]
 
   @column()
-  declare darkbg: boolean
+  declare logoBg: string | null
 
   @column()
   declare status: SponsorStatus

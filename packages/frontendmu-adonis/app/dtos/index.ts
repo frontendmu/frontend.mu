@@ -79,13 +79,12 @@ export interface SponsorSummaryDto {
   website: string | null
   logoUrl: string | null
   sponsorTypes: string[]
-  darkbg: boolean
+  logoBg: string | null
 }
 
 export interface SponsorDto extends SponsorSummaryDto {
   description: string | null
   logomarkUrl: string | null
-  darkbg: boolean
   status: 'active' | 'inactive'
 }
 

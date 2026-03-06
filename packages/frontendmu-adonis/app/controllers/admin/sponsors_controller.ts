@@ -108,7 +108,7 @@ export default class AdminSponsorsController {
       logoUrl: logo.url,
       logomarkUrl: logomark.url,
       sponsorTypes: data.sponsorTypes || [],
-      darkbg: data.darkbg || false,
+      logoBg: data.logoBg || null,
       status: data.status || 'active',
     })
 
@@ -161,7 +161,7 @@ export default class AdminSponsorsController {
       logoUrl: logo.url,
       logomarkUrl: logomark.url,
       sponsorTypes: data.sponsorTypes || [],
-      darkbg: data.darkbg || false,
+      logoBg: data.logoBg || null,
       status: data.status || 'active',
     })
 
