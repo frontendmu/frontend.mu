@@ -34,6 +34,8 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
+    permissions:
+      packages: read
 
     steps:
       - name: Deploy to VPS
@@ -42,8 +44,12 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          envs: GHCR_TOKEN
           script: |
             cd /root/frontend.mu/packages/frontendmu-adonis
             git pull
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u github --password-stdin
             docker pull ghcr.io/frontendmu/frontend.mu/adonis:latest
             DOMAIN=coders.mu docker compose up -d
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
