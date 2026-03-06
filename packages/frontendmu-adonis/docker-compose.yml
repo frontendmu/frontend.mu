@@ -1,6 +1,6 @@
 services:
   app:
-    build: .
+    image: ghcr.io/frontendmu/frontend.mu/adonis:latest
     env_file: .env
     environment:
       - HOST=0.0.0.0
