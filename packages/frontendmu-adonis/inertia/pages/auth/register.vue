@@ -5,19 +5,20 @@ import { Head, Link } from '@inertiajs/vue3'
 <template>
   <Head title="Register" />
   <main class="relative min-h-[calc(100vh-5rem)] flex items-center justify-center p-4 md:p-8">
-      <div class="relative z-10 w-full max-w-[320px]">
-        <div class="bg-white dark:bg-verse-950/40 backdrop-blur-xl border border-gray-100 dark:border-verse-800 rounded-2xl squircle p-6 shadow-sm">
-          <div class="space-y-3 mb-8 text-center">
-            <h1 class="text-2xl font-black tracking-tighter dark:text-gray-100 leading-none">
-              Create account<span class="text-verse-500">.</span>
+      <div class="relative z-10 w-full max-w-sm">
+        <div class="bg-white dark:bg-verse-950/40 backdrop-blur-xl border border-gray-100 dark:border-verse-800 rounded-xl p-8 shadow-sm">
+          <div class="space-y-2 mb-8">
+            <h1 class="text-2xl font-display tracking-tight dark:text-gray-100">
+              Create account
             </h1>
+            <p class="text-sm text-gray-400">Join the community</p>
           </div>
 
           <form method="POST" action="/register" class="space-y-4">
             <input type="hidden" name="_csrf" :value="$page.props.auth.csrfToken" />
 
             <div class="space-y-1">
-              <label for="name" class="text-[9px] font-mono uppercase tracking-widest text-gray-400 ml-1">
+              <label for="name" class="text-xs font-medium text-gray-400">
                 Full Name
               </label>
               <input
@@ -32,7 +33,7 @@ import { Head, Link } from '@inertiajs/vue3'
             </div>
 
             <div class="space-y-1">
-              <label for="email" class="text-[9px] font-mono uppercase tracking-widest text-gray-400 ml-1">
+              <label for="email" class="text-xs font-medium text-gray-400">
                 Email Address
               </label>
               <input
@@ -46,7 +47,7 @@ import { Head, Link } from '@inertiajs/vue3'
             </div>
 
             <div class="space-y-1">
-              <label for="password" class="text-[9px] font-mono uppercase tracking-widest text-gray-400 ml-1">
+              <label for="password" class="text-xs font-medium text-gray-400">
                 Password
               </label>
               <input
@@ -61,7 +62,7 @@ import { Head, Link } from '@inertiajs/vue3'
             </div>
 
             <div class="space-y-1">
-              <label for="confirmPassword" class="text-[9px] font-mono uppercase tracking-widest text-gray-400 ml-1">
+              <label for="confirmPassword" class="text-xs font-medium text-gray-400">
                 Confirm
               </label>
               <input
@@ -76,15 +77,15 @@ import { Head, Link } from '@inertiajs/vue3'
 
             <button
               type="submit"
-              class="w-full py-2.5 bg-verse-600 text-white font-black uppercase tracking-[0.2em] text-[10px] rounded-lg hover:bg-verse-700 active:scale-[0.98] transition-all mt-2"
+              class="w-full py-3 bg-verse-600 text-white font-bold text-sm rounded-lg hover:bg-verse-700 active:scale-[0.98] transition-all mt-2"
             >
               Sign Up
             </button>
           </form>
 
-          <p class="mt-8 text-center text-[9px] font-bold text-gray-400 uppercase tracking-widest">
+          <p class="mt-8 text-center text-xs text-gray-400">
             Already registered?
-            <Link href="/login" class="text-verse-500 dark:text-verse-400 hover:underline decoration-2 underline-offset-4 ml-1">
+            <Link href="/login" class="text-verse-500 dark:text-verse-400 hover:underline underline-offset-4 ml-1 font-medium">
               Sign In
             </Link>
           </p>

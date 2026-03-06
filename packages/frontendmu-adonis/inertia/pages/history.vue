@@ -8,14 +8,10 @@ import { Head } from '@inertiajs/vue3'
       <div class="contain relative z-10">
         <!-- Page Header -->
         <div class="max-w-4xl mb-24 space-y-6">
-          <div class="inline-flex items-center gap-3">
-            <span class="h-1 w-12 bg-verse-500 rounded-full"></span>
-            <span class="text-sm font-black uppercase tracking-[0.4em] text-verse-500">Timeline</span>
-          </div>
-          
-          <h1 class="text-6xl md:text-8xl font-black tracking-tighter dark:text-white leading-[0.9]">
-            Community <br />
-            <span class="text-verse-600 dark:text-verse-400">History.</span>
+          <p class="text-sm font-medium text-gray-400 dark:text-gray-500">Our story</p>
+
+          <h1 class="text-5xl md:text-6xl font-display tracking-tight dark:text-white leading-[0.9]">
+            Community History
           </h1>
           
           <p class="text-xl text-gray-500 dark:text-gray-400 font-medium max-w-2xl leading-relaxed">

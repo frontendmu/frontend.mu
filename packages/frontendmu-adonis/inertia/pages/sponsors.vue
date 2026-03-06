@@ -19,24 +19,20 @@ const { isAdmin } = useAuth()
       <!-- Page Header -->
       <div class="mb-20 space-y-4">
         <div class="flex items-center gap-3">
-          <span
-            class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-300 bg-verse-500/10 px-2 py-0.5 rounded"
-          >
-            Partners
-          </span>
+          <p class="text-sm font-medium text-gray-400 dark:text-gray-500">Supported by</p>
           <Link
             v-if="isAdmin"
             href="/admin/sponsors"
-            class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-verse-500 transition-colors"
+            class="text-sm font-semibold text-gray-400 hover:text-verse-500 transition-colors"
           >
             Manage
           </Link>
         </div>
 
         <h1
-          class="text-5xl md:text-7xl font-black tracking-tighter dark:text-white leading-none"
+          class="text-5xl md:text-6xl font-display tracking-tight dark:text-white leading-none"
         >
-          Our Partners<span class="text-verse-600 dark:text-verse-400">.</span>
+          Our Partners
         </h1>
 
         <p
@@ -56,7 +52,7 @@ const { isAdmin } = useAuth()
           v-for="sponsor in sponsors"
           :key="sponsor.id"
           :href="`/sponsor/${sponsor.id}`"
-          class="group relative flex flex-col bg-white dark:bg-verse-950/40 border border-gray-100 dark:border-verse-800 rounded-2xl squircle transition-all duration-200 hover:border-verse-500 shadow-sm hover:shadow-lg hover:-translate-y-1"
+          class="group relative flex flex-col bg-white dark:bg-verse-950/40 border border-gray-100 dark:border-verse-800 rounded-xl transition-all duration-200 hover:border-verse-500 shadow-sm hover:shadow-lg hover:-translate-y-1"
         >
           <!-- Logo Area -->
           <div
@@ -131,7 +127,7 @@ const { isAdmin } = useAuth()
 
       <!-- Become a Sponsor CTA -->
       <div
-        class="relative p-10 md:p-16 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-3xl shadow-2xl overflow-hidden group"
+        class="relative p-8 md:p-12 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl shadow-2xl overflow-hidden group"
       >
         <!-- Geometric Background -->
         <div
@@ -155,7 +151,7 @@ const { isAdmin } = useAuth()
 
           <Link
             href="/sponsor-us"
-            class="group/btn relative inline-flex items-center gap-4 px-10 py-4 bg-verse-500 text-white rounded-xl font-black uppercase tracking-[0.2em] text-[10px] transition-all hover:scale-105 active:scale-95 shadow-xl"
+            class="group/btn relative inline-flex items-center gap-4 px-10 py-4 bg-verse-500 text-white rounded-xl font-bold text-sm transition-all hover:scale-105 active:scale-95 shadow-xl"
           >
             <span>Partner with us</span>
             <svg

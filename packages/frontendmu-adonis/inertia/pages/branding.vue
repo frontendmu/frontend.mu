@@ -8,14 +8,10 @@ import { Head } from '@inertiajs/vue3'
       <div class="contain relative z-10">
         <!-- Page Header -->
         <div class="max-w-4xl mb-24 space-y-6 text-center lg:text-left">
-          <div class="inline-flex items-center gap-3">
-            <span class="h-1 w-12 bg-verse-500 rounded-full"></span>
-            <span class="text-sm font-black uppercase tracking-[0.4em] text-verse-500">Visual Identity</span>
-          </div>
-          
-          <h1 class="text-6xl md:text-8xl font-black tracking-tighter dark:text-white leading-[0.9]">
-            The Brand <br />
-            <span class="text-verse-600 dark:text-verse-400">Kit.</span>
+          <p class="text-sm font-medium text-gray-400 dark:text-gray-500">Visual identity</p>
+
+          <h1 class="text-5xl md:text-6xl font-display tracking-tight dark:text-white leading-[0.9]">
+            Brand Kit
           </h1>
           
           <p class="text-xl text-gray-500 dark:text-gray-400 font-medium max-w-2xl leading-relaxed">
@@ -34,7 +30,7 @@ import { Head } from '@inertiajs/vue3'
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="p-12 bg-white dark:bg-verse-950/40 border border-verse-100 dark:border-verse-800 rounded-[3rem] flex items-center justify-center group transition-all hover:border-verse-500">
+                <div class="p-12 bg-white dark:bg-verse-950/40 border border-verse-100 dark:border-verse-800 rounded-2xl flex items-center justify-center group transition-all hover:border-verse-500">
                   <div class="w-32 h-32 text-verse-600 dark:text-verse-400 transition-transform duration-500 group-hover:scale-110">
                     <svg width="100%" viewBox="0 0 874 875" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M859.531 437.446C859.531 670.711 670.358 859.812 436.996 859.812C203.635 859.812 14.461 670.711 14.461 437.446C14.461 204.182 203.635 15.0801 436.996 15.0801C670.358 15.0801 859.531 204.182 859.531 437.446Z" stroke="currentColor" stroke-width="30"/>
@@ -42,7 +38,7 @@ import { Head } from '@inertiajs/vue3'
                     </svg>
                   </div>
                 </div>
-                <div class="p-12 bg-gray-900 dark:bg-black border border-verse-800 rounded-[3rem] flex items-center justify-center group transition-all hover:border-verse-500">
+                <div class="p-12 bg-gray-900 dark:bg-black border border-verse-800 rounded-2xl flex items-center justify-center group transition-all hover:border-verse-500">
                   <div class="w-32 h-32 text-white transition-transform duration-500 group-hover:scale-110">
                     <svg width="100%" viewBox="0 0 874 875" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M859.531 437.446C859.531 670.711 670.358 859.812 436.996 859.812C203.635 859.812 14.461 670.711 14.461 437.446C14.461 204.182 203.635 15.0801 436.996 15.0801C670.358 15.0801 859.531 204.182 859.531 437.446Z" stroke="currentColor" stroke-width="30"/>
@@ -93,17 +89,17 @@ import { Head } from '@inertiajs/vue3'
           <!-- Sidebar -->
           <aside class="lg:col-span-4 space-y-8">
             <div class="sticky top-32 space-y-8">
-              <div class="p-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-[3rem] shadow-2xl space-y-6">
+              <div class="p-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl shadow-2xl space-y-6">
                 <h3 class="text-2xl font-black tracking-tight">Need Assets?</h3>
                 <p class="font-medium opacity-70 leading-relaxed">
                   We're working on a full brand kit. In the meantime, you can inspect the SVG logos on this page for high-fidelity vector versions.
                 </p>
-                <button disabled class="block w-full py-4 border-2 border-white/20 dark:border-gray-200 text-center font-black uppercase tracking-widest rounded-2xl opacity-50 cursor-not-allowed">
+                <button disabled class="block w-full py-4 border-2 border-white/20 dark:border-gray-200 text-center font-bold text-sm rounded-lg opacity-50 cursor-not-allowed">
                   Download Kit (Soon)
                 </button>
               </div>
 
-              <div class="p-8 border border-verse-100 dark:border-verse-800 rounded-[3rem] space-y-6 bg-white/50 dark:bg-verse-950/20 backdrop-blur-xl">
+              <div class="p-8 border border-verse-100 dark:border-verse-800 rounded-2xl space-y-6 bg-white/50 dark:bg-verse-950/20 backdrop-blur-xl">
                 <h4 class="text-xs font-black uppercase tracking-widest text-gray-400">Usage Rules</h4>
                 <ul class="space-y-4 text-xs font-bold text-gray-500 leading-relaxed italic">
                   <li>• Maintain generous whitespace around the logo.</li>

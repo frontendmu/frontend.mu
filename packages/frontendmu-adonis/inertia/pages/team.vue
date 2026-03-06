@@ -49,12 +49,10 @@ function getGithubUrl(username: string) {
       <div class="contain relative z-10 max-w-5xl">
         <!-- Page Header -->
         <div class="mb-20 space-y-4">
-          <div class="flex items-center gap-2">
-            <span class="text-[10px] font-black uppercase tracking-[0.3em] text-verse-500 dark:text-verse-300 bg-verse-500/10 px-2 py-0.5 rounded">The Core</span>
-          </div>
-          
-          <h1 class="text-5xl md:text-7xl font-black tracking-tighter dark:text-white leading-none">
-            The People<span class="text-verse-600 dark:text-verse-400">.</span>
+          <p class="text-sm font-medium text-gray-400 dark:text-gray-500">Our people</p>
+
+          <h1 class="text-5xl md:text-6xl font-display tracking-tight dark:text-white leading-none">
+            The Team
           </h1>
           
           <p class="text-base text-gray-500 dark:text-gray-400 font-medium max-w-xl leading-relaxed">
@@ -65,7 +63,7 @@ function getGithubUrl(username: string) {
         <!-- Organizers Section -->
         <section class="mb-24 space-y-10">
           <div class="flex items-center gap-2">
-            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Organizers</span>
+            <span class="text-sm font-semibold text-verse-500 dark:text-verse-400">Organizers</span>
             <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
           </div>
 
@@ -104,7 +102,7 @@ function getGithubUrl(username: string) {
           <!-- Speakers Grid -->
           <section class="lg:col-span-8 space-y-10">
             <div class="flex items-center gap-2">
-              <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Speaker History</span>
+              <span class="text-sm font-semibold text-verse-500 dark:text-verse-400">Speaker History</span>
               <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
             </div>
             
@@ -135,7 +133,7 @@ function getGithubUrl(username: string) {
           <!-- Contributors Sidebar -->
           <section v-if="contributors.length" class="lg:col-span-4 space-y-10">
             <div class="flex items-center gap-2">
-              <span class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Builders</span>
+              <span class="text-sm font-semibold text-gray-400">Builders</span>
               <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
             </div>
 

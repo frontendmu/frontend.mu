@@ -247,7 +247,7 @@ const calendarUrl = computed(() => {
               </div>
 
               <!-- Title -->
-              <h1 class="text-3xl md:text-5xl font-black tracking-tight dark:text-gray-100 leading-tight">
+              <h1 class="text-3xl md:text-4xl font-display tracking-tight dark:text-gray-100 leading-tight">
                 {{ meetup.title }}
               </h1>
 
@@ -320,7 +320,7 @@ const calendarUrl = computed(() => {
 
             <!-- Right: Sponsors -->
             <div v-if="meetup.sponsors.length" class="lg:w-64 shrink-0 space-y-4 lg:pt-[9.5rem]">
-              <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Sponsored by</p>
+              <p class="text-xs font-medium text-gray-400">Sponsored by</p>
               <div class="flex flex-wrap lg:flex-col gap-3">
                 <Link
                   v-for="sponsor in meetup.sponsors"
@@ -355,7 +355,7 @@ const calendarUrl = computed(() => {
             <!-- Description -->
             <section v-if="meetup.description" class="space-y-5">
               <div class="flex items-center gap-2">
-                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">About</span>
+                <span class="text-sm font-semibold text-verse-500 dark:text-verse-400">About</span>
                 <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
               </div>
               <div
@@ -366,7 +366,7 @@ const calendarUrl = computed(() => {
             <!-- Sessions/Agenda -->
             <section v-if="meetup.sessions.length" class="space-y-8">
               <div class="flex items-center gap-2">
-                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Agenda</span>
+                <span class="text-sm font-semibold text-verse-500 dark:text-verse-400">Agenda</span>
                 <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
               </div>
 
@@ -415,7 +415,7 @@ const calendarUrl = computed(() => {
             <!-- Photo Gallery -->
             <section v-if="meetup.photos.length" class="space-y-5">
               <div class="flex items-center gap-2">
-                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Gallery</span>
+                <span class="text-sm font-semibold text-verse-500 dark:text-verse-400">Gallery</span>
                 <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
               </div>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -435,9 +435,9 @@ const calendarUrl = computed(() => {
           <aside class="lg:col-span-5">
             <div class="sticky top-24 space-y-8">
               <!-- Event Details Card -->
-              <div class="bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-2xl squircle overflow-hidden shadow-sm">
+              <div class="bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-xl overflow-hidden shadow-sm">
                 <div class="px-6 py-4 bg-gray-50 dark:bg-verse-900/60 border-b border-gray-100 dark:border-verse-800">
-                  <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Event Details</h3>
+                  <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-400">Event Details</h3>
                 </div>
                 <div class="p-6 space-y-5">
                   <div class="space-y-4">
@@ -528,7 +528,7 @@ const calendarUrl = computed(() => {
         <!-- ===== ATTENDEES (full-width) ===== -->
         <section v-if="attendees.length > 0" class="mt-16 space-y-8">
           <div class="flex items-center gap-2">
-            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Attendees</span>
+            <span class="text-sm font-semibold text-verse-500 dark:text-verse-400">Attendees</span>
             <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
             <span class="text-xs font-bold text-gray-400">{{ rsvpCount }} RSVP'd</span>
           </div>

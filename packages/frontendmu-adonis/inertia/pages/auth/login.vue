@@ -5,18 +5,19 @@ import { Head, Link } from '@inertiajs/vue3'
 <template>
   <Head title="Login" />
   <main class="relative min-h-[calc(100vh-5rem)] flex items-center justify-center p-4 md:p-8">
-      <div class="relative z-10 w-full max-w-[320px]">
-        <div class="bg-white dark:bg-verse-950/40 backdrop-blur-xl border border-gray-100 dark:border-verse-800 rounded-2xl squircle p-6 shadow-sm">
-          <div class="space-y-3 mb-8 text-center">
-            <h1 class="text-2xl font-black tracking-tighter dark:text-gray-100 leading-tight">
-              Welcome back<span class="text-verse-500">.</span>
+      <div class="relative z-10 w-full max-w-sm">
+        <div class="bg-white dark:bg-verse-950/40 backdrop-blur-xl border border-gray-100 dark:border-verse-800 rounded-xl p-8 shadow-sm">
+          <div class="space-y-2 mb-8">
+            <h1 class="text-2xl font-display tracking-tight dark:text-gray-100">
+              Welcome back
             </h1>
+            <p class="text-sm text-gray-400">Sign in to your account</p>
           </div>
 
           <!-- Google Sign In -->
           <a
             href="/auth/google"
-            class="group w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-lg hover:border-verse-500 transition-all duration-300"
+            class="group w-full flex items-center justify-center gap-2.5 px-4 py-3 bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-lg hover:border-verse-500 transition-colors"
           >
             <svg class="w-4 h-4" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -24,7 +25,7 @@ import { Head, Link } from '@inertiajs/vue3'
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            <span class="font-black uppercase tracking-widest text-[9px] text-gray-900 dark:text-gray-100">Continue with Google</span>
+            <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">Continue with Google</span>
           </a>
 
           <div class="relative my-6">
@@ -40,7 +41,7 @@ import { Head, Link } from '@inertiajs/vue3'
             <input type="hidden" name="_csrf" :value="$page.props.auth.csrfToken" />
 
             <div class="space-y-1">
-              <label for="email" class="text-[9px] font-mono uppercase tracking-widest text-gray-400 ml-1">
+              <label for="email" class="text-xs font-medium text-gray-400">
                 Email Address
               </label>
               <input
@@ -54,7 +55,7 @@ import { Head, Link } from '@inertiajs/vue3'
             </div>
 
             <div class="space-y-1">
-              <label for="password" class="text-[9px] font-mono uppercase tracking-widest text-gray-400 ml-1">
+              <label for="password" class="text-xs font-medium text-gray-400">
                 Password
               </label>
               <input
@@ -69,15 +70,15 @@ import { Head, Link } from '@inertiajs/vue3'
 
             <button
               type="submit"
-              class="w-full py-2.5 bg-verse-600 text-white font-black uppercase tracking-[0.2em] text-[10px] rounded-lg hover:bg-verse-700 active:scale-[0.98] transition-all mt-2"
+              class="w-full py-3 bg-verse-600 text-white font-bold text-sm rounded-lg hover:bg-verse-700 active:scale-[0.98] transition-all mt-2"
             >
               Sign In
             </button>
           </form>
 
-          <p class="mt-8 text-center text-[9px] font-bold text-gray-400 uppercase tracking-widest">
+          <p class="mt-8 text-center text-xs text-gray-400">
             Don't have an account?
-            <Link href="/register" class="text-verse-500 dark:text-verse-400 hover:underline decoration-2 underline-offset-4 ml-1">
+            <Link href="/register" class="text-verse-500 dark:text-verse-400 hover:underline underline-offset-4 ml-1 font-medium">
               Create account
             </Link>
           </p>

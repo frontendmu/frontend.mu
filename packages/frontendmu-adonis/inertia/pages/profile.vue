@@ -75,7 +75,7 @@ function getUserRoles() {
           </div>
           <div class="space-y-3 min-w-0">
             <div>
-              <h1 class="text-3xl md:text-4xl font-black tracking-tighter dark:text-gray-100 leading-none">
+              <h1 class="text-3xl md:text-4xl font-display tracking-tight dark:text-gray-100 leading-none">
                 {{ user.name }}
               </h1>
               <p class="text-sm font-bold text-gray-400 truncate mt-1">{{ user.email }}</p>
@@ -113,20 +113,20 @@ function getUserRoles() {
         <!-- Edit Form -->
         <section class="max-w-2xl space-y-8 mb-16">
           <div class="flex items-center gap-2">
-            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Account Settings</span>
+            <span class="text-sm font-semibold text-verse-500 dark:text-verse-400">Account Settings</span>
             <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
           </div>
 
           <form @submit.prevent="handleSubmit" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-2">
-                <label for="name" class="text-[10px] font-black uppercase tracking-widest text-gray-400">Full Name</label>
+                <label for="name" class="text-xs font-medium text-gray-400">Full Name</label>
                 <input id="name" v-model="form.name" type="text" required class="w-full px-4 py-3 bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:border-verse-500 transition-colors" />
                 <p v-if="form.errors.name" class="text-xs text-red-500">{{ form.errors.name }}</p>
               </div>
 
               <div class="space-y-2">
-                <label for="githubUsername" class="text-[10px] font-black uppercase tracking-widest text-gray-400">GitHub Username</label>
+                <label for="githubUsername" class="text-xs font-medium text-gray-400">GitHub Username</label>
                 <div class="flex">
                   <span class="inline-flex items-center px-3 border border-r-0 border-gray-100 dark:border-verse-800 rounded-l-xl bg-gray-50 dark:bg-verse-900/60 text-gray-400 text-sm">@</span>
                   <input id="githubUsername" v-model="form.githubUsername" type="text" class="flex-1 px-4 py-3 bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-r-xl text-gray-900 dark:text-white focus:outline-none focus:border-verse-500 transition-colors" />
@@ -135,23 +135,23 @@ function getUserRoles() {
             </div>
 
             <div class="space-y-2">
-              <label for="bio" class="text-[10px] font-black uppercase tracking-widest text-gray-400">Biography</label>
+              <label for="bio" class="text-xs font-medium text-gray-400">Biography</label>
               <textarea id="bio" v-model="form.bio" rows="3" class="w-full px-4 py-3 bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:border-verse-500 transition-colors"></textarea>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-2">
-                <label for="twitterUrl" class="text-[10px] font-black uppercase tracking-widest text-gray-400">Twitter</label>
+                <label for="twitterUrl" class="text-xs font-medium text-gray-400">Twitter</label>
                 <input id="twitterUrl" v-model="form.twitterUrl" type="url" placeholder="https://twitter.com/..." class="w-full px-4 py-3 bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:border-verse-500 transition-colors" />
               </div>
               <div class="space-y-2">
-                <label for="linkedinUrl" class="text-[10px] font-black uppercase tracking-widest text-gray-400">LinkedIn</label>
+                <label for="linkedinUrl" class="text-xs font-medium text-gray-400">LinkedIn</label>
                 <input id="linkedinUrl" v-model="form.linkedinUrl" type="url" placeholder="https://linkedin.com/in/..." class="w-full px-4 py-3 bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:border-verse-500 transition-colors" />
               </div>
             </div>
 
             <div class="space-y-2">
-              <label for="websiteUrl" class="text-[10px] font-black uppercase tracking-widest text-gray-400">Personal Website</label>
+              <label for="websiteUrl" class="text-xs font-medium text-gray-400">Personal Website</label>
               <input id="websiteUrl" v-model="form.websiteUrl" type="url" placeholder="https://yoursite.com" class="w-full px-4 py-3 bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:border-verse-500 transition-colors" />
             </div>
 
@@ -166,7 +166,7 @@ function getUserRoles() {
         <!-- My Meetups -->
         <section v-if="rsvpMeetups.length" class="mt-16 space-y-8">
           <div class="flex items-center gap-2">
-            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">My Meetups</span>
+            <span class="text-sm font-semibold text-verse-500 dark:text-verse-400">My Meetups</span>
             <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
             <span class="text-xs font-bold text-gray-400">{{ rsvpMeetups.length }} attended</span>
           </div>
