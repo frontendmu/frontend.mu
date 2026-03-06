@@ -8,10 +8,23 @@ export default class ProfileController {
     const user = await User.query()
       .where('id', auth.user!.id)
       .preload('roles')
+      .preload('rsvps', (query) => {
+        query.preload('event').orderBy('createdAt', 'desc')
+      })
       .firstOrFail()
+
+    const rsvpMeetups = user.rsvps
+      .filter((r) => r.event)
+      .map((r) => ({
+        id: r.event.id,
+        title: r.event.title,
+        date: r.event.eventDate?.toFormat('dd MMM yyyy') ?? null,
+        status: r.status,
+      }))
 
     return inertia.render('profile', {
       user: toUserProfile(user),
+      rsvpMeetups,
     })
   }
 
@@ -21,6 +34,7 @@ export default class ProfileController {
     const user = await User.findOrFail(auth.user!.id)
     user.merge({
       name: data.name,
+      githubUsername: data.githubUsername || null,
       bio: data.bio || null,
       linkedinUrl: data.linkedinUrl || null,
       twitterUrl: data.twitterUrl || null,
