@@ -42,8 +42,7 @@ const links: TMenu = {
     ],
   },
   meetups: { title: 'Meetups', href: '/meetups' },
-  speakers: { title: 'Speakers', href: '/speakers', class: 'hidden lg:block' },
-  team: { title: 'Team', href: '/team', class: 'hidden lg:block' },
+  team: { title: 'People', href: '/team', class: 'hidden lg:block' },
   sponsors: { 
     title: 'Sponsors', 
     href: '/sponsors', 
@@ -97,7 +96,7 @@ onUnmounted(() => {
       
       <!-- Brand -->
       <div class="flex items-center">
-        <Link href="/" class="flex items-center gap-2 group">
+        <Link href="/" class="flex items-center gap-2 group" @contextmenu.prevent="router.visit('/branding')">
           <div class="w-9 h-9 flex items-center justify-center rounded-xl bg-verse-500 text-white shadow-lg shadow-verse-500/20 group-hover:scale-110 transition-all duration-500">
             <Logo class="w-5 h-5" />
           </div>
@@ -124,21 +123,21 @@ onUnmounted(() => {
 
         <ul class="flex items-center gap-1">
           <li v-if="isAdmin" class="mr-1">
-            <Link href="/admin" class="px-3 py-1.5 bg-verse-600 text-white rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-verse-700 transition-colors">
+            <Link href="/admin" class="px-3 py-1.5 bg-verse-600 text-white rounded-lg text-xs font-bold hover:bg-verse-700 transition-colors">
               Admin
             </Link>
           </li>
 
           <template v-for="link in authLinks" :key="link.href">
             <li>
-              <Link :href="link.href" class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-verse-500 dark:hover:text-verse-300 transition-colors">
+              <Link :href="link.href" class="px-3 py-1.5 rounded-lg text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-verse-500 dark:hover:text-verse-300 transition-colors">
                 {{ link.title }}
               </Link>
             </li>
           </template>
 
           <li v-if="isAuthenticated">
-            <button @click="handleLogout" class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest text-red-500/70 hover:text-red-500 transition-colors">
+            <button @click="handleLogout" class="px-3 py-1.5 rounded-lg text-xs font-bold text-red-500/70 hover:text-red-500 transition-colors">
               Logout
             </button>
           </li>

@@ -11,28 +11,23 @@ defineProps<Props>()
     :href="href"
     target="_blank"
     rel="noopener noreferrer"
-    class="group relative flex flex-col justify-between overflow-hidden rounded-[2rem] squircle p-8 text-white transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl active:scale-95"
+    class="group relative flex flex-col justify-between overflow-hidden rounded-lg p-6 text-white transition-colors"
   >
-    <!-- Glow Effect -->
-    <div class="absolute -right-4 -top-4 h-32 w-32 rounded-full bg-white/20 blur-3xl transition-all duration-500 group-hover:scale-150 group-hover:bg-white/30"></div>
-    
-    <div class="relative z-10 flex justify-between items-start mb-12">
-      <div class="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg group-hover:scale-110 transition-transform duration-500">
+    <div class="relative z-10 flex justify-between items-start mb-8">
+      <div class="p-3 rounded-md bg-white/10">
         <slot name="icon" />
       </div>
-      
-      <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-        </svg>
-      </div>
+
+      <svg class="w-4 h-4 text-white/40 group-hover:text-white/80 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+      </svg>
     </div>
 
-    <div class="relative z-10 space-y-2 mt-auto">
-      <h3 class="font-black text-2xl uppercase tracking-tighter leading-none">
+    <div class="relative z-10 space-y-1 mt-auto">
+      <h3 class="font-bold text-lg leading-tight">
         <slot name="tagline" />
       </h3>
-      <p class="text-sm font-bold text-white/70 line-clamp-2">
+      <p class="text-xs text-white/60 line-clamp-2">
         <slot name="description" />
       </p>
     </div>

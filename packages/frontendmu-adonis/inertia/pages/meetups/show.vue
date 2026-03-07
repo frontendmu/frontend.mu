@@ -226,12 +226,12 @@ const calendarUrl = computed(() => {
               <!-- Status Badge -->
               <div class="flex items-center gap-3">
                 <span
-                  class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-[0.15em] border"
+                  class="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-medium border"
                   :class="isToday
-                    ? 'bg-red-500/10 border-red-500/20 text-red-600 dark:text-red-400'
+                    ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900 text-red-600 dark:text-red-400'
                     : isUpcoming
-                      ? 'bg-verse-500/10 border-verse-500/20 text-verse-600 dark:text-verse-400'
-                      : 'bg-gray-100 border-gray-200 text-gray-500 dark:bg-verse-900/40 dark:border-verse-800 dark:text-gray-400'"
+                      ? 'bg-verse-50 dark:bg-verse-900 border-verse-200 dark:border-verse-800 text-verse-600 dark:text-verse-400'
+                      : 'bg-gray-50 border-gray-200 text-gray-500 dark:bg-verse-900 dark:border-verse-800 dark:text-gray-400'"
                 >
                   <span v-if="isToday" class="relative flex h-2 w-2">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-current opacity-75"></span>
@@ -240,14 +240,14 @@ const calendarUrl = computed(() => {
                   {{ statusLabel }}
                 </span>
                 <Link v-if="canEdit" :href="`/admin/events/${meetup.id}/edit`"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-gray-200 dark:border-verse-800 text-gray-500 dark:text-gray-400 hover:border-verse-500 hover:text-verse-500 dark:hover:text-verse-400 transition-colors">
+                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium border border-gray-200 dark:border-verse-800 text-gray-500 dark:text-gray-400 hover:border-verse-500 hover:text-verse-500 dark:hover:text-verse-400 transition-colors">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                   Edit
                 </Link>
               </div>
 
               <!-- Title -->
-              <h1 class="text-3xl md:text-5xl font-black tracking-tight dark:text-gray-100 leading-tight">
+              <h1 class="text-3xl md:text-4xl font-display tracking-tight text-gray-900 dark:text-gray-100 leading-tight">
                 {{ meetup.title }}
               </h1>
 
@@ -271,17 +271,17 @@ const calendarUrl = computed(() => {
               <div v-if="(isUpcoming || isToday) && canRsvp" class="flex flex-wrap items-center gap-4">
                 <template v-if="!isAuthenticated">
                   <Link href="/login"
-                    class="px-8 py-3 text-sm font-bold bg-verse-600 text-white rounded-xl hover:bg-verse-700 transition-all shadow-lg shadow-verse-600/20">
+                    class="px-5 py-2.5 text-sm font-medium bg-verse-600 text-white rounded-md hover:bg-verse-700 transition-colors">
                     Login to RSVP
                   </Link>
                 </template>
                 <template v-else>
                   <button v-if="hasRsvp" @click="handleCancelRsvp" :disabled="isRsvpLoading"
-                    class="px-8 py-3 text-sm font-bold border-2 border-red-500/50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all disabled:opacity-50">
+                    class="px-5 py-2.5 text-sm font-medium border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 rounded-md hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors disabled:opacity-50">
                     {{ isRsvpLoading ? 'Cancelling...' : 'Cancel RSVP' }}
                   </button>
                   <button v-else @click="handleRsvp" :disabled="isRsvpLoading"
-                    class="px-8 py-3 text-sm font-bold bg-verse-600 text-white rounded-xl hover:bg-verse-700 transition-all disabled:opacity-50 shadow-lg shadow-verse-600/20">
+                    class="px-5 py-2.5 text-sm font-medium bg-verse-600 text-white rounded-md hover:bg-verse-700 transition-colors disabled:opacity-50">
                     {{ isRsvpLoading ? 'Submitting...' : (isFull ? 'Join Waitlist' : 'RSVP Now') }}
                   </button>
                 </template>
@@ -298,17 +298,17 @@ const calendarUrl = computed(() => {
               <div v-if="allSpeakers.length" class="flex items-center gap-4 pt-2">
                 <div class="flex -space-x-3">
                   <template v-for="speaker in allSpeakers.slice(0, 5)" :key="speaker.id">
-                    <Link :href="`/speaker/${speaker.id}`" class="relative hover:z-10 transition-transform hover:scale-110">
+                    <Link :href="`/speaker/${speaker.id}`" class="relative hover:z-10">
                       <SpeakerAvatar
                         size="sm"
                         :name="speaker.name"
                         :github-username="speaker.githubUsername"
                         :avatar-url="speaker.avatarUrl"
-                        class="border-2 border-white dark:border-verse-950 ring-1 ring-verse-500/20"
+                        class="border-2 border-white dark:border-verse-950"
                       />
                     </Link>
                   </template>
-                  <div v-if="allSpeakers.length > 5" class="w-8 h-8 rounded-full bg-verse-100 dark:bg-verse-900 border-2 border-white dark:border-verse-950 flex items-center justify-center text-[10px] font-bold text-verse-600 dark:text-verse-400 ring-1 ring-verse-500/20">
+                  <div v-if="allSpeakers.length > 5" class="w-8 h-8 rounded-full bg-verse-100 dark:bg-verse-900 border-2 border-white dark:border-verse-950 flex items-center justify-center text-[10px] font-bold text-verse-600 dark:text-verse-400">
                     +{{ allSpeakers.length - 5 }}
                   </div>
                 </div>
@@ -320,13 +320,13 @@ const calendarUrl = computed(() => {
 
             <!-- Right: Sponsors -->
             <div v-if="meetup.sponsors.length" class="lg:w-64 shrink-0 space-y-4 lg:pt-[9.5rem]">
-              <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Sponsored by</p>
+              <p class="text-xs font-medium text-gray-400">Sponsored by</p>
               <div class="flex flex-wrap lg:flex-col gap-3">
                 <Link
                   v-for="sponsor in meetup.sponsors"
                   :key="sponsor.id"
                   :href="`/sponsor/${sponsor.id}`"
-                  class="flex items-center justify-center px-4 py-3 rounded-xl border hover:border-verse-500/50 transition-colors group/sponsor"
+                  class="flex items-center justify-center px-4 py-3 rounded-lg border hover:border-gray-300 dark:hover:border-verse-700 transition-colors group/sponsor"
                   :class="sponsor.logoBg
                     ? 'border-verse-800'
                     : 'border-gray-100 dark:border-verse-800 bg-white dark:bg-white'"
@@ -340,7 +340,7 @@ const calendarUrl = computed(() => {
           </div>
 
           <!-- Cover Image -->
-          <div v-if="meetup.coverImageUrl" class="rounded-2xl overflow-hidden mt-8">
+          <div v-if="meetup.coverImageUrl" class="rounded-lg overflow-hidden mt-8">
             <img :src="meetup.coverImageUrl" :alt="meetup.title" class="w-full h-auto object-cover max-h-[400px]" />
           </div>
         </section>
@@ -355,7 +355,7 @@ const calendarUrl = computed(() => {
             <!-- Description -->
             <section v-if="meetup.description" class="space-y-5">
               <div class="flex items-center gap-2">
-                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">About</span>
+                <span class="text-sm font-semibold text-verse-500 dark:text-verse-400">About</span>
                 <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
               </div>
               <div
@@ -366,24 +366,22 @@ const calendarUrl = computed(() => {
             <!-- Sessions/Agenda -->
             <section v-if="meetup.sessions.length" class="space-y-8">
               <div class="flex items-center gap-2">
-                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Agenda</span>
+                <span class="text-sm font-semibold text-verse-500 dark:text-verse-400">Agenda</span>
                 <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
               </div>
 
               <div class="space-y-10">
                 <article v-for="(session, index) in meetup.sessions" :key="session.id"
                   class="relative group">
-                  <div class="flex gap-6">
-                    <!-- Numbering -->
-                    <div class="relative shrink-0 flex flex-col items-center">
-                      <div class="w-9 h-9 rounded-xl bg-gray-50 dark:bg-verse-900 border border-gray-100 dark:border-verse-800 flex items-center justify-center text-sm font-black text-gray-500 dark:text-verse-400">
-                        {{ (index + 1).toString().padStart(2, '0') }}
-                      </div>
-                      <div v-if="index !== meetup.sessions.length - 1" class="absolute top-9 bottom-[-2.5rem] w-px bg-gray-100 dark:bg-verse-900"></div>
+                  <div class="flex gap-5">
+                    <!-- Timeline dot -->
+                    <div class="relative shrink-0 flex flex-col items-center pt-2">
+                      <div class="relative z-10 w-2.5 h-2.5 rounded-full bg-verse-500"></div>
+                      <div v-if="index !== meetup.sessions.length - 1" class="absolute top-[1.125rem] bottom-[-2.5rem] w-px bg-gray-200 dark:bg-verse-800"></div>
                     </div>
 
                     <div class="flex-1 space-y-4">
-                      <h3 class="text-xl md:text-2xl font-black tracking-tight text-gray-900 dark:text-gray-100 leading-tight">
+                      <h3 class="text-xl md:text-2xl font-display tracking-tight text-gray-900 dark:text-gray-100 leading-tight">
                         {{ session.title }}
                       </h3>
 
@@ -400,7 +398,7 @@ const calendarUrl = computed(() => {
                             <p class="text-sm font-bold text-gray-900 dark:text-gray-200 group-hover/speaker:text-verse-500 transition-colors">
                               {{ speaker.name }}
                             </p>
-                            <p v-if="speaker.githubUsername" class="text-[10px] font-mono text-gray-400 uppercase tracking-widest mt-0.5">
+                            <p v-if="speaker.githubUsername" class="text-xs text-gray-400 mt-0.5">
                               @{{ speaker.githubUsername }}
                             </p>
                           </div>
@@ -415,12 +413,12 @@ const calendarUrl = computed(() => {
             <!-- Photo Gallery -->
             <section v-if="meetup.photos.length" class="space-y-5">
               <div class="flex items-center gap-2">
-                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Gallery</span>
+                <span class="text-sm font-semibold text-verse-500 dark:text-verse-400">Gallery</span>
                 <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
               </div>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                <div v-for="photo in meetup.photos.slice(0, 6)" :key="photo.id" class="relative rounded-xl overflow-hidden aspect-[4/3] group/photo">
-                  <img :src="photo.photoUrl" :alt="photo.caption || 'Event photo'" class="w-full h-full object-cover transition-transform duration-500 group-hover/photo:scale-105" />
+                <div v-for="photo in meetup.photos.slice(0, 6)" :key="photo.id" class="relative rounded-lg overflow-hidden aspect-[4/3]">
+                  <img :src="photo.photoUrl" :alt="photo.caption || 'Event photo'" class="w-full h-full object-cover" />
                 </div>
               </div>
               <a v-if="meetup.album" :href="meetup.album" target="_blank" rel="noopener noreferrer"
@@ -435,22 +433,22 @@ const calendarUrl = computed(() => {
           <aside class="lg:col-span-5">
             <div class="sticky top-24 space-y-8">
               <!-- Event Details Card -->
-              <div class="bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-2xl squircle overflow-hidden shadow-sm">
-                <div class="px-6 py-4 bg-gray-50 dark:bg-verse-900/60 border-b border-gray-100 dark:border-verse-800">
-                  <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Event Details</h3>
+              <div class="bg-white dark:bg-verse-950 border border-gray-200 dark:border-verse-900 rounded-lg overflow-hidden">
+                <div class="px-6 py-4 bg-gray-50 dark:bg-verse-900 border-b border-gray-200 dark:border-verse-900">
+                  <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-200">Event Details</h3>
                 </div>
                 <div class="p-6 space-y-5">
                   <div class="space-y-4">
                     <div class="flex items-baseline justify-between">
-                      <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Date</p>
+                      <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Date</p>
                       <p class="text-sm font-bold text-gray-900 dark:text-gray-100">{{ eventDate?.toFormat('dd MMM yyyy') }}</p>
                     </div>
                     <div class="flex items-baseline justify-between">
-                      <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Time</p>
+                      <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Time</p>
                       <p class="text-sm font-bold text-gray-900 dark:text-gray-100">{{ meetup.startTime || 'TBA' }}</p>
                     </div>
                     <div class="flex items-baseline justify-between">
-                      <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Capacity</p>
+                      <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Capacity</p>
                       <p class="text-sm font-bold text-gray-900 dark:text-gray-100">{{ rsvpCount }} / {{ meetup.seatsAvailable || '∞' }}</p>
                     </div>
                     <!-- Capacity progress bar -->
@@ -466,8 +464,8 @@ const calendarUrl = computed(() => {
                     </div>
                   </div>
 
-                  <div v-if="meetup.venue" class="pt-4 border-t border-gray-100 dark:border-verse-800/50 space-y-1">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Venue</p>
+                  <div v-if="meetup.venue" class="pt-4 border-t border-gray-100 dark:border-verse-800 space-y-1">
+                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Venue</p>
                     <p class="text-sm font-bold text-gray-900 dark:text-gray-100 leading-snug">{{ meetup.venue }}</p>
                     <p v-if="meetup.location" class="text-xs text-gray-400 font-medium">{{ meetup.location }}</p>
                     <div class="flex flex-wrap gap-2 pt-2">
@@ -484,36 +482,36 @@ const calendarUrl = computed(() => {
                   </div>
 
                   <!-- Sidebar RSVP -->
-                  <div class="pt-4 border-t border-gray-100 dark:border-verse-800/50 space-y-3">
+                  <div class="pt-4 border-t border-gray-100 dark:border-verse-800 space-y-3">
                     <div v-if="isUpcoming || isToday || (featureFlags.rsvpPastEvents && isPast && meetup.acceptingRsvp)">
                       <template v-if="!isAuthenticated && canRsvp">
                         <Link href="/login"
-                          class="block w-full py-3 text-center text-sm font-bold bg-verse-600 text-white rounded-xl hover:bg-verse-700 transition-all shadow-lg shadow-verse-600/20">
+                          class="block w-full py-2.5 text-center text-sm font-medium bg-verse-600 text-white rounded-md hover:bg-verse-700 transition-colors">
                           Login to RSVP
                         </Link>
                       </template>
                       <template v-else-if="isAuthenticated && canRsvp">
                         <button v-if="hasRsvp" @click="handleCancelRsvp" :disabled="isRsvpLoading"
-                          class="w-full py-3 text-sm font-bold border-2 border-red-500/50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all disabled:opacity-50">
+                          class="w-full py-2.5 text-sm font-medium border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 rounded-md hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors disabled:opacity-50">
                           {{ isRsvpLoading ? 'Cancelling...' : 'Cancel RSVP' }}
                         </button>
                         <button v-else @click="handleRsvp" :disabled="isRsvpLoading"
-                          class="w-full py-3 text-sm font-bold bg-verse-600 text-white rounded-xl hover:bg-verse-700 transition-all disabled:opacity-50 shadow-lg shadow-verse-600/20">
+                          class="w-full py-2.5 text-sm font-medium bg-verse-600 text-white rounded-md hover:bg-verse-700 transition-colors disabled:opacity-50">
                           {{ isRsvpLoading ? 'Submitting...' : (isFull ? 'Join Waitlist' : 'RSVP Now') }}
                         </button>
                       </template>
-                      <div v-else class="text-center p-3 bg-gray-50 dark:bg-verse-950/40 rounded-xl text-xs font-bold text-gray-400 uppercase tracking-wide border border-gray-100 dark:border-verse-800">
+                      <div v-else class="text-center p-3 bg-gray-50 dark:bg-verse-900 rounded-md text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-verse-900">
                         RSVPs Closed
                       </div>
                     </div>
 
                     <div class="flex gap-2">
                       <a v-if="calendarUrl" :href="calendarUrl" target="_blank"
-                        class="flex-1 flex items-center justify-center gap-2 py-2.5 border border-gray-100 dark:border-verse-800 rounded-xl text-xs font-bold text-gray-400 hover:text-verse-500 dark:hover:text-verse-400 transition-colors">
+                        class="flex-1 flex items-center justify-center gap-2 py-2.5 border border-gray-200 dark:border-verse-800 rounded-md text-xs font-medium text-gray-500 hover:text-verse-500 dark:text-gray-400 dark:hover:text-verse-400 transition-colors">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                         Add to Calendar
                       </a>
-                      <button @click="shareEvent" class="p-2.5 border border-gray-100 dark:border-verse-800 rounded-xl text-gray-400 hover:text-verse-500 transition-colors" aria-label="Share event">
+                      <button @click="shareEvent" class="p-2.5 border border-gray-200 dark:border-verse-800 rounded-md text-gray-400 hover:text-verse-500 transition-colors" aria-label="Share event">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
                       </button>
                     </div>
@@ -528,7 +526,7 @@ const calendarUrl = computed(() => {
         <!-- ===== ATTENDEES (full-width) ===== -->
         <section v-if="attendees.length > 0" class="mt-16 space-y-8">
           <div class="flex items-center gap-2">
-            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Attendees</span>
+            <span class="text-sm font-semibold text-verse-500 dark:text-verse-400">Attendees</span>
             <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
             <span class="text-xs font-bold text-gray-400">{{ rsvpCount }} RSVP'd</span>
           </div>
@@ -544,9 +542,8 @@ const calendarUrl = computed(() => {
                 :name="attendee.name"
                 :github-username="attendee.githubUsername"
                 :avatar-url="attendee.avatarUrl"
-                class="grayscale group-hover:grayscale-0 transition-all group-hover:scale-110"
               />
-              <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 text-center leading-tight truncate w-full group-hover:text-verse-500 transition-colors">
+              <p class="text-[11px] font-medium text-gray-500 dark:text-gray-400 text-center leading-tight truncate w-full group-hover:text-verse-500 transition-colors">
                 {{ attendee.name }}
               </p>
             </div>
@@ -559,14 +556,14 @@ const calendarUrl = computed(() => {
       <!-- Not Found -->
       <template v-else>
         <div class="text-center py-32 space-y-8">
-          <div class="w-24 h-24 bg-verse-50 dark:bg-verse-900/20 rounded-full flex items-center justify-center mx-auto">
+          <div class="w-24 h-24 bg-gray-50 dark:bg-verse-900 rounded-lg flex items-center justify-center mx-auto">
             <svg class="w-12 h-12 text-verse-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172a4 4 0 0112.728 0M5.657 5.657a8 8 0 0116.97 0M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h2 class="text-4xl font-black tracking-tight dark:text-white">Meetup not found.</h2>
+          <h2 class="text-4xl font-display tracking-tight dark:text-white">Meetup not found.</h2>
           <Link href="/meetups"
-            class="inline-flex items-center gap-4 px-10 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl font-black uppercase tracking-widest hover:scale-105 transition-all">
+            class="inline-flex items-center gap-3 px-6 py-2.5 bg-verse-600 text-white rounded-md font-medium text-sm hover:bg-verse-700 transition-colors">
             Return to Archives
           </Link>
         </div>
@@ -580,23 +577,23 @@ const calendarUrl = computed(() => {
       enter-to-class="translate-y-0" leave-active-class="transition-transform duration-300 ease-in"
       leave-from-class="translate-y-0" leave-to-class="translate-y-full">
       <div v-if="showMobileRsvp && meetup && (isUpcoming || isToday) && canRsvp"
-        class="lg:hidden fixed bottom-0 left-0 right-0 z-50 p-6 bg-gray-900 text-white shadow-2xl border-t border-white/10 safe-area-bottom rounded-t-[2.5rem]">
+        class="lg:hidden fixed bottom-0 left-0 right-0 z-50 p-5 bg-gray-900 text-white border-t border-gray-700 safe-area-bottom">
         <div class="flex items-center justify-between gap-6">
           <div class="flex-1 min-w-0">
-            <p class="text-xs font-black uppercase tracking-widest opacity-50">{{ eventStatus }}</p>
+            <p class="text-[10px] font-medium text-gray-400">{{ eventStatus }}</p>
             <p class="font-bold truncate">{{ meetup.title }}</p>
           </div>
 
           <template v-if="!isAuthenticated">
-            <Link href="/login" class="px-8 py-3 bg-verse-500 text-white font-bold rounded-xl text-sm">
+            <Link href="/login" class="px-6 py-2.5 bg-verse-600 text-white font-medium rounded-md text-sm">
               Login
             </Link>
           </template>
           <template v-else>
-            <button v-if="hasRsvp" @click="handleCancelRsvp" :disabled="isRsvpLoading" class="px-8 py-3 bg-red-500 text-white font-bold rounded-xl text-sm">
+            <button v-if="hasRsvp" @click="handleCancelRsvp" :disabled="isRsvpLoading" class="px-6 py-2.5 bg-red-600 text-white font-medium rounded-md text-sm">
               Cancel
             </button>
-            <button v-else @click="handleRsvp" :disabled="isRsvpLoading" class="px-8 py-3 bg-verse-500 text-white font-bold rounded-xl text-sm">
+            <button v-else @click="handleRsvp" :disabled="isRsvpLoading" class="px-6 py-2.5 bg-verse-600 text-white font-medium rounded-md text-sm">
               RSVP
             </button>
           </template>

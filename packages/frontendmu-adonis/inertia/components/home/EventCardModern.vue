@@ -32,8 +32,8 @@ const speakers = computed(() => {
 </script>
 
 <template>
-  <div class="group relative py-4 transition-all duration-300 squircle">
-    <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 group-hover:translate-x-1 transition-transform duration-300">
+  <div class="group relative py-4">
+    <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
       <!-- Date Column -->
       <div class="flex md:flex-col items-baseline md:items-center justify-start md:min-w-[60px] gap-2 md:gap-0 shrink-0 text-gray-400 dark:text-gray-400 group-hover:text-verse-500 transition-colors">
         <span class="text-3xl font-black leading-none tracking-tighter">
@@ -51,7 +51,7 @@ const speakers = computed(() => {
             <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">
               {{ event.title }}
             </h3>
-            <span v-if="isUpcoming" class="shrink-0 px-2 py-0.5 text-xs font-black uppercase tracking-widest bg-green-500 text-white rounded">
+            <span v-if="isUpcoming" class="shrink-0 px-2 py-0.5 text-xs font-bold uppercase tracking-wider bg-green-500 text-white rounded">
               Upcoming
             </span>
           </div>
@@ -78,7 +78,7 @@ const speakers = computed(() => {
                 :name="speaker.name"
                 :github-username="speaker.githubUsername"
                 :avatar-url="speaker.avatarUrl"
-                class="w-7 h-7 border border-white dark:border-verse-950 shadow-sm transition-transform hover:scale-110 hover:z-30"
+                class="w-7 h-7 border border-white dark:border-verse-950"
               />
             </template>
             <div v-if="speakers.length > 4" class="w-7 h-7 rounded-full bg-verse-50 dark:bg-verse-900 border border-white dark:border-verse-950 flex items-center justify-center text-[9px] font-black text-verse-600">
@@ -93,8 +93,8 @@ const speakers = computed(() => {
 
       <!-- Action Column -->
       <div class="hidden md:block">
-        <div class="w-8 h-8 rounded-lg border border-verse-100 dark:border-verse-800 flex items-center justify-center group-hover:bg-verse-500 group-hover:border-verse-500 transition-all duration-300">
-          <svg class="w-4 h-4 text-verse-500 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-8 h-8 rounded-md border border-gray-200 dark:border-verse-800 flex items-center justify-center">
+          <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
         </div>
@@ -102,7 +102,7 @@ const speakers = computed(() => {
     </div>
 
     <!-- Divider -->
-    <div class="absolute bottom-0 left-0 w-full h-px bg-gray-100 dark:bg-verse-800 group-hover:bg-verse-500/20 transition-all duration-500"></div>
+    <div class="absolute bottom-0 left-0 w-full h-px bg-gray-100 dark:bg-verse-900"></div>
 
     <Link :href="`/meetup/${event.id}`" class="absolute inset-0 z-20" aria-label="View event details" />
   </div>

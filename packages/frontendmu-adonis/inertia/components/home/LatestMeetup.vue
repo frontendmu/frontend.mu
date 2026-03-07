@@ -9,6 +9,7 @@ import EventCardModern from '~/components/home/EventCardModern.vue'
 
 interface Props {
   events: EventSummaryDto[]
+  userRsvpEventIds?: string[]
 }
 
 const props = defineProps<Props>()
@@ -31,12 +32,9 @@ const remainingUpcomingData = computed(() =>
       <div v-if="areThereMeetupsToday || nextMeetup" class="space-y-8">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div class="space-y-2">
-            <h2 class="text-3xl md:text-5xl font-black tracking-tight dark:text-white">
+            <h2 class="text-3xl md:text-4xl font-display tracking-tight text-gray-900 dark:text-white">
               {{ areThereMeetupsToday ? "Happening Today" : "Next event" }}
             </h2>
-            <p class="text-base md:text-lg text-gray-500 dark:text-gray-400 font-medium max-w-xl">
-              Join our next session to learn from local experts and connect with the community.
-            </p>
           </div>
         </div>
 
@@ -47,6 +45,7 @@ const remainingUpcomingData = computed(() =>
             :event="meetup"
             :is-today="areThereMeetupsToday"
             :is-next="!areThereMeetupsToday"
+            :has-rsvp="userRsvpEventIds?.includes(meetup.id) ?? false"
           />
         </div>
       </div>
@@ -54,7 +53,7 @@ const remainingUpcomingData = computed(() =>
       <!-- Upcoming Queue -->
       <div v-if="remainingUpcomingData.length > 0" class="space-y-8">
         <div class="flex items-center gap-4">
-          <h2 class="text-2xl font-black uppercase tracking-[0.2em] text-verse-500 dark:text-verse-400">Upcoming</h2>
+          <h2 class="text-lg font-semibold text-verse-500 dark:text-verse-400">Upcoming</h2>
           <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
         </div>
         
@@ -67,13 +66,12 @@ const remainingUpcomingData = computed(() =>
       <div v-if="pastMeetups.length > 0" class="space-y-8">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div class="space-y-2">
-            <h2 class="text-3xl font-black tracking-tight dark:text-white">Recent Memories</h2>
-            <p class="text-gray-500 dark:text-gray-400 font-medium">Catch up on what you missed in our previous sessions.</p>
+            <h2 class="text-2xl md:text-3xl font-display tracking-tight text-gray-900 dark:text-white">Previous meetups</h2>
           </div>
           
           <Link
             href="/meetups"
-            class="hidden md:inline-flex items-center gap-2 text-verse-500 dark:text-verse-400 font-bold hover:gap-3 transition-all"
+            class="hidden md:inline-flex items-center gap-2 text-verse-500 dark:text-verse-400 font-medium hover:text-verse-600 dark:hover:text-verse-300 transition-colors"
           >
             Explore all meetups
             <svg class="w-5 h-5 text-verse-500 dark:text-verse-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,7 +87,7 @@ const remainingUpcomingData = computed(() =>
         <div class="flex md:hidden pt-4">
           <Link
             href="/meetups"
-            class="w-full text-center py-4 bg-verse-50 dark:bg-verse-900/20 text-verse-600 dark:text-verse-400 rounded-2xl font-bold"
+            class="w-full text-center py-3 bg-verse-50 dark:bg-verse-900 text-verse-600 dark:text-verse-400 rounded-md font-medium"
           >
             Explore all meetups
           </Link>

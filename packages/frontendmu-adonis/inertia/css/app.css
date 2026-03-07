@@ -48,6 +48,17 @@ html.dark {
     sans-serif;
 }
 
+/* Distinctive serif display font for key headings */
+.font-display {
+  font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  font-style: normal;
+}
+
+.font-display-italic {
+  font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  font-style: italic;
+}
+
 /* Animation utilities */
 @keyframes spin {
   from {

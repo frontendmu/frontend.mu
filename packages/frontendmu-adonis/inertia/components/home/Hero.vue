@@ -31,6 +31,46 @@ function formatDate(dateStr: string) {
   }
 }
 
+// Typing animation
+const words = ['Frontend', 'Backend', 'Devops', 'Agentic', 'OSS']
+const isDeleting = ref(false)
+const displayText = ref(words[0])
+const wordIndex = ref(0)
+const charIndex = ref(words[0].length)
+let typeTimer: ReturnType<typeof setTimeout> | null = null
+
+function typeStep() {
+  const fullWord = words[wordIndex.value]
+
+  if (!isDeleting.value) {
+    // Typing forward
+    charIndex.value++
+    displayText.value = fullWord.slice(0, charIndex.value)
+
+    if (charIndex.value === fullWord.length) {
+      // Pause at full word, then start deleting
+      typeTimer = setTimeout(() => {
+        isDeleting.value = true
+        typeStep()
+      }, 4000)
+      return
+    }
+    typeTimer = setTimeout(typeStep, 80)
+  } else {
+    // Deleting
+    charIndex.value--
+    displayText.value = fullWord.slice(0, charIndex.value)
+
+    if (charIndex.value === 0) {
+      isDeleting.value = false
+      wordIndex.value = (wordIndex.value + 1) % words.length
+      typeTimer = setTimeout(typeStep, 300)
+      return
+    }
+    typeTimer = setTimeout(typeStep, 50)
+  }
+}
+
 const isOrbitHovered = ref(false)
 const isShapeHovered = ref(false)
 const ring1 = ref<HTMLElement>()
@@ -60,10 +100,16 @@ function animateOrbit() {
 
 onMounted(() => {
   rafId = requestAnimationFrame(animateOrbit)
+  // Start typing cycle after initial pause
+  typeTimer = setTimeout(() => {
+    isDeleting.value = true
+    typeStep()
+  }, 5000)
 })
 
 onUnmounted(() => {
   cancelAnimationFrame(rafId)
+  if (typeTimer) clearTimeout(typeTimer)
 })
 </script>
 
@@ -75,18 +121,15 @@ onUnmounted(() => {
         <div class="hero-content w-full lg:w-[55%] text-center lg:text-left space-y-5">
 
           <div class="flex flex-col">
-            <!-- Simple Static Role -->
-            <span class="text-base md:text-xl lg:text-2xl font-black uppercase tracking-[0.4em] text-verse-500 block leading-none mb-3 lg:mb-4">
-              Frontend
+            <span class="text-xs md:text-sm font-semibold uppercase tracking-[0.3em] text-verse-500/80 block leading-none mb-4 lg:mb-5">
+              Est. 2016
             </span>
 
-            <h1 class="hero-heading relative z-10 font-black tracking-tighter leading-[0.8] dark:text-white pointer-events-auto cursor-default">
+            <h1 class="hero-heading font-display relative z-10 tracking-tight leading-[0.85] dark:text-white pointer-events-auto cursor-default">
+              <span class="block">{{ displayText }}<span class="typing-cursor">|</span></span>
               <span class="block">Coders</span>
-              <span class="relative inline-block">
-                <span class="text-verse-600 dark:text-verse-400">Mauritius</span>
-                <svg class="absolute -bottom-2 left-0 w-full h-4 text-verse-500/30 dark:text-verse-400/20" viewBox="0 0 100 10" preserveAspectRatio="none">
-                  <path d="M0 5 Q 25 0, 50 5 T 100 5" fill="none" stroke="currentColor" stroke-width="4" />
-                </svg>
+              <span class="relative inline-block font-display-italic text-verse-600 dark:text-verse-400">
+                Mauritius
               </span>
             </h1>
           </div>
@@ -187,15 +230,26 @@ onUnmounted(() => {
   to { opacity: 1; transform: translateY(0); }
 }
 
+.typing-cursor {
+  font-weight: 100;
+  opacity: 0.3;
+  animation: blink 0.8s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0; }
+}
+
 /* Fluid heading: scales with both viewport width and height */
 .hero-heading {
-  font-size: clamp(2.75rem, 6vw + 1rem, 4.5rem);
+  font-size: clamp(3.25rem, 7vw + 1rem, 5.5rem);
 }
 
 /* Fluid vertical spacing for content */
 @media (min-width: 1024px) {
   .hero-heading {
-    font-size: clamp(3rem, 8vh + 1rem, 8rem);
+    font-size: clamp(3.5rem, 9vh + 1rem, 8.5rem);
   }
 
   .hero-content {
