@@ -40,6 +40,7 @@ router.use([
   () => import('@adonisjs/auth/initialize_auth_middleware'),
   () => import('#middleware/initialize_bouncer_middleware'),
   () => import('@adonisjs/inertia/inertia_middleware'),
+  () => import('#debug_bar/middleware'),
 ])
 
 /**

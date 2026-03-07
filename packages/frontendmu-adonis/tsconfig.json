@@ -6,9 +6,10 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./inertia/*"],
+      "#debug_bar/*": ["./packages/debug-bar/src/*"]
     },
-    "types": ["@inertiajs/vue3", "@adonisjs/inertia", "vite/client"],
+    "types": ["@inertiajs/vue3", "@adonisjs/inertia", "vite/client"]
   },
   "include": ["**/*"],
-  "exclude": ["node_modules", "build"],
+  "exclude": ["node_modules", "build"]
 }
