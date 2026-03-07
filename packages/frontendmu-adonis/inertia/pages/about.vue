@@ -58,7 +58,7 @@ import { Head, Link } from '@inertiajs/vue3'
                 <Link href="/register" class="block w-full py-3.5 bg-verse-500 text-white text-center font-bold text-sm rounded-lg hover:bg-verse-600 transition-colors">
                   Join the Community
                 </Link>
-                <a href="https://discord.gg/WxXW9Jvv6k" target="_blank" class="block w-full py-3.5 border border-white/20 dark:border-gray-200 text-center font-bold text-sm rounded-lg hover:bg-white/10 dark:hover:bg-gray-100 transition-colors">
+                <a href="https://discord.gg/WxXW9Jvv6k" target="_blank" rel="noopener noreferrer" class="block w-full py-3.5 border border-white/20 dark:border-gray-200 text-center font-bold text-sm rounded-lg hover:bg-white/10 dark:hover:bg-gray-100 transition-colors">
                   Hop on Discord
                 </a>
               </div>

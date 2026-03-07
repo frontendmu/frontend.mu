@@ -108,7 +108,7 @@ import { Head, Link } from '@inertiajs/vue3'
               <div class="p-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl shadow-2xl space-y-6">
                 <h3 class="text-xl font-display tracking-tight">Need help?</h3>
                 <p class="text-sm font-medium opacity-70">Reach out on Discord or open a GitHub issue. We're here to help you get started.</p>
-                <a href="https://github.com/frontendmu" target="_blank" class="block w-full py-4 bg-verse-500 text-white text-center font-bold text-sm rounded-lg hover:scale-105 transition-all">
+                <a href="https://github.com/frontendmu" target="_blank" rel="noopener noreferrer" class="block w-full py-4 bg-verse-500 text-white text-center font-bold text-sm rounded-lg hover:scale-105 transition-all">
                   Open GitHub
                 </a>
               </div>

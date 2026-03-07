@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3'
 import Logo from '~/components/layout/Logo.vue'
+import { GITHUB_URL } from '~/constants'
 const today = new Date()
 </script>
 
@@ -58,7 +59,7 @@ const today = new Date()
           &copy; 2016–{{ today.getFullYear() }} Frontend Coders Mauritius
         </p>
         <p class="text-xs text-gray-600">
-          Open source on <a href="https://github.com/frontendmu" target="_blank" class="text-gray-500 hover:text-white transition-colors">GitHub</a>
+          Open source on <a :href="GITHUB_URL" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-white transition-colors">GitHub</a>
         </p>
       </div>
     </div>

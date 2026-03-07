@@ -88,7 +88,7 @@ import { Head } from '@inertiajs/vue3'
               <div class="p-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl shadow-2xl space-y-6">
                 <h3 class="text-2xl font-display tracking-tight">Contributing?</h3>
                 <p class="font-medium opacity-70">Before submitting a PR, ensure you have run the local linters and tests. We value quality over quantity.</p>
-                <a href="https://github.com/frontendmu" target="_blank" class="block w-full py-4 bg-verse-500 text-white text-center font-bold text-sm rounded-lg hover:scale-105 transition-all">
+                <a href="https://github.com/frontendmu" target="_blank" rel="noopener noreferrer" class="block w-full py-4 bg-verse-500 text-white text-center font-bold text-sm rounded-lg hover:scale-105 transition-all">
                   Open GitHub
                 </a>
               </div>
