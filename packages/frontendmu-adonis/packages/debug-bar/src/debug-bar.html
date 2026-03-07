@@ -1,0 +1,715 @@
+<div id="_debug" data-debug-id="__DEBUG_BAR_ID__" data-debug-prev-id="__DEBUG_BAR_PREV_ID__">
+  <button
+    type="button"
+    class="dbg-launcher"
+    data-action="mode"
+    data-mode="collapsed"
+    aria-label="Open debug bar"
+  >
+    <svg viewBox="0 0 33 33" width="16" height="16" aria-hidden="true">
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M0 16.3331C0 29.506 3.16017 32.6662 16.3331 32.6662C29.506 32.6662 32.6662 29.506 32.6662 16.3331C32.6662 3.16017 29.506 0 16.3331 0C3.16017 0 0 3.16017 0 16.3331ZM6.58646 19.7261L11.7093 8.08338C12.5742 6.12075 14.2374 5.05627 16.3331 5.05627C18.4288 5.05627 20.092 6.12075 20.9569 8.08338L26.0797 19.7261C26.3126 20.2916 26.5122 21.0235 26.5122 21.6555C26.5122 24.5495 24.483 26.5787 21.589 26.5787C20.6032 26.5787 19.8203 26.3271 19.0278 26.0725C18.2158 25.8116 17.3937 25.5475 16.3331 25.5475C15.2847 25.5475 14.4426 25.814 13.6145 26.076C12.8136 26.3294 12.0258 26.5787 11.0772 26.5787C8.18318 26.5787 6.15402 24.5495 6.15402 21.6555C6.15402 21.0235 6.35361 20.2916 6.58646 19.7261ZM16.3331 10.1125L11.2768 21.5557C12.7737 20.8571 14.5035 20.5245 16.3331 20.5245C18.0961 20.5245 19.8924 20.8571 21.3228 21.5557L16.3331 10.1125Z"
+        fill="currentColor"
+      />
+    </svg>
+    <span>Debug</span>
+  </button>
+</div>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Geist:wght@400;500;600&display=swap');
+
+  /* ── Reset & Root ─────────────────────────────────────── */
+  #_debug {
+    --c-bg: #0f1117;
+    --c-surface: #161b22;
+    --c-raised: #1c2230;
+    --c-border: #2d3748;
+    --c-border-lt: #1e2a38;
+    --c-text: #e2e8f0;
+    --c-muted: #64748b;
+    --c-faint: #3a4a5c;
+    --c-accent: #3b82f6;
+    --c-accent-bg: rgba(59, 130, 246, 0.1);
+    --c-green: #10b981;
+    --c-amber: #f59e0b;
+    --c-red: #ef4444;
+    --c-request: #3b82f6;
+    --c-render: #f59e0b;
+    --c-query: #10b981;
+
+    --r-sm: 3px;
+    --r-md: 5px;
+    --side-gutter: clamp(2px, 2.2vw, 8px);
+    --panel-frame-gutter: clamp(8px, 1.2vw, 16px);
+    --panel-body-height: 300px;
+
+    --font-ui: 'Geist', 'Segoe UI', sans-serif;
+    --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Menlo, monospace;
+
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    color: var(--c-text);
+    pointer-events: none;
+  }
+
+  #_debug * {
+    box-sizing: border-box;
+  }
+
+  /* ── Launcher ─────────────────────────────────────────── */
+  .dbg-launcher {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 var(--side-gutter);
+    height: 28px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-bottom: none;
+    border-radius: var(--r-sm) var(--r-sm) 0 0;
+    color: var(--c-muted);
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition:
+      color 0.15s,
+      background 0.15s;
+  }
+
+  .dbg-launcher:hover {
+    color: var(--c-text);
+    background: var(--c-raised);
+  }
+  .dbg-launcher svg {
+    flex-shrink: 0;
+  }
+
+  /* ── Panel Shell ──────────────────────────────────────── */
+  .dbg-panel {
+    pointer-events: auto;
+    width: 100%;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-bottom: 0;
+    border-radius: var(--r-md) var(--r-md) 0 0;
+  }
+
+  .dbg-panel--animate {
+    animation: dbg-slide-up 0.15s ease-out;
+  }
+
+  /* ── Header ───────────────────────────────────────────── */
+  .dbg-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: 36px;
+    padding: 0 calc(var(--side-gutter));
+    border-bottom: 1px solid var(--c-border-lt);
+    background: var(--c-bg);
+    overflow-x: auto;
+    scrollbar-width: thin;
+    white-space: nowrap;
+  }
+
+  .dbg-head::-webkit-scrollbar {
+    height: 4px;
+  }
+  .dbg-head::-webkit-scrollbar-thumb {
+    background: var(--c-faint);
+    border-radius: 2px;
+  }
+
+  .dbg-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    min-width: 0;
+  }
+
+  .dbg-badge {
+    display: flex;
+    align-items: center;
+    color: var(--c-accent);
+  }
+
+  .dbg-path {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--c-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dbg-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--c-border);
+    flex-shrink: 0;
+  }
+
+  .dbg-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    color: var(--c-muted);
+    font-size: 11.5px;
+    font-family: var(--font-mono);
+  }
+
+  .dbg-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 7px;
+    border-radius: var(--r-sm);
+    font-size: 11px;
+    font-weight: 500;
+    font-family: var(--font-mono);
+    background: var(--c-raised);
+    border: 1px solid var(--c-border);
+    color: var(--c-muted);
+  }
+
+  .dbg-pill--ok {
+    color: var(--c-green);
+    border-color: rgba(16, 185, 129, 0.25);
+    background: rgba(16, 185, 129, 0.06);
+  }
+  .dbg-pill--err {
+    color: var(--c-red);
+    border-color: rgba(239, 68, 68, 0.25);
+    background: rgba(239, 68, 68, 0.06);
+  }
+  .dbg-pill--warn {
+    color: var(--c-amber);
+    border-color: rgba(245, 158, 11, 0.25);
+    background: rgba(245, 158, 11, 0.06);
+  }
+
+  /* ── Controls ─────────────────────────────────────────── */
+  .dbg-controls {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  .dbg-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 22px;
+    padding: 0 7px;
+    border: 1px solid transparent;
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--c-muted);
+    font-size: 11px;
+    font-family: var(--font-ui);
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+      color 0.12s,
+      background 0.12s,
+      border-color 0.12s;
+  }
+
+  .dbg-btn:hover {
+    color: var(--c-text);
+    background: var(--c-raised);
+    border-color: var(--c-border);
+  }
+
+  .dbg-btn:focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 2px;
+  }
+
+  /* ── Tabs ─────────────────────────────────────────────── */
+  .dbg-tabs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 var(--side-gutter);
+    border-bottom: 1px solid var(--c-border-lt);
+    background: var(--c-bg);
+  }
+
+  .dbg-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 12px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--c-muted);
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+      color 0.12s,
+      border-color 0.12s;
+    margin-bottom: -1px;
+  }
+
+  .dbg-tab:hover {
+    color: var(--c-text);
+  }
+
+  .dbg-tab.is-active {
+    color: var(--c-text);
+    border-bottom-color: var(--c-accent);
+  }
+
+  .dbg-tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 8px;
+    background: var(--c-raised);
+    border: 1px solid var(--c-border);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--c-muted);
+    font-family: var(--font-mono);
+  }
+
+  .dbg-tab.is-active .dbg-tab-count {
+    background: var(--c-accent-bg);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: var(--c-accent);
+  }
+
+  /* ── Body ─────────────────────────────────────────────── */
+  .dbg-body {
+    height: var(--panel-body-height);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--c-faint) transparent;
+    padding: 10px var(--side-gutter) 12px;
+  }
+
+  .dbg-panel--expanded .dbg-body {
+    height: 60vh;
+  }
+  .dbg-body::-webkit-scrollbar {
+    width: 6px;
+  }
+  .dbg-body::-webkit-scrollbar-thumb {
+    background: var(--c-faint);
+    border-radius: 3px;
+  }
+
+  /* ── Cards / Sections ─────────────────────────────────── */
+  .dbg-stack {
+    display: grid;
+    gap: 10px;
+  }
+
+  .dbg-section {
+    border: 1px solid var(--c-border-lt);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+
+  .dbg-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--c-bg);
+    border-bottom: 1px solid var(--c-border-lt);
+  }
+
+  .dbg-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-faint);
+    font-family: var(--font-mono);
+  }
+
+  .dbg-section-body {
+    padding: 0;
+  }
+
+  /* ── Key-Value Table ──────────────────────────────────── */
+  .dbg-kv {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+  }
+
+  .dbg-kv tr {
+    border-bottom: 1px solid var(--c-border-lt);
+  }
+  .dbg-kv tr:last-child {
+    border-bottom: none;
+  }
+  .dbg-kv tr:hover td {
+    background: var(--c-raised);
+  }
+
+  .dbg-kv td {
+    padding: 8px 12px;
+    vertical-align: top;
+    transition: background 0.1s;
+  }
+
+  .dbg-kv td:first-child {
+    width: 220px;
+    color: var(--c-muted);
+    user-select: none;
+    border-right: 1px solid var(--c-border-lt);
+  }
+
+  .dbg-kv td:last-child {
+    color: var(--c-text);
+    word-break: break-all;
+  }
+
+  /* ── Pre / Code ───────────────────────────────────────── */
+  .dbg-pre {
+    padding: 12px 14px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--c-text);
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    scrollbar-width: thin;
+  }
+
+  .dbg-pre::-webkit-scrollbar {
+    height: 4px;
+  }
+  .dbg-pre::-webkit-scrollbar-thumb {
+    background: var(--c-faint);
+    border-radius: 2px;
+  }
+
+  /* ── Summary Row (requests tab) ───────────────────────── */
+  .dbg-summary {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 14px;
+    background: var(--c-bg);
+    border: 1px solid var(--c-border-lt);
+    border-radius: var(--r-md);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    flex-wrap: wrap;
+  }
+
+  .dbg-summary-method {
+    font-weight: 600;
+    color: var(--c-accent);
+  }
+
+  .dbg-summary-url {
+    color: var(--c-text);
+  }
+  .dbg-summary-route {
+    color: var(--c-muted);
+    font-size: 11px;
+  }
+
+  /* ── Waterfall ────────────────────────────────────────── */
+  .dbg-waterfall {
+    padding: 12px 14px;
+    display: grid;
+    gap: 8px;
+  }
+
+  .dbg-wf-legend {
+    display: flex;
+    gap: 14px;
+    font-size: 11px;
+    color: var(--c-muted);
+    font-family: var(--font-mono);
+    margin-bottom: 6px;
+  }
+
+  .dbg-wf-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+
+  .dbg-wf-dot--request {
+    background: var(--c-request);
+  }
+  .dbg-wf-dot--render {
+    background: var(--c-render);
+  }
+  .dbg-wf-dot--query {
+    background: var(--c-query);
+  }
+
+  .dbg-wf-scale {
+    position: relative;
+    height: 14px;
+    margin-left: 180px;
+    font-size: 10px;
+    color: var(--c-faint);
+    font-family: var(--font-mono);
+    margin-bottom: 2px;
+  }
+
+  .dbg-wf-scale span {
+    position: absolute;
+    transform: translateX(-50%);
+  }
+
+  .dbg-wf-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .dbg-wf-label {
+    min-width: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  .dbg-wf-label strong {
+    display: block;
+    color: var(--c-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dbg-wf-label span {
+    color: var(--c-faint);
+    font-size: 10px;
+  }
+
+  .dbg-track {
+    position: relative;
+    height: 20px;
+    background: var(--c-bg);
+    border: 1px solid var(--c-border-lt);
+    border-radius: var(--r-sm);
+    overflow: hidden;
+  }
+
+  .dbg-tick {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--c-border-lt);
+  }
+
+  .dbg-bar {
+    position: absolute;
+    top: 50%;
+    height: 12px;
+    transform: translateY(-50%);
+    border-radius: 2px;
+  }
+
+  .dbg-bar span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 5px;
+    font-size: 10px;
+    line-height: 12px;
+    color: #fff;
+    font-family: var(--font-mono);
+  }
+
+  .dbg-bar--request {
+    background: var(--c-request);
+  }
+  .dbg-bar--render {
+    background: var(--c-render);
+  }
+  .dbg-bar--query {
+    background: var(--c-query);
+  }
+
+  /* ── Query Row ────────────────────────────────────────── */
+  .dbg-query-row {
+    border: 1px solid var(--c-border-lt);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+
+  .dbg-query-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 9px 12px;
+    background: var(--c-bg);
+    border: 0;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .dbg-query-head:hover {
+    background: var(--c-raised);
+  }
+
+  .dbg-query-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dbg-query-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid var(--c-border);
+    color: var(--c-muted);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1;
+  }
+
+  .dbg-query-details {
+    border-top: 1px solid var(--c-border-lt);
+  }
+
+  .dbg-query-row.is-collapsed .dbg-query-details {
+    display: none;
+  }
+
+  .dbg-query-conn {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--c-muted);
+  }
+
+  .dbg-query-dur {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--c-faint);
+  }
+
+  .dbg-query-sql {
+    padding: 10px 12px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--c-text);
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .dbg-query-source {
+    padding: 6px 12px 10px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--c-faint);
+  }
+
+  /* ── Select ───────────────────────────────────────────── */
+  .dbg-select {
+    height: 22px;
+    padding: 0 6px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm);
+    background: var(--c-raised);
+    color: var(--c-muted);
+    font-size: 11px;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    max-width: 220px;
+  }
+
+  .dbg-select:focus-visible {
+    outline: 2px solid var(--c-accent);
+  }
+
+  /* ── Empty ────────────────────────────────────────────── */
+  .dbg-empty {
+    padding: 24px 14px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--c-faint);
+    font-family: var(--font-mono);
+  }
+
+  /* ── Animation ────────────────────────────────────────── */
+  @keyframes dbg-slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dbg-panel,
+    .dbg-launcher,
+    .dbg-tab,
+    .dbg-btn {
+      transition: none;
+      animation: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    #_debug {
+      --side-gutter: 12px;
+      --panel-frame-gutter: 6px;
+    }
+    .dbg-wf-scale,
+    .dbg-wf-row {
+      margin-left: 0;
+      grid-template-columns: 1fr;
+    }
+    .dbg-kv td:first-child {
+      width: 130px;
+    }
+  }
+</style>
+
+<script src="/_debug/assets/debug-bar.js" defer></script>
