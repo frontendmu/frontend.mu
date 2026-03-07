@@ -11,10 +11,10 @@ defineProps<Props>()
     :href="href"
     target="_blank"
     rel="noopener noreferrer"
-    class="group relative flex flex-col justify-between overflow-hidden rounded-xl p-6 text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:scale-[0.98]"
+    class="group relative flex flex-col justify-between overflow-hidden rounded-lg p-6 text-white transition-colors"
   >
     <div class="relative z-10 flex justify-between items-start mb-8">
-      <div class="p-3 rounded-lg bg-white/10 backdrop-blur-sm">
+      <div class="p-3 rounded-md bg-white/10">
         <slot name="icon" />
       </div>
 

@@ -11,10 +11,9 @@ import IconLinkedin from '~/components/icons/IconLinkedin.vue'
 <template>
   <section class="relative py-20 overflow-hidden bg-white dark:bg-verse-950">
     <div class="contain relative z-10">
-      <div class="max-w-2xl mb-16 space-y-3">
-        <p class="text-sm font-medium text-gray-400 dark:text-gray-500">Where to find us</p>
-        <h2 class="text-3xl md:text-4xl font-display tracking-tight dark:text-white">
-          Stay <span class="font-display-italic text-verse-600 dark:text-verse-400">connected</span>
+      <div class="mb-12">
+        <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">
+          Stay connected
         </h2>
       </div>
 
