@@ -31,7 +31,7 @@ const remainingUpcomingData = computed(() =>
       <div v-if="areThereMeetupsToday || nextMeetup" class="space-y-8">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div class="space-y-2">
-            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">
+            <h2 class="text-3xl md:text-4xl font-display tracking-tight text-gray-900 dark:text-white">
               {{ areThereMeetupsToday ? "Happening Today" : "Next event" }}
             </h2>
           </div>
@@ -64,7 +64,7 @@ const remainingUpcomingData = computed(() =>
       <div v-if="pastMeetups.length > 0" class="space-y-8">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div class="space-y-2">
-            <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">Previous meetups</h2>
+            <h2 class="text-2xl md:text-3xl font-display tracking-tight text-gray-900 dark:text-white">Previous meetups</h2>
           </div>
           
           <Link

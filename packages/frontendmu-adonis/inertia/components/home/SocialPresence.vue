@@ -12,7 +12,7 @@ import IconLinkedin from '~/components/icons/IconLinkedin.vue'
   <section class="relative py-20 overflow-hidden bg-white dark:bg-verse-950">
     <div class="contain relative z-10">
       <div class="mb-12">
-        <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">
+        <h2 class="text-3xl md:text-4xl font-display tracking-tight text-gray-900 dark:text-white">
           Stay connected
         </h2>
       </div>
