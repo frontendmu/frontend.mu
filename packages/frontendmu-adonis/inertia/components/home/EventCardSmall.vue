@@ -34,7 +34,7 @@ const speakers = computed(() => {
 
 <template>
   <div
-    class="group relative bg-white dark:bg-verse-900/40 border border-verse-100 dark:border-verse-800 rounded-xl squircle p-4 transition-all duration-200 hover:border-verse-500/50 hover:bg-verse-50/30 dark:hover:bg-verse-800/40 shadow-sm dark:shadow-none"
+    class="group relative bg-white dark:bg-verse-900 border border-gray-200 dark:border-verse-900 rounded-lg p-4 hover:border-gray-300 dark:hover:border-verse-800 transition-colors"
   >
     <div class="flex items-center gap-4">
       <!-- Minimal Date -->
@@ -76,7 +76,7 @@ const speakers = computed(() => {
                 :name="speaker.name"
                 :github-username="speaker.githubUsername"
                 :avatar-url="speaker.avatarUrl"
-                class="border border-white dark:border-verse-950 shadow-sm transition-transform hover:scale-110 hover:z-30"
+                class="border border-white dark:border-verse-950"
               />
             </template>
             <div v-if="speakers.length > 4" class="w-8 h-8 rounded-full bg-verse-50 dark:bg-verse-900 border border-white dark:border-verse-950 flex items-center justify-center text-[10px] font-black text-verse-600">
