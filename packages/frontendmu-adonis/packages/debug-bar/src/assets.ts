@@ -1,25 +1,23 @@
 import { readFileSync } from 'node:fs'
-import { join } from 'node:path'
 import { isDebugBarEnabled } from '#debug_bar/manager'
 
 let debugBarScript: string | null = null
 let debugBarShell: string | null = null
+const debugBarScriptPath = new URL('./debug-bar.js', import.meta.url)
+const debugBarShellPath = new URL('./debug-bar.html', import.meta.url)
 
 export function getDebugBarScript() {
   if (!isDebugBarEnabled() && debugBarScript) {
     return debugBarScript
   }
 
-  debugBarScript = readFileSync(join(process.cwd(), 'packages/debug-bar/src/debug-bar.js'), 'utf8')
+  debugBarScript = readFileSync(debugBarScriptPath, 'utf8')
   return debugBarScript
 }
 
 export function renderDebugBarShell(debugBarId: string, previousDebugBarId?: string | null) {
   if (isDebugBarEnabled() || !debugBarShell) {
-    debugBarShell = readFileSync(
-      join(process.cwd(), 'packages/debug-bar/src/debug-bar.html'),
-      'utf8'
-    )
+    debugBarShell = readFileSync(debugBarShellPath, 'utf8')
   }
 
   return debugBarShell

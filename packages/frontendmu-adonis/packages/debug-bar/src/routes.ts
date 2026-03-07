@@ -9,12 +9,10 @@ interface DebugBarRouter {
   get(path: string, handler: (ctx: any) => any): void
 }
 
-declare global {
-  var debugBarRoutesRegistered: boolean | undefined
-}
+const registeredDebugBarRouters = new WeakSet<DebugBarRouter>()
 
 export function registerDebugBarRoutes(router: DebugBarRouter) {
-  if (globalThis.debugBarRoutesRegistered) {
+  if (registeredDebugBarRouters.has(router)) {
     return
   }
 
@@ -49,5 +47,5 @@ export function registerDebugBarRoutes(router: DebugBarRouter) {
     return response.send(getDebugBarScript())
   })
 
-  globalThis.debugBarRoutesRegistered = true
+  registeredDebugBarRouters.add(router)
 }
