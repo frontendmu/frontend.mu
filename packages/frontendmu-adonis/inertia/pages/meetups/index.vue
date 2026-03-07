@@ -88,7 +88,7 @@ const nextMeetupId = computed(() => nextMeetup.value?.id)
                 <!-- Year Header -->
                 <div class="md:w-24 shrink-0">
                   <div class="sticky top-24">
-                    <span class="text-3xl font-display text-gray-300 dark:text-verse-700 transition-colors group-hover/year:text-verse-500/50 select-none">
+                    <span class="text-3xl font-display text-gray-300 dark:text-gray-600 select-none">
                       {{ year }}
                     </span>
                   </div>
