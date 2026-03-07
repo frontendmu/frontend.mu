@@ -1,120 +1,51 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import Logo from '~/components/layout/Logo.vue'
 import type { EventSummaryDto } from '~/types'
 import { DISCORD_URL, GITHUB_URL, TWITTER_URL, LINKEDIN_URL } from '~/constants'
-import { isDateInFuture, isDateToday } from '~/utils/date'
 
 interface Props {
   featuredEvent?: EventSummaryDto
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
 
 const description =
   'A community of passionate developers in Mauritius. Join us for regular meetups, workshops, and tech talks.'
-
-const eventStatus = computed(() => {
-  if (!props.featuredEvent?.date) return ''
-  const date = new Date(props.featuredEvent.date)
-  if (isDateToday(date)) return 'Happening Today'
-  if (isDateInFuture(date)) return 'Next Event'
-  return 'Latest Meetup'
-})
-
-function formatDate(dateStr: string) {
-  const date = new Date(dateStr)
-  return {
-    day: date.getDate(),
-    month: date.toLocaleString('en-US', { month: 'short' }),
-  }
-}
-
-const isOrbitHovered = ref(false)
-const isShapeHovered = ref(false)
-const ring1 = ref<HTMLElement>()
-const ring2 = ref<HTMLElement>()
-const shapesContainer = ref<HTMLElement>()
-
-let angle1 = 0
-let angle2 = 0
-let shapesAngle = 0
-let speed = 1
-let rafId: number
-
-function animateOrbit() {
-  const targetSpeed = isShapeHovered.value ? 0.3 : isOrbitHovered.value ? 15 : 1
-  speed += (targetSpeed - speed) * 0.02
-
-  angle1 += 0.12 * speed
-  angle2 -= 0.1 * speed
-  shapesAngle += 0.15 * speed
-
-  if (ring1.value) ring1.value.style.transform = `rotate(${angle1}deg)`
-  if (ring2.value) ring2.value.style.transform = `rotate(${angle2}deg)`
-  if (shapesContainer.value) shapesContainer.value.style.transform = `rotate(${shapesAngle}deg)`
-
-  rafId = requestAnimationFrame(animateOrbit)
-}
-
-onMounted(() => {
-  rafId = requestAnimationFrame(animateOrbit)
-})
-
-onUnmounted(() => {
-  cancelAnimationFrame(rafId)
-})
 </script>
 
 <template>
-  <section class="hero-section relative min-h-[min(calc(100vh-5rem),900px)] flex items-center overflow-hidden pt-24 pb-12 lg:pt-24 lg:pb-8">
-    <div class="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+  <section class="hero-section min-h-[min(calc(100vh-5rem),900px)] flex items-center pt-24 pb-12 lg:pt-24 lg:pb-8">
+    <div class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
         <!-- Text Content -->
         <div class="hero-content w-full lg:w-[55%] text-center lg:text-left space-y-5">
-
-          <div class="flex flex-col">
-            <span class="text-xs md:text-sm font-semibold uppercase tracking-[0.3em] text-verse-500/80 block leading-none mb-4 lg:mb-5">
-              Est. 2016
+          <h1 class="hero-heading font-display tracking-tight leading-[0.85] text-gray-900 dark:text-white">
+            <span class="block">Frontend</span>
+            <span class="block">Coders</span>
+            <span class="font-display-italic text-verse-600 dark:text-verse-400">
+              Mauritius
             </span>
+          </h1>
 
-            <h1 class="hero-heading font-display relative z-10 tracking-tight leading-[0.85] dark:text-white pointer-events-auto cursor-default">
-              <span class="block">Frontend</span>
-              <span class="block">Coders</span>
-              <span class="relative inline-block font-display-italic text-verse-600 dark:text-verse-400">
-                Mauritius
-              </span>
-            </h1>
-          </div>
-
-          <p class="text-base md:text-lg lg:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
+          <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
             {{ description }}
           </p>
 
           <!-- CTAs -->
           <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3">
-            <Link v-if="featuredEvent" :href="`/meetup/${featuredEvent.id}`" class="group inline-flex items-center gap-3 h-11 pl-3 pr-5 bg-verse-500 hover:bg-verse-600 text-white rounded-full transition-all hover:shadow-lg hover:shadow-verse-500/25 active:scale-95">
-              <div class="flex items-center justify-center w-7 h-7 rounded-full bg-white/20 text-[10px] font-black leading-none">
-                <div class="flex flex-col items-center">
-                  <span class="text-[11px] leading-none">{{ formatDate(featuredEvent.date).day }}</span>
-                  <span class="text-[6px] uppercase tracking-wider opacity-80">{{ formatDate(featuredEvent.date).month }}</span>
-                </div>
-              </div>
-              <span class="text-sm font-bold">{{ featuredEvent.title }}</span>
-              <svg class="w-4 h-4 opacity-60 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+            <Link v-if="featuredEvent" :href="`/meetup/${featuredEvent.id}`" class="inline-flex items-center gap-2 px-5 py-2.5 bg-verse-600 hover:bg-verse-700 text-white rounded-md text-sm font-medium transition-colors">
+              {{ featuredEvent.title }}
+              <svg class="w-4 h-4 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
               </svg>
             </Link>
 
             <Link
               href="/meetups"
-              class="group inline-flex items-center justify-center h-11 pl-5 pr-4 border-2 border-gray-200 dark:border-verse-700 text-gray-700 dark:text-gray-200 rounded-full text-sm font-bold hover:border-gray-900 dark:hover:border-white hover:text-gray-900 dark:hover:text-white transition-all active:scale-95"
+              class="inline-flex items-center px-5 py-2.5 border border-gray-300 dark:border-verse-800 text-gray-700 dark:text-gray-200 rounded-md text-sm font-medium hover:bg-gray-50 dark:hover:bg-verse-900 transition-colors"
             >
-              <span>All Meetups</span>
-              <svg class="w-4 h-4 ml-2 opacity-40 group-hover:opacity-100 transition-all group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-              </svg>
+              All Meetups
             </Link>
 
             <div class="flex items-center gap-1">
@@ -134,24 +65,10 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <!-- Visual Element -->
-        <div
-          class="hidden lg:flex w-full lg:w-[45%] lg:translate-x-12 xl:translate-x-20 justify-center items-center relative"
-          @mouseenter="isOrbitHovered = true"
-          @mouseleave="isOrbitHovered = false"
-        >
-          <div class="relative w-72 h-72 lg:w-96 lg:h-96">
-            <div ref="ring1" class="absolute inset-0 rounded-full border-2 border-dashed border-verse-500/20"></div>
-            <div ref="ring2" class="absolute inset-6 rounded-full border border-verse-500/10"></div>
-            <div class="absolute inset-12 rounded-[3.5rem] squircle bg-white dark:bg-verse-900/40 backdrop-blur-2xl border border-verse-200 dark:border-verse-700 flex items-center justify-center shadow-2xl p-12 rotate-3 transition-transform hover:rotate-0 duration-500 group/logo">
-              <Logo class="w-full h-full text-verse-500 dark:text-white transition-transform duration-500 group-hover/logo:scale-110" />
-            </div>
-            <div ref="shapesContainer" class="absolute inset-0">
-              <div class="absolute -top-4 -right-4 w-12 h-12 bg-[#EA2839] rounded-2xl animate-float opacity-80 shadow-lg transition-transform duration-300 hover:scale-125" @mouseenter="isShapeHovered = true" @mouseleave="isShapeHovered = false"></div>
-              <div class="absolute top-8 -left-6 w-8 h-8 bg-[#1A206D] rounded-full animate-float-slow opacity-80 shadow-lg transition-transform duration-300 hover:scale-125" style="animation-delay: 0.5s" @mouseenter="isShapeHovered = true" @mouseleave="isShapeHovered = false"></div>
-              <div class="absolute bottom-10 -left-2 w-10 h-10 bg-[#FFD600] rounded-xl animate-float opacity-80 shadow-lg transition-transform duration-300 hover:scale-125" style="animation-delay: 1.5s" @mouseenter="isShapeHovered = true" @mouseleave="isShapeHovered = false"></div>
-              <div class="absolute -bottom-2 right-12 w-9 h-9 bg-[#00A551] rounded-lg animate-float-slow opacity-80 shadow-lg transition-transform duration-300 hover:scale-125" style="animation-delay: 2.5s" @mouseenter="isShapeHovered = true" @mouseleave="isShapeHovered = false"></div>
-            </div>
+        <!-- Logo -->
+        <div class="hidden lg:flex w-full lg:w-[45%] justify-center items-center">
+          <div class="w-56 h-56 lg:w-72 lg:h-72 rounded-lg bg-gray-50 dark:bg-verse-900 border border-gray-200 dark:border-verse-900 flex items-center justify-center p-14">
+            <Logo class="w-full h-full text-verse-500 dark:text-white" />
           </div>
         </div>
       </div>
@@ -162,34 +79,10 @@ onUnmounted(() => {
 <style scoped>
 @reference 'tailwindcss';
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-float-slow {
-  animation: float 8s ease-in-out infinite;
-}
-
-.animate-fade-in {
-  animation: fade-in 1s ease-out forwards;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(2deg); }
-}
-
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Fluid heading: scales with both viewport width and height */
 .hero-heading {
   font-size: clamp(3.25rem, 7vw + 1rem, 5.5rem);
 }
 
-/* Fluid vertical spacing for content */
 @media (min-width: 1024px) {
   .hero-heading {
     font-size: clamp(3.5rem, 9vh + 1rem, 8.5rem);
