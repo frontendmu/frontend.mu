@@ -18,7 +18,7 @@ const errors = computed(() => page.props.errors as Record<string, string> | unde
           <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Continue to frontend.mu</p>
         </div>
 
-        <div v-if="errors?.login" class="mb-4 px-3 py-2 text-sm text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-950/30 border border-red-300 dark:border-red-900 rounded-md">
+        <div v-if="errors?.login" role="alert" class="mb-4 px-3 py-2 text-sm text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-950/30 border border-red-300 dark:border-red-900 rounded-md">
           {{ errors.login }}
         </div>
 
