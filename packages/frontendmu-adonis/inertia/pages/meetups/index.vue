@@ -64,14 +64,10 @@ const nextMeetupId = computed(() => nextMeetup.value?.id)
         <!-- Page Header -->
         <div class="mb-16 space-y-4">
           <div class="flex flex-col md:flex-row md:items-baseline justify-between gap-4">
-            <div class="space-y-3">
-              <p class="text-sm font-medium text-gray-400 dark:text-gray-500">All events</p>
-              <h1 class="text-5xl md:text-6xl font-display tracking-tight dark:text-white leading-none">
+            <div>
+              <h1 class="text-3xl md:text-4xl font-display tracking-tight text-gray-900 dark:text-white leading-none">
                 Meetup Archive
               </h1>
-              <p class="text-sm text-gray-500 dark:text-gray-400 max-w-md leading-relaxed">
-                Every community gathering since 2016.
-              </p>
             </div>
 
             <Link
@@ -111,15 +107,15 @@ const nextMeetupId = computed(() => nextMeetup.value?.id)
               </div>
               
               <!-- Year Divider -->
-              <div class="mt-16 h-px w-full bg-gradient-to-r from-transparent via-gray-100 dark:via-verse-800 to-transparent"></div>
+              <div class="mt-16 h-px w-full bg-gray-100 dark:bg-verse-900"></div>
             </div>
           </template>
         </div>
 
         <!-- Empty state -->
         <div v-if="!meetups.length" class="text-center py-32 space-y-6">
-          <div class="w-20 h-20 bg-verse-50 dark:bg-verse-900/20 rounded-full flex items-center justify-center mx-auto">
-            <svg class="w-10 h-10 text-verse-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-16 h-16 bg-gray-50 dark:bg-verse-900 rounded-lg flex items-center justify-center mx-auto">
+            <svg class="w-8 h-8 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
