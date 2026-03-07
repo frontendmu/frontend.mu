@@ -15,7 +15,7 @@ const today = new Date()
             <span class="text-base font-bold tracking-tight">coders.mu</span>
           </Link>
           <p class="text-sm text-gray-500 leading-relaxed max-w-xs">
-            Empowering the Mauritian developer ecosystem through knowledge sharing and collaboration.
+            Inspire people about technology
           </p>
         </div>
 
