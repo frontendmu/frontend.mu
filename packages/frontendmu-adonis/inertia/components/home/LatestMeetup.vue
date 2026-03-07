@@ -9,6 +9,7 @@ import EventCardModern from '~/components/home/EventCardModern.vue'
 
 interface Props {
   events: EventSummaryDto[]
+  userRsvpEventIds?: string[]
 }
 
 const props = defineProps<Props>()
@@ -44,6 +45,7 @@ const remainingUpcomingData = computed(() =>
             :event="meetup"
             :is-today="areThereMeetupsToday"
             :is-next="!areThereMeetupsToday"
+            :has-rsvp="userRsvpEventIds?.includes(meetup.id) ?? false"
           />
         </div>
       </div>

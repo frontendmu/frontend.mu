@@ -8,11 +8,13 @@ interface Props {
   event: EventSummaryDto
   isNext?: boolean
   isToday?: boolean
+  hasRsvp?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   isNext: false,
   isToday: false,
+  hasRsvp: false,
 })
 
 const formattedDate = computed(() => {
@@ -76,13 +78,6 @@ const speakers = computed(() => {
 
         <!-- Speakers & CTA -->
         <div class="flex flex-col sm:flex-row items-center gap-4 md:gap-8 pt-2 md:pt-4">
-          <Link
-            :href="`/meetup/${event.id}`"
-            class="relative z-20 w-full sm:w-auto px-5 py-2.5 bg-verse-600 text-white rounded-md font-medium text-sm hover:bg-verse-700 transition-colors"
-          >
-            {{ isToday ? 'Join Now' : 'Save My Spot' }}
-          </Link>
-
           <div v-if="speakers.length > 0" class="relative z-20 flex items-center gap-3">
             <div class="flex -space-x-3">
               <template v-for="speaker in speakers.slice(0, 3)" :key="speaker?.id">
@@ -100,9 +95,24 @@ const speakers = computed(() => {
             </div>
             <div class="text-left">
               <p class="text-xs font-semibold text-gray-400 dark:text-gray-500">Featuring</p>
-              <p class="text-sm font-bold dark:text-gray-300">{{ speakers[0]?.name }} & others</p>
+              <p class="text-sm font-bold dark:text-gray-300">{{ speakers[0]?.name }}<template v-if="speakers.length > 1"> & others</template></p>
             </div>
           </div>
+
+          <Link
+            v-if="hasRsvp"
+            :href="`/meetup/${event.id}`"
+            class="relative z-20 w-full sm:w-auto px-5 py-2.5 border border-verse-300 dark:border-verse-700 text-verse-600 dark:text-verse-400 rounded-md font-medium text-sm hover:bg-verse-50 dark:hover:bg-verse-900 transition-colors"
+          >
+            You're going
+          </Link>
+          <Link
+            v-else
+            :href="`/meetup/${event.id}`"
+            class="relative z-20 w-full sm:w-auto px-5 py-2.5 bg-verse-600 text-white rounded-md font-medium text-sm hover:bg-verse-700 transition-colors"
+          >
+            {{ isToday ? 'Join Now' : 'Save My Spot' }}
+          </Link>
         </div>
       </div>
 

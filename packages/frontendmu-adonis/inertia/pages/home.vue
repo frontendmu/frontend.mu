@@ -19,6 +19,7 @@ interface Props {
     speakers: number
     contributors: number
   }
+  userRsvpEventIds: string[]
 }
 
 const props = defineProps<Props>()
@@ -37,7 +38,7 @@ const featuredEvent = computed(() => {
   <main class="pb-8">
     <Hero :featured-event="featuredEvent" />
     <Sponsors :sponsors="sponsors" />
-    <LatestMeetup :events="events" />
+    <LatestMeetup :events="events" :user-rsvp-event-ids="userRsvpEventIds" />
     <FeaturedSpeakers :speakers="featuredSpeakers" />
     <SocialPresence />
     <StatsCounter :stats="stats" />

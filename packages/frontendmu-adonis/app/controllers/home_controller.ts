@@ -2,10 +2,11 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Event from '#models/event'
 import User from '#models/user'
 import Sponsor from '#models/sponsor'
+import Rsvp from '#models/rsvp'
 import { toEventSummary, toSpeaker, toSponsorSummary } from '#dtos/factories'
 
 export default class HomeController {
-  async index({ inertia }: HttpContext) {
+  async index({ inertia, auth }: HttpContext) {
     const dbEvents = await Event.query()
       .where('status', 'published')
       .orderBy('eventDate', 'desc')
@@ -15,6 +16,14 @@ export default class HomeController {
       .preload('sponsors')
 
     const events = dbEvents.map(toEventSummary)
+
+    let userRsvpEventIds: string[] = []
+    if (auth.isAuthenticated && auth.user) {
+      const rsvps = await Rsvp.query()
+        .where('userId', auth.user.id)
+        .whereIn('status', ['confirmed', 'waitlist'])
+      userRsvpEventIds = rsvps.map((r) => r.eventId)
+    }
 
     const dbSpeakers = await User.query()
       .where('featured', true)
@@ -49,6 +58,7 @@ export default class HomeController {
       featuredSpeakers,
       sponsors,
       stats,
+      userRsvpEventIds,
     })
   }
 }
