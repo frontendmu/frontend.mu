@@ -4,7 +4,6 @@ import { usePage } from '@inertiajs/vue3'
 import LayoutBackdrop from '~/components/layout/LayoutBackdrop.vue'
 import SiteNavigation from '~/components/layout/Navigation.vue'
 import SiteFooter from '~/components/layout/Footer.vue'
-import SponsorHighlight from '~/components/home/SponsorHighlight.vue'
 import type { SharedProps } from '~/types'
 
 const page = usePage<SharedProps>()
@@ -56,8 +55,6 @@ watch(
     </Transition>
 
     <slot />
-
-    <SponsorHighlight />
 
     <SiteFooter />
   </LayoutBackdrop>
