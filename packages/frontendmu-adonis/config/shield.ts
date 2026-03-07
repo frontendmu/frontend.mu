@@ -10,10 +10,10 @@ const shieldConfig = defineConfig({
     directives: {
       defaultSrc: [`'self'`],
       scriptSrc: [`'self'`, `'nonce-@nonce'`],
-      styleSrc: [`'self'`, `'unsafe-inline'`],
+      styleSrc: [`'self'`, `'unsafe-inline'`, 'https://fonts.googleapis.com'],
       imgSrc: [`'self'`, 'data:', 'blob:', 'https://avatars.githubusercontent.com', 'https://github.com', 'https://lh3.googleusercontent.com'],
-      fontSrc: [`'self'`],
-      connectSrc: [`'self'`],
+      fontSrc: [`'self'`, 'https://fonts.gstatic.com'],
+      connectSrc: [`'self'`, 'https://fonts.googleapis.com', 'https://fonts.gstatic.com'],
       frameSrc: [`'none'`],
       objectSrc: [`'none'`],
       baseUri: [`'self'`],
