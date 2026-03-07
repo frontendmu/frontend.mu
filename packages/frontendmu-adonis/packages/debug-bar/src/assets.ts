@@ -47,10 +47,10 @@ export function renderDebugBarShell(debugBarId: string, previousDebugBarId?: str
   const shell = debugBarShell ?? ''
 
   return shell
-    .replaceAll('__DEBUG_BAR_ID__', escapeAttribute(debugBarId))
-    .replaceAll('__DEBUG_BAR_PREV_ID__', escapeAttribute(previousDebugBarId ?? ''))
+    .replaceAll('__DEBUG_BAR_ID__', escapeDebugId(debugBarId))
+    .replaceAll('__DEBUG_BAR_PREV_ID__', escapeDebugId(previousDebugBarId ?? ''))
 }
 
-function escapeAttribute(value: string) {
+function escapeDebugId(value: string) {
   return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
 }
