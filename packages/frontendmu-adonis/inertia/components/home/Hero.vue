@@ -76,13 +76,14 @@ onUnmounted(() => {
 
           <div class="flex flex-col">
             <span class="text-xs md:text-sm font-semibold uppercase tracking-[0.3em] text-verse-500/80 block leading-none mb-4 lg:mb-5">
-              Frontend Coders
+              Est. 2016
             </span>
 
             <h1 class="hero-heading font-display relative z-10 tracking-tight leading-[0.85] dark:text-white pointer-events-auto cursor-default">
-              <span class="block">Mauritius</span>
+              <span class="block">Frontend</span>
+              <span class="block">Coders</span>
               <span class="relative inline-block font-display-italic text-verse-600 dark:text-verse-400">
-                dev community
+                Mauritius
               </span>
             </h1>
           </div>
