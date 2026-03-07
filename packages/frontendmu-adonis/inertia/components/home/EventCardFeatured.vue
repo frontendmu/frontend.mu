@@ -118,8 +118,8 @@ const speakers = computed(() => {
 
       <!-- Date Large Display (hidden on mobile) -->
       <div v-if="event.date" class="hidden lg:flex flex-col items-center justify-center w-28 h-28 rounded-lg bg-gray-50 dark:bg-verse-900 border border-gray-200 dark:border-verse-900">
-        <span class="text-3xl font-bold text-verse-500 leading-none">{{ new Date(event.date).getDate() }}</span>
-        <span class="text-sm font-medium uppercase tracking-wider text-gray-400 mt-1">{{ new Date(event.date).toLocaleString('en-US', { month: 'short' }) }}</span>
+        <span class="text-3xl font-bold text-verse-500 leading-none">{{ formattedDate.day }}</span>
+        <span class="text-sm font-medium uppercase tracking-wider text-gray-400 mt-1">{{ formattedDate.month }}</span>
       </div>
 
     </div>

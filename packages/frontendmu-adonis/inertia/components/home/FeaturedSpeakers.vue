@@ -36,7 +36,7 @@ defineProps<Props>()
           <Link
             :href="`/speaker/${person.id}`"
             class="absolute inset-0 z-20 rounded-lg"
-            aria-label="View speaker profile"
+            :aria-label="`View ${person.name}'s profile`"
           />
 
           <div class="mt-4 space-y-0.5 relative z-10">

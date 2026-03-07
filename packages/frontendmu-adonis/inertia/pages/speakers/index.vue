@@ -50,7 +50,7 @@ const regularSpeakers = computed(() => props.speakers.filter((s) => !s.featured)
                 class="relative aspect-square shadow-md transition-all duration-300 border border-gray-100 dark:border-verse-800 group-hover:border-verse-500/60 rounded-2xl group-hover:shadow-lg group-hover:-translate-y-1"
               />
 
-              <Link :href="`/speaker/${speaker.id}`" class="absolute inset-0 z-20 rounded-2xl" />
+              <Link :href="`/speaker/${speaker.id}`" class="absolute inset-0 z-20 rounded-2xl" :aria-label="`View ${speaker.name}'s profile`" />
 
               <div class="mt-3 space-y-0.5">
                 <h3 class="text-base font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-verse-500 transition-colors">
