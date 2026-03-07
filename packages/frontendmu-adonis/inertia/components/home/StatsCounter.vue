@@ -63,26 +63,26 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="relative py-20 overflow-hidden">
-    <div class="contain relative z-10 max-w-5xl">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-10 md:gap-4">
-        <div class="flex items-baseline gap-3">
-          <span class="stat-num font-display text-6xl md:text-7xl tracking-tight text-gray-900 dark:text-white leading-none" :data-final-num="numOfSpeakers">0</span>
-          <span class="text-sm font-medium text-gray-400 dark:text-gray-500 leading-tight">speakers<br/>and counting</span>
+  <section class="relative py-16 overflow-hidden">
+    <div class="contain relative z-10">
+      <div class="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16 lg:gap-24">
+        <div class="flex items-center gap-4">
+          <span class="stat-num font-display text-7xl md:text-8xl lg:text-9xl tracking-tight text-gray-900 dark:text-white leading-none" :data-final-num="numOfSpeakers">0</span>
+          <span class="text-sm md:text-base font-medium text-gray-400 dark:text-gray-500 leading-tight">speakers<br/>and counting</span>
         </div>
 
-        <div class="hidden md:block w-px h-12 bg-gray-200 dark:bg-verse-800"></div>
+        <div class="hidden md:block w-px h-16 bg-gray-200 dark:bg-verse-800"></div>
 
-        <div class="flex items-baseline gap-3">
-          <span class="stat-num font-display text-6xl md:text-7xl tracking-tight text-gray-900 dark:text-white leading-none" :data-final-num="numOfMeetups">0</span>
-          <span class="text-sm font-medium text-gray-400 dark:text-gray-500 leading-tight">events<br/>since 2016</span>
+        <div class="flex items-center gap-4">
+          <span class="stat-num font-display text-7xl md:text-8xl lg:text-9xl tracking-tight text-gray-900 dark:text-white leading-none" :data-final-num="numOfMeetups">0</span>
+          <span class="text-sm md:text-base font-medium text-gray-400 dark:text-gray-500 leading-tight">events<br/>since 2016</span>
         </div>
 
-        <div class="hidden md:block w-px h-12 bg-gray-200 dark:bg-verse-800"></div>
+        <div class="hidden md:block w-px h-16 bg-gray-200 dark:bg-verse-800"></div>
 
-        <div class="flex items-baseline gap-3">
-          <span class="stat-num font-display text-6xl md:text-7xl tracking-tight text-gray-900 dark:text-white leading-none" :data-final-num="numOfContributors">0</span>
-          <span class="text-sm font-medium text-gray-400 dark:text-gray-500 leading-tight">open source<br/>contributors</span>
+        <div class="flex items-center gap-4">
+          <span class="stat-num font-display text-7xl md:text-8xl lg:text-9xl tracking-tight text-gray-900 dark:text-white leading-none" :data-final-num="numOfContributors">0</span>
+          <span class="text-sm md:text-base font-medium text-gray-400 dark:text-gray-500 leading-tight">open source<br/>contributors</span>
         </div>
       </div>
     </div>
