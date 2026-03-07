@@ -326,10 +326,11 @@
     return `<div class="dbg-controls">
       ${requestPickerHtml()}
       <button class="dbg-btn" type="button" data-action="mode" data-mode="${isExpanded ? 'collapsed' : 'expanded'}"
+              aria-expanded="${isExpanded ? 'true' : 'false'}"
               title="${isExpanded ? 'Collapse' : 'Expand'}">
         ${isExpanded ? '↓' : '↑'}
       </button>
-      <button class="dbg-btn" type="button" data-action="mode" data-mode="dock" title="Close">✕</button>
+      <button class="dbg-btn" type="button" data-action="mode" data-mode="dock" aria-expanded="false" title="Close">✕</button>
     </div>`
   }
 
@@ -379,7 +380,8 @@
 
     if (state.displayMode === 'dock') {
       root.innerHTML = `<button type="button" class="dbg-launcher" data-action="mode" data-mode="collapsed"
-                                aria-label="Open debug bar">
+                                 aria-expanded="false"
+                                 aria-label="Open debug bar">
         ${logoSvg(14)}<span>Debug</span>
       </button>`
       state.animatePanel = false

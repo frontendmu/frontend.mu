@@ -1,26 +1,52 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync, statSync } from 'node:fs'
 import { isDebugBarEnabled } from '#debug_bar/manager'
 
 let debugBarScript: string | null = null
 let debugBarShell: string | null = null
+let debugBarScriptMtimeMs: number | null = null
+let debugBarShellMtimeMs: number | null = null
 const debugBarScriptPath = new URL('./debug-bar.js', import.meta.url)
 const debugBarShellPath = new URL('./debug-bar.html', import.meta.url)
 
 export function getDebugBarScript() {
-  if (!isDebugBarEnabled() && debugBarScript) {
+  const debugMode = isDebugBarEnabled()
+
+  if (!debugMode && debugBarScript) {
     return debugBarScript
   }
 
-  debugBarScript = readFileSync(debugBarScriptPath, 'utf8')
+  if (!debugMode) {
+    debugBarScript = readFileSync(debugBarScriptPath, 'utf8')
+    return debugBarScript
+  }
+
+  const currentMtimeMs = statSync(debugBarScriptPath).mtimeMs
+
+  if (!debugBarScript || debugBarScriptMtimeMs !== currentMtimeMs) {
+    debugBarScript = readFileSync(debugBarScriptPath, 'utf8')
+    debugBarScriptMtimeMs = currentMtimeMs
+  }
+
   return debugBarScript
 }
 
 export function renderDebugBarShell(debugBarId: string, previousDebugBarId?: string | null) {
-  if (isDebugBarEnabled() || !debugBarShell) {
+  const debugMode = isDebugBarEnabled()
+
+  if (!debugMode && !debugBarShell) {
     debugBarShell = readFileSync(debugBarShellPath, 'utf8')
+  } else if (debugMode) {
+    const currentMtimeMs = statSync(debugBarShellPath).mtimeMs
+
+    if (!debugBarShell || debugBarShellMtimeMs !== currentMtimeMs) {
+      debugBarShell = readFileSync(debugBarShellPath, 'utf8')
+      debugBarShellMtimeMs = currentMtimeMs
+    }
   }
 
-  return debugBarShell
+  const shell = debugBarShell ?? ''
+
+  return shell
     .replaceAll('__DEBUG_BAR_ID__', escapeAttribute(debugBarId))
     .replaceAll('__DEBUG_BAR_PREV_ID__', escapeAttribute(previousDebugBarId ?? ''))
 }
