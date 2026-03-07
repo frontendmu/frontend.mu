@@ -376,8 +376,8 @@ const calendarUrl = computed(() => {
                   <div class="flex gap-5">
                     <!-- Timeline dot -->
                     <div class="relative shrink-0 flex flex-col items-center pt-2">
-                      <div class="w-2.5 h-2.5 rounded-full bg-verse-500"></div>
-                      <div v-if="index !== meetup.sessions.length - 1" class="absolute top-4 bottom-[-2.5rem] w-px bg-gray-100 dark:bg-verse-900"></div>
+                      <div class="relative z-10 w-2.5 h-2.5 rounded-full bg-verse-500"></div>
+                      <div v-if="index !== meetup.sessions.length - 1" class="absolute top-[1.125rem] bottom-[-2.5rem] w-px bg-gray-200 dark:bg-verse-800"></div>
                     </div>
 
                     <div class="flex-1 space-y-4">
