@@ -5,8 +5,7 @@
     "outDir": "./build",
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./inertia/*"],
-      "#debug_bar/*": ["./packages/debug-bar/src/*"]
+      "~/*": ["./inertia/*"]
     },
     "types": ["@inertiajs/vue3", "@adonisjs/inertia", "vite/client"]
   },
