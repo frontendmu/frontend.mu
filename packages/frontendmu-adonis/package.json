@@ -68,7 +68,7 @@
     "@adonisjs/shield": "^8.2.0",
     "@adonisjs/static": "^1.1.1",
     "@adonisjs/vite": "^4.0.0",
-    "@eznix/adonisjs-debugbar": "^0.1.0",
+    "@eznix/adonisjs-debugbar": "^0.1.4",
     "@inertiajs/vue3": "^2.3.4",
     "@tailwindcss/vite": "^4.1.18",
     "@types/dompurify": "^3.2.0",
