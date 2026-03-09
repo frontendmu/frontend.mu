@@ -7,7 +7,7 @@ on:
 
 jobs:
   sync-data:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     
     steps:
       - name: Checkout code
