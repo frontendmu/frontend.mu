@@ -7,6 +7,7 @@ const dbConfig = defineConfig({
   connections: {
     sqlite: {
       client: 'better-sqlite3',
+      debug: env.get('NODE_ENV') === 'development',
       connection: {
         filename: app.makePath(env.get('DB_DATABASE', 'tmp/db.production.sqlite3')),
       },
