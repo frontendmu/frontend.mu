@@ -1066,7 +1066,7 @@ onUnmounted(() => {
 @reference 'tailwindcss';
 
 :global(:root) {
-  --mobile-menu-shell-duration: 160ms;
+  --mobile-menu-shell-duration: 360ms;
   --mobile-menu-inline-padding: calc(4vw + 0.75rem);
 }
 
