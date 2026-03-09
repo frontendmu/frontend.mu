@@ -766,7 +766,7 @@ onUnmounted(() => {
                 </button>
               </div>
 
-              <div class="shrink-0">
+              <div class="shrink-0 -translate-x-px">
                 <slot name="dock-right" />
               </div>
             </div>

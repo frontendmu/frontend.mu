@@ -33,7 +33,8 @@ onMounted(() => {
 
 <template>
   <button
-    class="group relative w-10 h-10 flex items-center justify-center rounded-xl squircle bg-gray-50 dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 transition-all hover:border-verse-500 hover:bg-white dark:hover:bg-verse-900 active:scale-95"
+    type="button"
+    class="group relative inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-100 bg-white text-gray-600 shadow-sm transition-all hover:border-verse-500/30 hover:bg-white hover:text-verse-500 active:scale-95 dark:border-verse-800 dark:bg-verse-950/70 dark:text-gray-300 dark:hover:border-verse-600 dark:hover:bg-verse-950/70 dark:hover:text-verse-300"
     @click="cycleMode"
     aria-label="Toggle color mode"
   >
