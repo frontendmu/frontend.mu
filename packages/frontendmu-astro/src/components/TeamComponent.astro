@@ -2,7 +2,7 @@
 import speakersResponse from "@data/speakers-raw.json";
 import { Image } from "astro:assets";
 import { getGithubUrl } from "@utils/fns";
-import { vTransitionName } from "@utils/helpers";
+import { vTransitionName, toSpeakerSlug } from "@utils/helpers";
 import BaseHeading from "./base/BaseHeading.astro";
 import Contributors from "../data/contributors.json";
 import { people } from "@data/people";
@@ -37,7 +37,7 @@ const contributors: Contributor[] = Contributors;
         people.map((person) => (
           <li>
             {person.id ? (
-              <a class="space-y-4" href={`/speaker/${person.id}`}>
+              <a class="space-y-4" href={`/speaker/${toSpeakerSlug(person.name)}`}>
                 <Image
                   class="mx-auto h-20 w-20 rounded-lg border-verse-2 shadow-lg 00 border p-2 lg:w-48 lg:h-48"
                   src={person.imageUrl}
@@ -105,7 +105,7 @@ const contributors: Contributor[] = Contributors;
 
           return (
             <li>
-              <a href={`/speaker/${person.id}`} class="space-y-4" title={person.name}>
+              <a href={`/speaker/${toSpeakerSlug(person.name)}`} class="space-y-4" title={person.name}>
                 <Image
                   class="mx-auto h-20 w-20 rounded-full border-verse-2 shadow-lg 00 border p-2 lg:w-32 lg:h-32 profile-avatar"
                   style={vTransitionName("speaker-avatar", person.name)}

@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { getGithubUrl } from "@utils/fns";
-import { vTransitionName } from "@utils/helpers";
+import { vTransitionName, toSpeakerSlug } from "@utils/helpers";
 
 const props = Astro.props;
 ---
@@ -52,7 +52,7 @@ const props = Astro.props;
             </div>
 
             <a
-              href={`/speaker/${session.Session_id.speakers.id}`}
+              href={`/speaker/${toSpeakerSlug(session.Session_id.speakers.name)}`}
               class="absolute inset-0"
               title={`Speaker name: ${session.Session_id.speakers.name}`}
             >

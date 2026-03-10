@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getGithubUrl, vTransitionName } from '@/utils/helpers'
+import { getGithubUrl, toSpeakerSlug, vTransitionName } from '@/utils/helpers'
 import type { Session } from '@/utils/types'
 
 const props = defineProps({
@@ -48,7 +48,7 @@ function getSpeakerPhoto(githubAccount: string) {
         </div>
 
         <NuxtLink
-          :href="`/speaker/${session.Session_id.speakers.id}`" class="absolute inset-0"
+          :href="`/speaker/${toSpeakerSlug(session.Session_id.speakers.name)}`" class="absolute inset-0"
           :title="`Speaker name: ${session.Session_id.speakers.name}`"
         >
           <span class="sr-only">{{ session.Session_id.speakers.name }}</span>
