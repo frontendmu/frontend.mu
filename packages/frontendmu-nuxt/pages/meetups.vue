@@ -5,6 +5,10 @@ import { isDateToday } from '../utils/helpers'
 const { allMeetups, meetupsGroupedByYear, nextMeetup, todaysMeetups } = useMeetups({})
 
 const nextMeetupId = nextMeetup.value?.id
+
+const { register, cleanup } = useWebMCPMeetups(allMeetups)
+onMounted(() => register())
+onUnmounted(() => cleanup())
 </script>
 
 <template>

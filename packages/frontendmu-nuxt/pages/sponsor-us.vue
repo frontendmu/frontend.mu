@@ -1,5 +1,7 @@
 <script setup lang="ts">
-// No additional logic required for this page
+const { register, cleanup } = useWebMCPSponsors()
+onMounted(() => register())
+onUnmounted(() => cleanup())
 </script>
 
 <template>

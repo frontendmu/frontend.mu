@@ -4,6 +4,10 @@ import { vTransitionName } from '@/utils/helpers'
 
 const title = 'Our sponsors'
 const description = ''
+
+const { register, cleanup } = useWebMCPSponsors()
+onMounted(() => register())
+onUnmounted(() => cleanup())
 </script>
 
 <template>

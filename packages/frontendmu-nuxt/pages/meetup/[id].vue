@@ -37,6 +37,10 @@ defineOgImageComponent('Event', {
   title: meetup.value.title,
   description: meetup.value.description,
 })
+
+const { register, cleanup } = useWebMCPMeetupDetail(meetup)
+onMounted(() => register())
+onUnmounted(() => cleanup())
 </script>
 
 <template>
