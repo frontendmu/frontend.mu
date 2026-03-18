@@ -3,6 +3,7 @@ import SpeakerSingle from "@components/SpeakerSingle.astro";
 import LayoutSpeaker from "@layouts/LayoutSpeaker.astro";
 import eventsResponse from "@data/meetups-raw.json";
 import speakersResponse from "@data/speakers-raw.json";
+import { toSpeakerSlug } from "@utils/helpers";
 
 const props = Astro.params;
 
@@ -12,24 +13,25 @@ export async function getStaticPaths() {
   return speakers.map((speaker) => {
     return {
       params: {
-        id: speaker.id.toString(),
+        slug: toSpeakerSlug(speaker.name),
       },
     };
   });
 }
 
-const getSpeaker = (id: string | number) => {
-  const speaker = speakersResponse.find((ev) => ev.id == id);
+const getSpeaker = (slug: string) => {
+  const speaker = speakersResponse.find((ev) => toSpeakerSlug(ev.name) === slug);
 
-  if (speaker === null) {
-    console.error("cannot find speaker id: ", id);
+  if (!speaker) {
+    console.error("cannot find speaker with slug: ", slug);
+    return null;
   }
 
   // Get sessions of this speaker from the events
   const allSessions = eventsResponse.map((event) => event.sessions).flat();
   const speakerSession = allSessions.filter((session) => {
     let session_speaker_id = session.Session_id.speakers.id;
-    return id === session_speaker_id;
+    return speaker.id === session_speaker_id;
   });
 
   return {
@@ -38,7 +40,7 @@ const getSpeaker = (id: string | number) => {
   };
 };
 
-const speaker = getSpeaker(props.id);
+const speaker = getSpeaker(props.slug);
 ---
 
 {
@@ -48,7 +50,7 @@ const speaker = getSpeaker(props.id);
       username={speaker.person?.github_account}
       description="Speaker Profile"
     >
-      <SpeakerSingle routeId={props.id} speaker={speaker} />
+      <SpeakerSingle routeId={props.slug} speaker={speaker} />
     </LayoutSpeaker>
   ) : (
     <div>Speaker not found</div>

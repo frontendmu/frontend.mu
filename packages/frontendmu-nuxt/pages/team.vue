@@ -2,7 +2,7 @@
 import speakersResponse from '../../frontendmu-data/data/speakers-raw.json'
 import Contributors from '../../frontendmu-data/data/contributors.json'
 import { communityMembers, organisers } from '../../frontendmu-data/data/people'
-import { getGithubUrl } from '@/utils/helpers'
+import { getGithubUrl, toSpeakerSlug } from '@/utils/helpers'
 
 interface Contributor {
   username: string
@@ -28,7 +28,7 @@ const contributors: Contributor[] = Contributors
       <ul id="team" role="list" class="mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:gap-x-8">
         <li v-for="person in organisers" :key="person.id" class="space-y-2">
           <div class="space-y-2">
-            <NuxtLink v-if="person.id" :href="`/speaker/${person.id}`">
+            <NuxtLink v-if="person.id" :href="`/speaker/${toSpeakerSlug(person.name)}`">
               <span class="sr-only">{{ person.name }}</span>
 
               <img
@@ -117,7 +117,7 @@ const contributors: Contributor[] = Contributors
 
       <ul id="team" role="list" class="mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-5 md:gap-x-6 lg:gap-x-8">
         <li v-for="person in speakersResponse" :key="person.id" class="space-y-4">
-          <NuxtLink :href="`/speaker/${person.id}`" :title="person.name">
+          <NuxtLink :href="`/speaker/${toSpeakerSlug(person.name)}`" :title="person.name">
             <img
               class="mx-auto h-20 w-20 rounded-full border-verse-2 shadow-lg 00 border p-2 lg:w-32 lg:h-32 profile-avatar"
               :src="getGithubUrl(person?.github_account || '')"

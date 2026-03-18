@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import speakersResponse from '../../../frontendmu-data/data/speakers-raw.json'
-import { getGithubUrl } from '@/utils/helpers'
+import { getGithubUrl, toSpeakerSlug } from '@/utils/helpers'
 
 const featuredSpeakers = ref(
   speakersResponse.filter((speaker: { featured: boolean }) => speaker.featured),
@@ -48,7 +48,7 @@ const activeSpeakerId = ref<string>(
                 {{ person.name }}
               </h3>
               <NuxtLink
-                :href="`/speaker/${person.id}`"
+                :href="`/speaker/${toSpeakerSlug(person.name)}`"
                 class="p-1 text-verse-500 md:text-white text-sm md:text-base hidden md:block bg-white/20 text-center rounded-md font-bold w-24"
               >
                 List talks

@@ -108,6 +108,14 @@ export function isFalsy(value: any): boolean {
   return value === 'false' || value === '0' || value === null || value === 'undefined' || value === ''
 }
 
+export function toSpeakerSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, '-')
+}
+
 export function getGithubUrl(username?: string) {
   const speaker_photo = username
     ? `https://github.com/${username}.png`
