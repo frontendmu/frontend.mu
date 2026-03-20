@@ -1,5 +1,5 @@
 import { BaseCommand } from '@adonisjs/core/ace'
-import type { CommandOptions } from '@adonisjs/core/ace'
+import type { CommandOptions } from '@adonisjs/core/types/ace'
 import { execSync } from 'node:child_process'
 
 export default class DbClear extends BaseCommand {
@@ -20,7 +20,9 @@ export default class DbClear extends BaseCommand {
     }
 
     if (!dbConfig.host || !dbConfig.user || !dbConfig.password || !dbConfig.database) {
-      this.logger.error('Missing required DB environment variables (DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE)')
+      this.logger.error(
+        'Missing required DB environment variables (DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE)'
+      )
       process.exit(1)
     }
 

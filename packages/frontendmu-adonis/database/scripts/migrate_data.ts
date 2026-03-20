@@ -1,420 +1,417 @@
-import { Database } from '@adonisjs/lucid/database'
-import { BaseModel } from '@adonisjs/lucid/orm'
-import { crypto } from 'node:crypto'
+import { randomUUID } from 'node:crypto'
+import { DateTime } from 'luxon'
+import {
+  createPgClient,
+  importDataModule,
+  nowSql,
+  readJsonFile,
+  requireFile,
+  resolveFrontendmuDataPath,
+} from './_helpers.js'
 
-// Initialize the database connection
-const db = new Database({
-  connection: 'postgres',
-  connections: {
-    postgres: {
-      client: 'pg',
-      connection: {
-        host: process.env.DB_HOST || '127.0.0.1',
-        port: process.env.DB_PORT || 5432,
-        user: process.env.DB_USER || 'postgres',
-        password: process.env.DB_PASSWORD || 'postgres',
-        database: process.env.DB_DATABASE || 'frontendmu_dev',
-      },
-    },
-  },
-})
-
-// Set the database instance for models
-BaseModel.useConnection(db.connection())
-
-// Import models
-import User from '#models/user'
-import Event from '#models/event'
-import Session from '#models/session'
-import Sponsor from '#models/sponsor'
-import EventPhoto from '#models/event_photo'
-import Page from '#models/page'
-
-// Import data sources
-import { organizers, communityMembers } from '../../../../frontendmu-data/data/people.js'
-import speakersProfile from '../../../../frontendmu-data/data/speakers-profile.json'
-import sponsorsData from '../../../../frontendmu-data/data/sponsors.js'
-import contributors from '../../../../frontendmu-data/data/contributors.json'
-
-// Utility function to generate UUID
-function generateUUID(): string {
-  return crypto.randomUUID()
+type Person = {
+  id: string
+  name: string
+  imageUrl: string
+  linkedin?: string | null
+  role?: string | null
 }
 
-// Utility function to parse date string
-function parseDate(dateString: string): Date {
-  return new Date(dateString)
+type SpeakerProfile = {
+  github?: string
+  bio?: string | null
+  website?: string | null
+  twitter?: string | null
+  job_title?: string | null
 }
 
-// Utility function to extract GitHub username from URL
-function extractGitHubUsername(url: string): string | null {
+type Contributor = {
+  username: string
+  contributions: number
+}
+
+type SponsorsModule = Array<{
+  title: string
+  sponsors?: Array<{
+    name: string
+    sponsorUrl?: string | null
+    description?: string | null
+    logo?: string | null
+    darkbg?: boolean | null
+  }>
+}>
+
+function extractGitHubUsername(url: string | null | undefined) {
   if (!url) return null
-  const match = url.match(/github\.com\/([^\/]+)/)
+  const match = url.match(/github\.com\/([^/]+)/)
   return match ? match[1] : null
 }
 
-async function migrateUsers() {
-  console.log('🔄 Migrating users...')
-
-  // Migrate organizers
-  for (const organizer of organizers) {
-    const githubUsername = extractGitHubUsername(organizer.imageUrl)
-
-    const user = new User()
-    user.id = organizer.id
-    user.name = organizer.name
-    user.role = 'organizer'
-    user.githubUsername = githubUsername
-    user.avatarUrl = organizer.imageUrl
-    user.linkedinUrl = organizer.linkedin || null
-    user.twitterUrl = null
-    user.websiteUrl = null
-    user.featured = true
-    user.bio = null
-
-    // Try to find additional profile data
-    const profileData = speakersProfile.find((p) => p.github === githubUsername)
-    if (profileData) {
-      user.bio = profileData.bio
-      user.websiteUrl = profileData.website || null
-      user.twitterUrl = profileData.twitter
-        ? `https://twitter.com/${profileData.twitter.replace('@', '')}`
-        : null
-    }
-
-    await user.save()
-    console.log(`✅ Created organizer: ${user.name}`)
-  }
-
-  // Migrate community members
-  for (const member of communityMembers) {
-    const githubUsername = extractGitHubUsername(member.imageUrl)
-
-    const user = new User()
-    user.id = member.id
-    user.name = member.name
-    user.role = 'community_member'
-    user.githubUsername = githubUsername
-    user.avatarUrl = member.imageUrl
-    user.linkedinUrl = null
-    user.twitterUrl = null
-    user.websiteUrl = null
-    user.featured = false
-    user.bio = null
-
-    await user.save()
-    console.log(`✅ Created community member: ${user.name}`)
-  }
-
-  // Create speaker users from contributors with high contribution counts
-  const topContributors = contributors.filter((c) => c.contributions >= 10).slice(0, 20) // Limit to top 20 contributors
-
-  for (const contributor of topContributors) {
-    // Check if user already exists
-    const existingUser = await User.findBy('githubUsername', contributor.username)
-    if (existingUser) continue
-
-    const user = new User()
-    user.id = generateUUID()
-    user.name = contributor.username // We'll use GitHub username as name for now
-    user.role = 'speaker'
-    user.githubUsername = contributor.username
-    user.avatarUrl = `https://github.com/${contributor.username}.png`
-    user.linkedinUrl = null
-    user.twitterUrl = null
-    user.websiteUrl = null
-    user.featured = contributor.contributions > 50
-    user.bio = null
-
-    // Try to find additional profile data
-    const profileData = speakersProfile.find((p) => p.github === contributor.username)
-    if (profileData) {
-      user.name = profileData.job_title
-        ? `${contributor.username} (${profileData.job_title})`
-        : contributor.username
-      user.bio = profileData.bio
-      user.websiteUrl = profileData.website || null
-      user.twitterUrl = profileData.twitter
-        ? `https://twitter.com/${profileData.twitter.replace('@', '')}`
-        : null
-    }
-
-    await user.save()
-    console.log(`✅ Created speaker: ${user.name}`)
-  }
-
-  console.log('✅ Users migration complete')
+function toTwitterUrl(handle: string | null | undefined) {
+  if (!handle) return null
+  return `https://twitter.com/${handle.replace('@', '')}`
 }
 
-async function migrateEvents() {
-  console.log('🔄 Migrating events...')
+async function migrateData() {
+  const client = createPgClient()
 
-  // Since meetups-raw.json is empty, create some sample events for testing
-  const sampleEvents = [
-    {
-      id: generateUUID(),
-      title: 'Frontend.mu Meetup #1',
-      description: 'First frontend meetup in Mauritius featuring local speakers',
-      location: 'Port Louis, Mauritius',
-      venue: 'Tech Hub Mauritius',
-      eventDate: new Date('2024-03-15'),
-      startTime: '18:00',
-      endTime: '21:00',
-      attendeeCount: 50,
-      seatsAvailable: 100,
-      acceptingRsvp: true,
-      rsvpClosingDate: new Date('2024-03-14'),
-      rsvpLink: 'https://eventbrite.com/example1',
-      albumName: 'meetup-1',
-      coverImageUrl: '/img/events/meetup-1-cover.jpg',
-      parkingLocation: 'Nearby parking available',
-      mapUrl: 'https://maps.google.com/example1',
-      status: 'published' as const,
-    },
-    {
-      id: generateUUID(),
-      title: 'Frontend.mu Meetup #2 - Vue.js Special',
-      description: 'Vue.js focused meetup with workshops and talks',
-      location: 'Port Louis, Mauritius',
-      venue: 'Microsoft Innovation Hub',
-      eventDate: new Date('2024-06-20'),
-      startTime: '17:00',
-      endTime: '20:00',
-      attendeeCount: 75,
-      seatsAvailable: 120,
-      acceptingRsvp: true,
-      rsvpClosingDate: new Date('2024-06-18'),
-      rsvpLink: 'https://eventbrite.com/example2',
-      albumName: 'meetup-2',
-      coverImageUrl: '/img/events/meetup-2-cover.jpg',
-      parkingLocation: 'Free parking at venue',
-      mapUrl: 'https://maps.google.com/example2',
-      status: 'published' as const,
-    },
-  ]
+  const peoplePath = resolveFrontendmuDataPath('people.js')
+  const speakersProfilePath = resolveFrontendmuDataPath('speakers-profile.json')
+  const sponsorsPath = resolveFrontendmuDataPath('sponsors.js')
+  const contributorsPath = resolveFrontendmuDataPath('contributors.json')
 
-  for (const eventData of sampleEvents) {
-    const event = new Event()
-    Object.assign(event, eventData)
-    await event.save()
-    console.log(`✅ Created event: ${event.title}`)
-  }
+  requireFile(peoplePath)
+  requireFile(speakersProfilePath)
+  requireFile(sponsorsPath)
+  requireFile(contributorsPath)
 
-  console.log('✅ Events migration complete')
-}
+  const peopleModule = await importDataModule<{
+    organizers: Person[]
+    communityMembers: Person[]
+  }>(peoplePath)
+  const speakerProfiles = readJsonFile<SpeakerProfile[]>(speakersProfilePath)
+  const sponsorsData = await importDataModule<SponsorsModule>(sponsorsPath)
+  const contributors = readJsonFile<Contributor[]>(contributorsPath)
 
-async function migrateSessions() {
-  console.log('🔄 Migrating sessions...')
-
-  // Get all events
-  const events = await Event.all()
-
-  for (const event of events) {
-    // Create sample sessions for each event
-    const sessions = [
-      {
-        id: generateUUID(),
-        eventId: event.id,
-        title: `Opening Keynote - ${event.title}`,
-        description: 'Welcome and introduction to the meetup',
-        order: 1,
-      },
-      {
-        id: generateUUID(),
-        eventId: event.id,
-        title: 'Main Talk: Modern Frontend Development',
-        description: 'Deep dive into modern frontend technologies',
-        order: 2,
-      },
-      {
-        id: generateUUID(),
-        eventId: event.id,
-        title: 'Q&A and Networking',
-        description: 'Open discussion and networking session',
-        order: 3,
-      },
-    ]
-
-    for (const sessionData of sessions) {
-      const session = new Session()
-      Object.assign(session, sessionData)
-      await session.save()
-
-      // Add speakers to sessions
-      const speakers = await User.query().where('role', 'speaker').limit(2)
-      await session.related('speakers').attach(speakers.map((s) => s.id))
-
-      console.log(`✅ Created session: ${session.title}`)
-    }
-  }
-
-  console.log('✅ Sessions migration complete')
-}
-
-async function migrateSponsors() {
-  console.log('🔄 Migrating sponsors...')
-
-  // Flatten sponsors from the nested structure
-  const allSponsors: any[] = []
-
-  sponsorsData.forEach((category) => {
-    if (category.sponsors) {
-      category.sponsors.forEach((sponsor: any) => {
-        // Map sponsor types based on category
-        let sponsorTypes: string[] = []
-        if (category.title.includes('Website')) sponsorTypes = ['website']
-        else if (category.title.includes('Goodies')) sponsorTypes = ['swag']
-        else if (category.title.includes('Partner')) sponsorTypes = ['conference']
-        else sponsorTypes = ['venue']
-
-        allSponsors.push({
-          name: sponsor.name,
-          website: sponsor.sponsorUrl,
-          description: sponsor.description,
-          logoUrl: `/img/sponsors/${sponsor.logo}`,
-          sponsorTypes,
-          logoBg: null,
-          status: 'active' as const,
-        })
-      })
-    }
-  })
-
-  // Remove duplicates
-  const uniqueSponsors = allSponsors.filter(
-    (sponsor, index, self) => index === self.findIndex((s) => s.name === sponsor.name)
+  const profileByGithub = new Map(
+    speakerProfiles.filter((profile) => profile.github).map((profile) => [profile.github!, profile])
   )
 
-  for (const sponsorData of uniqueSponsors) {
-    const sponsor = new Sponsor()
-    sponsor.id = generateUUID()
-    Object.assign(sponsor, sponsorData)
-    await sponsor.save()
-    console.log(`✅ Created sponsor: ${sponsor.name}`)
-  }
+  const now = nowSql()
 
-  console.log('✅ Sponsors migration complete')
-}
+  try {
+    await client.connect()
 
-async function migrateEventSponsors() {
-  console.log('🔄 Migrating event-sponsor relationships...')
+    console.log('Migrating users...')
+    for (const organizer of peopleModule.organizers) {
+      const githubUsername = extractGitHubUsername(organizer.imageUrl)
+      const profile = githubUsername ? profileByGithub.get(githubUsername) : null
 
-  // Get all events and sponsors
-  const events = await Event.all()
-  const sponsors = await Sponsor.all()
-
-  // Link sponsors to events (sample relationships)
-  for (const [i, event] of events.entries()) {
-    const eventSponsors = sponsors.slice(i * 2, (i + 1) * 2) // 2 sponsors per event
-
-    for (const sponsor of eventSponsors) {
-      await event.related('sponsors').attach([sponsor.id])
-      console.log(`✅ Linked sponsor ${sponsor.name} to event ${event.title}`)
+      await client.query(
+        `INSERT INTO users (
+          id, name, role, github_username, avatar_url, linkedin_url, twitter_url,
+          website_url, featured, is_organizer, is_community_member, bio, created_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+        ON CONFLICT (id) DO NOTHING`,
+        [
+          organizer.id,
+          organizer.name,
+          'organizer',
+          githubUsername,
+          organizer.imageUrl,
+          organizer.linkedin || null,
+          toTwitterUrl(profile?.twitter),
+          profile?.website || null,
+          true,
+          true,
+          false,
+          profile?.bio || null,
+          now,
+          now,
+        ]
+      )
     }
-  }
 
-  console.log('✅ Event-sponsors migration complete')
-}
+    for (const member of peopleModule.communityMembers) {
+      await client.query(
+        `INSERT INTO users (
+          id, name, role, github_username, avatar_url, featured, is_organizer,
+          is_community_member, created_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        ON CONFLICT (id) DO NOTHING`,
+        [
+          member.id,
+          member.name,
+          'member',
+          extractGitHubUsername(member.imageUrl),
+          member.imageUrl,
+          false,
+          false,
+          true,
+          now,
+          now,
+        ]
+      )
+    }
 
-async function migrateEventPhotos() {
-  console.log('🔄 Migrating event photos...')
+    const topContributors = contributors
+      .filter((contributor) => contributor.contributions >= 10)
+      .slice(0, 20)
+    for (const contributor of topContributors) {
+      const existing = await client.query(
+        'SELECT id FROM users WHERE github_username = $1 LIMIT 1',
+        [contributor.username]
+      )
+      if (existing.rows.length > 0) continue
 
-  // Since photos-raw.json is empty, create sample photos
-  const events = await Event.all()
+      const profile = profileByGithub.get(contributor.username)
+      await client.query(
+        `INSERT INTO users (
+          id, name, role, github_username, avatar_url, website_url, twitter_url,
+          bio, featured, is_organizer, is_community_member, created_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+        [
+          randomUUID(),
+          profile?.job_title
+            ? `${contributor.username} (${profile.job_title})`
+            : contributor.username,
+          'member',
+          contributor.username,
+          `https://github.com/${contributor.username}.png`,
+          profile?.website || null,
+          toTwitterUrl(profile?.twitter),
+          profile?.bio || null,
+          contributor.contributions > 50,
+          false,
+          false,
+          now,
+          now,
+        ]
+      )
+    }
 
-  for (const event of events) {
-    const photos = [
+    console.log('Migrating sample events and related records...')
+    const sampleEvents = [
       {
-        id: generateUUID(),
-        eventId: event.id,
-        photoUrl: `/img/gallery/${event.albumName}/1.jpg`,
-        caption: 'Group photo of attendees',
-        order: 1,
+        id: randomUUID(),
+        title: 'Frontend.mu Meetup #1',
+        description: 'First frontend meetup in Mauritius featuring local speakers',
+        location: 'Port Louis, Mauritius',
+        venue: 'Tech Hub Mauritius',
+        eventDate: DateTime.fromISO('2024-03-15T18:00:00'),
+        startTime: '18:00',
+        endTime: '21:00',
+        attendeeCount: 50,
+        seatsAvailable: 100,
+        acceptingRsvp: true,
+        rsvpClosingDate: DateTime.fromISO('2024-03-14T00:00:00'),
+        rsvpLink: 'https://eventbrite.com/example1',
+        albumName: 'meetup-1',
+        coverImageUrl: '/img/events/meetup-1-cover.jpg',
+        parkingLocation: 'Nearby parking available',
+        mapUrl: 'https://maps.google.com/example1',
       },
       {
-        id: generateUUID(),
-        eventId: event.id,
-        photoUrl: `/img/gallery/${event.albumName}/2.jpg`,
-        caption: 'Speaker presenting',
-        order: 2,
-      },
-      {
-        id: generateUUID(),
-        eventId: event.id,
-        photoUrl: `/img/gallery/${event.albumName}/3.jpg`,
-        caption: 'Networking session',
-        order: 3,
+        id: randomUUID(),
+        title: 'Frontend.mu Meetup #2 - Vue.js Special',
+        description: 'Vue.js focused meetup with workshops and talks',
+        location: 'Port Louis, Mauritius',
+        venue: 'Microsoft Innovation Hub',
+        eventDate: DateTime.fromISO('2024-06-20T17:00:00'),
+        startTime: '17:00',
+        endTime: '20:00',
+        attendeeCount: 75,
+        seatsAvailable: 120,
+        acceptingRsvp: true,
+        rsvpClosingDate: DateTime.fromISO('2024-06-18T00:00:00'),
+        rsvpLink: 'https://eventbrite.com/example2',
+        albumName: 'meetup-2',
+        coverImageUrl: '/img/events/meetup-2-cover.jpg',
+        parkingLocation: 'Free parking at venue',
+        mapUrl: 'https://maps.google.com/example2',
       },
     ]
 
-    for (const photoData of photos) {
-      const photo = new EventPhoto()
-      Object.assign(photo, photoData)
-      await photo.save()
-      console.log(`✅ Created photo for event: ${event.title}`)
+    const speakerRows = await client.query<{ id: string }>(`
+      SELECT id
+      FROM users
+      WHERE github_username IS NOT NULL
+      ORDER BY created_at ASC
+      LIMIT 4
+    `)
+
+    for (const event of sampleEvents) {
+      await client.query(
+        `INSERT INTO events (
+          id, title, description, location, venue, event_date, start_time, end_time,
+          attendee_count, seats_available, accepting_rsvp, rsvp_closing_date, rsvp_link,
+          album_name, cover_image_url, parking_location, map_url, status, created_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
+        ON CONFLICT (id) DO NOTHING`,
+        [
+          event.id,
+          event.title,
+          event.description,
+          event.location,
+          event.venue,
+          event.eventDate.toSQL(),
+          event.startTime,
+          event.endTime,
+          event.attendeeCount,
+          event.seatsAvailable,
+          event.acceptingRsvp,
+          event.rsvpClosingDate.toSQL(),
+          event.rsvpLink,
+          event.albumName,
+          event.coverImageUrl,
+          event.parkingLocation,
+          event.mapUrl,
+          'published',
+          now,
+          now,
+        ]
+      )
+
+      for (const [index, title] of [
+        `Opening Keynote - ${event.title}`,
+        'Main Talk: Modern Frontend Development',
+        'Q&A and Networking',
+      ].entries()) {
+        const sessionId = randomUUID()
+        await client.query(
+          `INSERT INTO sessions (id, event_id, title, description, "order", created_at, updated_at)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [
+            sessionId,
+            event.id,
+            title,
+            index === 0 ? 'Welcome and introduction to the meetup' : null,
+            index + 1,
+            now,
+            now,
+          ]
+        )
+
+        for (const speaker of speakerRows.rows.slice(0, Math.min(2, speakerRows.rows.length))) {
+          await client.query(
+            `INSERT INTO session_speakers (session_id, speaker_id, created_at)
+             VALUES ($1, $2, $3)
+             ON CONFLICT DO NOTHING`,
+            [sessionId, speaker.id, now]
+          )
+        }
+      }
+
+      for (const [index, caption] of [
+        'Group photo of attendees',
+        'Speaker presenting',
+        'Networking session',
+      ].entries()) {
+        await client.query(
+          `INSERT INTO event_photos (id, event_id, photo_url, caption, "order", created_at)
+           VALUES ($1, $2, $3, $4, $5, $6)`,
+          [
+            randomUUID(),
+            event.id,
+            `/img/gallery/${event.albumName}/${index + 1}.jpg`,
+            caption,
+            index + 1,
+            now,
+          ]
+        )
+      }
     }
-  }
 
-  console.log('✅ Event photos migration complete')
-}
+    console.log('Migrating sponsors...')
+    const uniqueSponsors = new Map<
+      string,
+      {
+        id: string
+        name: string
+        website: string | null
+        description: string | null
+        logoUrl: string | null
+        sponsorTypes: string[]
+        logoBg: string | null
+      }
+    >()
 
-async function migratePages() {
-  console.log('🔄 Migrating pages...')
+    for (const category of sponsorsData) {
+      for (const sponsor of category.sponsors || []) {
+        if (!uniqueSponsors.has(sponsor.name)) {
+          let sponsorTypes = ['venue']
+          if (category.title.includes('Website')) sponsorTypes = ['website']
+          else if (category.title.includes('Goodies')) sponsorTypes = ['swag']
+          else if (category.title.includes('Partner')) sponsorTypes = ['conference']
 
-  // Create some sample pages (static content will be handled separately)
-  const pages = [
-    {
-      id: generateUUID(),
-      slug: 'welcome',
-      title: 'Welcome to Frontend.mu',
-      content: 'Welcome to the Mauritian frontend community...',
-      metaDescription: 'Learn about Frontend.mu, the Mauritian frontend community',
-      status: 'published' as const,
-    },
-  ]
+          uniqueSponsors.set(sponsor.name, {
+            id: randomUUID(),
+            name: sponsor.name,
+            website: sponsor.sponsorUrl || null,
+            description: sponsor.description || null,
+            logoUrl: sponsor.logo ? `/img/sponsors/${sponsor.logo}` : null,
+            sponsorTypes,
+            logoBg: sponsor.darkbg ? '#111827' : null,
+          })
+        }
+      }
+    }
 
-  for (const pageData of pages) {
-    const page = new Page()
-    Object.assign(page, pageData)
-    await page.save()
-    console.log(`✅ Created page: ${page.title}`)
-  }
+    for (const sponsor of uniqueSponsors.values()) {
+      await client.query(
+        `INSERT INTO sponsors (
+          id, name, website, description, logo_url, logomark_url, sponsor_types, logo_bg, status, created_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        [
+          sponsor.id,
+          sponsor.name,
+          sponsor.website,
+          sponsor.description,
+          sponsor.logoUrl,
+          null,
+          JSON.stringify(sponsor.sponsorTypes),
+          sponsor.logoBg,
+          'active',
+          now,
+          now,
+        ]
+      )
+    }
 
-  console.log('✅ Pages migration complete')
-}
+    const eventRows = await client.query<{ id: string }>(
+      'SELECT id FROM events ORDER BY event_date ASC'
+    )
+    const sponsorRows = await client.query<{ id: string }>(
+      'SELECT id FROM sponsors ORDER BY name ASC'
+    )
+    for (const [index, event] of eventRows.rows.entries()) {
+      for (const sponsor of sponsorRows.rows.slice(index * 2, index * 2 + 2)) {
+        await client.query(
+          `INSERT INTO event_sponsors (event_id, sponsor_id, created_at)
+           VALUES ($1, $2, $3)
+           ON CONFLICT DO NOTHING`,
+          [event.id, sponsor.id, now]
+        )
+      }
+    }
 
-async function runMigration() {
-  console.log('🚀 Starting data migration...')
+    console.log('Migrating pages...')
+    await client.query(
+      `INSERT INTO pages (id, slug, title, content, meta_description, status, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       ON CONFLICT (id) DO NOTHING`,
+      [
+        randomUUID(),
+        'welcome',
+        'Welcome to Frontend.mu',
+        'Welcome to the Mauritian frontend community...',
+        'Learn about Frontend.mu, the Mauritian frontend community',
+        'published',
+        now,
+        now,
+      ]
+    )
 
-  try {
-    await migrateUsers()
-    await migrateEvents()
-    await migrateSessions()
-    await migrateSponsors()
-    await migrateEventSponsors()
-    await migrateEventPhotos()
-    await migratePages()
+    const summary = await Promise.all([
+      client.query<{ total: string }>('SELECT COUNT(*) AS total FROM users'),
+      client.query<{ total: string }>('SELECT COUNT(*) AS total FROM events'),
+      client.query<{ total: string }>('SELECT COUNT(*) AS total FROM sessions'),
+      client.query<{ total: string }>('SELECT COUNT(*) AS total FROM sponsors'),
+    ])
 
-    console.log('🎉 Data migration completed successfully!')
-
-    // Verification
-    const userCount = await User.query().count('* as total')
-    const eventCount = await Event.query().count('* as total')
-    const sessionCount = await Session.query().count('* as total')
-    const sponsorCount = await Sponsor.query().count('* as total')
-
-    console.log('\n📊 Migration Summary:')
-    console.log(`   Users: ${userCount[0].total}`)
-    console.log(`   Events: ${eventCount[0].total}`)
-    console.log(`   Sessions: ${sessionCount[0].total}`)
-    console.log(`   Sponsors: ${sponsorCount[0].total}`)
+    console.log('Migration summary:')
+    console.log({
+      users: Number(summary[0].rows[0]?.total || 0),
+      events: Number(summary[1].rows[0]?.total || 0),
+      sessions: Number(summary[2].rows[0]?.total || 0),
+      sponsors: Number(summary[3].rows[0]?.total || 0),
+    })
   } catch (error) {
-    console.error('❌ Migration failed:', error)
-    process.exit(1)
+    console.error('Migration failed:', error)
+    process.exitCode = 1
   } finally {
-    await db.manager.closeAll()
+    await client.end()
   }
 }
 
-// Run the migration
-runMigration()
+await migrateData()

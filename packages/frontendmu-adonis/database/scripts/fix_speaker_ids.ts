@@ -3,8 +3,8 @@ import { dirname, join } from 'node:path'
 import { readFileSync } from 'node:fs'
 import pg from 'pg'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+const scriptPath = fileURLToPath(import.meta.url)
+const scriptDir = dirname(scriptPath)
 
 const { Client } = pg
 
@@ -23,7 +23,7 @@ async function runMigration() {
     await client.connect()
 
     // Load speakers from raw data
-    const speakersPath = join(__dirname, '../../../frontendmu-data/data/speakers-raw.json')
+    const speakersPath = join(scriptDir, '../../../frontendmu-data/data/speakers-raw.json')
     const speakersRaw: any[] = JSON.parse(readFileSync(speakersPath, 'utf-8'))
 
     // Create map of github_username -> strapi_id

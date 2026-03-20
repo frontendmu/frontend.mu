@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3'
-import { sanitizeHtml } from '~/composables/useSanitize'
-import { useAuth } from '~/composables/useAuth'
-import type { SponsorDto, EventSummaryDto } from '~/types'
+import { Head } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
+import { Data } from '@generated/data'
+import { sanitizeHtml } from '~/composables/use_sanitize'
+import { useAuth } from '~/composables/use_auth'
 
 interface Props {
-  sponsor: SponsorDto | null
-  meetups: EventSummaryDto[]
+  sponsor: Data.Sponsor | null
+  meetups: Data.Event[]
 }
 
 defineProps<Props>()
@@ -61,9 +62,7 @@ function formatDateShort(dateStr: string): string {
 
       <template v-if="sponsor">
         <!-- Hero Section -->
-        <div
-          class="mb-16 flex flex-col lg:flex-row items-center lg:items-start gap-10"
-        >
+        <div class="mb-16 flex flex-col lg:flex-row items-center lg:items-start gap-10">
           <!-- Logo Container -->
           <div
             class="shrink-0 flex items-center justify-center w-48 h-48 lg:w-56 lg:h-56 rounded-3xl border border-gray-100 dark:border-verse-800 shadow-sm"
@@ -115,9 +114,7 @@ function formatDateShort(dateStr: string): string {
             </div>
 
             <!-- Actions -->
-            <div
-              class="flex flex-wrap justify-center lg:justify-start items-center gap-4 pt-2"
-            >
+            <div class="flex flex-wrap justify-center lg:justify-start items-center gap-4 pt-2">
               <a
                 v-if="sponsor.website"
                 :href="sponsor.website"
@@ -125,11 +122,7 @@ function formatDateShort(dateStr: string): string {
                 rel="noopener noreferrer"
                 class="group inline-flex items-center gap-2 px-4 py-2 bg-verse-500 text-white rounded-lg text-sm font-bold transition-all hover:scale-105 active:scale-95 shadow-sm"
               >
-                <svg
-                  class="w-4 h-4"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path
                     d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
                   />
@@ -142,12 +135,7 @@ function formatDateShort(dateStr: string): string {
                 :href="`/admin/sponsors/${sponsor.id}/edit`"
                 class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-bold text-gray-400 dark:text-gray-500 hover:text-verse-500 dark:hover:text-verse-400 border border-gray-200 dark:border-verse-800 rounded-lg transition-colors hover:border-verse-500"
               >
-                <svg
-                  class="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -164,11 +152,7 @@ function formatDateShort(dateStr: string): string {
         <!-- Description Section -->
         <section v-if="sponsor.description" class="mb-16">
           <div class="flex items-center gap-3 mb-6">
-            <span
-              class="text-sm font-semibold text-verse-500 dark:text-verse-400"
-            >
-              About
-            </span>
+            <span class="text-sm font-semibold text-verse-500 dark:text-verse-400"> About </span>
             <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
           </div>
 
@@ -181,15 +165,11 @@ function formatDateShort(dateStr: string): string {
         <!-- Meetups Section -->
         <section v-if="meetups.length" class="space-y-8">
           <div class="flex items-center gap-3">
-            <span
-              class="text-sm font-semibold text-verse-500 dark:text-verse-400"
-            >
+            <span class="text-sm font-semibold text-verse-500 dark:text-verse-400">
               Shared Experiences
             </span>
             <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
-            <span
-              class="text-xs font-medium text-gray-400 dark:text-gray-500"
-            >
+            <span class="text-xs font-medium text-gray-400 dark:text-gray-500">
               {{ meetups.length }} meetup{{ meetups.length === 1 ? '' : 's' }}
             </span>
           </div>
@@ -202,12 +182,8 @@ function formatDateShort(dateStr: string): string {
               class="group relative flex flex-col bg-white dark:bg-verse-950/40 border border-gray-100 dark:border-verse-800 rounded-2xl transition-all duration-200 hover:border-verse-500 hover:shadow-lg hover:-translate-y-1 overflow-hidden"
             >
               <!-- Date strip -->
-              <div
-                class="px-6 pt-5 pb-3 flex items-center justify-between"
-              >
-                <p
-                  class="text-sm font-semibold text-verse-500 dark:text-verse-400"
-                >
+              <div class="px-6 pt-5 pb-3 flex items-center justify-between">
+                <p class="text-sm font-semibold text-verse-500 dark:text-verse-400">
                   {{ meetup.date ? formatDateShort(meetup.date) : 'TBA' }}
                 </p>
                 <div
@@ -257,9 +233,7 @@ function formatDateShort(dateStr: string): string {
                       d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                     />
                   </svg>
-                  <p
-                    class="text-xs font-medium text-gray-400 dark:text-gray-500"
-                  >
+                  <p class="text-xs font-medium text-gray-400 dark:text-gray-500">
                     {{ meetup.venue }}
                   </p>
                 </div>
@@ -295,9 +269,7 @@ function formatDateShort(dateStr: string): string {
               />
             </svg>
           </div>
-          <h2 class="text-4xl font-display tracking-tight dark:text-white">
-            Partner not found.
-          </h2>
+          <h2 class="text-4xl font-display tracking-tight dark:text-white">Partner not found.</h2>
           <Link
             href="/sponsors"
             class="inline-flex items-center gap-3 px-8 py-3.5 bg-verse-600 text-white rounded-xl font-bold text-sm hover:bg-verse-700 transition-colors"

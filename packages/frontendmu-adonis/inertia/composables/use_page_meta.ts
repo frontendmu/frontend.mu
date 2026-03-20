@@ -1,12 +1,12 @@
 import { usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
-import type { SharedProps } from '~/types'
+import type { Data } from '@generated/data'
 
 /**
  * Composable for accessing page metadata and shared data
  */
 export function usePageMeta() {
-  const page = usePage<SharedProps>()
+  const page = usePage<Data.SharedProps>()
 
   const url = computed(() => page.url)
   const props = computed(() => page.props)

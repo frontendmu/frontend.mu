@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Head } from '@inertiajs/vue3'
-import type { EventSummaryDto, SpeakerDto, SponsorSummaryDto } from '~/types'
-import { useMeetups } from '~/composables/useMeetups'
+import { Data } from '@generated/data'
+import { useMeetups } from '~/composables/use_meetups'
 import Hero from '~/components/home/Hero.vue'
 import LatestMeetup from '~/components/home/LatestMeetup.vue'
 import FeaturedSpeakers from '~/components/home/FeaturedSpeakers.vue'
@@ -11,9 +11,9 @@ import Sponsors from '~/components/home/Sponsors.vue'
 import StatsCounter from '~/components/home/StatsCounter.vue'
 
 interface Props {
-  events: EventSummaryDto[]
-  featuredSpeakers: SpeakerDto[]
-  sponsors: SponsorSummaryDto[]
+  events: Data.Event[]
+  featuredSpeakers: Data.Speaker[]
+  sponsors: Data.Sponsor.Variants['summary'][]
   stats: {
     meetups: number
     speakers: number

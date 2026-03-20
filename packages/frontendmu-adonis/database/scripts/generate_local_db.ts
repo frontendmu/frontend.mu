@@ -19,16 +19,19 @@ import { readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const exportDir = join(__dirname, '..', 'exports')
+const scriptDir = dirname(fileURLToPath(import.meta.url))
+const exportDir = join(scriptDir, '..', 'exports')
 
 // ISO 8601 pattern — Lucid expects SQL format (no T, no Z) for DateTime.fromSQL()
 const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
 
 function isoToSql(value: string): string {
-  return value.replace('T', ' ').replace(/\.\d{3}Z$/, '').replace(/Z$/, '')
+  return value
+    .replace('T', ' ')
+    .replace(/\.\d{3}Z$/, '')
+    .replace(/Z$/, '')
 }
-const dbPath = join(__dirname, '..', 'db.local.sqlite3')
+const dbPath = join(scriptDir, '..', 'db.local.sqlite3')
 
 // Fields to strip from users for privacy
 const userSensitiveFields = ['password', 'google_id', 'email']
@@ -141,7 +144,10 @@ async function generate() {
   })
 
   const adminId = randomUUID()
-  const now = new Date().toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, '')
+  const now = new Date()
+    .toISOString()
+    .replace('T', ' ')
+    .replace(/\.\d{3}Z$/, '')
 
   await db('users').insert({
     id: adminId,
@@ -238,16 +244,18 @@ async function generate() {
   }
 
   // Set organizer titles and linkedin URLs from organizers.json
-  const organizersPath = join(__dirname, '..', 'data', 'organizers.json')
+  const organizersPath = join(scriptDir, '..', 'data', 'organizers.json')
   if (existsSync(organizersPath)) {
     const organizers = JSON.parse(readFileSync(organizersPath, 'utf-8'))
     for (const org of organizers) {
       if (org.id) {
-        await db('users').where('id', org.id).update({
-          title: org.role || null,
-          linkedin_url: org.linkedin || null,
-          is_organizer: true,
-        })
+        await db('users')
+          .where('id', org.id)
+          .update({
+            title: org.role || null,
+            linkedin_url: org.linkedin || null,
+            is_organizer: true,
+          })
       }
     }
     console.log(`  organizer titles: ${organizers.length} updated`)

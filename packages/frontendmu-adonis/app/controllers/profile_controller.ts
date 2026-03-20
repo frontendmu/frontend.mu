@@ -1,7 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { urlFor } from '@adonisjs/core/services/url_builder'
 import User from '#models/user'
+import UserTransformer from '#transformers/user_transformer'
 import { updateProfileValidator } from '#validators/profile_validator'
-import { toUserProfile } from '#dtos/factories'
 
 export default class ProfileController {
   async show({ inertia, auth }: HttpContext) {
@@ -23,7 +24,7 @@ export default class ProfileController {
       }))
 
     return inertia.render('profile', {
-      user: toUserProfile(user),
+      user: UserTransformer.transform(user),
       rsvpMeetups,
     })
   }
@@ -44,6 +45,6 @@ export default class ProfileController {
 
     session.flash('success', 'Profile updated successfully!')
 
-    return response.redirect().toRoute('profile.show')
+    return response.redirect().toPath(urlFor('profile.show'))
   }
 }

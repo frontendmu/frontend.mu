@@ -1,31 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
+import { Head, useForm, usePage } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
+import { Data } from '@generated/data'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
 import { getRoleBadgeClass } from '~/utils/roles'
-import type { SharedProps } from '~/types'
 
-interface Permission {
-  id: number
-  name: string
-  description?: string | null
-}
-
-interface Role {
-  id: number
-  name: string
-  description: string | null
-  permissions: Permission[]
-}
-
-interface Session {
-  id: string
-  title: string
-  eventId: string | null
-  eventTitle: string | null
-  eventDate: string | null
-}
+type SharedProps = Data.SharedProps
 
 interface Rsvp {
   id: string
@@ -35,29 +17,13 @@ interface Rsvp {
   status: string
 }
 
-interface User {
-  id: string
-  name: string
-  email: string | null
-  roles: Role[]
-  permissions: string[] // Current effective permissions
-  githubUsername: string | null
-  bio: string | null
-  linkedinUrl: string | null
-  twitterUrl: string | null
-  websiteUrl: string | null
-  featured: boolean
-  isOrganizer: boolean
-  isCommunityMember: boolean
-  title: string | null
-  avatarUrl: string | null
-  sessions: Session[]
-  rsvps: Rsvp[]
-}
+type AdminRole = Data.Role.Variants['forAdminEdit']
+type AdminSession = Data.Session.Variants['forSpeakerProfile']
+type AdminUser = Data.AdminUser.Variants['forAdminEdit'] & { rsvps: Rsvp[] }
 
 interface Props {
-  user: User
-  allRoles: Role[]
+  user: AdminUser
+  allRoles: AdminRole[]
 }
 
 const props = defineProps<Props>()
@@ -159,8 +125,8 @@ const groupedPermissions = computed(() => {
 <template>
   <Head :title="`Edit User: ${user.name}`" />
   <main class="relative min-h-screen pt-40 pb-20">
-      <ContentBlock>
-        <div class="max-w-3xl mx-auto">
+    <ContentBlock>
+      <div class="max-w-3xl mx-auto">
         <!-- Breadcrumb -->
         <nav class="mb-6 flex items-center gap-2 text-sm">
           <Link
@@ -216,7 +182,10 @@ const groupedPermissions = computed(() => {
               <span
                 v-for="role in user.roles"
                 :key="role.id"
-                :class="['px-2 py-0.5 text-xs font-medium rounded-full', getRoleBadgeClass(role.name)]"
+                :class="[
+                  'px-2 py-0.5 text-xs font-medium rounded-full',
+                  getRoleBadgeClass(role.name),
+                ]"
               >
                 {{ role.name }}
               </span>
@@ -226,7 +195,9 @@ const groupedPermissions = computed(() => {
 
         <form @submit.prevent="handleSubmit" class="space-y-8">
           <!-- Basic Info Section -->
-          <div class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6">
+          <div
+            class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6"
+          >
             <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-4">
               Basic Information
             </h2>
@@ -336,12 +307,15 @@ const groupedPermissions = computed(() => {
           </div>
 
           <!-- Roles Section -->
-          <div class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6">
+          <div
+            class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6"
+          >
             <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-2">
               Roles & Permissions
             </h2>
             <p class="text-sm text-verse-600 dark:text-verse-400 mb-4">
-              Assign one or more roles to this user. Permissions are derived from the selected roles.
+              Assign one or more roles to this user. Permissions are derived from the selected
+              roles.
             </p>
 
             <div class="space-y-3">
@@ -363,7 +337,9 @@ const groupedPermissions = computed(() => {
                   <input
                     type="checkbox"
                     :checked="isRoleSelected(role.id)"
-                    :disabled="isEditingSelf && role.name === 'superadmin' && isRoleSelected(role.id)"
+                    :disabled="
+                      isEditingSelf && role.name === 'superadmin' && isRoleSelected(role.id)
+                    "
                     class="h-5 w-5 text-verse-600 focus:ring-verse-500 border-verse-300 rounded"
                     @click.stop="toggleRole(role.id)"
                   />
@@ -389,7 +365,10 @@ const groupedPermissions = computed(() => {
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      :class="['h-5 w-5 transition-transform', expandedRole === role.id ? 'rotate-180' : '']"
+                      :class="[
+                        'h-5 w-5 transition-transform',
+                        expandedRole === role.id ? 'rotate-180' : '',
+                      ]"
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
@@ -445,7 +424,9 @@ const groupedPermissions = computed(() => {
           </div>
 
           <!-- Effective Permissions Preview -->
-          <div class="bg-verse-50 dark:bg-verse-900 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6">
+          <div
+            class="bg-verse-50 dark:bg-verse-900 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6"
+          >
             <h3 class="text-sm font-semibold text-verse-700 dark:text-verse-300 mb-3">
               Effective Permissions ({{ effectivePermissions.length }})
             </h3>
@@ -471,7 +452,9 @@ const groupedPermissions = computed(() => {
           </div>
 
           <!-- Social Links -->
-          <div class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6">
+          <div
+            class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6"
+          >
             <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-4">
               Social Links
             </h2>
@@ -525,7 +508,9 @@ const groupedPermissions = computed(() => {
           </div>
 
           <!-- Flags -->
-          <div class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6">
+          <div
+            class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6"
+          >
             <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-4">
               Display Flags
             </h2>
@@ -567,7 +552,10 @@ const groupedPermissions = computed(() => {
           </div>
 
           <!-- Sessions (read-only) -->
-          <div v-if="user.sessions.length" class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6">
+          <div
+            v-if="user.sessions.length"
+            class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6"
+          >
             <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-4">
               Sessions ({{ user.sessions.length }})
             </h2>
@@ -596,7 +584,10 @@ const groupedPermissions = computed(() => {
           </div>
 
           <!-- RSVPs (read-only) -->
-          <div v-if="user.rsvps.length" class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6">
+          <div
+            v-if="user.rsvps.length"
+            class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6"
+          >
             <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-4">
               RSVPs ({{ user.rsvps.length }})
             </h2>
@@ -607,7 +598,9 @@ const groupedPermissions = computed(() => {
                 class="flex items-center justify-between p-3 bg-verse-50 dark:bg-verse-900/50 squircle rounded-lg"
               >
                 <div class="min-w-0">
-                  <p class="font-medium text-verse-900 dark:text-verse-100 truncate">{{ rsvp.eventTitle }}</p>
+                  <p class="font-medium text-verse-900 dark:text-verse-100 truncate">
+                    {{ rsvp.eventTitle }}
+                  </p>
                   <p v-if="rsvp.eventDate" class="text-sm text-verse-500 dark:text-verse-400">
                     {{ rsvp.eventDate }}
                   </p>
@@ -620,7 +613,7 @@ const groupedPermissions = computed(() => {
                         ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
                         : rsvp.status === 'waitlist'
                           ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400'
-                          : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                          : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400',
                     ]"
                   >
                     {{ rsvp.status }}

@@ -1,10 +1,11 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { randomUUID } from 'node:crypto'
+import { urlFor } from '@adonisjs/core/services/url_builder'
 import db from '@adonisjs/lucid/services/db'
 import User from '#models/user'
 import SpeakerPolicy from '#policies/speaker_policy'
 import { speakerValidator } from '#validators/speaker_validator'
-import { toAdminSpeaker } from '#dtos/factories'
+import SpeakerTransformer from '#transformers/speaker_transformer'
 
 export default class AdminSpeakersController {
   async index({ inertia, bouncer }: HttpContext) {
@@ -18,14 +19,14 @@ export default class AdminSpeakersController {
       .orderBy('name', 'asc')
 
     return inertia.render('admin/speakers/index', {
-      speakers: speakers.map(toAdminSpeaker),
+      speakers: SpeakerTransformer.transform(speakers).useVariant('forAdminIndex'),
     })
   }
 
   async create({ inertia, bouncer }: HttpContext) {
     await bouncer.with(SpeakerPolicy).authorize('create')
 
-    return inertia.render('admin/speakers/create')
+    return inertia.render('admin/speakers/create', {})
   }
 
   async store({ request, bouncer, response, session }: HttpContext) {
@@ -48,7 +49,7 @@ export default class AdminSpeakersController {
     })
 
     session.flash('success', 'Speaker created successfully!')
-    return response.redirect().toRoute('admin.users.edit', { id: speaker.id })
+    return response.redirect().toPath(urlFor('admin.users.edit', { id: speaker.id }))
   }
 
   async destroy({ params, auth, bouncer, response, session }: HttpContext) {
@@ -63,6 +64,6 @@ export default class AdminSpeakersController {
     await db.from('session_speakers').where('speaker_id', speaker.id).delete()
 
     session.flash('success', 'Speaker removed from all sessions successfully!')
-    return response.redirect().toRoute('admin.speakers.index')
+    return response.redirect().toPath(urlFor('admin.speakers.index'))
   }
 }

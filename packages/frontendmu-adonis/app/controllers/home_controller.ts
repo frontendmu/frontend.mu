@@ -3,7 +3,9 @@ import Event from '#models/event'
 import User from '#models/user'
 import Sponsor from '#models/sponsor'
 import Rsvp from '#models/rsvp'
-import { toEventSummary, toSpeaker, toSponsorSummary } from '#dtos/factories'
+import EventTransformer from '#transformers/event_transformer'
+import SpeakerTransformer from '#transformers/speaker_transformer'
+import SponsorTransformer from '#transformers/sponsor_transformer'
 
 export default class HomeController {
   async index({ inertia, auth }: HttpContext) {
@@ -15,7 +17,7 @@ export default class HomeController {
       })
       .preload('sponsors')
 
-    const events = dbEvents.map(toEventSummary)
+    const events = EventTransformer.transform(dbEvents)
 
     let userRsvpEventIds: string[] = []
     if (auth.isAuthenticated && auth.user) {
@@ -25,22 +27,15 @@ export default class HomeController {
       userRsvpEventIds = rsvps.map((r) => r.eventId)
     }
 
-    const dbSpeakers = await User.query()
-      .where('featured', true)
-      .orderBy('name', 'asc')
-      .limit(12)
+    const dbSpeakers = await User.query().where('featured', true).orderBy('name', 'asc').limit(12)
 
-    const featuredSpeakers = dbSpeakers.map(toSpeaker)
+    const featuredSpeakers = SpeakerTransformer.transform(dbSpeakers)
 
-    const dbSponsors = await Sponsor.query()
-      .where('status', 'active')
-      .orderBy('name', 'asc')
+    const dbSponsors = await Sponsor.query().where('status', 'active').orderBy('name', 'asc')
 
-    const sponsors = dbSponsors.map(toSponsorSummary)
+    const sponsors = SponsorTransformer.transform(dbSponsors).useVariant('summary')
 
-    const totalMeetups = await Event.query()
-      .where('status', 'published')
-      .count('* as total')
+    const totalMeetups = await Event.query().where('status', 'published').count('* as total')
     const totalSpeakers = await User.query()
       .whereHas('sessions', (query) => {
         query.whereNotNull('id')

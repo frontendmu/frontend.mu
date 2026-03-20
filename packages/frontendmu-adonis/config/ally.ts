@@ -1,11 +1,12 @@
 import env from '#start/env'
+import type { InferSocialProviders } from '@adonisjs/ally/types'
 import { defineConfig, services } from '@adonisjs/ally'
 
 const allyConfig = defineConfig({
   google: services.google({
-    clientId: env.get('GOOGLE_CLIENT_ID'),
-    clientSecret: env.get('GOOGLE_CLIENT_SECRET'),
-    callbackUrl: env.get('APP_URL', 'http://localhost:3333') + '/auth/google/callback',
+    clientId: env.get('GOOGLE_CLIENT_ID')!,
+    clientSecret: env.get('GOOGLE_CLIENT_SECRET')!,
+    callbackUrl: `${env.get('APP_URL', 'http://localhost:3333')}/auth/google/callback`,
   }),
 })
 

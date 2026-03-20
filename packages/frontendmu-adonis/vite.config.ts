@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
-import inertia from '@adonisjs/inertia/client'
+import inertia from '@adonisjs/inertia/vite'
 import vue from '@vitejs/plugin-vue'
 import adonisjs from '@adonisjs/vite/client'
 import tailwindcss from '@tailwindcss/vite'
@@ -10,7 +10,7 @@ export default defineConfig({
     inertia({ ssr: { enabled: false } }),
     vue(),
     tailwindcss(),
-    adonisjs({ entrypoints: ['inertia/app/app.ts'], reload: ['resources/views/**/*.edge'] }),
+    adonisjs({ entrypoints: ['inertia/app.ts'], reload: ['resources/views/**/*.edge'] }),
   ],
 
   resolve: {
@@ -28,7 +28,7 @@ export default defineConfig({
   },
 
   server: {
-    allowedHosts: ['chotadon.tail1d66.ts.net']
+    allowedHosts: ['chotadon.tail1d66.ts.net'],
   },
 
   optimizeDeps: {

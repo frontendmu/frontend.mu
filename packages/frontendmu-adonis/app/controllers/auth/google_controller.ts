@@ -1,4 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { urlFor } from '@adonisjs/core/services/url_builder'
 import User from '#models/user'
 import Role from '#models/role'
 
@@ -21,7 +22,7 @@ export default class GoogleController {
      */
     if (google.accessDenied()) {
       session.flash('error', 'You cancelled the Google login')
-      return response.redirect('/login')
+      return response.redirect().toPath(urlFor('auth.login.show'))
     }
 
     /**
@@ -30,7 +31,7 @@ export default class GoogleController {
      */
     if (google.stateMisMatch()) {
       session.flash('error', 'Request expired. Please try again.')
-      return response.redirect('/login')
+      return response.redirect().toPath(urlFor('auth.login.show'))
     }
 
     /**
@@ -38,7 +39,7 @@ export default class GoogleController {
      */
     if (google.hasError()) {
       session.flash('error', google.getError() || 'Unable to authenticate with Google')
-      return response.redirect('/login')
+      return response.redirect().toPath(urlFor('auth.login.show'))
     }
 
     /**
@@ -68,7 +69,7 @@ export default class GoogleController {
             'error',
             'An account with this email already exists. Please log in with your password first, then link your Google account from your profile.'
           )
-          return response.redirect('/login')
+          return response.redirect().toPath(urlFor('auth.login.show'))
         }
       }
     }
@@ -96,6 +97,6 @@ export default class GoogleController {
     await auth.use('web').login(user)
 
     session.flash('success', `Welcome back, ${user.name}!`)
-    return response.redirect('/')
+    return response.redirect().toPath(urlFor('home'))
   }
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
-import { Link, usePage, router } from '@inertiajs/vue3'
+import { usePage, router } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
 import Logo from '~/components/layout/Logo.vue'
 import MenuItem from '~/components/layout/MenuItem.vue'
 import {
@@ -11,7 +12,8 @@ import {
   TWITTER_URL,
   WHATSAPP_URL,
 } from '~/constants'
-import type { TMenu, TMenuItem, SharedProps } from '~/types'
+import { Data } from '@generated/data'
+import type { TMenu, TMenuItem } from '~/types'
 
 interface SocialLink {
   label: string
@@ -24,7 +26,7 @@ interface InertSiblingState {
   hadInert: boolean
 }
 
-const page = usePage<SharedProps>()
+const page = usePage<Data.SharedProps>()
 const isAuthenticated = computed(() => page.props.auth.isAuthenticated)
 const user = computed(() => page.props.auth.user)
 const currentPath = computed(() => page.url)

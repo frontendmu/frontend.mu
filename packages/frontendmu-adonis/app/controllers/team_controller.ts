@@ -1,8 +1,9 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { readFile } from 'node:fs/promises'
-import { resolveAvatarUrl, toSpeaker } from '#dtos/factories'
 import app from '@adonisjs/core/services/app'
+import { resolveAvatarUrl } from '../lib/avatar_url.js'
+import SpeakerTransformer from '#transformers/speaker_transformer'
 
 const GITHUB_RAW_BASE =
   'https://raw.githubusercontent.com/frontendmu/frontend.mu/main/packages/frontendmu-data/data'
@@ -34,9 +35,7 @@ function toTeamMember(user: User, defaultRole: string) {
 
 export default class TeamController {
   async index({ inertia }: HttpContext) {
-    const dbOrganizers = await User.query()
-      .where('isOrganizer', true)
-      .orderBy('name', 'asc')
+    const dbOrganizers = await User.query().where('isOrganizer', true).orderBy('name', 'asc')
 
     const organizers = dbOrganizers.map((u) => toTeamMember(u, 'Organizer'))
 
@@ -55,7 +54,7 @@ export default class TeamController {
       .orderBy('featured', 'desc')
       .orderBy('name', 'asc')
 
-    const speakers = dbSpeakers.map(toSpeaker)
+    const speakers = SpeakerTransformer.transform(dbSpeakers)
 
     return inertia.render('team', {
       organizers,

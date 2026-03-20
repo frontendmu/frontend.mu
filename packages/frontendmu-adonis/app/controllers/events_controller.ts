@@ -1,9 +1,11 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Event from '#models/event'
 import Rsvp from '#models/rsvp'
-import User from '#models/user'
+import type User from '#models/user'
 import EventPolicy from '#policies/event_policy'
-import { toEventSummary, toEvent, toPublicAttendee } from '#dtos/factories'
+import EventTransformer from '#transformers/event_transformer'
+import RsvpTransformer from '#transformers/rsvp_transformer'
+import PublicAttendeeTransformer from '#transformers/public_attendee_transformer'
 
 export default class EventsController {
   async index({ inertia, auth, bouncer }: HttpContext) {
@@ -14,7 +16,7 @@ export default class EventsController {
         query.preload('speakers')
       })
 
-    const meetups = events.map(toEventSummary)
+    const meetups = EventTransformer.transform(events)
 
     let canCreate = false
     await auth.check()
@@ -28,7 +30,8 @@ export default class EventsController {
     })
   }
 
-  async show({ inertia, params, auth, bouncer }: HttpContext) {
+  async show(ctx: HttpContext) {
+    const { inertia, params, auth, bouncer, ...rest } = ctx
     const event = await Event.query()
       .where('id', params.id)
       .where('status', 'published')
@@ -41,7 +44,12 @@ export default class EventsController {
 
     let userRsvp: Rsvp | null = null
     let canEdit = false
-    let attendees: ReturnType<typeof toPublicAttendee>[] = []
+    let attendees: Array<{
+      id: string
+      name: string
+      avatarUrl: string | null
+      githubUsername: string | null
+    }> = []
     let rsvpCount = 0
 
     await auth.check()
@@ -64,8 +72,18 @@ export default class EventsController {
 
       canEdit = await bouncer.with(EventPolicy).allows('edit', event)
 
-      attendees = rsvps.map((rsvp) =>
-        toPublicAttendee(rsvp.user, this.truncateName(rsvp.user.name))
+      attendees = await Promise.all(
+        rsvps.map(async (rsvp) => {
+          rsvp.user.$extras.displayName = this.truncateName(rsvp.user.name)
+          return (await rest.serializeWithoutWrapping(
+            PublicAttendeeTransformer.transform(rsvp.user)
+          )) as {
+            id: string
+            name: string
+            avatarUrl: string | null
+            githubUsername: string | null
+          }
+        })
       )
     } else {
       const countResult = await Event.query()
@@ -76,8 +94,8 @@ export default class EventsController {
     }
 
     return inertia.render('meetups/show', {
-      meetup: toEvent(event),
-      userRsvp,
+      meetup: EventTransformer.transform(event).useVariant('detail'),
+      userRsvp: userRsvp ? RsvpTransformer.transform(userRsvp) : null,
       rsvpCount,
       canEdit,
       attendees,

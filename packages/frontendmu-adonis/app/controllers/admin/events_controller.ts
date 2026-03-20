@@ -1,10 +1,12 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { urlFor } from '@adonisjs/core/services/url_builder'
 import { DateTime } from 'luxon'
 import Event from '#models/event'
 import Sponsor from '#models/sponsor'
 import EventPolicy from '#policies/event_policy'
 import { createEventValidator, updateEventValidator } from '#validators/event_validator'
-import { toEvent, toEventSummary, toSponsorSummary } from '#dtos/factories'
+import SponsorTransformer from '#transformers/sponsor_transformer'
+import EventTransformer from '#transformers/event_transformer'
 
 export default class AdminEventsController {
   async index({ inertia, bouncer, request }: HttpContext) {
@@ -23,7 +25,7 @@ export default class AdminEventsController {
     const events = await query
 
     return inertia.render('admin/events/index', {
-      events: events.map(toEventSummary),
+      events: EventTransformer.transform(events).useVariant('forAdminIndex'),
       statusFilter,
     })
   }
@@ -31,7 +33,7 @@ export default class AdminEventsController {
   async create({ inertia, bouncer }: HttpContext) {
     await bouncer.with(EventPolicy).authorize('create')
 
-    return inertia.render('admin/events/create')
+    return inertia.render('admin/events/create', {})
   }
 
   async store({ request, bouncer, response, session }: HttpContext) {
@@ -58,7 +60,7 @@ export default class AdminEventsController {
 
     session.flash('success', 'Event created successfully!')
 
-    return response.redirect().toRoute('admin.events.edit', { id: event.id })
+    return response.redirect().toPath(urlFor('admin.events.edit', { id: event.id }))
   }
 
   async edit({ inertia, params, bouncer }: HttpContext) {
@@ -72,7 +74,7 @@ export default class AdminEventsController {
     await event.load('sponsors')
 
     return inertia.render('admin/events/edit', {
-      event: toEvent(event),
+      event: EventTransformer.transform(event).useVariant('detail'),
     })
   }
 
@@ -103,7 +105,7 @@ export default class AdminEventsController {
 
     session.flash('success', 'Event updated successfully!')
 
-    return response.redirect().toRoute('meetups.show', { id: event.id })
+    return response.redirect().toPath(urlFor('meetups.show', { id: event.id }))
   }
 
   async destroy({ params, bouncer, response, session }: HttpContext) {
@@ -115,20 +117,24 @@ export default class AdminEventsController {
 
     session.flash('success', 'Event deleted successfully!')
 
-    return response.redirect().toRoute('admin.events.index')
+    return response.redirect().toPath(urlFor('admin.events.index'))
   }
 
-  async availableSponsors({ bouncer, response }: HttpContext) {
+  async availableSponsors(ctx: HttpContext) {
+    const { bouncer, response, ...rest } = ctx
     await bouncer.with(EventPolicy).authorize('create')
 
     const sponsors = await Sponsor.query().orderBy('name', 'asc')
 
     return response.json({
-      sponsors: sponsors.map(toSponsorSummary),
+      sponsors: await rest.serializeWithoutWrapping(
+        SponsorTransformer.transform(sponsors).useVariant('summary')
+      ),
     })
   }
 
-  async addSponsor({ params, bouncer, response }: HttpContext) {
+  async addSponsor(ctx: HttpContext) {
+    const { params, bouncer, response, ...rest } = ctx
     const event = await Event.findOrFail(params.id)
 
     await bouncer.with(EventPolicy).authorize('manage', event)
@@ -139,11 +145,14 @@ export default class AdminEventsController {
 
     return response.json({
       message: 'Sponsor added to event successfully',
-      sponsors: event.sponsors.map(toSponsorSummary),
+      sponsors: await rest.serializeWithoutWrapping(
+        SponsorTransformer.transform(event.sponsors).useVariant('summary')
+      ),
     })
   }
 
-  async removeSponsor({ params, bouncer, response }: HttpContext) {
+  async removeSponsor(ctx: HttpContext) {
+    const { params, bouncer, response, ...rest } = ctx
     const event = await Event.findOrFail(params.id)
 
     await bouncer.with(EventPolicy).authorize('manage', event)
@@ -153,7 +162,9 @@ export default class AdminEventsController {
 
     return response.json({
       message: 'Sponsor removed from event successfully',
-      sponsors: event.sponsors.map(toSponsorSummary),
+      sponsors: await rest.serializeWithoutWrapping(
+        SponsorTransformer.transform(event.sponsors).useVariant('summary')
+      ),
     })
   }
 }
