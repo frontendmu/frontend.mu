@@ -12,7 +12,7 @@ export default class AdminSessionsController {
    * List all sessions for an event (returns JSON for API use)
    */
   async index(ctx: HttpContext) {
-    const { params, bouncer, response, ...rest } = ctx
+    const { params, bouncer, response, serializeWithoutWrapping: serialize } = ctx
     const event = await Event.findOrFail(params.eventId)
 
     await bouncer.with(SessionPolicy).authorize('create')
@@ -22,7 +22,7 @@ export default class AdminSessionsController {
     })
 
     return response.json({
-      sessions: await rest.serializeWithoutWrapping(SessionTransformer.transform(event.sessions)),
+      sessions: await serialize(SessionTransformer.transform(event.sessions)),
     })
   }
 
@@ -30,7 +30,7 @@ export default class AdminSessionsController {
    * Store a new session for an event
    */
   async store(ctx: HttpContext) {
-    const { params, request, bouncer, response, ...rest } = ctx
+    const { params, request, bouncer, response, serializeWithoutWrapping: serialize } = ctx
     const event = await Event.findOrFail(params.eventId)
 
     await bouncer.with(SessionPolicy).authorize('create')
@@ -52,7 +52,7 @@ export default class AdminSessionsController {
 
     return response.status(201).json({
       message: 'Session created successfully',
-      session: await rest.serializeWithoutWrapping(SessionTransformer.transform(session)),
+      session: await serialize(SessionTransformer.transform(session)),
     })
   }
 
@@ -60,7 +60,7 @@ export default class AdminSessionsController {
    * Get a single session
    */
   async show(ctx: HttpContext) {
-    const { params, bouncer, response, ...rest } = ctx
+    const { params, bouncer, response, serializeWithoutWrapping: serialize } = ctx
     const session = await Session.findOrFail(params.id)
 
     await bouncer.with(SessionPolicy).authorize('edit', session)
@@ -69,9 +69,7 @@ export default class AdminSessionsController {
     await session.load('event')
 
     return response.json({
-      session: await rest.serializeWithoutWrapping(
-        SessionTransformer.transform(session).useVariant('forAdminDetail')
-      ),
+      session: await serialize(SessionTransformer.transform(session).useVariant('forAdminDetail')),
     })
   }
 
@@ -79,7 +77,7 @@ export default class AdminSessionsController {
    * Update a session
    */
   async update(ctx: HttpContext) {
-    const { params, request, bouncer, response, ...rest } = ctx
+    const { params, request, bouncer, response, serializeWithoutWrapping: serialize } = ctx
     const session = await Session.findOrFail(params.id)
 
     await bouncer.with(SessionPolicy).authorize('update', session)
@@ -102,7 +100,7 @@ export default class AdminSessionsController {
 
     return response.json({
       message: 'Session updated successfully',
-      session: await rest.serializeWithoutWrapping(SessionTransformer.transform(session)),
+      session: await serialize(SessionTransformer.transform(session)),
     })
   }
 
@@ -125,7 +123,7 @@ export default class AdminSessionsController {
    * Add a speaker to a session
    */
   async addSpeaker(ctx: HttpContext) {
-    const { params, bouncer, response, ...rest } = ctx
+    const { params, bouncer, response, serializeWithoutWrapping: serialize } = ctx
     const session = await Session.findOrFail(params.id)
 
     await bouncer.with(SessionPolicy).authorize('manage', session)
@@ -138,7 +136,7 @@ export default class AdminSessionsController {
 
     return response.json({
       message: 'Speaker added to session successfully',
-      session: await rest.serializeWithoutWrapping(SessionTransformer.transform(session)),
+      session: await serialize(SessionTransformer.transform(session)),
     })
   }
 
@@ -146,7 +144,7 @@ export default class AdminSessionsController {
    * Remove a speaker from a session
    */
   async removeSpeaker(ctx: HttpContext) {
-    const { params, bouncer, response, ...rest } = ctx
+    const { params, bouncer, response, serializeWithoutWrapping: serialize } = ctx
     const session = await Session.findOrFail(params.id)
 
     await bouncer.with(SessionPolicy).authorize('manage', session)
@@ -157,7 +155,7 @@ export default class AdminSessionsController {
 
     return response.json({
       message: 'Speaker removed from session successfully',
-      session: await rest.serializeWithoutWrapping(SessionTransformer.transform(session)),
+      session: await serialize(SessionTransformer.transform(session)),
     })
   }
 
@@ -165,15 +163,13 @@ export default class AdminSessionsController {
    * Get available speakers for assignment
    */
   async availableSpeakers(ctx: HttpContext) {
-    const { bouncer, response, ...rest } = ctx
+    const { bouncer, response, serializeWithoutWrapping: serialize } = ctx
     await bouncer.with(SessionPolicy).authorize('create')
 
     const speakers = await User.query().orderBy('name', 'asc')
 
     return response.json({
-      speakers: await rest.serializeWithoutWrapping(
-        SpeakerTransformer.transform(speakers).useVariant('forAssignment')
-      ),
+      speakers: await serialize(SpeakerTransformer.transform(speakers).useVariant('forAssignment')),
     })
   }
 }

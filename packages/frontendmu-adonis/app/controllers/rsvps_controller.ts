@@ -10,7 +10,7 @@ export default class RsvpsController {
    * Create a new RSVP for the authenticated user
    */
   async store(ctx: HttpContext) {
-    const { auth, bouncer, params, response, ...rest } = ctx
+    const { auth, bouncer, params, response, serializeWithoutWrapping: serialize } = ctx
     const user = auth.getUserOrFail()
     const event = await Event.findOrFail(params.eventId)
 
@@ -34,13 +34,13 @@ export default class RsvpsController {
         await existingRsvp.save()
         return response.ok({
           message: 'Your RSVP has been reactivated.',
-          rsvp: await rest.serializeWithoutWrapping(RsvpTransformer.transform(existingRsvp)),
+          rsvp: await serialize(RsvpTransformer.transform(existingRsvp)),
         })
       }
 
       return response.conflict({
         message: 'You have already RSVPd to this event.',
-        rsvp: await rest.serializeWithoutWrapping(RsvpTransformer.transform(existingRsvp)),
+        rsvp: await serialize(RsvpTransformer.transform(existingRsvp)),
       })
     }
 
@@ -84,7 +84,7 @@ export default class RsvpsController {
 
     return response.created({
       message,
-      rsvp: await rest.serializeWithoutWrapping(RsvpTransformer.transform(result.rsvp)),
+      rsvp: await serialize(RsvpTransformer.transform(result.rsvp)),
     })
   }
 
@@ -140,7 +140,7 @@ export default class RsvpsController {
    * Get RSVP status for the authenticated user for a specific event
    */
   async status(ctx: HttpContext) {
-    const { auth, params, response, ...rest } = ctx
+    const { auth, params, response, serializeWithoutWrapping: serialize } = ctx
     await auth.check()
     const user = auth.user
 
@@ -159,7 +159,7 @@ export default class RsvpsController {
 
     return response.ok({
       hasRsvp: !!rsvp,
-      rsvp: rsvp ? await rest.serializeWithoutWrapping(RsvpTransformer.transform(rsvp)) : null,
+      rsvp: rsvp ? await serialize(RsvpTransformer.transform(rsvp)) : null,
     })
   }
 }

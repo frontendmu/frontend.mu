@@ -31,7 +31,7 @@ export default class EventsController {
   }
 
   async show(ctx: HttpContext) {
-    const { inertia, params, auth, bouncer, ...rest } = ctx
+    const { inertia, params, auth, bouncer, serializeWithoutWrapping: serialize } = ctx
     const event = await Event.query()
       .where('id', params.id)
       .where('status', 'published')
@@ -75,9 +75,7 @@ export default class EventsController {
       attendees = await Promise.all(
         rsvps.map(async (rsvp) => {
           rsvp.user.$extras.displayName = this.truncateName(rsvp.user.name)
-          return (await rest.serializeWithoutWrapping(
-            PublicAttendeeTransformer.transform(rsvp.user)
-          )) as {
+          return (await serialize(PublicAttendeeTransformer.transform(rsvp.user))) as {
             id: string
             name: string
             avatarUrl: string | null

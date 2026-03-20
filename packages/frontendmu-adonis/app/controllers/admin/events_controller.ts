@@ -121,20 +121,18 @@ export default class AdminEventsController {
   }
 
   async availableSponsors(ctx: HttpContext) {
-    const { bouncer, response, ...rest } = ctx
+    const { bouncer, response, serializeWithoutWrapping: serialize } = ctx
     await bouncer.with(EventPolicy).authorize('create')
 
     const sponsors = await Sponsor.query().orderBy('name', 'asc')
 
     return response.json({
-      sponsors: await rest.serializeWithoutWrapping(
-        SponsorTransformer.transform(sponsors).useVariant('summary')
-      ),
+      sponsors: await serialize(SponsorTransformer.transform(sponsors).useVariant('summary')),
     })
   }
 
   async addSponsor(ctx: HttpContext) {
-    const { params, bouncer, response, ...rest } = ctx
+    const { params, bouncer, response, serializeWithoutWrapping: serialize } = ctx
     const event = await Event.findOrFail(params.id)
 
     await bouncer.with(EventPolicy).authorize('manage', event)
@@ -145,14 +143,12 @@ export default class AdminEventsController {
 
     return response.json({
       message: 'Sponsor added to event successfully',
-      sponsors: await rest.serializeWithoutWrapping(
-        SponsorTransformer.transform(event.sponsors).useVariant('summary')
-      ),
+      sponsors: await serialize(SponsorTransformer.transform(event.sponsors).useVariant('summary')),
     })
   }
 
   async removeSponsor(ctx: HttpContext) {
-    const { params, bouncer, response, ...rest } = ctx
+    const { params, bouncer, response, serializeWithoutWrapping: serialize } = ctx
     const event = await Event.findOrFail(params.id)
 
     await bouncer.with(EventPolicy).authorize('manage', event)
@@ -162,9 +158,7 @@ export default class AdminEventsController {
 
     return response.json({
       message: 'Sponsor removed from event successfully',
-      sponsors: await rest.serializeWithoutWrapping(
-        SponsorTransformer.transform(event.sponsors).useVariant('summary')
-      ),
+      sponsors: await serialize(SponsorTransformer.transform(event.sponsors).useVariant('summary')),
     })
   }
 }
