@@ -26,6 +26,12 @@ function counterAnimation() {
           const finalNum = parseInt(finalNumStr, 10)
 
           if (finalNum > 0) {
+            // Pre-size element to its final width so layout doesn't shift as digit count grows
+            const el = entry.target as HTMLElement
+            el.textContent = `${finalNum}`
+            el.style.width = `${el.offsetWidth}px`
+            el.textContent = '0'
+
             const duration = 2000
             const frameDuration = 1000 / 60
             const totalFrames = Math.round(duration / frameDuration)
