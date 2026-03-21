@@ -12,7 +12,7 @@ import {
   TWITTER_URL,
   WHATSAPP_URL,
 } from '~/constants'
-import { Data } from '@generated/data'
+import type { Data } from '@generated/data'
 import type { TMenu, TMenuItem } from '~/types'
 
 interface SocialLink {
@@ -47,7 +47,7 @@ const MOBILE_MENU_SOURCE_RADIUS = '1rem'
 
 const isAdmin = computed(() => {
   if (!user.value) return false
-  return user.value.role === 'organizer' || user.value.role === 'superadmin'
+  return user.value.roles.some((role) => role.name === 'organizer' || role.name === 'superadmin')
 })
 
 function handleLogout() {

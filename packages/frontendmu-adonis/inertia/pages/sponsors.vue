@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'
-import { Data } from '@generated/data'
+import type { Data } from '@generated/data'
 import { useAuth } from '~/composables/use_auth'
 
 interface Props {

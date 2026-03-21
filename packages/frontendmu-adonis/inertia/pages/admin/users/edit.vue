@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import { Head, useForm, usePage } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'
-import { Data } from '@generated/data'
+import type { Data } from '@generated/data'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
 import { getRoleBadgeClass } from '~/utils/roles'

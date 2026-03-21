@@ -43,7 +43,7 @@ type SponsorsModule = Array<{
 
 function extractGitHubUsername(url: string | null | undefined) {
   if (!url) return null
-  const match = url.match(/github\.com\/([^/]+)/)
+  const match = url.match(/github\.com\/([^/?#]+?)(?:\.png)?(?:[/?#]|$)/i)
   return match ? match[1] : null
 }
 
@@ -221,56 +221,72 @@ async function migrateData() {
     `)
 
     for (const event of sampleEvents) {
-      await client.query(
-        `INSERT INTO events (
-          id, title, description, location, venue, event_date, start_time, end_time,
-          attendee_count, seats_available, accepting_rsvp, rsvp_closing_date, rsvp_link,
-          album_name, cover_image_url, parking_location, map_url, status, created_at, updated_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
-        ON CONFLICT (id) DO NOTHING`,
-        [
-          event.id,
-          event.title,
-          event.description,
-          event.location,
-          event.venue,
-          event.eventDate.toSQL(),
-          event.startTime,
-          event.endTime,
-          event.attendeeCount,
-          event.seatsAvailable,
-          event.acceptingRsvp,
-          event.rsvpClosingDate.toSQL(),
-          event.rsvpLink,
-          event.albumName,
-          event.coverImageUrl,
-          event.parkingLocation,
-          event.mapUrl,
-          'published',
-          now,
-          now,
-        ]
+      const existingEvent = await client.query<{ id: string }>(
+        'SELECT id FROM events WHERE title = $1 LIMIT 1',
+        [event.title]
       )
+
+      const eventId = existingEvent.rows[0]?.id ?? event.id
+
+      if (!existingEvent.rows[0]) {
+        await client.query(
+          `INSERT INTO events (
+            id, title, description, location, venue, event_date, start_time, end_time,
+            attendee_count, seats_available, accepting_rsvp, rsvp_closing_date, rsvp_link,
+            album_name, cover_image_url, parking_location, map_url, status, created_at, updated_at
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)`,
+          [
+            eventId,
+            event.title,
+            event.description,
+            event.location,
+            event.venue,
+            event.eventDate.toSQL(),
+            event.startTime,
+            event.endTime,
+            event.attendeeCount,
+            event.seatsAvailable,
+            event.acceptingRsvp,
+            event.rsvpClosingDate.toSQL(),
+            event.rsvpLink,
+            event.albumName,
+            event.coverImageUrl,
+            event.parkingLocation,
+            event.mapUrl,
+            'published',
+            now,
+            now,
+          ]
+        )
+      }
 
       for (const [index, title] of [
         `Opening Keynote - ${event.title}`,
         'Main Talk: Modern Frontend Development',
         'Q&A and Networking',
       ].entries()) {
-        const sessionId = randomUUID()
-        await client.query(
-          `INSERT INTO sessions (id, event_id, title, description, "order", created_at, updated_at)
-           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-          [
-            sessionId,
-            event.id,
-            title,
-            index === 0 ? 'Welcome and introduction to the meetup' : null,
-            index + 1,
-            now,
-            now,
-          ]
+        const existingSession = await client.query<{ id: string }>(
+          'SELECT id FROM sessions WHERE event_id = $1 AND title = $2 LIMIT 1',
+          [eventId, title]
         )
+
+        const sessionId = existingSession.rows[0]?.id ?? randomUUID()
+
+        if (!existingSession.rows[0]) {
+          await client.query(
+            `INSERT INTO sessions (id, event_id, title, description, "order", created_at, updated_at)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+            [
+              sessionId,
+              eventId,
+              title,
+              index === 0 ? 'Welcome and introduction to the meetup' : null,
+              index + 1,
+              now,
+              now,
+            ]
+          )
+        }
 
         for (const speaker of speakerRows.rows.slice(0, Math.min(2, speakerRows.rows.length))) {
           await client.query(
@@ -287,17 +303,20 @@ async function migrateData() {
         'Speaker presenting',
         'Networking session',
       ].entries()) {
+        const photoUrl = `/img/gallery/${event.albumName}/${index + 1}.jpg`
+        const existingPhoto = await client.query<{ id: string }>(
+          'SELECT id FROM event_photos WHERE event_id = $1 AND photo_url = $2 LIMIT 1',
+          [eventId, photoUrl]
+        )
+
+        if (existingPhoto.rows[0]) {
+          continue
+        }
+
         await client.query(
           `INSERT INTO event_photos (id, event_id, photo_url, caption, "order", created_at)
            VALUES ($1, $2, $3, $4, $5, $6)`,
-          [
-            randomUUID(),
-            event.id,
-            `/img/gallery/${event.albumName}/${index + 1}.jpg`,
-            caption,
-            index + 1,
-            now,
-          ]
+          [randomUUID(), eventId, photoUrl, caption, index + 1, now]
         )
       }
     }
@@ -318,26 +337,43 @@ async function migrateData() {
 
     for (const category of sponsorsData) {
       for (const sponsor of category.sponsors || []) {
-        if (!uniqueSponsors.has(sponsor.name)) {
-          let sponsorTypes = ['venue']
-          if (category.title.includes('Website')) sponsorTypes = ['website']
-          else if (category.title.includes('Goodies')) sponsorTypes = ['swag']
-          else if (category.title.includes('Partner')) sponsorTypes = ['conference']
+        let sponsorType = 'venue'
+        if (category.title.includes('Website')) sponsorType = 'website'
+        else if (category.title.includes('Goodies')) sponsorType = 'swag'
+        else if (category.title.includes('Partner')) sponsorType = 'conference'
 
-          uniqueSponsors.set(sponsor.name, {
-            id: randomUUID(),
-            name: sponsor.name,
-            website: sponsor.sponsorUrl || null,
-            description: sponsor.description || null,
-            logoUrl: sponsor.logo ? `/img/sponsors/${sponsor.logo}` : null,
-            sponsorTypes,
-            logoBg: sponsor.darkbg ? '#111827' : null,
-          })
+        const existingSponsor = uniqueSponsors.get(sponsor.name)
+
+        if (existingSponsor) {
+          existingSponsor.sponsorTypes = Array.from(
+            new Set([...existingSponsor.sponsorTypes, sponsorType])
+          )
+
+          continue
         }
+
+        uniqueSponsors.set(sponsor.name, {
+          id: randomUUID(),
+          name: sponsor.name,
+          website: sponsor.sponsorUrl || null,
+          description: sponsor.description || null,
+          logoUrl: sponsor.logo ? `/img/sponsors/${sponsor.logo}` : null,
+          sponsorTypes: [sponsorType],
+          logoBg: sponsor.darkbg ? '#111827' : null,
+        })
       }
     }
 
     for (const sponsor of uniqueSponsors.values()) {
+      const existingSponsor = await client.query<{ id: string }>(
+        'SELECT id FROM sponsors WHERE name = $1 LIMIT 1',
+        [sponsor.name]
+      )
+
+      if (existingSponsor.rows[0]) {
+        continue
+      }
+
       await client.query(
         `INSERT INTO sponsors (
           id, name, website, description, logo_url, logomark_url, sponsor_types, logo_bg, status, created_at, updated_at
@@ -379,7 +415,12 @@ async function migrateData() {
     await client.query(
       `INSERT INTO pages (id, slug, title, content, meta_description, status, created_at, updated_at)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-       ON CONFLICT (id) DO NOTHING`,
+       ON CONFLICT (slug) DO UPDATE SET
+         title = EXCLUDED.title,
+         content = EXCLUDED.content,
+         meta_description = EXCLUDED.meta_description,
+         status = EXCLUDED.status,
+         updated_at = EXCLUDED.updated_at`,
       [
         randomUUID(),
         'welcome',

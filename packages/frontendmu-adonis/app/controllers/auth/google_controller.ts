@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { urlFor } from '@adonisjs/core/services/url_builder'
+import { googleOauthEnabled } from '#config/ally'
 import User from '#models/user'
 import Role from '#models/role'
 
@@ -7,7 +8,12 @@ export default class GoogleController {
   /**
    * Redirect the user to Google for authentication
    */
-  async redirect({ ally }: HttpContext) {
+  async redirect({ ally, response, session }: HttpContext) {
+    if (!googleOauthEnabled) {
+      session.flash('error', 'Google sign-in is not available right now.')
+      return response.redirect().toPath(urlFor('auth.login.show'))
+    }
+
     return ally.use('google').redirect()
   }
 
@@ -15,6 +21,11 @@ export default class GoogleController {
    * Handle the callback from Google
    */
   async callback({ ally, auth, response, session }: HttpContext) {
+    if (!googleOauthEnabled) {
+      session.flash('error', 'Google sign-in is not available right now.')
+      return response.redirect().toPath(urlFor('auth.login.show'))
+    }
+
     const google = ally.use('google')
 
     /**

@@ -34,7 +34,9 @@ export default class AdminUserTransformer extends BaseTransformer<User> {
       twitterUrl: this.resource.twitterUrl,
       websiteUrl: this.resource.websiteUrl,
       title: this.resource.title,
-      roles: RoleTransformer.transform(this.resource.roles ?? []).useVariant('forAdminEdit'),
+      roles: RoleTransformer.transform(this.resource.roles ?? [])
+        .useVariant('forAdminEdit')
+        .depth(2),
       permissions: this.resource.$extras.permissions ?? [],
       sessions: SessionTransformer.transform(this.resource.sessions ?? []).useVariant(
         'forSpeakerProfile'

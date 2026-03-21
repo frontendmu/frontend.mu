@@ -39,10 +39,7 @@ export function requireFile(filePath: string, message?: string) {
 }
 
 export function nowSql() {
-  return new Date()
-    .toISOString()
-    .replace('T', ' ')
-    .replace(/\.\d{3}Z$/, '')
+  return new Date().toISOString()
 }
 
 export function logSection(title: string) {

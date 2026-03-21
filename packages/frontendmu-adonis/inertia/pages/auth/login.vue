@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { Head, Link, usePage } from '@inertiajs/vue3'
+import { Head, usePage } from '@inertiajs/vue3'
 import type { Data } from '@generated/data'
 import { computed } from 'vue'
 
 const page = usePage<Data.SharedProps>()
 const errors = computed(() => page.props.errors as Record<string, string> | undefined)
+const googleOauthEnabled = computed(() => page.props.auth.providers.google)
 </script>
 
 <template>
@@ -30,7 +31,8 @@ const errors = computed(() => page.props.errors as Record<string, string> | unde
         </div>
 
         <!-- Google Sign In -->
-        <Link
+        <a
+          v-if="googleOauthEnabled"
           href="/auth/google"
           class="w-full flex items-center justify-center gap-2.5 px-4 py-2.5 bg-white dark:bg-verse-900 border border-gray-300 dark:border-verse-800 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-verse-800 transition-colors"
         >
@@ -53,7 +55,14 @@ const errors = computed(() => page.props.errors as Record<string, string> | unde
             />
           </svg>
           Continue with Google
-        </Link>
+        </a>
+
+        <div
+          v-else
+          class="w-full px-4 py-2.5 bg-gray-100 dark:bg-verse-900/60 border border-gray-200 dark:border-verse-800 rounded-md text-sm text-gray-500 dark:text-gray-400 text-center"
+        >
+          Google sign-in is currently unavailable.
+        </div>
 
         <div class="relative my-5">
           <div class="absolute inset-0 flex items-center">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Head } from '@inertiajs/vue3'
-import { Data } from '@generated/data'
+import type { Data } from '@generated/data'
 import { useMeetups } from '~/composables/use_meetups'
 import Hero from '~/components/home/Hero.vue'
 import LatestMeetup from '~/components/home/LatestMeetup.vue'

@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'
-import { Data } from '@generated/data'
+import type { Data } from '@generated/data'
 import EventCard from '~/components/event/EventCard.vue'
 import { isDateInFuture, isDateToday } from '~/utils/date'
 

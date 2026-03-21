@@ -7,8 +7,10 @@ export function useAuth() {
 
   const user = computed(() => page.props.auth.user)
   const isAuthenticated = computed(() => page.props.auth.isAuthenticated)
-  const isSuperadmin = computed(() => user.value?.role === 'superadmin')
-  const isAdmin = computed(() => ['superadmin', 'organizer'].includes(user.value?.role ?? ''))
+  const hasRole = (roleName: string) =>
+    user.value?.roles.some((role) => role.name === roleName) ?? false
+  const isSuperadmin = computed(() => hasRole('superadmin'))
+  const isAdmin = computed(() => hasRole('superadmin') || hasRole('organizer'))
 
   return { user, isAuthenticated, isSuperadmin, isAdmin }
 }

@@ -2,14 +2,21 @@ import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
 import BaseInertiaMiddleware from '@adonisjs/inertia/inertia_middleware'
 import type { InferSharedProps } from '@adonisjs/inertia/types'
+import { googleOauthEnabled } from '#config/ally'
 import featureFlags from '#config/feature_flags'
 
-function getSharedAuthUser(ctx: HttpContext) {
+async function getSharedAuthUser(ctx: HttpContext) {
   const user = ctx.auth.user
 
   if (!user) {
     return null
   }
+
+  const roles = await user
+    .related('roles')
+    .query()
+    .select('roles.id', 'roles.name')
+    .orderBy('roles.name')
 
   return {
     id: user.id,
@@ -17,6 +24,7 @@ function getSharedAuthUser(ctx: HttpContext) {
     email: user.email,
     avatarUrl: user.avatarUrl,
     githubUsername: user.githubUsername,
+    roles: roles.map((role) => ({ id: role.id, name: role.name })),
     role: user.role,
   }
 }
@@ -33,7 +41,10 @@ export default class InertiaMiddleware extends BaseInertiaMiddleware {
       }),
       auth: ctx.inertia.always({
         isAuthenticated: ctx.auth.isAuthenticated,
-        user: getSharedAuthUser(ctx),
+        user: await getSharedAuthUser(ctx),
+        providers: {
+          google: googleOauthEnabled,
+        },
         csrfToken: ctx.request.csrfToken ?? '',
       }),
       featureFlags,

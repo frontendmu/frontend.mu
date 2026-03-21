@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'
-import { Data } from '@generated/data'
+import type { Data } from '@generated/data'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
 import { useAuth } from '~/composables/use_auth'
@@ -27,7 +27,7 @@ const {
   confirmDelete,
   cancelDelete,
   executeDelete,
-} = useDeleteConfirmation<User>()
+} = useDeleteConfirmation<Data.AdminUser.Variants['forAdminIndex']>()
 
 // Search input
 const searchInput = ref(props.search)

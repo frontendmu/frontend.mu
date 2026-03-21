@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { Head, usePage } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'
-import { Data } from '@generated/data'
+import type { Data } from '@generated/data'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
 
@@ -25,7 +25,7 @@ interface Props {
 const props = defineProps<Props>()
 const page = usePage<Data.SharedProps>()
 const user = computed(() => page.props.auth.user)
-const isSuperadmin = computed(() => user.value?.role === 'superadmin')
+const isSuperadmin = computed(() => user.value?.roles.some((role) => role.name === 'superadmin') ?? false)
 
 // Admin menu items
 const menuItems = [

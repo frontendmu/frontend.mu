@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'
-import { Data } from '@generated/data'
+import type { Data } from '@generated/data'
 import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
 
 interface Props {
@@ -147,6 +147,7 @@ const props = defineProps<Props>()
                     v-if="speaker.githubUsername"
                     :href="`https://github.com/${speaker.githubUsername}`"
                     target="_blank"
+                    rel="noopener noreferrer"
                     class="flex items-center justify-between p-3 bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-lg hover:border-verse-500 transition-all group"
                   >
                     <div class="flex items-center gap-3">
@@ -170,6 +171,7 @@ const props = defineProps<Props>()
                     v-if="speaker.linkedinUrl"
                     :href="speaker.linkedinUrl"
                     target="_blank"
+                    rel="noopener noreferrer"
                     class="flex items-center justify-between p-3 bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-lg hover:border-verse-500 transition-all group"
                   >
                     <div class="flex items-center gap-3">

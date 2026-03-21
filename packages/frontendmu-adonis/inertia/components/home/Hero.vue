@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { Link } from '@inertiajs/vue3'
-import { Data } from '@generated/data'
+import type { Data } from '@generated/data'
 import Logo from '~/components/layout/Logo.vue'
 import { DISCORD_URL, GITHUB_URL, TWITTER_URL, LINKEDIN_URL } from '~/constants'
 import { isDateInFuture, isDateToday } from '~/utils/date'

@@ -8,8 +8,15 @@ export interface SharedProps extends Record<string, unknown> {
       email: string | null
       avatarUrl: string | null
       githubUsername: string | null
+      roles: Array<{
+        id: number
+        name: string
+      }>
       role: string
     } | null
+    providers: {
+      google: boolean
+    }
     csrfToken: string
   }
   flash: {

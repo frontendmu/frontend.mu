@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'
-import { Data } from '@generated/data'
+import type { Data } from '@generated/data'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
 import { useAuth } from '~/composables/use_auth'
@@ -219,6 +219,7 @@ function doDelete() {
                       :href="`/meetup/${event.id}`"
                       class="p-2 text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200 transition-colors"
                       title="View"
+                      aria-label="View event"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -238,6 +239,7 @@ function doDelete() {
                       :href="`/admin/events/${event.id}/edit`"
                       class="p-2 text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200 transition-colors"
                       title="Edit"
+                      aria-label="Edit event"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -255,6 +257,7 @@ function doDelete() {
                       @click="confirmDelete(event)"
                       class="p-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
                       title="Delete"
+                      aria-label="Delete event"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

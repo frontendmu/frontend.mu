@@ -3,7 +3,7 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { DateTime } from 'luxon'
 import { Head, usePage, router } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'
-import { Data } from '@generated/data'
+import type { Data } from '@generated/data'
 import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
 import { sanitizeHtml } from '~/composables/use_sanitize'
 import { useApi } from '~/composables/use_api'
@@ -331,10 +331,7 @@ const calendarUrl = computed(() => {
               </div>
 
               <!-- CTA + Spots Remaining -->
-              <div
-                v-if="(isUpcoming || isToday) && canRsvp"
-                class="flex flex-wrap items-center gap-4"
-              >
+              <div v-if="canRsvp" class="flex flex-wrap items-center gap-4">
                 <template v-if="!isAuthenticated">
                   <Link
                     href="/login"
@@ -848,7 +845,7 @@ const calendarUrl = computed(() => {
       leave-to-class="translate-y-full"
     >
       <div
-        v-if="showMobileRsvp && meetup && (isUpcoming || isToday) && canRsvp"
+        v-if="showMobileRsvp && meetup && canRsvp"
         class="lg:hidden fixed bottom-0 left-0 right-0 z-50 p-5 bg-gray-900 text-white border-t border-gray-700 safe-area-bottom"
       >
         <div class="flex items-center justify-between gap-6">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
-import { Data } from '@generated/data'
+import type { Data } from '@generated/data'
 import { useMeetups } from '~/composables/use_meetups'
 import EventCardFeatured from '~/components/home/EventCardFeatured.vue'
 import EventCardSmall from '~/components/home/EventCardSmall.vue'

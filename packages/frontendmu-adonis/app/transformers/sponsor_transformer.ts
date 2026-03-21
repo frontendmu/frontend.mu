@@ -24,6 +24,7 @@ export default class SponsorTransformer extends BaseTransformer<Sponsor> {
       logoUrl: this.resource.logoUrl,
       sponsorTypes: this.resource.sponsorTypes || [],
       logoBg: this.resource.logoBg,
+      status: this.resource.status,
     }
   }
 

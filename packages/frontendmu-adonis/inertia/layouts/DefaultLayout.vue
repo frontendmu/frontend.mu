@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { usePage } from '@inertiajs/vue3'
-import { Data } from '@generated/data'
+import type { Data } from '@generated/data'
 import LayoutBackdrop from '~/components/layout/LayoutBackdrop.vue'
 import SiteNavigation from '~/components/layout/Navigation.vue'
 import SiteFooter from '~/components/layout/Footer.vue'
