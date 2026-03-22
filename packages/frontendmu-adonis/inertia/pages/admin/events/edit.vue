@@ -103,7 +103,7 @@ async function loadAvailableSpeakers() {
 }
 
 // Drag and drop state
-const draggedSession = ref<SessionWithSpeakers | null>(null)
+const draggedSession = ref<Data.Session | null>(null)
 const dragOverIndex = ref<number | null>(null)
 
 // Session management functions

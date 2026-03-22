@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { Head, useForm } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'
 import type { Data } from '@generated/data'
@@ -17,6 +18,31 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
+function sanitizeExternalUrl(url?: string | null) {
+  if (!url) return null
+
+  try {
+    const parsed = new URL(url)
+
+    if (!['http:', 'https:'].includes(parsed.protocol)) {
+      return null
+    }
+
+    return parsed.href
+  } catch {
+    return null
+  }
+}
+
+const safeLinks = computed(() => ({
+  github: props.user?.githubUsername
+    ? `https://github.com/${encodeURIComponent(props.user.githubUsername)}`
+    : null,
+  linkedin: sanitizeExternalUrl(props.user?.linkedinUrl),
+  twitter: sanitizeExternalUrl(props.user?.twitterUrl),
+  website: sanitizeExternalUrl(props.user?.websiteUrl),
+}))
 
 const form = useForm({
   name: props.user?.name || '',
@@ -78,14 +104,13 @@ function getUserRoles() {
               >
                 {{ role.name }}
               </span>
-              <template
-                v-if="user.githubUsername || user.linkedinUrl || user.twitterUrl || user.websiteUrl"
-              >
+              <template v-if="safeLinks.github || safeLinks.linkedin || safeLinks.twitter || safeLinks.website">
                 <span class="text-gray-200 dark:text-verse-800">|</span>
                 <a
-                  v-if="user.githubUsername"
-                  :href="`https://github.com/${user.githubUsername}`"
+                  v-if="safeLinks.github"
+                  :href="safeLinks.github"
                   target="_blank"
+                  rel="noopener noreferrer"
                   class="text-gray-400 hover:text-verse-500 transition-colors"
                   title="GitHub"
                 >
@@ -96,9 +121,10 @@ function getUserRoles() {
                   </svg>
                 </a>
                 <a
-                  v-if="user.linkedinUrl"
-                  :href="user.linkedinUrl"
+                  v-if="safeLinks.linkedin"
+                  :href="safeLinks.linkedin"
                   target="_blank"
+                  rel="noopener noreferrer"
                   class="text-gray-400 hover:text-verse-500 transition-colors"
                   title="LinkedIn"
                 >
@@ -109,9 +135,10 @@ function getUserRoles() {
                   </svg>
                 </a>
                 <a
-                  v-if="user.twitterUrl"
-                  :href="user.twitterUrl"
+                  v-if="safeLinks.twitter"
+                  :href="safeLinks.twitter"
                   target="_blank"
+                  rel="noopener noreferrer"
                   class="text-gray-400 hover:text-verse-500 transition-colors"
                   title="Twitter"
                 >
@@ -122,9 +149,10 @@ function getUserRoles() {
                   </svg>
                 </a>
                 <a
-                  v-if="user.websiteUrl"
-                  :href="user.websiteUrl"
+                  v-if="safeLinks.website"
+                  :href="safeLinks.website"
                   target="_blank"
+                  rel="noopener noreferrer"
                   class="text-gray-400 hover:text-verse-500 transition-colors"
                   title="Website"
                 >

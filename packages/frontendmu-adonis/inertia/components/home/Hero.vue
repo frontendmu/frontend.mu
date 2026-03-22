@@ -150,7 +150,7 @@ onUnmounted(() => {
           <!-- CTAs -->
           <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3">
             <Link
-              v-if="featuredEvent"
+              v-if="featuredEvent?.date"
               :href="`/meetup/${featuredEvent.id}`"
               class="group inline-flex items-center gap-3 h-11 pl-3 pr-5 bg-verse-500 hover:bg-verse-600 text-white rounded-full transition-all hover:shadow-lg hover:shadow-verse-500/25 active:scale-95"
             >
