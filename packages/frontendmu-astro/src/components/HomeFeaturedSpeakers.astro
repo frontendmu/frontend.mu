@@ -2,7 +2,7 @@
 import speakersResponse from "@data/speakers-raw.json";
 import { Image } from "astro:assets";
 import { getGithubUrl } from "@utils/fns";
-import { vTransitionName } from "@utils/helpers";
+import { vTransitionName, toSpeakerSlug } from "@utils/helpers";
 import BaseHeading from "./base/BaseHeading.astro";
 
 // select 5 random speakers
@@ -56,7 +56,7 @@ const isCenter = (index, length) => {
                     {person.name}
                   </h3>
                   <a
-                    href={`/speaker/${person.id}`}
+                    href={`/speaker/${toSpeakerSlug(person.name)}`}
                     class="p-1 text-verse-500  md:text-white  text-sm md:text-base hidden md:block bg-white/20 text-center rounded-md font-bold w-24"
                   >
                     List talks

@@ -24,7 +24,7 @@ const sizeClasses = {
   md: 'w-12 h-12 rounded-2xl',
   lg: 'w-20 h-20 rounded-2xl',
   xl: 'w-32 h-32 md:w-40 md:h-40 rounded-3xl',
-  full: 'w-full h-full rounded-2xl',
+  full: 'w-full rounded-2xl',
 }
 
 const logoSizeClasses = {

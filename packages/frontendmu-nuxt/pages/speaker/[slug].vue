@@ -2,20 +2,21 @@
 import eventsResponse from '../../../frontendmu-data/data/meetups-raw.json'
 import speakersResponse from '../../../frontendmu-data/data/speakers-raw.json'
 import speakersProfileResponse from '../../../frontendmu-data/data/speakers-profile.json'
+import { toSpeakerSlug } from '~/utils/helpers'
 
 import type { SpeakerProfileWithSessions } from '~/utils/types'
 
 definePageMeta({
   middleware: [
     function (to, _) {
-      const { id } = to.params
-      const speaker = speakersResponse.find((ev: { id: string }) => String(ev.id) === String(id))
+      const { slug } = to.params
+      const speaker = speakersResponse.find(ev => toSpeakerSlug(ev.name) === slug)
 
       if (!speaker) {
         return abortNavigation(
           createError({
             status: 404,
-            message: `We could not find the speaker with ID: ${id}`,
+            message: `We could not find the speaker: ${slug}`,
           }),
         )
       }
@@ -25,8 +26,8 @@ definePageMeta({
 
 const route = useRoute()
 
-function getSpeaker(id: string): SpeakerProfileWithSessions {
-  const speaker = speakersResponse.find((ev: { id: string }) => String(ev.id) === String(id))
+function getSpeaker(slug: string): SpeakerProfileWithSessions {
+  const speaker = speakersResponse.find(ev => toSpeakerSlug(ev.name) === slug)
 
   if (!speaker) {
     return {
@@ -42,7 +43,7 @@ function getSpeaker(id: string): SpeakerProfileWithSessions {
   const allSessions = eventsResponse.map((event: any) => event.sessions).flat()
   const speakerSession = allSessions.filter((session: any) => {
     const session_speaker_id = session.Session_id.speakers.id
-    return id === session_speaker_id
+    return speaker.id === session_speaker_id
   })
 
   const profile = speakersProfileResponse.find(profile => profile.github === speaker.github_account)
@@ -56,7 +57,7 @@ function getSpeaker(id: string): SpeakerProfileWithSessions {
   }
 }
 
-const speaker = ref(getSpeaker(route.params.id as string))
+const speaker = ref(getSpeaker(route.params.slug as string))
 
 useHead({
   title: speaker.value?.person ? speaker.value.person.name : '',

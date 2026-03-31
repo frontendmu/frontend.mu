@@ -240,5 +240,4 @@ export default class User extends compose(BaseModel, AuthFinder) {
   get isSpeaker(): boolean {
     return this.sessions && this.sessions.length > 0
   }
-
 }

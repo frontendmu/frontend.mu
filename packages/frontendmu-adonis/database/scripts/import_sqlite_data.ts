@@ -13,13 +13,16 @@ import { readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const scriptDir = dirname(fileURLToPath(import.meta.url))
 
 // ISO 8601 pattern — Lucid expects SQL format (no T, no Z) for DateTime.fromSQL()
 const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
 
 function isoToSql(value: string): string {
-  return value.replace('T', ' ').replace(/\.\d{3}Z$/, '').replace(/Z$/, '')
+  return value
+    .replace('T', ' ')
+    .replace(/\.\d{3}Z$/, '')
+    .replace(/Z$/, '')
 }
 
 // Tables in dependency order (parents before children)
@@ -48,7 +51,7 @@ async function importData() {
     useNullAsDefault: true,
   })
 
-  const exportDir = join(__dirname, '..', 'exports')
+  const exportDir = join(scriptDir, '..', 'exports')
 
   if (!existsSync(exportDir)) {
     console.error('No exports directory found. Run export_pg_data.ts first.')
@@ -80,7 +83,10 @@ async function importData() {
         if (!validColumns.has(key)) continue
 
         // Serialize arrays/objects to JSON strings for SQLite
-        if (Array.isArray(value) || (typeof value === 'object' && value !== null && !(value instanceof Date))) {
+        if (
+          Array.isArray(value) ||
+          (typeof value === 'object' && value !== null && !(value instanceof Date))
+        ) {
           filtered[key] = JSON.stringify(value)
         } else if (typeof value === 'string' && isoDateRegex.test(value)) {
           filtered[key] = isoToSql(value)

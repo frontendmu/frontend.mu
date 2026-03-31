@@ -2,14 +2,15 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Event from '#models/event'
 import Rsvp from '#models/rsvp'
 import { rsvpToEvent, cancelRsvp } from '#abilities/main'
-import { toRsvp } from '#dtos/factories'
+import RsvpTransformer from '#transformers/rsvp_transformer'
 import db from '@adonisjs/lucid/services/db'
 
 export default class RsvpsController {
   /**
    * Create a new RSVP for the authenticated user
    */
-  async store({ auth, bouncer, params, response }: HttpContext) {
+  async store(ctx: HttpContext) {
+    const { auth, bouncer, params, response, serializeWithoutWrapping: serialize } = ctx
     const user = auth.getUserOrFail()
     const event = await Event.findOrFail(params.eventId)
 
@@ -33,13 +34,13 @@ export default class RsvpsController {
         await existingRsvp.save()
         return response.ok({
           message: 'Your RSVP has been reactivated.',
-          rsvp: toRsvp(existingRsvp),
+          rsvp: await serialize(RsvpTransformer.transform(existingRsvp)),
         })
       }
 
       return response.conflict({
         message: 'You have already RSVPd to this event.',
-        rsvp: toRsvp(existingRsvp),
+        rsvp: await serialize(RsvpTransformer.transform(existingRsvp)),
       })
     }
 
@@ -83,7 +84,7 @@ export default class RsvpsController {
 
     return response.created({
       message,
-      rsvp: toRsvp(result.rsvp),
+      rsvp: await serialize(RsvpTransformer.transform(result.rsvp)),
     })
   }
 
@@ -138,7 +139,8 @@ export default class RsvpsController {
   /**
    * Get RSVP status for the authenticated user for a specific event
    */
-  async status({ auth, params, response }: HttpContext) {
+  async status(ctx: HttpContext) {
+    const { auth, params, response, serializeWithoutWrapping: serialize } = ctx
     await auth.check()
     const user = auth.user
 
@@ -157,7 +159,7 @@ export default class RsvpsController {
 
     return response.ok({
       hasRsvp: !!rsvp,
-      rsvp: rsvp ? toRsvp(rsvp) : null,
+      rsvp: rsvp ? await serialize(RsvpTransformer.transform(rsvp)) : null,
     })
   }
 }

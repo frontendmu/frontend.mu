@@ -1,4 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { urlFor } from '@adonisjs/core/services/url_builder'
 import User from '#models/user'
 import Role from '#models/role'
 import { registerValidator } from '#validators/register_validator'
@@ -6,7 +7,7 @@ import logger from '@adonisjs/core/services/logger'
 
 export default class RegisterController {
   async show({ inertia }: HttpContext) {
-    return inertia.render('auth/register')
+    return inertia.render('auth/register', {})
   }
 
   async store({ request, response, session, auth }: HttpContext) {
@@ -42,6 +43,6 @@ export default class RegisterController {
       return response.redirect().back()
     }
 
-    return response.redirect().toRoute('home')
+    return response.redirect().toPath(urlFor('home'))
   }
 }

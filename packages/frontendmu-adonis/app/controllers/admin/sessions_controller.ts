@@ -3,13 +3,16 @@ import Event from '#models/event'
 import Session from '#models/session'
 import User from '#models/user'
 import SessionPolicy from '#policies/session_policy'
+import SessionTransformer from '#transformers/session_transformer'
+import SpeakerTransformer from '#transformers/speaker_transformer'
 import { createSessionValidator, updateSessionValidator } from '#validators/session_validator'
 
 export default class AdminSessionsController {
   /**
    * List all sessions for an event (returns JSON for API use)
    */
-  async index({ params, bouncer, response }: HttpContext) {
+  async index(ctx: HttpContext) {
+    const { params, bouncer, response, serializeWithoutWrapping: serialize } = ctx
     const event = await Event.findOrFail(params.eventId)
 
     await bouncer.with(SessionPolicy).authorize('create')
@@ -19,14 +22,15 @@ export default class AdminSessionsController {
     })
 
     return response.json({
-      sessions: event.sessions,
+      sessions: await serialize(SessionTransformer.transform(event.sessions)),
     })
   }
 
   /**
    * Store a new session for an event
    */
-  async store({ params, request, bouncer, response }: HttpContext) {
+  async store(ctx: HttpContext) {
+    const { params, request, bouncer, response, serializeWithoutWrapping: serialize } = ctx
     const event = await Event.findOrFail(params.eventId)
 
     await bouncer.with(SessionPolicy).authorize('create')
@@ -48,14 +52,15 @@ export default class AdminSessionsController {
 
     return response.status(201).json({
       message: 'Session created successfully',
-      session,
+      session: await serialize(SessionTransformer.transform(session)),
     })
   }
 
   /**
    * Get a single session
    */
-  async show({ params, bouncer, response }: HttpContext) {
+  async show(ctx: HttpContext) {
+    const { params, bouncer, response, serializeWithoutWrapping: serialize } = ctx
     const session = await Session.findOrFail(params.id)
 
     await bouncer.with(SessionPolicy).authorize('edit', session)
@@ -64,14 +69,15 @@ export default class AdminSessionsController {
     await session.load('event')
 
     return response.json({
-      session,
+      session: await serialize(SessionTransformer.transform(session).useVariant('forAdminDetail')),
     })
   }
 
   /**
    * Update a session
    */
-  async update({ params, request, bouncer, response }: HttpContext) {
+  async update(ctx: HttpContext) {
+    const { params, request, bouncer, response, serializeWithoutWrapping: serialize } = ctx
     const session = await Session.findOrFail(params.id)
 
     await bouncer.with(SessionPolicy).authorize('update', session)
@@ -94,7 +100,7 @@ export default class AdminSessionsController {
 
     return response.json({
       message: 'Session updated successfully',
-      session,
+      session: await serialize(SessionTransformer.transform(session)),
     })
   }
 
@@ -116,7 +122,8 @@ export default class AdminSessionsController {
   /**
    * Add a speaker to a session
    */
-  async addSpeaker({ params, bouncer, response }: HttpContext) {
+  async addSpeaker(ctx: HttpContext) {
+    const { params, bouncer, response, serializeWithoutWrapping: serialize } = ctx
     const session = await Session.findOrFail(params.id)
 
     await bouncer.with(SessionPolicy).authorize('manage', session)
@@ -129,14 +136,15 @@ export default class AdminSessionsController {
 
     return response.json({
       message: 'Speaker added to session successfully',
-      session,
+      session: await serialize(SessionTransformer.transform(session)),
     })
   }
 
   /**
    * Remove a speaker from a session
    */
-  async removeSpeaker({ params, bouncer, response }: HttpContext) {
+  async removeSpeaker(ctx: HttpContext) {
+    const { params, bouncer, response, serializeWithoutWrapping: serialize } = ctx
     const session = await Session.findOrFail(params.id)
 
     await bouncer.with(SessionPolicy).authorize('manage', session)
@@ -147,26 +155,21 @@ export default class AdminSessionsController {
 
     return response.json({
       message: 'Speaker removed from session successfully',
-      session,
+      session: await serialize(SessionTransformer.transform(session)),
     })
   }
 
   /**
    * Get available speakers for assignment
    */
-  async availableSpeakers({ bouncer, response }: HttpContext) {
+  async availableSpeakers(ctx: HttpContext) {
+    const { bouncer, response, serializeWithoutWrapping: serialize } = ctx
     await bouncer.with(SessionPolicy).authorize('create')
 
     const speakers = await User.query().orderBy('name', 'asc')
 
     return response.json({
-      speakers: speakers.map((user) => ({
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        avatarUrl: user.avatarUrl,
-        githubUsername: user.githubUsername,
-      })),
+      speakers: await serialize(SpeakerTransformer.transform(speakers).useVariant('forAssignment')),
     })
   }
 }

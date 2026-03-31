@@ -1,5 +1,5 @@
-import User from '#models/user'
-import Session from '#models/session'
+import type User from '#models/user'
+import type Session from '#models/session'
 import { BasePolicy } from '@adonisjs/bouncer'
 import type { AuthorizerResponse } from '@adonisjs/bouncer/types'
 

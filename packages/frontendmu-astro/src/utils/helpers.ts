@@ -85,6 +85,14 @@ export function findObjectByValue(value: string, obj) {
 }
 
 
+export function toSpeakerSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, '-')
+}
+
 export function isFalsy(value: any): boolean {
   return value === 'false' || value === '0' || value === null || value === 'undefined' || value === ''
 }

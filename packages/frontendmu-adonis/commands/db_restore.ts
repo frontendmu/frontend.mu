@@ -1,5 +1,5 @@
 import { BaseCommand, args } from '@adonisjs/core/ace'
-import type { CommandOptions } from '@adonisjs/core/ace'
+import type { CommandOptions } from '@adonisjs/core/types/ace'
 import { execSync } from 'node:child_process'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
@@ -55,7 +55,9 @@ export default class DbRestore extends BaseCommand {
 
     this.logger.info(`Timestamp: ${timestamp}`)
     this.logger.info(`Database: ${path.basename(dbBackup)}`)
-    this.logger.info(`Uploads: ${fs.existsSync(uploadsBackup) ? path.basename(uploadsBackup) : 'not found, skipping'}`)
+    this.logger.info(
+      `Uploads: ${fs.existsSync(uploadsBackup) ? path.basename(uploadsBackup) : 'not found, skipping'}`
+    )
     this.logger.warning(`This will replace: ${dbPath} and public/uploads/`)
 
     const confirmed = await this.prompt.confirm('Continue?')

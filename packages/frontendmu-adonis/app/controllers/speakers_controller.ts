@@ -1,7 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import SpeakerPolicy from '#policies/speaker_policy'
-import { toSpeaker, toSpeakerSession } from '#dtos/factories'
+import SpeakerTransformer from '#transformers/speaker_transformer'
+import SessionTransformer from '#transformers/session_transformer'
 
 export default class SpeakersController {
   async index({ inertia }: HttpContext) {
@@ -10,7 +11,7 @@ export default class SpeakersController {
       .orderBy('featured', 'desc')
       .orderBy('name', 'asc')
 
-    const speakers = dbSpeakers.map(toSpeaker)
+    const speakers = SpeakerTransformer.transform(dbSpeakers)
 
     return inertia.render('speakers/index', {
       speakers,
@@ -25,14 +26,15 @@ export default class SpeakersController {
       })
       .firstOrFail()
 
-    const speaker = toSpeaker(dbSpeaker)
-    const sessions = (dbSpeaker.sessions ?? [])
-      .sort((a, b) => {
-        const dateA = a.event?.eventDate?.toMillis() ?? 0
-        const dateB = b.event?.eventDate?.toMillis() ?? 0
-        return dateB - dateA
-      })
-      .map(toSpeakerSession)
+    const speaker = SpeakerTransformer.transform(dbSpeaker)
+    const sessions = (dbSpeaker.sessions ?? []).sort((a, b) => {
+      const dateA = a.event?.eventDate?.toMillis() ?? 0
+      const dateB = b.event?.eventDate?.toMillis() ?? 0
+      return dateB - dateA
+    })
+
+    const serializedSessions =
+      SessionTransformer.transform(sessions).useVariant('forSpeakerProfile')
 
     let canEdit = false
     await auth.check()
@@ -42,7 +44,7 @@ export default class SpeakersController {
 
     return inertia.render('speakers/show', {
       speaker,
-      sessions,
+      sessions: serializedSessions,
       canEdit,
     })
   }

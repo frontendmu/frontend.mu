@@ -1,18 +1,15 @@
 <script setup lang="ts">
 import { ref, computed, watch, onUnmounted } from 'vue'
-import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
+import { Head, useForm, usePage } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
+import type { Data } from '@generated/data'
 import { DateTime } from 'luxon'
 import ContentBlock from '~/components/shared/ContentBlock.vue'
 import BaseHeading from '~/components/base/BaseHeading.vue'
-import { useApi } from '~/composables/useApi'
-import type { EventDto, SessionDto, SpeakerSummaryDto, SponsorSummaryDto, SharedProps } from '~/types'
-
-interface SessionWithSpeakers extends SessionDto {
-  speakers: SpeakerSummaryDto[]
-}
+import { useApi } from '~/composables/use_api'
 
 interface Props {
-  event: EventDto & { sessions: SessionWithSpeakers[]; sponsors: SponsorSummaryDto[] }
+  event: Data.Event.Variants['detail']
 }
 
 interface Speaker {
@@ -24,14 +21,14 @@ interface Speaker {
 }
 
 const props = defineProps<Props>()
-const page = usePage<SharedProps>()
+const page = usePage<Data.SharedProps>()
 const { apiFetch } = useApi()
 
 // Flash messages
 const successMessage = computed(() => page.props.flash?.success)
 
 // Sessions state
-const sessions = ref<SessionWithSpeakers[]>(props.event.sessions || [])
+const sessions = ref<Data.Session[]>(props.event.sessions || [])
 const availableSpeakers = ref<Speaker[]>([])
 const loadingSpeakers = ref(false)
 
@@ -48,7 +45,7 @@ onUnmounted(() => {
 })
 
 // Session form state
-const editingSession = ref<SessionWithSpeakers | null>(null)
+const editingSession = ref<Data.Session | null>(null)
 const sessionForm = ref({
   title: '',
   description: '',
@@ -106,7 +103,7 @@ async function loadAvailableSpeakers() {
 }
 
 // Drag and drop state
-const draggedSession = ref<SessionWithSpeakers | null>(null)
+const draggedSession = ref<Data.Session | null>(null)
 const dragOverIndex = ref<number | null>(null)
 
 // Session management functions
@@ -124,7 +121,7 @@ function openNewSessionForm() {
   isDialogOpen.value = true
 }
 
-function openEditSessionForm(session: SessionWithSpeakers) {
+function openEditSessionForm(session: Data.Session) {
   editingSession.value = session
   sessionForm.value = {
     title: session.title,
@@ -151,7 +148,7 @@ function closeSessionForm() {
 }
 
 // Drag and drop handlers
-function onDragStart(session: SessionWithSpeakers) {
+function onDragStart(session: Data.Session) {
   draggedSession.value = session
 }
 
@@ -229,7 +226,10 @@ async function saveSession() {
       order: editingSession.value?.order ?? sessions.value.length + 1,
     }
 
-    const { ok, data } = await apiFetch<{ session: SessionWithSpeakers; errors?: Record<string, string> }>(url, {
+    const { ok, data } = await apiFetch<{
+      session: Data.Session
+      errors?: Record<string, string>
+    }>(url, {
       method,
       body: JSON.stringify(payload),
     })
@@ -254,7 +254,7 @@ async function saveSession() {
   }
 }
 
-async function deleteSession(session: SessionWithSpeakers) {
+async function deleteSession(session: Data.Session) {
   if (!confirm(`Are you sure you want to delete "${session.title}"?`)) {
     return
   }
@@ -284,7 +284,7 @@ function isSpeakerSelected(speakerId: string): boolean {
   return sessionForm.value.speakerIds.includes(speakerId)
 }
 
-function getSpeakerNames(speakers: SpeakerSummaryDto[]): string {
+function getSpeakerNames(speakers: Data.Speaker.Variants['summary'][]): string {
   if (!speakers || speakers.length === 0) return 'No speakers assigned'
   return speakers.map((s) => s.name).join(', ')
 }
@@ -304,8 +304,8 @@ const filteredSpeakers = computed(() => {
 })
 
 // Sponsors state
-const sponsors = ref<SponsorSummaryDto[]>(props.event.sponsors || [])
-const availableSponsors = ref<SponsorSummaryDto[]>([])
+const sponsors = ref<Data.Sponsor.Variants['summary'][]>(props.event.sponsors || [])
+const availableSponsors = ref<Data.Sponsor.Variants['summary'][]>([])
 const loadingSponsors = ref(false)
 const sponsorPickerOpen = ref(false)
 const sponsorSearch = ref('')
@@ -324,7 +324,9 @@ async function loadAvailableSponsors() {
   if (availableSponsors.value.length > 0) return
   loadingSponsors.value = true
   try {
-    const { ok, data } = await apiFetch<{ sponsors: SponsorSummaryDto[] }>('/admin/sponsors/available')
+    const { ok, data } = await apiFetch<{ sponsors: Data.Sponsor.Variants['summary'][] }>(
+      '/admin/sponsors/available'
+    )
     if (ok) {
       availableSponsors.value = data.sponsors
     }
@@ -341,9 +343,9 @@ function openSponsorPicker() {
   loadAvailableSponsors()
 }
 
-async function attachSponsor(sponsor: SponsorSummaryDto) {
+async function attachSponsor(sponsor: Data.Sponsor.Variants['summary']) {
   try {
-    const { ok, data } = await apiFetch<{ sponsors: SponsorSummaryDto[] }>(
+    const { ok, data } = await apiFetch<{ sponsors: Data.Sponsor.Variants['summary'][] }>(
       `/admin/events/${props.event.id}/sponsors/${sponsor.id}`,
       { method: 'POST' }
     )
@@ -357,7 +359,7 @@ async function attachSponsor(sponsor: SponsorSummaryDto) {
 
 async function removeSponsor(sponsorId: string) {
   try {
-    const { ok, data } = await apiFetch<{ sponsors: SponsorSummaryDto[] }>(
+    const { ok, data } = await apiFetch<{ sponsors: Data.Sponsor.Variants['summary'][] }>(
       `/admin/events/${props.event.id}/sponsors/${sponsorId}`,
       { method: 'DELETE' }
     )
@@ -373,8 +375,8 @@ async function removeSponsor(sponsorId: string) {
 <template>
   <Head :title="`Edit: ${event.title}`" />
   <main class="relative min-h-screen pt-40 pb-20">
-      <ContentBlock>
-        <div class="max-w-4xl mx-auto">
+    <ContentBlock>
+      <div class="max-w-4xl mx-auto">
         <!-- Breadcrumb -->
         <nav class="mb-6 flex items-center gap-2 text-sm">
           <Link
@@ -973,14 +975,21 @@ async function removeSponsor(sponsorId: string) {
             class="mb-4 p-4 bg-white dark:bg-verse-700/50 squircle rounded-lg border border-verse-200 dark:border-verse-600"
           >
             <div class="flex items-center justify-between mb-3">
-              <span class="text-sm font-medium text-verse-700 dark:text-verse-300">Select a sponsor</span>
+              <span class="text-sm font-medium text-verse-700 dark:text-verse-300"
+                >Select a sponsor</span
+              >
               <button
                 type="button"
                 @click="sponsorPickerOpen = false"
                 class="p-1 text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
@@ -997,7 +1006,12 @@ async function removeSponsor(sponsorId: string) {
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
             </div>
             <div v-if="loadingSponsors" class="text-center py-4">
@@ -1028,7 +1042,11 @@ async function removeSponsor(sponsorId: string) {
                 v-if="filteredAvailableSponsors.length === 0"
                 class="text-sm text-verse-500 dark:text-verse-400 py-4 text-center"
               >
-                {{ sponsorSearch ? `No sponsors found matching "${sponsorSearch}"` : 'All sponsors are already attached' }}
+                {{
+                  sponsorSearch
+                    ? `No sponsors found matching "${sponsorSearch}"`
+                    : 'All sponsors are already attached'
+                }}
               </p>
             </div>
           </div>
@@ -1054,8 +1072,13 @@ async function removeSponsor(sponsorId: string) {
                   {{ sponsor.name.charAt(0).toUpperCase() }}
                 </div>
                 <div class="min-w-0">
-                  <p class="text-sm font-medium text-verse-900 dark:text-verse-100 truncate">{{ sponsor.name }}</p>
-                  <p v-if="sponsor.sponsorTypes?.length" class="text-xs text-verse-500 dark:text-verse-400">
+                  <p class="text-sm font-medium text-verse-900 dark:text-verse-100 truncate">
+                    {{ sponsor.name }}
+                  </p>
+                  <p
+                    v-if="sponsor.sponsorTypes?.length"
+                    class="text-xs text-verse-500 dark:text-verse-400"
+                  >
                     {{ sponsor.sponsorTypes.join(', ') }}
                   </p>
                 </div>
@@ -1067,7 +1090,12 @@ async function removeSponsor(sponsorId: string) {
                 title="Remove sponsor"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
@@ -1077,6 +1105,6 @@ async function removeSponsor(sponsorId: string) {
           </p>
         </div>
       </div>
-      </ContentBlock>
-    </main>
+    </ContentBlock>
+  </main>
 </template>

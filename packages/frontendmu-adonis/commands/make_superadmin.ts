@@ -1,5 +1,5 @@
 import { BaseCommand, args, flags } from '@adonisjs/core/ace'
-import type { CommandOptions } from '@adonisjs/core/ace'
+import type { CommandOptions } from '@adonisjs/core/types/ace'
 import User from '#models/user'
 import Role from '#models/role'
 import hash from '@adonisjs/core/services/hash'
