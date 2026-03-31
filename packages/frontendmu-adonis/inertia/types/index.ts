@@ -1,21 +1,5 @@
-// Re-export DTO types from backend
-export type {
-  EventSummaryDto,
-  EventDto,
-  SessionDto,
-  SpeakerSummaryDto,
-  SpeakerDto,
-  SpeakerSessionDto,
-  AdminSpeakerDto,
-  UserProfileDto,
-  SponsorSummaryDto,
-  SponsorDto,
-  RsvpDto,
-  PublicAttendeeDto,
-} from '../../app/dtos/index.js'
-
-// Shared Inertia page props (matches config/inertia.ts sharedData)
-export interface SharedProps {
+// Shared Inertia page props (matches app/middleware/inertia_middleware.ts)
+export interface SharedProps extends Record<string, unknown> {
   auth: {
     isAuthenticated: boolean
     user: {
@@ -24,8 +8,15 @@ export interface SharedProps {
       email: string | null
       avatarUrl: string | null
       githubUsername: string | null
+      roles: Array<{
+        id: number
+        name: string
+      }>
       role: string
     } | null
+    providers: {
+      google: boolean
+    }
     csrfToken: string
   }
   flash: {

@@ -1,12 +1,6 @@
 import { DateTime } from 'luxon'
 import { randomUUID } from 'node:crypto'
-import {
-  BaseModel,
-  column,
-  hasMany,
-  manyToMany,
-  beforeCreate,
-} from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany, manyToMany, beforeCreate } from '@adonisjs/lucid/orm'
 import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Session from '#models/session'
 import Sponsor from '#models/sponsor'
@@ -123,5 +117,4 @@ export default class Event extends BaseModel {
   get isUpcoming(): boolean {
     return this.eventDate > DateTime.now()
   }
-
 }

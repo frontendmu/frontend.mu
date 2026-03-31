@@ -3,8 +3,8 @@ import { dirname, join } from 'node:path'
 import { readFileSync } from 'node:fs'
 import pg from 'pg'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+const scriptPath = fileURLToPath(import.meta.url)
+const scriptDir = dirname(scriptPath)
 
 const { Client } = pg
 
@@ -23,7 +23,7 @@ async function runMigration() {
     await client.connect()
 
     // Load raw data
-    const meetupsPath = join(__dirname, '../../../frontendmu-data/data/meetups-raw.json')
+    const meetupsPath = join(scriptDir, '../../../frontendmu-data/data/meetups-raw.json')
     const meetupsRaw: any[] = JSON.parse(readFileSync(meetupsPath, 'utf-8'))
 
     console.log('Loaded ' + meetupsRaw.length + ' meetups')

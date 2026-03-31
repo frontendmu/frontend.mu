@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3'
+import type { Data } from '@generated/data'
 import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
-import type { SpeakerDto } from '~/types'
 
 interface Props {
-  speakers: SpeakerDto[]
+  speakers: Data.Speaker[]
 }
 
 defineProps<Props>()
 </script>
 
 <template>
-  <section v-if="speakers.length > 0" class="relative py-24 overflow-hidden bg-white dark:bg-verse-950">
+  <section
+    v-if="speakers.length > 0"
+    class="relative py-24 overflow-hidden bg-white dark:bg-verse-950"
+  >
     <div class="contain max-w-5xl">
       <div class="mb-12">
         <h2 class="text-3xl md:text-4xl font-display tracking-tight text-gray-900 dark:text-white">
@@ -21,11 +24,7 @@ defineProps<Props>()
 
       <!-- Speaker Grid -->
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-        <div
-          v-for="person in speakers"
-          :key="person.id"
-          class="group relative"
-        >
+        <div v-for="person in speakers" :key="person.id" class="group relative">
           <SpeakerAvatar
             size="full"
             :name="person.name"
@@ -40,7 +39,9 @@ defineProps<Props>()
           />
 
           <div class="mt-4 space-y-0.5 relative z-10">
-            <h3 class="text-base font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-verse-500 transition-colors">
+            <h3
+              class="text-base font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-verse-500 transition-colors"
+            >
               {{ person.name }}
             </h3>
             <p v-if="person.githubUsername" class="text-xs text-gray-400 dark:text-gray-500">
@@ -49,7 +50,7 @@ defineProps<Props>()
           </div>
         </div>
       </div>
-      
+
       <!-- CTA Footer -->
       <div class="mt-16 flex justify-center">
         <Link
@@ -58,7 +59,12 @@ defineProps<Props>()
         >
           See all speakers
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 8l4 4m0 0l-4 4m4-4H3"
+            />
           </svg>
         </Link>
       </div>

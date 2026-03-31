@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3'
-import { useAuth } from '~/composables/useAuth'
-import type { SponsorDto } from '~/types'
+import { Head } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
+import type { Data } from '@generated/data'
+import { useAuth } from '~/composables/use_auth'
 
 interface Props {
-  sponsors: SponsorDto[]
+  sponsors: Data.Sponsor[]
 }
 
 defineProps<Props>()
@@ -29,17 +30,12 @@ const { isAdmin } = useAuth()
           </Link>
         </div>
 
-        <h1
-          class="text-5xl md:text-6xl font-display tracking-tight dark:text-white leading-none"
-        >
+        <h1 class="text-5xl md:text-6xl font-display tracking-tight dark:text-white leading-none">
           Our Partners
         </h1>
 
-        <p
-          class="text-base text-gray-500 dark:text-gray-400 font-medium max-w-xl leading-relaxed"
-        >
-          These organizations support the growth of the local developer
-          ecosystem.
+        <p class="text-base text-gray-500 dark:text-gray-400 font-medium max-w-xl leading-relaxed">
+          These organizations support the growth of the local developer ecosystem.
         </p>
       </div>
 
@@ -69,7 +65,9 @@ const { isAdmin } = useAuth()
             <span
               v-else
               class="text-2xl font-bold tracking-tight text-center"
-              :class="sponsor.logoBg && sponsor.logoBg !== '#ffffff' ? 'text-gray-100' : 'text-gray-900'"
+              :class="
+                sponsor.logoBg && sponsor.logoBg !== '#ffffff' ? 'text-gray-100' : 'text-gray-900'
+              "
             >
               {{ sponsor.name }}
             </span>
@@ -83,10 +81,7 @@ const { isAdmin } = useAuth()
               {{ sponsor.name }}
             </h3>
 
-            <div
-              v-if="sponsor.sponsorTypes.length"
-              class="flex flex-wrap gap-1.5"
-            >
+            <div v-if="sponsor.sponsorTypes.length" class="flex flex-wrap gap-1.5">
               <span
                 v-for="type in sponsor.sponsorTypes"
                 :key="type"
@@ -98,9 +93,7 @@ const { isAdmin } = useAuth()
           </div>
 
           <!-- Hover Arrow -->
-          <div
-            class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
-          >
+          <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
             <svg
               class="w-4 h-4 text-verse-500 dark:text-verse-400"
               fill="none"
@@ -120,9 +113,7 @@ const { isAdmin } = useAuth()
 
       <!-- Empty State -->
       <div v-else class="text-center py-32 space-y-6">
-        <p class="text-xl font-bold text-gray-400">
-          Our partner roster is being updated.
-        </p>
+        <p class="text-xl font-bold text-gray-400">Our partner roster is being updated.</p>
       </div>
 
       <!-- Become a Sponsor CTA -->
@@ -134,18 +125,13 @@ const { isAdmin } = useAuth()
           class="absolute top-0 right-0 w-64 h-64 bg-verse-500/10 rounded-full blur-[80px] transition-transform duration-1000 group-hover:scale-150"
         ></div>
 
-        <div
-          class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10"
-        >
+        <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10">
           <div class="max-w-xl space-y-4 text-center lg:text-left">
-            <h2
-              class="text-3xl md:text-5xl font-display tracking-tight leading-none"
-            >
+            <h2 class="text-3xl md:text-5xl font-display tracking-tight leading-none">
               Empower the next generation.
             </h2>
             <p class="text-base font-medium opacity-70 leading-relaxed">
-              Help us organize more high-impact events, workshops, and community
-              projects.
+              Help us organize more high-impact events, workshops, and community projects.
             </p>
           </div>
 

@@ -19,10 +19,10 @@ import { randomUUID } from 'node:crypto'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const scriptDir = dirname(fileURLToPath(import.meta.url))
 
 const DIRECTUS_DB = join(
-  __dirname,
+  scriptDir,
   '..',
   '..',
   '..',
@@ -33,7 +33,7 @@ const DIRECTUS_DB = join(
   'database',
   'database.sqlite'
 )
-const ADONIS_DB = join(__dirname, '..', '..', 'tmp', 'db.production.sqlite3')
+const ADONIS_DB = join(scriptDir, '..', '..', 'tmp', 'db.production.sqlite3')
 
 function epochToSqlDate(epoch: number): string {
   const d = new Date(epoch)
@@ -212,9 +212,7 @@ async function main() {
     }
 
     // 7. Create RSVP (skip if already exists)
-    const existing = await adonis('rsvps')
-      .where({ user_id: userId, event_id: eventId })
-      .first()
+    const existing = await adonis('rsvps').where({ user_id: userId, event_id: eventId }).first()
 
     if (!existing) {
       const now = nowSql()

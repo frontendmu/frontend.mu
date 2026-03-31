@@ -1,5 +1,4 @@
 import vine from '@vinejs/vine'
-import type { Infer } from '@adonisjs/core/types'
 
 export const registerValidator = vine.compile(
   vine.object({
@@ -9,5 +8,3 @@ export const registerValidator = vine.compile(
     confirm_password: vine.string().sameAs('password'),
   })
 )
-
-export type RegisterValidator = Infer<typeof registerValidator>

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
-import type { SponsorSummaryDto } from '~/types'
+import type { Data } from '@generated/data'
 
 interface Props {
-  sponsors: SponsorSummaryDto[]
+  sponsors: Data.Sponsor.Variants['summary'][]
 }
 
 const props = defineProps<Props>()
@@ -13,11 +13,11 @@ const props = defineProps<Props>()
 const grid = computed(() => {
   const cols = 15
   const rowSizes = [cols, cols - 1, cols]
-  const result: { sponsor: SponsorSummaryDto | null }[][] = []
+  const result: { sponsor: Data.Sponsor.Variants['summary'] | null }[][] = []
   let idx = 0
 
   for (let r = 0; r < rowSizes.length; r++) {
-    const row: { sponsor: SponsorSummaryDto | null }[] = []
+    const row: { sponsor: Data.Sponsor.Variants['summary'] | null }[] = []
     for (let c = 0; c < rowSizes[r]; c++) {
       const fill = (r + c) % 2 === 0 && idx < props.sponsors.length
       row.push({ sponsor: fill ? props.sponsors[idx++] : null })
@@ -43,7 +43,10 @@ const grid = computed(() => {
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
       <div class="flex items-center justify-between">
         <p class="text-xs font-semibold text-gray-400 dark:text-gray-500">Trusted by</p>
-        <Link href="/sponsors" class="text-xs font-semibold text-gray-400 dark:text-gray-500 hover:text-verse-500 dark:hover:text-verse-400 transition-colors">
+        <Link
+          href="/sponsors"
+          class="text-xs font-semibold text-gray-400 dark:text-gray-500 hover:text-verse-500 dark:hover:text-verse-400 transition-colors"
+        >
           View all
         </Link>
       </div>
@@ -51,17 +54,15 @@ const grid = computed(() => {
 
     <!-- Honeycomb Grid -->
     <div class="hex-grid">
-      <div
-        v-for="(row, rowIdx) in grid"
-        :key="rowIdx"
-        class="hex-row"
-      >
+      <div v-for="(row, rowIdx) in grid" :key="rowIdx" class="hex-row">
         <template v-for="(cell, colIdx) in row" :key="colIdx">
           <Link
             v-if="cell.sponsor"
             :href="`/sponsor/${cell.sponsor.id}`"
             class="hex-cell hex-cell--filled hex-wave"
-            :style="{ '--hex-fill': cell.sponsor.logoBg || undefined, '--wave-i': rowIdx + colIdx } as any"
+            :style="
+              { '--hex-fill': cell.sponsor.logoBg || undefined, '--wave-i': rowIdx + colIdx } as any
+            "
           >
             <img
               v-if="cell.sponsor.logoUrl"
@@ -69,11 +70,19 @@ const grid = computed(() => {
               :alt="cell.sponsor.name"
               class="hex-logo"
             />
-            <span v-else class="hex-name" :class="cell.sponsor.logoBg && cell.sponsor.logoBg !== '#ffffff' ? 'text-white' : ''">
+            <span
+              v-else
+              class="hex-name"
+              :class="cell.sponsor.logoBg && cell.sponsor.logoBg !== '#ffffff' ? 'text-white' : ''"
+            >
               {{ cell.sponsor.name }}
             </span>
           </Link>
-          <div v-else class="hex-cell hex-cell--empty hex-wave" :style="{ '--wave-i': rowIdx + colIdx } as any" />
+          <div
+            v-else
+            class="hex-cell hex-cell--empty hex-wave"
+            :style="{ '--wave-i': rowIdx + colIdx } as any"
+          />
         </template>
       </div>
     </div>
@@ -147,7 +156,6 @@ const grid = computed(() => {
   z-index: 1;
 }
 
-
 .hex-logo {
   width: 70%;
   height: 40%;
@@ -171,7 +179,8 @@ const grid = computed(() => {
 }
 
 @keyframes hex-wave {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   15% {
@@ -188,7 +197,8 @@ const grid = computed(() => {
 }
 
 @keyframes hex-wave-hard {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   15% {

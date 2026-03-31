@@ -3,12 +3,14 @@
   "compilerOptions": {
     "rootDir": "./",
     "outDir": "./build",
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["./inertia/*"]
-    },
     "types": ["@inertiajs/vue3", "@adonisjs/inertia", "vite/client"]
   },
-  "include": ["**/*"],
-  "exclude": ["node_modules", "build"]
+  "references": [{ "path": "./tsconfig.inertia.json" }],
+  "include": [
+    "./**/*.ts",
+    "./**/*.js",
+    "./.adonisjs/server/**/*.ts",
+    "./.adonisjs/server/**/*.d.ts"
+  ],
+  "exclude": ["node_modules", "build", "inertia"]
 }

@@ -13,7 +13,7 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const scriptDir = dirname(fileURLToPath(import.meta.url))
 
 const tables = [
   'users',
@@ -40,7 +40,7 @@ async function exportData() {
     useNullAsDefault: true,
   })
 
-  const exportDir = join(__dirname, '..', 'exports')
+  const exportDir = join(scriptDir, '..', 'exports')
   mkdirSync(exportDir, { recursive: true })
 
   for (const table of tables) {

@@ -1,8 +1,10 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { urlFor } from '@adonisjs/core/services/url_builder'
 import User from '#models/user'
 import Role from '#models/role'
 import UserPolicy from '#policies/user_policy'
-import { resolveAvatarUrl, toSpeakerSession } from '#dtos/factories'
+import AdminUserTransformer from '#transformers/admin_user_transformer'
+import RoleTransformer from '#transformers/role_transformer'
 import { updateUserValidator } from '#validators/user_validator'
 import db from '@adonisjs/lucid/services/db'
 
@@ -47,12 +49,8 @@ export default class AdminUsersController {
     }
 
     return inertia.render('admin/users/index', {
-      users: users.map((u) => ({
-        ...u.serialize(),
-        roles: u.roles.map((r) => ({ id: r.id, name: r.name })),
-        avatarUrl: resolveAvatarUrl(u),
-      })),
-      allRoles: allRoles.map((r) => ({ id: r.id, name: r.name, description: r.description })),
+      users: AdminUserTransformer.transform(users).useVariant('forAdminIndex'),
+      allRoles: RoleTransformer.transform(allRoles),
       roleFilter,
       search,
       counts: roleCounts,
@@ -78,42 +76,11 @@ export default class AdminUsersController {
     const allRoles = await Role.query().preload('permissions').orderBy('name', 'asc')
 
     const userPermissions = await user.getAllPermissions()
+    user.$extras.permissions = userPermissions
 
     return inertia.render('admin/users/edit', {
-      user: {
-        ...user.serialize(),
-        featured: !!user.featured,
-        isOrganizer: !!user.isOrganizer,
-        isCommunityMember: !!user.isCommunityMember,
-        roles: user.roles.map((r) => ({
-          id: r.id,
-          name: r.name,
-          description: r.description,
-          permissions: r.permissions.map((p) => ({ id: p.id, name: p.name })),
-        })),
-        permissions: userPermissions,
-        avatarUrl: resolveAvatarUrl(user),
-        sessions: user.sessions?.map(toSpeakerSession) || [],
-        rsvps: user.rsvps
-          ?.filter((r) => r.event)
-          .map((r) => ({
-            id: r.id,
-            eventId: r.event.id,
-            eventTitle: r.event.title,
-            eventDate: r.event.eventDate?.toFormat('dd MMM yyyy') ?? null,
-            status: r.status,
-          })) || [],
-      },
-      allRoles: allRoles.map((r) => ({
-        id: r.id,
-        name: r.name,
-        description: r.description,
-        permissions: r.permissions.map((p) => ({
-          id: p.id,
-          name: p.name,
-          description: p.description,
-        })),
-      })),
+      user: AdminUserTransformer.transform(user).useVariant('forAdminEdit'),
+      allRoles: RoleTransformer.transform(allRoles).useVariant('forAdminEdit'),
     })
   }
 
@@ -167,7 +134,7 @@ export default class AdminUsersController {
     user.clearRbacCache()
 
     session.flash('success', 'User updated successfully!')
-    return response.redirect().toRoute('admin.users.index')
+    return response.redirect().toPath(urlFor('admin.users.index'))
   }
 
   async destroy({ params, auth, bouncer, response, session }: HttpContext) {
@@ -183,6 +150,6 @@ export default class AdminUsersController {
     await user.delete()
 
     session.flash('success', 'User deleted successfully!')
-    return response.redirect().toRoute('admin.users.index')
+    return response.redirect().toPath(urlFor('admin.users.index'))
   }
 }

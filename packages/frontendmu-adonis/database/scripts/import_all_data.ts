@@ -1,32 +1,21 @@
-import { fileURLToPath } from 'node:url'
-import { dirname, join } from 'node:path'
-import { readFileSync } from 'node:fs'
-import pg from 'pg'
+import { randomUUID } from 'node:crypto'
+import { createPgClient, readJsonFile, requireFile, resolveFrontendmuDataPath } from './_helpers.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-const { Client } = pg
-
-const client = new Client({
-  host: process.env.DB_HOST || '127.0.0.1',
-  port: Number.parseInt(process.env.DB_PORT || '5432'),
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'postgres',
-  database: process.env.DB_DATABASE || 'frontendmu_dev',
-})
+const client = createPgClient()
 
 function parseDate(dateString: string): Date | null {
   if (!dateString) return null
   const date = new Date(dateString)
-  return isNaN(date.getTime()) ? null : date
+  return Number.isNaN(date.getTime()) ? null : date
 }
 
 async function importSpeakers() {
   console.log('Importing speakers from speakers-raw.json...')
 
-  const dataPath = join(__dirname, '../../../frontendmu-data/data/speakers-raw.json')
-  const speakersData = JSON.parse(readFileSync(dataPath, 'utf-8'))
+  const dataPath = resolveFrontendmuDataPath('speakers-raw.json')
+  requireFile(dataPath)
+
+  const speakersData = readJsonFile<any[]>(dataPath)
 
   let imported = 0
   for (const speaker of speakersData) {
@@ -52,8 +41,10 @@ async function importSpeakers() {
 async function importMeetups() {
   console.log('\nImporting meetups from meetups-raw.json...')
 
-  const dataPath = join(__dirname, '../../../frontendmu-data/data/meetups-raw.json')
-  const meetupsData = JSON.parse(readFileSync(dataPath, 'utf-8'))
+  const dataPath = resolveFrontendmuDataPath('meetups-raw.json')
+  requireFile(dataPath)
+
+  const meetupsData = readJsonFile<any[]>(dataPath)
 
   let eventsImported = 0
   let sessionsImported = 0
@@ -156,8 +147,10 @@ async function importMeetups() {
 async function importSponsors() {
   console.log('\nImporting sponsors from sponsors-raw.json...')
 
-  const dataPath = join(__dirname, '../../../frontendmu-data/data/sponsors-raw.json')
-  const sponsorsData = JSON.parse(readFileSync(dataPath, 'utf-8'))
+  const dataPath = resolveFrontendmuDataPath('sponsors-raw.json')
+  requireFile(dataPath)
+
+  const sponsorsData = readJsonFile<any[]>(dataPath)
 
   let sponsorsImported = 0
   let sponsorLinksCreated = 0
@@ -226,7 +219,7 @@ async function importSponsors() {
 }
 
 function generateUUID(): string {
-  return crypto.randomUUID()
+  return randomUUID()
 }
 
 async function runMigration() {
@@ -264,4 +257,4 @@ async function runMigration() {
   }
 }
 
-runMigration()
+await runMigration()

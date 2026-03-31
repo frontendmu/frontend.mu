@@ -14,7 +14,7 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const { Client } = pg
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const scriptDir = dirname(fileURLToPath(import.meta.url))
 
 // Tables in dependency order (parents before children)
 const tables = [
@@ -45,7 +45,7 @@ async function exportData() {
   await client.connect()
   console.log('Connected to PostgreSQL')
 
-  const exportDir = join(__dirname, '..', 'exports')
+  const exportDir = join(scriptDir, '..', 'exports')
   mkdirSync(exportDir, { recursive: true })
 
   for (const table of tables) {

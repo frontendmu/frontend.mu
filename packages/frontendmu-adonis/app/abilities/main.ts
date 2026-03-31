@@ -1,8 +1,8 @@
 import { Bouncer } from '@adonisjs/bouncer'
 import { DateTime } from 'luxon'
-import User from '#models/user'
-import Event from '#models/event'
-import Rsvp from '#models/rsvp'
+import type User from '#models/user'
+import type Event from '#models/event'
+import type Rsvp from '#models/rsvp'
 import featureFlags from '#config/feature_flags'
 
 // Note: viewEventRsvps and manageRsvp abilities were removed as unused
@@ -48,4 +48,3 @@ export const cancelRsvp = Bouncer.ability(async (user: User, rsvp: Rsvp) => {
   const canCancel = await user.can('cancel-rsvp')
   return canCancel && user.id === rsvp.userId
 })
-

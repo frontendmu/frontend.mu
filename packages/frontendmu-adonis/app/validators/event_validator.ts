@@ -6,7 +6,7 @@ import vine from '@vinejs/vine'
 export const createEventValidator = vine.compile(
   vine.object({
     title: vine.string().trim().minLength(3).maxLength(255),
-    eventDate: vine.string().regex(/^\d{4}-\d{2}-\d{2}/), // ISO date string, required for new events
+    eventDate: vine.string().regex(/^\d{4}-\d{2}-\d{2}$/), // ISO date string, required for new events
     description: vine.string().trim().nullable().optional(),
     location: vine.string().trim().maxLength(255).nullable().optional(),
     venue: vine.string().trim().maxLength(255).nullable().optional(),
@@ -27,7 +27,10 @@ export const createEventValidator = vine.compile(
 export const updateEventValidator = vine.compile(
   vine.object({
     title: vine.string().trim().minLength(3).maxLength(255),
-    eventDate: vine.string().regex(/^\d{4}-\d{2}-\d{2}/).optional(), // ISO date string
+    eventDate: vine
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .optional(), // ISO date string
     description: vine.string().trim().nullable().optional(),
     location: vine.string().trim().maxLength(255).nullable().optional(),
     venue: vine.string().trim().maxLength(255).nullable().optional(),

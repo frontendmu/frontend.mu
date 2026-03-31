@@ -3,21 +3,26 @@ import { unlink } from 'node:fs/promises'
 import { join } from 'node:path'
 import type { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
+import { urlFor } from '@adonisjs/core/services/url_builder'
 import Sponsor from '#models/sponsor'
 import SponsorPolicy from '#policies/sponsor_policy'
 import { sponsorValidator } from '#validators/sponsor_validator'
-import { toSponsorSummary, toSponsor } from '#dtos/factories'
+import SponsorTransformer from '#transformers/sponsor_transformer'
 
 const UPLOAD_DIR = 'uploads/sponsors'
 const FILE_RULES = { size: '2mb' as const, extnames: ['svg', 'png', 'jpg', 'jpeg', 'webp'] }
 
-async function clearLogoFile(
-  existingUrl: string | null
-): Promise<{ url: null; error?: string }> {
-  if (existingUrl?.startsWith('/uploads/')) {
-    const oldPath = join(app.publicPath(), existingUrl)
-    await unlink(oldPath).catch(() => {})
+async function deleteUploadedFile(url: string | null) {
+  if (!url?.startsWith('/uploads/')) {
+    return
   }
+
+  await unlink(join(app.publicPath(), url)).catch(() => {})
+}
+
+async function clearLogoFile(existingUrl: string | null): Promise<{ url: null; error?: string }> {
+  await deleteUploadedFile(existingUrl)
+
   return { url: null }
 }
 
@@ -34,11 +39,7 @@ async function handleLogoUpload(
       return { url: existingUrl, error: file.errors[0]?.message }
     }
 
-    // Delete old local file if replacing
-    if (existingUrl?.startsWith('/uploads/')) {
-      const oldPath = join(app.publicPath(), existingUrl)
-      await unlink(oldPath).catch(() => {})
-    }
+    await deleteUploadedFile(existingUrl)
 
     const fileName = `${randomUUID()}.${file.extname}`
     await file.move(app.publicPath(UPLOAD_DIR), { name: fileName })
@@ -46,10 +47,10 @@ async function handleLogoUpload(
   }
 
   if (urlValue) {
-    if (existingUrl?.startsWith('/uploads/') && urlValue !== existingUrl) {
-      const oldPath = join(app.publicPath(), existingUrl)
-      await unlink(oldPath).catch(() => {})
+    if (urlValue !== existingUrl) {
+      await deleteUploadedFile(existingUrl)
     }
+
     return { url: urlValue }
   }
 
@@ -73,7 +74,7 @@ export default class AdminSponsorsController {
     const sponsors = await query
 
     return inertia.render('admin/sponsors/index', {
-      sponsors: sponsors.map(toSponsorSummary),
+      sponsors: SponsorTransformer.transform(sponsors).useVariant('summary'),
       statusFilter,
     })
   }
@@ -81,7 +82,7 @@ export default class AdminSponsorsController {
   async create({ inertia, bouncer }: HttpContext) {
     await bouncer.with(SponsorPolicy).authorize('create')
 
-    return inertia.render('admin/sponsors/create')
+    return inertia.render('admin/sponsors/create', {})
   }
 
   async store({ request, bouncer, response, session }: HttpContext) {
@@ -113,22 +114,16 @@ export default class AdminSponsorsController {
     })
 
     session.flash('success', 'Sponsor created successfully!')
-    return response.redirect().toRoute('admin.sponsors.edit', { id: sponsor.id })
+    return response.redirect().toPath(urlFor('admin.sponsors.edit', { id: sponsor.id }))
   }
 
   async edit({ inertia, params, bouncer }: HttpContext) {
     await bouncer.with(SponsorPolicy).authorize('edit')
 
-    const sponsor = await Sponsor.query()
-      .where('id', params.id)
-      .preload('events')
-      .firstOrFail()
+    const sponsor = await Sponsor.query().where('id', params.id).preload('events').firstOrFail()
 
     return inertia.render('admin/sponsors/edit', {
-      sponsor: {
-        ...toSponsor(sponsor),
-        eventCount: sponsor.events?.length || 0,
-      },
+      sponsor: SponsorTransformer.transform(sponsor).useVariant('forAdminEdit'),
     })
   }
 
@@ -168,7 +163,7 @@ export default class AdminSponsorsController {
     await sponsor.save()
 
     session.flash('success', 'Sponsor updated successfully!')
-    return response.redirect().toRoute('sponsors.show', { id: sponsor.id })
+    return response.redirect().toPath(urlFor('sponsors.show', { id: sponsor.id }))
   }
 
   async destroy({ params, bouncer, response, session }: HttpContext) {
@@ -176,17 +171,13 @@ export default class AdminSponsorsController {
 
     const sponsor = await Sponsor.findOrFail(params.id)
 
-    // Clean up uploaded files
     for (const url of [sponsor.logoUrl, sponsor.logomarkUrl]) {
-      if (url?.startsWith('/uploads/')) {
-        const filePath = join(app.publicPath(), url)
-        await unlink(filePath).catch(() => {})
-      }
+      await deleteUploadedFile(url)
     }
 
     await sponsor.delete()
 
     session.flash('success', 'Sponsor deleted successfully!')
-    return response.redirect().toRoute('admin.sponsors.index')
+    return response.redirect().toPath(urlFor('admin.sponsors.index'))
   }
 }

@@ -7,7 +7,9 @@ const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12
 router.get('/', [() => import('#controllers/home_controller'), 'index']).as('home')
 
 // Meetups pages
-router.get('/meetups', [() => import('#controllers/events_controller'), 'index']).as('meetups.index')
+router
+  .get('/meetups', [() => import('#controllers/events_controller'), 'index'])
+  .as('meetups.index')
 router
   .get('/meetup/:id', [() => import('#controllers/events_controller'), 'show'])
   .where('id', UUID_REGEX)
@@ -55,10 +57,7 @@ router
   .get('/code-of-conduct', [() => import('#controllers/pages_controller'), 'codeOfConduct'])
   .as('pages.codeOfConduct')
 router
-  .get('/coding-guidelines', [
-    () => import('#controllers/pages_controller'),
-    'codingGuidelines',
-  ])
+  .get('/coding-guidelines', [() => import('#controllers/pages_controller'), 'codingGuidelines'])
   .as('pages.codingGuidelines')
 
 // Auth routes
@@ -83,10 +82,7 @@ router
   .get('/auth/google', [() => import('#controllers/auth/google_controller'), 'redirect'])
   .as('auth.google.redirect')
 router
-  .get('/auth/google/callback', [
-    () => import('#controllers/auth/google_controller'),
-    'callback',
-  ])
+  .get('/auth/google/callback', [() => import('#controllers/auth/google_controller'), 'callback'])
   .as('auth.google.callback')
 
 // Profile routes (requires authentication)
@@ -115,10 +111,7 @@ router
 router
   .group(() => {
     router
-      .post('/api/events/:eventId/rsvp', [
-        () => import('#controllers/rsvps_controller'),
-        'store',
-      ])
+      .post('/api/events/:eventId/rsvp', [() => import('#controllers/rsvps_controller'), 'store'])
       .where('eventId', UUID_REGEX)
       .as('api.rsvp.store')
     router

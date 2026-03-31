@@ -1,7 +1,7 @@
-/// <reference path="../../adonisrc.ts" />
-/// <reference path="../../config/inertia.ts" />
+/// <reference path="../adonisrc.ts" />
+/// <reference path="../app/middleware/inertia_middleware.ts" />
 
-import '../css/app.css'
+import './css/app.css'
 import { createApp, h } from 'vue'
 import type { DefineComponent } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
@@ -17,14 +17,13 @@ createInertiaApp({
 
   resolve: async (name: string) => {
     const page = await resolvePageComponent(
-      `../pages/${name}.vue`,
-      import.meta.glob<DefineComponent>('../pages/**/*.vue')
+      `./pages/${name}.vue`,
+      import.meta.glob<DefineComponent>('./pages/**/*.vue')
     )
     page.default.layout = page.default.layout || DefaultLayout
     return page
   },
 
-  // @ts-expect-error -- setup params are inferred by createInertiaApp at runtime
   setup({ el, App, props, plugin }) {
     createApp({ render: () => h(App, props) })
       .use(plugin)

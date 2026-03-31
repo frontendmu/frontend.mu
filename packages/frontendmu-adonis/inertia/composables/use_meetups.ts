@@ -1,29 +1,29 @@
 import { computed, toValue, type ComputedRef, type MaybeRefOrGetter } from 'vue'
+import type { Data } from '@generated/data'
 import { isDateInFuture, isDateInPast, isDateToday } from '../utils/date.js'
-import type { EventSummaryDto } from '../types/index.js'
 
 interface UseMeetupsOptions {
   pastMeetupsLimit?: number
 }
 
 interface UseMeetupsReturn {
-  meetupsGroupedByYear: ComputedRef<Record<number, EventSummaryDto[]>>
-  sortedMeetups: ComputedRef<EventSummaryDto[]>
-  upcomingMeetups: ComputedRef<EventSummaryDto[]>
-  todaysMeetups: ComputedRef<EventSummaryDto[]>
-  pastMeetups: ComputedRef<EventSummaryDto[]>
-  nextMeetup: ComputedRef<EventSummaryDto | undefined>
+  meetupsGroupedByYear: ComputedRef<Record<number, Data.Event[]>>
+  sortedMeetups: ComputedRef<Data.Event[]>
+  upcomingMeetups: ComputedRef<Data.Event[]>
+  todaysMeetups: ComputedRef<Data.Event[]>
+  pastMeetups: ComputedRef<Data.Event[]>
+  nextMeetup: ComputedRef<Data.Event | undefined>
   areThereMeetupsToday: ComputedRef<boolean>
 }
 
 export function useMeetups(
-  meetups: MaybeRefOrGetter<EventSummaryDto[]>,
+  meetups: MaybeRefOrGetter<Data.Event[]>,
   options: UseMeetupsOptions = {}
 ): UseMeetupsReturn {
   const { pastMeetupsLimit = 10 } = options
 
   const meetupsGroupedByYear = computed(() => {
-    return toValue(meetups).reduce((acc: Record<number, EventSummaryDto[]>, event) => {
+    return toValue(meetups).reduce((acc: Record<number, Data.Event[]>, event) => {
       const year = event.date ? new Date(event.date).getFullYear() : 0
       if (!acc[year]) {
         acc[year] = []
