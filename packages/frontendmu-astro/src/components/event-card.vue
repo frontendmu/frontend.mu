@@ -68,7 +68,7 @@ const tiltOptions = {
       <div class="flex flex-col md:flex-row w-full justify-between gap-4 border-gray-100">
         <span v-if="props.event.Date" class="inline-flex rounded-lg p-3 ring-4 ring-white dark:ring-white/10" :class="isUpcoming(props.event.Date)
           ? 'bg-gray-50 text-gray-700'
-          : 'bg-green-50 text-green-600 font-bold dark:bg-verse-900'
+          : 'bg-green-50 text-green-800 font-bold dark:bg-verse-900'
           ">
           <IconCalendar class="mr-2 h-6 w-6" />
           <span>{{ new Date(props.event.Date).toDateString() }}</span>

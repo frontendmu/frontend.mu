@@ -34,7 +34,7 @@ const tiltOptions = {
 
       <div class="flex flex-col md:flex-row w-full justify-between gap-4 border-gray-100">
         <span
-          v-if="event.Date" class="inline-flex rounded-lg p-3 ring-4 ring-white dark:ring-white/10 text-green-600 bg-green-50 dark:bg-verse-900 font-bold"
+          v-if="event.Date" class="inline-flex rounded-lg p-3 ring-4 ring-white dark:ring-white/10 text-green-800 bg-green-50 dark:bg-verse-900 font-bold"
         >
           <Icon name="carbon:calendar" class="mr-2 h-6 w-6" />
           <span>{{ new Date(event.Date).toDateString() }}</span>
