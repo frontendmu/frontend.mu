@@ -37,7 +37,7 @@
 
       <HomeSocialCard
         href="https://chat.whatsapp.com/CqXAj6m8NtQB6NN8B9aoEJ"
-        class="bg-[#25D366] text-sm md:text-normal"
+        class="bg-[#167335] text-sm md:text-normal"
       >
         <template #tagline>
           <p>Whatsapp Community</p>
@@ -53,7 +53,7 @@
         </template>
       </HomeSocialCard>
 
-      <HomeSocialCard href="https://twitter.com/frontendmu" class="bg-[#1DA1F2] text-sm md:text-normal">
+      <HomeSocialCard href="https://twitter.com/frontendmu" class="bg-[#0e6db5] text-sm md:text-normal">
         <template #tagline>
           <p>Twitter</p>
         </template>

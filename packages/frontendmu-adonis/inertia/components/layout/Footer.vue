@@ -15,7 +15,7 @@ const today = new Date()
             <Logo class="w-8 h-8 text-verse-500 dark:text-verse-400" />
             <span class="text-base font-bold tracking-tight">coders.mu</span>
           </Link>
-          <p class="text-sm text-gray-500 leading-relaxed max-w-xs">
+          <p class="text-sm text-gray-300 leading-relaxed max-w-xs">
             Inspire people about technology
           </p>
         </div>
@@ -23,7 +23,7 @@ const today = new Date()
         <!-- Links Grid -->
         <div class="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-8">
           <div class="space-y-4">
-            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500">Community</h4>
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-300">Community</h4>
             <ul class="space-y-2.5 text-sm text-gray-400">
               <li><Link href="/meetups" class="hover:text-white transition-colors">Meetups</Link></li>
               <li><Link href="/speakers" class="hover:text-white transition-colors">Speakers</Link></li>
@@ -33,7 +33,7 @@ const today = new Date()
           </div>
 
           <div class="space-y-4">
-            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500">Involvement</h4>
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-300">Involvement</h4>
             <ul class="space-y-2.5 text-sm text-gray-400">
               <li><Link href="/contribute" class="hover:text-white transition-colors">Contribute</Link></li>
               <li><Link href="/sponsors" class="hover:text-white transition-colors">Partners</Link></li>
@@ -43,7 +43,7 @@ const today = new Date()
           </div>
 
           <div class="space-y-4 col-span-2 md:col-span-1">
-            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500">Resources</h4>
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-300">Resources</h4>
             <ul class="space-y-2.5 text-sm text-gray-400">
               <li><Link href="/code-of-conduct" class="hover:text-white transition-colors">Code of Conduct</Link></li>
               <li><Link href="/coding-guidelines" class="hover:text-white transition-colors">Guidelines</Link></li>
@@ -55,11 +55,11 @@ const today = new Date()
 
       <!-- Bottom Bar -->
       <div class="mt-12 pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p class="text-xs text-gray-600">
+        <p class="text-xs text-gray-400">
           &copy; 2016–{{ today.getFullYear() }} Frontend Coders Mauritius
         </p>
-        <p class="text-xs text-gray-600">
-          Open source on <a :href="GITHUB_URL" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-white transition-colors">GitHub</a>
+        <p class="text-xs text-gray-400">
+          Open source on <a :href="GITHUB_URL" target="_blank" rel="noopener noreferrer" class="text-white underline hover:text-gray-200 transition-colors">GitHub</a>
         </p>
       </div>
     </div>

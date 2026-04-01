@@ -30,19 +30,19 @@ import IconLinkedin from '~/components/icons/IconLinkedin.vue'
           <template #icon><IconGithub class="w-8 h-8" /></template>
         </SocialCard>
 
-        <SocialCard href="https://chat.whatsapp.com/CqXAj6m8NtQB6NN8B9aoEJ" class="bg-[#25D366] h-[240px]">
+        <SocialCard href="https://chat.whatsapp.com/CqXAj6m8NtQB6NN8B9aoEJ" class="bg-[#167335] h-[240px]">
           <template #tagline>Whatsapp</template>
           <template #description>Join our community to stay informed about our latest meetups.</template>
           <template #icon><IconWhatsapp class="w-8 h-8" /></template>
         </SocialCard>
 
-        <SocialCard href="https://twitter.com/frontendmu" class="bg-[#1DA1F2] h-[240px]">
+        <SocialCard href="https://twitter.com/frontendmu" class="bg-[#0e6db5] h-[240px]">
           <template #tagline>Twitter</template>
           <template #description>Short-form updates from us. Follow for announcements!</template>
           <template #icon><IconTwitter class="w-8 h-8" /></template>
         </SocialCard>
 
-        <SocialCard href="https://instagram.com/frontend.mu" class="bg-gradient-to-br from-[#833ab4] via-[#fd1d1d] to-[#fcb045] h-[240px]">
+        <SocialCard href="https://instagram.com/frontend.mu" class="bg-gradient-to-br from-[#833ab4] via-[#c13584] to-[#e1306c] h-[240px]">
           <template #tagline>Instagram</template>
           <template #description>Visual highlights of our events and the people who make them special.</template>
           <template #icon><IconInstagram class="w-8 h-8" /></template>

@@ -33,7 +33,7 @@ const props = defineProps({
         <span
           :title="isDateInFuture(new Date(event.Date)) ? 'Upcoming' : 'Past'" class="inline-flex rounded-lg p-[0.35rem] md:p-3 font-mono text-sm font-medium items-center" :class="[
             isDateInFuture(new Date(event.Date))
-              ? 'bg-green-50 text-green-600 font-bold'
+              ? 'bg-green-50 text-green-800 font-bold'
               : 'bg-gray-50 dark:bg-transparent text-verse-500 dark:text-verse-400  dark:font-bold',
           ]"
         >

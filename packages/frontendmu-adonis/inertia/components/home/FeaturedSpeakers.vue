@@ -44,7 +44,7 @@ defineProps<Props>()
             >
               {{ person.name }}
             </h3>
-            <p v-if="person.githubUsername" class="text-xs text-gray-400 dark:text-gray-500">
+            <p v-if="person.githubUsername" class="text-xs text-gray-600 dark:text-gray-300">
               @{{ person.githubUsername }}
             </p>
           </div>
