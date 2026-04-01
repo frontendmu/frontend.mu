@@ -34,7 +34,13 @@ const featuredEvent = computed(() => {
 </script>
 
 <template>
-  <Head title="Home" />
+  <Head title="Home">
+    <meta
+      head-key="description"
+      name="description"
+      content="A community of passionate developers in Mauritius. Join us for regular meetups, workshops, and tech talks."
+    >
+  </Head>
   <main class="pb-8">
     <Hero :featured-event="featuredEvent" />
     <Sponsors :sponsors="sponsors" />
