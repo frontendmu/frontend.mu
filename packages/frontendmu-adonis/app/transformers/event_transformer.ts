@@ -17,6 +17,7 @@ export default class EventTransformer extends BaseTransformer<Event> {
 
     return {
       id: this.resource.id,
+      slug: this.resource.slug,
       title: this.resource.title,
       description: this.resource.description,
       date: this.resource.eventDate?.toISODate() ?? null,

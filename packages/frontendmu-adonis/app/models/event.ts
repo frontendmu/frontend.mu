@@ -22,6 +22,24 @@ export default class Event extends BaseModel {
     }
   }
 
+  @beforeCreate()
+  static async assignSlug(event: Event) {
+    if (event.slug || !event.eventDate) return
+    const base = `${event.eventDate.year}-${event.eventDate.toFormat('LLLL').toLowerCase()}`
+    const existing = await Event.query().where('slug', 'like', `${base}%`).select('slug')
+    const taken = new Set(existing.map((e) => e.slug))
+    if (!taken.has(base)) {
+      event.slug = base
+      return
+    }
+    let n = 2
+    while (taken.has(`${base}-${n}`)) n++
+    event.slug = `${base}-${n}`
+  }
+
+  @column()
+  declare slug: string
+
   @column()
   declare title: string
 
