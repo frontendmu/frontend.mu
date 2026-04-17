@@ -387,7 +387,7 @@ async function removeSponsor(sponsorId: string) {
           </Link>
           <span class="text-verse-400">/</span>
           <Link
-            :href="`/meetup/${event.id}`"
+            :href="`/meetup/${event.slug || event.id}`"
             class="text-verse-600 hover:text-verse-800 dark:text-verse-400 dark:hover:text-verse-200"
           >
             {{ event.title }}
@@ -831,7 +831,7 @@ async function removeSponsor(sponsorId: string) {
               <span v-else>Save Changes</span>
             </button>
             <Link
-              :href="`/meetup/${event.id}`"
+              :href="`/meetup/${event.slug || event.id}`"
               class="px-6 py-2.5 border border-verse-300 dark:border-verse-600 text-verse-700 dark:text-verse-300 hover:bg-verse-50 dark:hover:bg-verse-800 font-medium squircle rounded-lg transition-colors"
             >
               Cancel

@@ -11,8 +11,7 @@ router
   .get('/meetups', [() => import('#controllers/events_controller'), 'index'])
   .as('meetups.index')
 router
-  .get('/meetup/:id', [() => import('#controllers/events_controller'), 'show'])
-  .where('id', UUID_REGEX)
+  .get('/meetup/:idOrSlug', [() => import('#controllers/events_controller'), 'show'])
   .as('meetups.show')
 
 // Speakers pages

@@ -105,7 +105,7 @@ export default class AdminEventsController {
 
     session.flash('success', 'Event updated successfully!')
 
-    return response.redirect().toPath(urlFor('meetups.show', { id: event.id }))
+    return response.redirect().toPath(urlFor('meetups.show', { idOrSlug: event.slug || event.id }))
   }
 
   async destroy({ params, bouncer, response, session }: HttpContext) {

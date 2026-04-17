@@ -178,7 +178,7 @@ function formatDateShort(dateStr: string): string {
             <Link
               v-for="meetup in meetups"
               :key="meetup.id"
-              :href="`/meetup/${meetup.id}`"
+              :href="`/meetup/${meetup.slug || meetup.id}`"
               class="group relative flex flex-col bg-white dark:bg-verse-950/40 border border-gray-100 dark:border-verse-800 rounded-2xl transition-all duration-200 hover:border-verse-500 hover:shadow-lg hover:-translate-y-1 overflow-hidden"
             >
               <!-- Date strip -->

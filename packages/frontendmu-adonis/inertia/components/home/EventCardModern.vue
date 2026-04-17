@@ -126,7 +126,7 @@ const speakers = computed(() => {
     <div class="absolute bottom-0 left-0 w-full h-px bg-gray-100 dark:bg-verse-900"></div>
 
     <Link
-      :href="`/meetup/${event.id}`"
+      :href="`/meetup/${event.slug || event.id}`"
       class="absolute inset-0 z-20"
       aria-label="View event details"
     />

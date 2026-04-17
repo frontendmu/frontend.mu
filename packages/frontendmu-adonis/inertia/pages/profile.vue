@@ -7,6 +7,7 @@ import { getRoleBadgeClass } from '~/utils/roles'
 
 interface RsvpMeetup {
   id: string
+  slug: string
   title: string
   date: string | null
   status: string
@@ -282,7 +283,7 @@ function getUserRoles() {
             <Link
               v-for="meetup in rsvpMeetups"
               :key="meetup.id"
-              :href="`/meetup/${meetup.id}`"
+              :href="`/meetup/${meetup.slug || meetup.id}`"
               class="group relative bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-xl p-5 hover:border-verse-500 transition-all hover:shadow-md"
             >
               <div class="space-y-2">
