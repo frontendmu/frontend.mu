@@ -115,7 +115,7 @@ const speakers = computed(() => {
     </div>
 
     <Link
-      :href="`/meetup/${event.id}`"
+      :href="`/meetup/${event.slug || event.id}`"
       class="absolute inset-0 z-20"
       aria-label="View event details"
     />

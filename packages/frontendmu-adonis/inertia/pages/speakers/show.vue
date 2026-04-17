@@ -95,7 +95,7 @@ const props = defineProps<Props>()
                 <Link
                   v-for="session in sessions"
                   :key="session.id"
-                  :href="`/meetup/${session.eventId}`"
+                  :href="`/meetup/${session.eventSlug || session.eventId}`"
                   class="group py-6 block hover:bg-verse-50/30 dark:hover:bg-verse-900/20 transition-colors px-4 -mx-4 rounded-xl"
                 >
                   <div class="flex items-center justify-between gap-6">

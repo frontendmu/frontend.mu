@@ -28,6 +28,7 @@ export default class SessionTransformer extends BaseTransformer<Session> {
       id: this.resource.id,
       title: this.resource.title,
       eventId: event?.id ?? null,
+      eventSlug: event?.slug ?? null,
       eventTitle: event?.title ?? null,
       eventDate: event?.eventDate?.toFormat('dd MMM yyyy') ?? null,
     }

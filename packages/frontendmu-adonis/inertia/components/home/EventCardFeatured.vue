@@ -140,14 +140,14 @@ const speakers = computed(() => {
 
           <Link
             v-if="hasRsvp"
-            :href="`/meetup/${event.id}`"
+            :href="`/meetup/${event.slug || event.id}`"
             class="relative z-20 w-full sm:w-auto px-5 py-2.5 border border-verse-300 dark:border-verse-700 text-verse-600 dark:text-verse-400 rounded-md font-medium text-sm hover:bg-verse-50 dark:hover:bg-verse-900 transition-colors"
           >
             You're going
           </Link>
           <Link
             v-else
-            :href="`/meetup/${event.id}`"
+            :href="`/meetup/${event.slug || event.id}`"
             class="relative z-20 w-full sm:w-auto px-5 py-2.5 bg-verse-600 text-white rounded-md font-medium text-sm hover:bg-verse-700 transition-colors"
           >
             {{ isToday ? 'Join Now' : 'Save My Spot' }}
@@ -167,7 +167,7 @@ const speakers = computed(() => {
       </div>
     </div>
     <Link
-      :href="`/meetup/${event.id}`"
+      :href="`/meetup/${event.slug || event.id}`"
       class="absolute inset-0 z-10"
       aria-label="View event details"
     />

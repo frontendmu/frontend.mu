@@ -216,7 +216,7 @@ function doDelete() {
                 <td class="px-6 py-4 text-right">
                   <div class="flex items-center justify-end gap-2">
                     <Link
-                      :href="`/meetup/${event.id}`"
+                      :href="`/meetup/${event.slug || event.id}`"
                       class="p-2 text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200 transition-colors"
                       title="View"
                       aria-label="View event"

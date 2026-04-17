@@ -18,6 +18,7 @@ export default class ProfileController {
       .filter((r) => r.event)
       .map((r) => ({
         id: r.event.id,
+        slug: r.event.slug,
         title: r.event.title,
         date: r.event.eventDate?.toFormat('dd MMM yyyy') ?? null,
         status: r.status,
