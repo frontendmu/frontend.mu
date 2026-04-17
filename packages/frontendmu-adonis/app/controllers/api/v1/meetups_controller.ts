@@ -38,10 +38,11 @@ export default class PublicMeetupsController {
 
   async next(ctx: HttpContext) {
     const { response, serializeWithoutWrapping: serialize } = ctx
+    const today = DateTime.now().toFormat('yyyy-MM-dd')
 
     const event = await Event.query()
       .where('status', 'published')
-      .where('eventDate', '>=', DateTime.now().toSQLDate()!)
+      .where('eventDate', '>=', today)
       .orderBy('eventDate', 'asc')
       .preload('sessions', (query) => query.preload('speakers'))
       .preload('sponsors')
