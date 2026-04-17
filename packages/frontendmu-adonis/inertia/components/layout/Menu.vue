@@ -63,6 +63,7 @@ const links: TMenu = {
       { title: 'Community', href: '/community' },
       { title: 'History', href: '/history' },
       { title: 'Contribute', href: '/contribute' },
+      { title: 'API', href: '/api-docs' },
       { title: 'Code of conduct', href: '/code-of-conduct' },
       { title: 'Guidelines', href: '/coding-guidelines' },
       { title: 'Discord', href: DISCORD_URL },

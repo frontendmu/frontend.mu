@@ -56,4 +56,11 @@ export default class PagesController {
   async codeOfConduct({ inertia }: HttpContext) {
     return inertia.render('code-of-conduct', {})
   }
+
+  /**
+   * Display public API documentation page
+   */
+  async apiDocs({ inertia }: HttpContext) {
+    return inertia.render('api-docs', {})
+  }
 }

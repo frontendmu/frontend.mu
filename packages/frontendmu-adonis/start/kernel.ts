@@ -49,4 +49,5 @@ router.use([
  */
 export const middleware = router.named({
   auth: () => import('#middleware/auth_middleware'),
+  forceJsonResponse: () => import('#middleware/force_json_response_middleware'),
 })

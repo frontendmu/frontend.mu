@@ -36,6 +36,7 @@ const today = new Date()
             <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-300">Involvement</h4>
             <ul class="space-y-2.5 text-sm text-gray-400">
               <li><Link href="/contribute" class="hover:text-white transition-colors">Contribute</Link></li>
+              <li><Link href="/api-docs" class="hover:text-white transition-colors">API</Link></li>
               <li><Link href="/sponsors" class="hover:text-white transition-colors">Partners</Link></li>
               <li><Link href="/sponsor-us" class="hover:text-white transition-colors">Sponsor Us</Link></li>
               <li><Link href="/branding" class="hover:text-white transition-colors">Brand Kit</Link></li>
