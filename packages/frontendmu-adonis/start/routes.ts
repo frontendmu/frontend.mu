@@ -74,6 +74,9 @@ router
 router
   .get('/coding-guidelines', [() => import('#controllers/pages_controller'), 'codingGuidelines'])
   .as('pages.codingGuidelines')
+router
+  .get('/api-docs', [() => import('#controllers/pages_controller'), 'apiDocs'])
+  .as('pages.apiDocs')
 
 // Auth routes
 router
