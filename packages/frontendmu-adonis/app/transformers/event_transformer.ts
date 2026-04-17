@@ -26,7 +26,9 @@ export default class EventTransformer extends BaseTransformer<Event> {
       location: this.resource.location,
       attendeeCount: this.resource.attendeeCount,
       acceptingRsvp: this.resource.acceptingRsvp,
+      status: this.resource.status,
       album: this.resource.albumName,
+      updatedAt: this.resource.updatedAt?.toISO() ?? null,
       sessions: SessionTransformer.transform(sessions).depth(2),
       sponsors: SponsorTransformer.transform(sponsors).useVariant('summary'),
     }
@@ -46,7 +48,6 @@ export default class EventTransformer extends BaseTransformer<Event> {
       coverImageUrl: this.resource.coverImageUrl,
       parkingLocation: this.resource.parkingLocation,
       mapUrl: this.resource.mapUrl,
-      status: this.resource.status,
       photos: photos.map((photo) => ({
         id: photo.id,
         photoUrl: photo.photoUrl,
@@ -56,9 +57,6 @@ export default class EventTransformer extends BaseTransformer<Event> {
   }
 
   forAdminIndex() {
-    return {
-      ...this.toObject(),
-      status: this.resource.status,
-    }
+    return this.toObject()
   }
 }
