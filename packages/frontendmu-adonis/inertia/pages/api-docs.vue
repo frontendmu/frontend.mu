@@ -198,7 +198,7 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
         <div class="lg:col-span-9 space-y-20">
           <!-- Quick start -->
           <section id="quick-start" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
+            <h2 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
               Quick start
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -220,7 +220,7 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
 
           <!-- Base URL -->
           <section id="base-url" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
+            <h2 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
               Base URL
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -237,7 +237,7 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
 
           <!-- Authentication -->
           <section id="authentication" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
+            <h2 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
               Authentication
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -248,7 +248,7 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
 
           <!-- Endpoints -->
           <section id="endpoints" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
+            <h2 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
               Endpoints
             </h2>
             <div
@@ -279,7 +279,7 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
 
           <!-- Response shape -->
           <section id="response-shape" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
+            <h2 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
               Response shape
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -315,7 +315,7 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
 
           <!-- Examples -->
           <section id="examples" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
+            <h2 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
               Examples
             </h2>
 
@@ -386,7 +386,7 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
 
           <!-- Caching -->
           <section id="caching" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
+            <h2 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
               Caching
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -406,7 +406,7 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
 
           <!-- Change detection -->
           <section id="detecting-changes" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
+            <h2 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
               Detecting changes
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -435,7 +435,7 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
 
           <!-- CORS -->
           <section id="cors" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">CORS</h2>
+            <h2 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">CORS</h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
               All origins are accepted. The API can be called directly from browser
               extensions, static sites, or serverless functions without a proxy.
@@ -445,7 +445,7 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
 
           <!-- Stability & feedback -->
           <section id="stability" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
+            <h2 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
               Stability
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
