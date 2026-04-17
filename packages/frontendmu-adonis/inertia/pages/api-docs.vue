@@ -160,6 +160,23 @@ r.raise_for_status()
 meetup = r.json()
 
 print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
+
+const phpExample = `<?php
+
+$json = file_get_contents('https://coders.mu/api/public/v1/meetups/next');
+$meetup = json_decode($json, true);
+
+echo "{$meetup['slug']}: {$meetup['title']} on {$meetup['date']}\\n";`
+
+const laravelExample = `<?php
+
+use Illuminate\\Support\\Facades\\Http;
+
+$meetup = Http::get('https://coders.mu/api/public/v1/meetups/next')
+    ->throw()
+    ->json();
+
+echo "{$meetup['slug']}: {$meetup['title']} on {$meetup['date']}";`
 </script>
 
 <template>
@@ -379,6 +396,38 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
                   @click="copy('py', pythonExample)"
                 >
                   {{ copied === 'py' ? 'Copied' : 'Copy' }}
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">PHP</h3>
+              <div class="relative">
+                <pre
+                  class="overflow-x-auto p-4 pr-14 bg-gray-900 dark:bg-verse-950 border border-gray-900 dark:border-verse-800 rounded-lg text-xs font-mono text-gray-100 leading-relaxed"
+                ><code>{{ phpExample }}</code></pre>
+                <button
+                  type="button"
+                  class="absolute top-2 right-2 px-2.5 py-1 text-xs font-medium text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded transition-colors"
+                  @click="copy('php', phpExample)"
+                >
+                  {{ copied === 'php' ? 'Copied' : 'Copy' }}
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Laravel (HTTP client)</h3>
+              <div class="relative">
+                <pre
+                  class="overflow-x-auto p-4 pr-14 bg-gray-900 dark:bg-verse-950 border border-gray-900 dark:border-verse-800 rounded-lg text-xs font-mono text-gray-100 leading-relaxed"
+                ><code>{{ laravelExample }}</code></pre>
+                <button
+                  type="button"
+                  class="absolute top-2 right-2 px-2.5 py-1 text-xs font-medium text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded transition-colors"
+                  @click="copy('laravel', laravelExample)"
+                >
+                  {{ copied === 'laravel' ? 'Copied' : 'Copy' }}
                 </button>
               </div>
             </div>
