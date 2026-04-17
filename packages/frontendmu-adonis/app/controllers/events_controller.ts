@@ -32,8 +32,10 @@ export default class EventsController {
 
   async show(ctx: HttpContext) {
     const { inertia, params, auth, bouncer, serializeWithoutWrapping: serialize } = ctx
+    const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    const lookupColumn = UUID_REGEX.test(params.idOrSlug) ? 'id' : 'slug'
     const event = await Event.query()
-      .where('id', params.id)
+      .where(lookupColumn, params.idOrSlug)
       .where('status', 'published')
       .preload('sessions', (query) => {
         query.preload('speakers')
