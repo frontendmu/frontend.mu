@@ -131,7 +131,7 @@ const meetups = await res.json()
 console.log(meetups.length, 'meetups')
 console.log(meetups[0].slug, '—', meetups[0].title)`
 
-const pollingExample = `// Remember the last timestamp you saw.
+const pollingExample = `// Highest updatedAt observed across previous polls.
 let lastSeen = localStorage.getItem('lastSeen') ?? '1970-01-01T00:00:00Z'
 
 async function checkForUpdates() {
@@ -150,7 +150,7 @@ async function checkForUpdates() {
   }
 }
 
-// Poll every 10 minutes — the response is cached 60s at the edge.
+// Responses are cached for 60 seconds; polling faster provides no benefit.
 setInterval(checkForUpdates, 10 * 60 * 1000)`
 
 const pythonExample = `import requests
@@ -174,8 +174,8 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
           Public <span class="font-display-italic text-verse-600 dark:text-verse-400">API</span>
         </h1>
         <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl leading-relaxed">
-          A small read-only JSON API for frontend.mu meetup data. Build CLIs, Raycast
-          extensions, browser extensions, or agent integrations without scraping.
+          A read-only JSON API exposing published meetup data. Intended for CLIs,
+          Raycast extensions, browser extensions, and agent integrations.
         </p>
         <div class="flex flex-wrap gap-2 pt-2">
           <span
@@ -198,11 +198,11 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
         <div class="lg:col-span-9 space-y-20">
           <!-- Quick start -->
           <section id="quick-start" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-500">
+            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
               Quick start
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-              The fastest path — fetch the next upcoming meetup:
+              Fetch the next upcoming meetup:
             </p>
             <div class="relative">
               <pre
@@ -220,13 +220,13 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
 
           <!-- Base URL -->
           <section id="base-url" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-500">
+            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
               Base URL
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-              All endpoints sit under a versioned prefix. Future breaking changes will
-              ship as <code class="font-mono text-sm text-verse-600 dark:text-verse-400">/v2</code>
-              so your integrations keep working.
+              All endpoints sit under a versioned prefix. Breaking changes will be
+              released under a new version prefix (e.g.
+              <code class="font-mono text-sm text-verse-600 dark:text-verse-400">/v2</code>).
             </p>
             <div
               class="p-4 bg-gray-50 dark:bg-verse-950/40 border border-gray-100 dark:border-verse-800 rounded-lg font-mono text-sm text-gray-900 dark:text-gray-100"
@@ -237,18 +237,18 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
 
           <!-- Authentication -->
           <section id="authentication" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-500">
+            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
               Authentication
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-              None. This API is intentionally public. Send no headers, no tokens, no
-              cookies — just a plain GET.
+              None. The API is public and read-only. No headers, tokens, or cookies
+              are required or read.
             </p>
           </section>
 
           <!-- Endpoints -->
           <section id="endpoints" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-500">
+            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
               Endpoints
             </h2>
             <div
@@ -279,7 +279,7 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
 
           <!-- Response shape -->
           <section id="response-shape" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-500">
+            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
               Response shape
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -315,7 +315,7 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
 
           <!-- Examples -->
           <section id="examples" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-500">
+            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
               Examples
             </h2>
 
@@ -386,7 +386,7 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
 
           <!-- Caching -->
           <section id="caching" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-500">
+            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
               Caching
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -398,21 +398,21 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
               Cache-Control: public, max-age=60, stale-while-revalidate=300
             </div>
             <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-              Meetup data changes rarely, so the response is fresh for 60 seconds and
-              servable stale for another 5 minutes while the cache revalidates. Be kind
-              — there's no need to poll faster than once per minute.
+              Responses are fresh for 60 seconds and servable stale for another
+              5 minutes while the cache revalidates. Clients should not poll more
+              than once per minute.
             </p>
           </section>
 
           <!-- Change detection -->
           <section id="detecting-changes" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-500">
+            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
               Detecting changes
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
               Every meetup includes an <code class="font-mono text-sm text-verse-600 dark:text-verse-400">updatedAt</code>
-              ISO-8601 timestamp. Store the highest value you've seen, then on the next
-              poll surface anything newer.
+              ISO-8601 timestamp. Clients can track the highest value observed and
+              treat any newer value on subsequent polls as a change.
             </p>
             <div class="relative">
               <pre
@@ -427,30 +427,31 @@ print(f"{meetup['slug']}: {meetup['title']} on {meetup['date']}")`
               </button>
             </div>
             <p class="text-sm text-gray-500 dark:text-gray-500 leading-relaxed">
-              A meetup that has never been edited after creation carries
-              <code class="font-mono">updatedAt: null</code>. Handle that case explicitly.
+              A meetup that has never been edited after creation returns
+              <code class="font-mono">updatedAt: null</code>. Clients should handle
+              this case explicitly.
             </p>
           </section>
 
           <!-- CORS -->
           <section id="cors" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-500">CORS</h2>
+            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">CORS</h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-              Open to every origin. You can call this API directly from a browser
-              extension, a static site, or a serverless function without a proxy.
-              Credentials are not required and will not be sent.
+              All origins are accepted. The API can be called directly from browser
+              extensions, static sites, or serverless functions without a proxy.
+              Credentials are not required and are not sent.
             </p>
           </section>
 
           <!-- Stability & feedback -->
           <section id="stability" class="space-y-5 scroll-mt-32">
-            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-500">
+            <h2 class="text-sm font-semibold uppercase tracking-wider text-verse-600 dark:text-verse-300">
               Stability
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
               Fields may be added to <code class="font-mono text-sm text-verse-600 dark:text-verse-400">v1</code>
-              responses; existing fields won't be renamed or removed without a new
-              version prefix. If you need a field that isn't here, open an issue on
+              responses. Existing fields will not be renamed or removed without a new
+              version prefix. Requests for additional fields can be filed as issues on
               <a
                 href="https://github.com/frontendmu/frontend.mu/issues"
                 target="_blank"
