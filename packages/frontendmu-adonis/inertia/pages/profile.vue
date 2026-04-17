@@ -7,6 +7,7 @@ import { getRoleBadgeClass } from '~/utils/roles'
 
 interface RsvpMeetup {
   id: string
+  slug: string
   title: string
   date: string | null
   status: string
