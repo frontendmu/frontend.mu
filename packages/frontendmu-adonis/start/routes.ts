@@ -3,6 +3,22 @@ import { middleware } from './kernel.js'
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
+// Public read-only API (no auth, CORS-open)
+router
+  .group(() => {
+    router
+      .get('/meetups', [() => import('#controllers/api/v1/meetups_controller'), 'index'])
+      .as('api.public.v1.meetups.index')
+    router
+      .get('/meetups/next', [() => import('#controllers/api/v1/meetups_controller'), 'next'])
+      .as('api.public.v1.meetups.next')
+    router
+      .get('/meetups/:idOrSlug', [() => import('#controllers/api/v1/meetups_controller'), 'show'])
+      .as('api.public.v1.meetups.show')
+  })
+  .prefix('/api/public/v1')
+  .use(middleware.forceJsonResponse())
+
 // Home page
 router.get('/', [() => import('#controllers/home_controller'), 'index']).as('home')
 
