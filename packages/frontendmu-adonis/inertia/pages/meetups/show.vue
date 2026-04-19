@@ -556,34 +556,18 @@ const calendarUrl = computed(() => {
               </div>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                 <div
-                  v-for="photo in meetup.photos.slice(0, 6)"
+                  v-for="photo in meetup.photos"
                   :key="photo.id"
                   class="relative rounded-lg overflow-hidden aspect-[4/3]"
                 >
                   <img
-                    :src="photo.photoUrl"
+                    :src="photo.thumbnailUrl"
                     :alt="photo.caption || 'Event photo'"
+                    loading="lazy"
                     class="w-full h-full object-cover"
                   />
                 </div>
               </div>
-              <a
-                v-if="meetup.album"
-                :href="meetup.album"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 text-sm font-bold text-verse-500 hover:text-verse-600 transition-colors"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-                View full album
-              </a>
             </section>
           </div>
 
