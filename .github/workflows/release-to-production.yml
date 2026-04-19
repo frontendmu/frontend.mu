@@ -14,6 +14,11 @@ concurrency:
 
 jobs:
   release:
+    # Only maintainers can trigger a release. Anyone with repo write access can
+    # press the "Run workflow" button, so this is the explicit allowlist for who
+    # is actually permitted to deploy. Extend by appending usernames to the JSON
+    # array below.
+    if: contains(fromJSON('["MrSunshyne"]'), github.actor)
     runs-on: ubuntu-latest
     permissions:
       contents: write
