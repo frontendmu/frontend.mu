@@ -446,7 +446,8 @@ const calendarUrl = computed(() => {
                 <li
                   v-for="session in meetup.sessions"
                   :key="session.id"
-                  class="agenda-session flex items-start gap-4 py-5"
+                  class="agenda-session flex gap-4 py-5"
+                  :class="session.kind === 'talk' || session.kind === 'other' ? 'items-start' : 'items-center'"
                 >
                   <!-- Left medallion: avatar (talk) OR sponsor logo OR icon -->
                   <div class="shrink-0">
@@ -529,17 +530,12 @@ const calendarUrl = computed(() => {
                       </span>
                     </p>
 
-                    <!-- Talk / intro / quiz / sponsored / other: title row -->
-                    <template v-else>
+                    <!-- Talk / other: title + speakers stacked -->
+                    <template v-else-if="session.kind === 'talk' || session.kind === 'other'">
                       <div class="flex items-baseline gap-3 flex-wrap">
-                        <component
-                          :is="session.kind === 'sponsored' && session.sponsor ? 'Link' : 'h3'"
-                          :href="session.kind === 'sponsored' && session.sponsor ? `/sponsor/${session.sponsor.id}` : undefined"
-                          class="font-display text-[22px] md:text-[24px] leading-[1.2] text-gray-900 dark:text-gray-100"
-                          :class="session.kind === 'sponsored' && session.sponsor ? 'hover:text-verse-500 transition-colors' : ''"
-                        >
+                        <h3 class="font-display text-[22px] md:text-[24px] leading-[1.2] text-gray-900 dark:text-gray-100">
                           {{ session.title }}
-                        </component>
+                        </h3>
                         <span
                           v-if="session.durationMinutes"
                           class="font-mono text-[11.5px] text-gray-400 dark:text-gray-500"
@@ -547,10 +543,8 @@ const calendarUrl = computed(() => {
                           {{ session.durationMinutes }} min
                         </span>
                       </div>
-
-                      <!-- Speakers subtitle: only for talks; "Hosted by" for quiz -->
                       <div
-                        v-if="session.speakers?.length && (session.kind === 'talk' || session.kind === 'other')"
+                        v-if="session.speakers?.length"
                         class="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[14px] text-gray-500 dark:text-gray-400"
                       >
                         <Link
@@ -562,19 +556,61 @@ const calendarUrl = computed(() => {
                           {{ speaker.name }}<template v-if="i < session.speakers.length - 1">,</template>
                         </Link>
                       </div>
-                      <p
-                        v-else-if="session.kind === 'quiz' && session.speakers?.length"
-                        class="mt-1.5 text-[14px] text-gray-500 dark:text-gray-400"
+                    </template>
+
+                    <!-- Intro / quiz / sponsored: title + related entity inline -->
+                    <div v-else class="flex items-baseline gap-x-3 gap-y-1 flex-wrap">
+                      <component
+                        :is="session.kind === 'sponsored' && session.sponsor ? 'Link' : 'h3'"
+                        :href="session.kind === 'sponsored' && session.sponsor ? `/sponsor/${session.sponsor.id}` : undefined"
+                        class="font-display text-[22px] md:text-[24px] leading-[1.2] text-gray-900 dark:text-gray-100"
+                        :class="session.kind === 'sponsored' && session.sponsor ? 'hover:text-verse-500 transition-colors' : ''"
                       >
-                        Hosted by
+                        {{ session.title }}
+                      </component>
+                      <span
+                        v-if="session.kind === 'sponsored' && session.sponsor"
+                        class="text-[14px] text-gray-500 dark:text-gray-400"
+                      >
+                        ·
+                        <Link
+                          :href="`/sponsor/${session.sponsor.id}`"
+                          class="hover:text-verse-500 transition-colors"
+                        >
+                          {{ session.sponsor.name }}
+                        </Link>
+                      </span>
+                      <span
+                        v-else-if="session.kind === 'quiz' && session.speakers?.length"
+                        class="text-[14px] text-gray-500 dark:text-gray-400"
+                      >
+                        · Hosted by
                         <Link
                           v-for="(speaker, i) in session.speakers"
                           :key="speaker.id"
                           :href="`/speaker/${speaker.id}`"
                           class="hover:text-verse-500 dark:hover:text-verse-400 transition-colors"
                         >{{ speaker.name }}<template v-if="i < session.speakers.length - 1">,</template></Link>
-                      </p>
-                    </template>
+                      </span>
+                      <span
+                        v-else-if="session.speakers?.length"
+                        class="text-[14px] text-gray-500 dark:text-gray-400"
+                      >
+                        ·
+                        <Link
+                          v-for="(speaker, i) in session.speakers"
+                          :key="speaker.id"
+                          :href="`/speaker/${speaker.id}`"
+                          class="hover:text-verse-500 dark:hover:text-verse-400 transition-colors"
+                        >{{ speaker.name }}<template v-if="i < session.speakers.length - 1">,</template></Link>
+                      </span>
+                      <span
+                        v-if="session.durationMinutes"
+                        class="font-mono text-[11.5px] text-gray-400 dark:text-gray-500"
+                      >
+                        {{ session.durationMinutes }} min
+                      </span>
+                    </div>
                   </div>
                 </li>
               </ol>
