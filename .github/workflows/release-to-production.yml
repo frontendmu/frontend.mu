@@ -1,0 +1,76 @@
+name: Release to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      note:
+        description: Optional note to include in the release merge commit
+        required: false
+        type: string
+
+concurrency:
+  group: release-to-production
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: production
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge main into production
+        id: merge
+        env:
+          NOTE: ${{ inputs.note }}
+        run: |
+          set -euo pipefail
+          git fetch origin main
+
+          if git merge-base --is-ancestor origin/main HEAD; then
+            echo "::notice::production is already up to date with main — nothing to release."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          SUFFIX=""
+          if [ -n "${NOTE:-}" ]; then
+            SUFFIX=" — ${NOTE}"
+          fi
+          git merge --no-ff -m "Release: merge main into production${SUFFIX}" origin/main
+          git push origin production
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger Adonis deploy
+        if: steps.merge.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # A push signed by GITHUB_TOKEN does not trigger other workflows, so we
+          # explicitly dispatch the deploy workflow against the newly-updated
+          # production ref.
+          gh workflow run deploy-adonis.yml --ref production
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ "${{ steps.merge.outputs.changed }}" = "true" ]; then
+            {
+              echo "### Released main → production"
+              echo ""
+              echo "Adonis deploy workflow dispatched against \`production\`."
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### No changes to release" >> "$GITHUB_STEP_SUMMARY"
+          fi
