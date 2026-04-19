@@ -1,11 +1,19 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
+import { randomUUID } from 'node:crypto'
+import { BaseModel, column, belongsTo, beforeCreate } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Event from '#models/event'
 
 export default class EventPhoto extends BaseModel {
+  static selfAssignPrimaryKey = true
+
   @column({ isPrimary: true })
   declare id: string
+
+  @beforeCreate()
+  static assignUuid(photo: EventPhoto) {
+    if (!photo.id) photo.id = randomUUID()
+  }
 
   @column()
   declare eventId: string
