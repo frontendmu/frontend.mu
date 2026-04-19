@@ -556,7 +556,7 @@ onUnmounted(() => {
   >
     <div
       ref="menuInner"
-      class="menu-inner w-[92%] max-w-5xl bg-white/80 dark:bg-verse-950/60 backdrop-blur-xl border border-gray-100 dark:border-verse-800 rounded-2xl squircle px-3 md:px-5 h-16 flex items-center justify-between shadow-sm"
+      class="menu-inner w-[92%] max-w-7xl bg-white/80 dark:bg-verse-950/60 backdrop-blur-xl border border-gray-100 dark:border-verse-800 rounded-2xl squircle px-3 md:px-5 h-16 flex items-center justify-between shadow-sm"
     >
       <!-- Brand -->
       <div class="flex items-center">
