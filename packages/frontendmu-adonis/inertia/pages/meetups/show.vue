@@ -305,13 +305,13 @@ const calendarUrl = computed(() => {
 
 <template>
   <Head :title="meetup?.title || 'Meetup'" />
-  <main class="relative min-h-screen pt-24 pb-24">
+  <main class="relative min-h-screen pt-36 md:pt-44 pb-24">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <template v-if="meetup">
         <!-- ===== HERO ZONE ===== -->
-        <section id="rsvp-section" class="pb-10 border-b border-gray-200 dark:border-verse-900">
+        <section id="rsvp-section" class="pb-16 border-b border-gray-200 dark:border-verse-900">
           <!-- Breadcrumb + Edit -->
-          <div class="flex items-center justify-between flex-wrap gap-3 mb-5">
+          <div class="flex items-center justify-between flex-wrap gap-3 mb-7">
             <p class="mono-eyebrow">
               <Link href="/meetups">MEETUPS</Link>
               <span v-if="eventDate" class="sep">/</span>
@@ -332,7 +332,7 @@ const calendarUrl = computed(() => {
           </div>
 
           <!-- Status pill -->
-          <div class="mb-4 flex items-center gap-3 flex-wrap">
+          <div class="mb-8 flex items-center gap-3 flex-wrap">
             <span
               class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full font-mono text-[11px] font-semibold uppercase tracking-widest border"
               :class="
@@ -350,7 +350,7 @@ const calendarUrl = computed(() => {
 
           <!-- Title — editorial serif with italic tail -->
           <h1
-            class="font-display text-[clamp(44px,6.5vw,84px)] leading-[0.98] text-gray-900 dark:text-gray-100 text-balance max-w-[16ch] mb-6"
+            class="font-display text-[clamp(44px,6.5vw,84px)] leading-[0.98] text-gray-900 dark:text-gray-100 text-balance max-w-[16ch] mb-8"
           >
             <template v-if="titleParts.plain">{{ titleParts.plain }}&nbsp;</template><span class="font-display-italic text-verse-500 dark:text-verse-300">{{ titleParts.italic }}</span>
           </h1>
@@ -358,13 +358,13 @@ const calendarUrl = computed(() => {
           <!-- Subtitle (first sentence of description, muted) -->
           <p
             v-if="heroSubtitle"
-            class="text-[18px] leading-[1.55] text-gray-500 dark:text-gray-400 max-w-[56ch] mb-8"
+            class="text-[18px] leading-[1.55] text-gray-500 dark:text-gray-400 max-w-[56ch] mb-12"
           >
             {{ heroSubtitle }}
           </p>
 
           <!-- Meta row: icon-tiled Date / Time / Venue -->
-          <div class="flex flex-wrap gap-x-9 gap-y-5 pt-2">
+          <div class="flex flex-wrap gap-x-10 gap-y-5 pt-4">
             <div v-if="eventDate" class="flex items-start gap-3">
               <div
                 class="w-9 h-9 rounded-[10px] bg-verse-50 dark:bg-verse-900/60 text-verse-600 dark:text-verse-300 grid place-items-center shrink-0"
