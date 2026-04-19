@@ -475,8 +475,7 @@ const calendarUrl = computed(() => {
                       class="w-10 h-10 rounded-full grid place-items-center"
                       :class="{
                         'bg-verse-50 dark:bg-verse-900/60 text-verse-600 dark:text-verse-300':
-                          session.kind === 'intro' || session.kind === 'quiz' || session.kind === 'talk',
-                        'bg-coral-soft text-coral-strong': session.kind === 'sponsored',
+                          session.kind === 'intro' || session.kind === 'quiz' || session.kind === 'talk' || session.kind === 'sponsored',
                         'bg-gray-50 dark:bg-verse-900/60 text-gray-500 dark:text-gray-400':
                           session.kind === 'break' || session.kind === 'photo' || session.kind === 'other',
                       }"
@@ -516,71 +515,66 @@ const calendarUrl = computed(() => {
 
                   <!-- Content -->
                   <div class="flex-1 min-w-0">
-                    <!-- Eyebrow: kind label + duration -->
-                    <div
-                      v-if="(session.kind && session.kind !== 'talk') || session.durationMinutes"
-                      class="flex items-center gap-2.5 mb-1 flex-wrap font-mono text-[10.5px] uppercase tracking-[0.12em]"
+                    <!-- Break / photo: small italic single line -->
+                    <p
+                      v-if="session.kind === 'break' || session.kind === 'photo'"
+                      class="text-[15px] italic text-gray-500 dark:text-gray-400 flex items-center gap-3 flex-wrap"
                     >
+                      <span>{{ session.title }}</span>
                       <span
-                        v-if="session.kind === 'sponsored'"
-                        class="font-semibold text-coral-strong"
+                        v-if="session.durationMinutes"
+                        class="font-mono text-[11.5px] not-italic text-gray-400 dark:text-gray-500"
                       >
-                        Sponsor spotlight
-                      </span>
-                      <span
-                        v-else-if="session.kind && session.kind !== 'talk'"
-                        class="font-semibold text-verse-600 dark:text-verse-300"
-                      >
-                        {{ session.kind }}
-                      </span>
-                      <span v-if="session.durationMinutes" class="text-gray-400 dark:text-gray-500 normal-case tracking-normal text-[11.5px]">
                         {{ session.durationMinutes }} min
                       </span>
-                    </div>
-
-                    <!-- Title: big for talk/intro/quiz/sponsored/other; compact italic for break/photo -->
-                    <component
-                      :is="session.kind === 'sponsored' && session.sponsor ? 'Link' : 'h3'"
-                      :href="session.kind === 'sponsored' && session.sponsor ? `/sponsor/${session.sponsor.id}` : undefined"
-                      v-if="session.kind !== 'break' && session.kind !== 'photo'"
-                      class="font-display text-[22px] md:text-[24px] leading-[1.2] text-gray-900 dark:text-gray-100"
-                      :class="session.kind === 'sponsored' && session.sponsor ? 'hover:text-verse-500 transition-colors' : ''"
-                    >
-                      {{ session.title }}
-                    </component>
-                    <p
-                      v-else
-                      class="text-[15px] italic text-gray-500 dark:text-gray-400"
-                    >
-                      {{ session.title }}
                     </p>
 
-                    <!-- Subtitle: speakers (for talk/intro/quiz/other) or sponsor attribution -->
-                    <div
-                      v-if="session.speakers?.length && session.kind !== 'sponsored' && session.kind !== 'break' && session.kind !== 'photo'"
-                      class="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[14px] text-gray-500 dark:text-gray-400"
-                    >
-                      <Link
-                        v-for="(speaker, i) in session.speakers"
-                        :key="speaker.id"
-                        :href="`/speaker/${speaker.id}`"
-                        class="hover:text-verse-500 dark:hover:text-verse-400 transition-colors"
+                    <!-- Talk / intro / quiz / sponsored / other: title row -->
+                    <template v-else>
+                      <div class="flex items-baseline gap-3 flex-wrap">
+                        <component
+                          :is="session.kind === 'sponsored' && session.sponsor ? 'Link' : 'h3'"
+                          :href="session.kind === 'sponsored' && session.sponsor ? `/sponsor/${session.sponsor.id}` : undefined"
+                          class="font-display text-[22px] md:text-[24px] leading-[1.2] text-gray-900 dark:text-gray-100"
+                          :class="session.kind === 'sponsored' && session.sponsor ? 'hover:text-verse-500 transition-colors' : ''"
+                        >
+                          {{ session.title }}
+                        </component>
+                        <span
+                          v-if="session.durationMinutes"
+                          class="font-mono text-[11.5px] text-gray-400 dark:text-gray-500"
+                        >
+                          {{ session.durationMinutes }} min
+                        </span>
+                      </div>
+
+                      <!-- Speakers subtitle: only for talks; "Hosted by" for quiz -->
+                      <div
+                        v-if="session.speakers?.length && (session.kind === 'talk' || session.kind === 'other')"
+                        class="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[14px] text-gray-500 dark:text-gray-400"
                       >
-                        {{ speaker.name }}<template v-if="i < session.speakers.length - 1">,</template>
-                      </Link>
-                    </div>
-                    <p
-                      v-else-if="session.kind === 'sponsored' && session.sponsor"
-                      class="mt-1 text-[13.5px] text-gray-500 dark:text-gray-400"
-                    >
-                      by
-                      <Link
-                        :href="`/sponsor/${session.sponsor.id}`"
-                        class="hover:text-verse-500 transition-colors"
+                        <Link
+                          v-for="(speaker, i) in session.speakers"
+                          :key="speaker.id"
+                          :href="`/speaker/${speaker.id}`"
+                          class="hover:text-verse-500 dark:hover:text-verse-400 transition-colors"
+                        >
+                          {{ speaker.name }}<template v-if="i < session.speakers.length - 1">,</template>
+                        </Link>
+                      </div>
+                      <p
+                        v-else-if="session.kind === 'quiz' && session.speakers?.length"
+                        class="mt-1.5 text-[14px] text-gray-500 dark:text-gray-400"
                       >
-                        {{ session.sponsor.name }}
-                      </Link>
-                    </p>
+                        Hosted by
+                        <Link
+                          v-for="(speaker, i) in session.speakers"
+                          :key="speaker.id"
+                          :href="`/speaker/${speaker.id}`"
+                          class="hover:text-verse-500 dark:hover:text-verse-400 transition-colors"
+                        >{{ speaker.name }}<template v-if="i < session.speakers.length - 1">,</template></Link>
+                      </p>
+                    </template>
                   </div>
                 </li>
               </ol>
