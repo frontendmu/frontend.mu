@@ -37,13 +37,14 @@ export default class AdminSessionsController {
 
     const data = await request.validateUsing(createSessionValidator)
 
+    const kind = data.kind ?? 'talk'
     const session = await Session.create({
       eventId: event.id,
       title: data.title,
       description: data.description,
       order: data.order,
-      kind: data.kind ?? 'talk',
-      sponsorId: data.sponsorId ?? null,
+      kind,
+      sponsorId: kind === 'sponsored' ? (data.sponsorId ?? null) : null,
       durationMinutes: data.durationMinutes ?? null,
     })
 
@@ -87,12 +88,22 @@ export default class AdminSessionsController {
 
     const data = await request.validateUsing(updateSessionValidator)
 
+    // If the kind changes away from 'sponsored', proactively clear the stale
+    // sponsor link so it can't surface again if kind flips back.
+    const nextKind = data.kind ?? session.kind
+    const sponsorId =
+      nextKind === 'sponsored'
+        ? data.sponsorId !== undefined
+          ? data.sponsorId
+          : session.sponsorId
+        : null
+
     session.merge({
       title: data.title,
       description: data.description,
       order: data.order,
-      ...(data.kind !== undefined ? { kind: data.kind } : {}),
-      ...(data.sponsorId !== undefined ? { sponsorId: data.sponsorId } : {}),
+      kind: nextKind,
+      sponsorId,
       ...(data.durationMinutes !== undefined
         ? { durationMinutes: data.durationMinutes }
         : {}),

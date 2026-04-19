@@ -4,7 +4,7 @@ import { Head } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'
 import type { Data } from '@generated/data'
 import EventCard from '~/components/event/EventCard.vue'
-import { isDateInFuture, isDateToday } from '~/utils/date'
+import { isDateInFuture, isDateInPast, isDateToday } from '~/utils/date'
 
 interface Props {
   meetups: Data.Event[]
@@ -35,12 +35,14 @@ const nextMeetup = computed(() => {
 
 const nextMeetupId = computed(() => nextMeetup.value?.id)
 
-// Apply search + status filter
+// Apply search + status filter. "Upcoming" includes same-day meetups; they're
+// only moved to "Past" the day after.
 const filteredMeetups = computed(() => {
   const q = query.value.trim().toLowerCase()
   return props.meetups.filter((m) => {
     if (statusFilter.value !== 'all') {
-      const isUpcoming = m.date ? isDateInFuture(new Date(m.date)) : false
+      const d = m.date ? new Date(m.date) : null
+      const isUpcoming = d ? !isDateInPast(d) : false
       if (statusFilter.value === 'upcoming' && !isUpcoming) return false
       if (statusFilter.value === 'past' && isUpcoming) return false
     }

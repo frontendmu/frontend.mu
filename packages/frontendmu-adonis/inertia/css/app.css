@@ -160,6 +160,11 @@ html.dark .no-gallery-stripes {
 .coral-pulse {
   animation: coral-pulse 2s infinite;
 }
+@media (prefers-reduced-motion: reduce) {
+  .coral-pulse {
+    animation: none;
+  }
+}
 
 /* Native dialog styling */
 dialog {

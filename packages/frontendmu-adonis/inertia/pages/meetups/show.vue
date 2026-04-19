@@ -122,7 +122,7 @@ async function handleCancelRsvp() {
   }
 }
 
-// Share event via Web Share API
+// Share event via Web Share API (used by the mobile RSVP bar share button)
 async function shareEvent() {
   if (!props.meetup) return
   const shareData = {
@@ -137,6 +137,31 @@ async function shareEvent() {
     rsvpSuccess.value = 'Link copied to clipboard'
     setTimeout(() => (rsvpSuccess.value = null), 2000)
   }
+}
+
+function shareText() {
+  return props.meetup ? `${props.meetup.title} — Coders.mu` : 'Coders.mu meetup'
+}
+
+function shareToTwitter() {
+  const url = encodeURIComponent(window.location.href)
+  const text = encodeURIComponent(shareText())
+  window.open(`https://x.com/intent/tweet?url=${url}&text=${text}`, '_blank', 'noopener')
+}
+
+function shareToLinkedIn() {
+  const url = encodeURIComponent(window.location.href)
+  window.open(
+    `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+    '_blank',
+    'noopener'
+  )
+}
+
+async function copyEventLink() {
+  await navigator.clipboard.writeText(window.location.href)
+  rsvpSuccess.value = 'Link copied to clipboard'
+  setTimeout(() => (rsvpSuccess.value = null), 2000)
 }
 
 const eventDate = computed(() => {
@@ -444,6 +469,7 @@ const calendarUrl = computed(() => {
                       size="md"
                       :name="session.speakers[0].name"
                       :github-username="session.speakers[0].githubUsername"
+                      :avatar-url="session.speakers[0].avatarUrl"
                       class="ring-2 ring-gray-100 dark:ring-verse-900"
                     />
                     <!-- Sponsored: sponsor logo if present, else icon -->
@@ -547,14 +573,19 @@ const calendarUrl = computed(() => {
 
                     <!-- Intro / quiz / sponsored: title + related entity inline -->
                     <div v-else class="flex items-baseline gap-x-3 gap-y-1 flex-wrap">
-                      <component
-                        :is="session.kind === 'sponsored' && session.sponsor ? 'Link' : 'h3'"
-                        :href="session.kind === 'sponsored' && session.sponsor ? `/sponsor/${session.sponsor.id}` : undefined"
-                        class="font-display text-[22px] md:text-[24px] leading-[1.2] text-gray-900 dark:text-gray-100"
-                        :class="session.kind === 'sponsored' && session.sponsor ? 'hover:text-verse-500 transition-colors' : ''"
+                      <Link
+                        v-if="session.kind === 'sponsored' && session.sponsor"
+                        :href="`/sponsor/${session.sponsor.id}`"
+                        class="font-display text-[22px] md:text-[24px] leading-[1.2] text-gray-900 dark:text-gray-100 hover:text-verse-500 transition-colors"
                       >
                         {{ session.title }}
-                      </component>
+                      </Link>
+                      <h3
+                        v-else
+                        class="font-display text-[22px] md:text-[24px] leading-[1.2] text-gray-900 dark:text-gray-100"
+                      >
+                        {{ session.title }}
+                      </h3>
                       <span
                         v-if="session.kind === 'sponsored' && session.sponsor"
                         class="text-[14px] text-gray-500 dark:text-gray-400"
@@ -719,16 +750,16 @@ const calendarUrl = computed(() => {
               <button
                 type="button"
                 class="share-btn w-9 h-9 rounded-full border border-gray-200 dark:border-verse-800 grid place-items-center text-gray-500 dark:text-gray-400 hover:border-verse-400 hover:text-verse-500 transition-colors"
-                aria-label="Share via Twitter"
-                @click="shareEvent"
+                aria-label="Share on X / Twitter"
+                @click="shareToTwitter"
               >
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h3l-7 8 8 12h-6l-5-7-6 7H2l7-9L2 2h6l4 6 6-6z" /></svg>
               </button>
               <button
                 type="button"
                 class="share-btn w-9 h-9 rounded-full border border-gray-200 dark:border-verse-800 grid place-items-center text-gray-500 dark:text-gray-400 hover:border-verse-400 hover:text-verse-500 transition-colors"
-                aria-label="Share via LinkedIn"
-                @click="shareEvent"
+                aria-label="Share on LinkedIn"
+                @click="shareToLinkedIn"
               >
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h4v4H4zM4 10h4v10H4zM10 10h4v1.5c.8-1.1 2.2-2 4-2 3 0 4 2 4 5V20h-4v-5c0-1.5-.5-2.5-2-2.5s-2 1-2 2.5V20h-4V10z" /></svg>
               </button>
@@ -736,7 +767,7 @@ const calendarUrl = computed(() => {
                 type="button"
                 class="share-btn w-9 h-9 rounded-full border border-gray-200 dark:border-verse-800 grid place-items-center text-gray-500 dark:text-gray-400 hover:border-verse-400 hover:text-verse-500 transition-colors"
                 aria-label="Copy link"
-                @click="shareEvent"
+                @click="copyEventLink"
               >
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1 1" />

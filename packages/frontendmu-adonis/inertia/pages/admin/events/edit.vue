@@ -1044,7 +1044,10 @@ async function removeSponsor(sponsorId: string) {
                     >
                       {{ session.description }}
                     </p>
-                    <div class="flex items-center gap-2 text-sm text-verse-500 dark:text-verse-400">
+                    <div
+                      v-if="session.speakers?.length"
+                      class="flex items-center gap-2 text-sm text-verse-500 dark:text-verse-400"
+                    >
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           stroke-linecap="round"

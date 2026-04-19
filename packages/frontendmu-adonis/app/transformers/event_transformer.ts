@@ -55,7 +55,6 @@ export default class EventTransformer extends BaseTransformer<Event> {
       acceptingRsvp: this.resource.acceptingRsvp,
       status: this.resource.status,
       album: this.resource.albumName,
-      photoCount: photos.length,
       coverThumbnailUrl: coverPhoto ? thumbnailFor(coverPhoto.photoUrl, 600) : null,
       updatedAt: this.resource.updatedAt?.toISO() ?? null,
       sessions: SessionTransformer.transform(sessions).depth(2),

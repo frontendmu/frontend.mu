@@ -13,7 +13,7 @@ export const createSessionValidator = vine.compile(
     order: vine.number().positive().nullable().optional(),
     kind: kindRule.optional(),
     sponsorId: vine.string().uuid().nullable().optional(),
-    durationMinutes: vine.number().positive().max(1440).nullable().optional(),
+    durationMinutes: vine.number().positive().max(1440).withoutDecimals().nullable().optional(),
     speakerIds: vine.array(vine.string().uuid()).optional(),
   })
 )
@@ -28,7 +28,7 @@ export const updateSessionValidator = vine.compile(
     order: vine.number().positive().nullable().optional(),
     kind: kindRule.optional(),
     sponsorId: vine.string().uuid().nullable().optional(),
-    durationMinutes: vine.number().positive().max(1440).nullable().optional(),
+    durationMinutes: vine.number().positive().max(1440).withoutDecimals().nullable().optional(),
     speakerIds: vine.array(vine.string().uuid()).optional(),
   })
 )
