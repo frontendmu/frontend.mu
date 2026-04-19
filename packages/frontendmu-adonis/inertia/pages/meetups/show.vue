@@ -442,122 +442,122 @@ const calendarUrl = computed(() => {
             <section v-if="meetup.sessions.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
               <span class="section-label">Agenda</span>
 
-              <div class="mt-7">
+              <ol class="mt-6 divide-y divide-dashed divide-gray-200 dark:divide-verse-900">
                 <template v-for="session in meetup.sessions" :key="session.id">
                   <!-- Minimal row: break / photo -->
-                  <article
+                  <li
                     v-if="session.kind === 'break' || session.kind === 'photo'"
-                    class="agenda-session flex items-center gap-4 py-5 border-b border-dashed border-gray-200 dark:border-verse-900 last:border-b-0"
+                    class="agenda-session flex items-center gap-3 py-3 text-gray-500 dark:text-gray-400"
                   >
                     <span
-                      class="w-9 h-9 rounded-[10px] bg-gray-50 dark:bg-verse-900/60 text-gray-500 dark:text-gray-400 grid place-items-center shrink-0"
+                      class="w-7 h-7 rounded-md bg-gray-50 dark:bg-verse-900/60 grid place-items-center shrink-0"
                     >
-                      <svg v-if="session.kind === 'break'" class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                      <svg v-if="session.kind === 'break'" class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M17 8h1a4 4 0 0 1 0 8h-1" />
                         <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z" />
                         <path d="M6 2v3M10 2v3M14 2v3" />
                       </svg>
-                      <svg v-else class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                      <svg v-else class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                         <circle cx="12" cy="13" r="4" />
                       </svg>
                     </span>
-                    <p class="flex-1 text-[17px] text-gray-700 dark:text-gray-300">
-                      {{ session.title }}
-                    </p>
+                    <p class="flex-1 text-[15px] italic">{{ session.title }}</p>
                     <span
                       v-if="session.durationMinutes"
-                      class="font-mono text-[12px] text-gray-400 dark:text-gray-500"
+                      class="font-mono text-[11.5px] text-gray-400 dark:text-gray-500"
                     >
                       {{ session.durationMinutes }} min
                     </span>
-                  </article>
+                  </li>
 
                   <!-- Sponsored row -->
-                  <article
-                    v-else-if="session.kind === 'sponsored' && session.sponsor"
-                    class="agenda-session py-6 border-b border-dashed border-gray-200 dark:border-verse-900 last:border-b-0"
+                  <li
+                    v-else-if="session.kind === 'sponsored'"
+                    class="agenda-session py-4 flex items-center gap-4 flex-wrap"
                   >
-                    <span class="font-mono text-[10.5px] uppercase tracking-[0.14em] text-coral-strong font-semibold">
-                      Sponsor spotlight
+                    <component
+                      :is="session.sponsor ? 'Link' : 'div'"
+                      :href="session.sponsor ? `/sponsor/${session.sponsor.id}` : undefined"
+                      class="flex items-center gap-3.5 min-w-0 flex-1 group/sponsor"
+                    >
+                      <img
+                        v-if="session.sponsor && (session.sponsor.logoUrl || session.sponsor.logomarkUrl)"
+                        :src="(session.sponsor.logoUrl || session.sponsor.logomarkUrl) as string"
+                        :alt="session.sponsor.name"
+                        class="h-8 w-auto object-contain opacity-90 group-hover/sponsor:opacity-100 transition-opacity shrink-0"
+                      />
+                      <div class="min-w-0 leading-tight">
+                        <span class="font-mono text-[10.5px] uppercase tracking-[0.12em] text-coral-strong font-semibold">
+                          Sponsor spotlight
+                        </span>
+                        <p class="mt-1 font-display text-[20px] md:text-[22px] leading-[1.15] text-gray-900 dark:text-gray-100 truncate">
+                          {{ session.title }}
+                        </p>
+                        <p
+                          v-if="session.sponsor"
+                          class="mt-0.5 text-[13px] text-gray-500 dark:text-gray-400 group-hover/sponsor:text-verse-500 transition-colors"
+                        >
+                          by {{ session.sponsor.name }}
+                        </p>
+                      </div>
+                    </component>
+                    <span
+                      v-if="session.durationMinutes"
+                      class="font-mono text-[11.5px] text-gray-400 dark:text-gray-500"
+                    >
+                      {{ session.durationMinutes }} min
                     </span>
-                    <div class="mt-2 flex items-center gap-4 flex-wrap">
-                      <Link
-                        :href="`/sponsor/${session.sponsor.id}`"
-                        class="flex items-center gap-4 group/sponsor"
-                      >
-                        <img
-                          v-if="session.sponsor.logoUrl || session.sponsor.logomarkUrl"
-                          :src="(session.sponsor.logoUrl || session.sponsor.logomarkUrl) as string"
-                          :alt="session.sponsor.name"
-                          class="h-10 w-auto object-contain opacity-90 group-hover/sponsor:opacity-100 transition-opacity"
-                        />
-                        <div class="leading-tight">
-                          <h3 class="font-display text-[24px] md:text-[26px] leading-[1.15] text-gray-900 dark:text-gray-100">
-                            {{ session.title }}
-                          </h3>
-                          <p class="mt-1 text-[14px] text-gray-500 dark:text-gray-400 group-hover/sponsor:text-verse-500 transition-colors">
-                            by {{ session.sponsor.name }}
-                          </p>
-                        </div>
-                      </Link>
-                      <span
-                        v-if="session.durationMinutes"
-                        class="font-mono text-[12px] text-gray-400 dark:text-gray-500 ml-auto"
-                      >
-                        {{ session.durationMinutes }} min
-                      </span>
-                    </div>
-                  </article>
+                  </li>
 
-                  <!-- Talk / intro / quiz / other: full card with speakers -->
-                  <article
+                  <!-- Talk / intro / quiz / other -->
+                  <li
                     v-else
-                    class="agenda-session py-8 border-b border-dashed border-gray-200 dark:border-verse-900 last:border-b-0"
+                    class="agenda-session py-5 flex items-start gap-5 flex-wrap md:flex-nowrap"
                   >
-                    <div class="flex items-center gap-3 mb-2 flex-wrap">
-                      <span
-                        v-if="session.kind && session.kind !== 'talk'"
-                        class="px-2 py-0.5 bg-verse-50 dark:bg-verse-900 text-verse-600 dark:text-verse-300 text-[10.5px] font-mono font-semibold uppercase tracking-[0.12em] rounded"
-                      >
-                        {{ session.kind }}
-                      </span>
-                      <span
-                        v-if="session.durationMinutes"
-                        class="font-mono text-[12px] text-gray-400 dark:text-gray-500"
-                      >
-                        {{ session.durationMinutes }} min
-                      </span>
+                    <div class="min-w-0 flex-1">
+                      <div v-if="session.kind && session.kind !== 'talk' || session.durationMinutes" class="flex items-center gap-2.5 mb-1.5 flex-wrap">
+                        <span
+                          v-if="session.kind && session.kind !== 'talk'"
+                          class="font-mono text-[10.5px] uppercase tracking-[0.12em] font-semibold text-verse-600 dark:text-verse-300"
+                        >
+                          {{ session.kind }}
+                        </span>
+                        <span
+                          v-if="session.durationMinutes"
+                          class="font-mono text-[11.5px] text-gray-400 dark:text-gray-500"
+                        >
+                          {{ session.durationMinutes }} min
+                        </span>
+                      </div>
+                      <h3 class="font-display text-[22px] md:text-[24px] leading-[1.2] text-gray-900 dark:text-gray-100">
+                        {{ session.title }}
+                      </h3>
                     </div>
-                    <h3 class="font-display text-[26px] md:text-[30px] leading-[1.1] text-gray-900 dark:text-gray-100">
-                      {{ session.title }}
-                    </h3>
-                    <div v-if="session.speakers?.length" class="mt-4 flex flex-wrap gap-x-6 gap-y-4">
+                    <div
+                      v-if="session.speakers?.length"
+                      class="flex flex-wrap gap-x-5 gap-y-2 md:justify-end md:min-w-[220px] md:pt-1"
+                    >
                       <Link
                         v-for="speaker in session.speakers"
                         :key="speaker.id"
                         :href="`/speaker/${speaker.id}`"
-                        class="flex items-center gap-3 group/speaker"
+                        class="flex items-center gap-2.5 group/speaker"
                       >
                         <SpeakerAvatar
-                          size="md"
+                          size="sm"
                           :name="speaker.name"
                           :github-username="speaker.githubUsername"
                           class="ring-2 ring-gray-100 dark:ring-verse-900 group-hover/speaker:ring-verse-500 transition-all"
                         />
-                        <div class="leading-tight">
-                          <p class="text-[15px] font-semibold text-gray-900 dark:text-gray-200 group-hover/speaker:text-verse-500 transition-colors">
-                            {{ speaker.name }}
-                          </p>
-                          <p v-if="speaker.githubUsername" class="text-[12px] text-gray-400 mt-1 font-mono">
-                            @{{ speaker.githubUsername }}
-                          </p>
-                        </div>
+                        <span class="text-[14px] font-semibold text-gray-900 dark:text-gray-200 group-hover/speaker:text-verse-500 transition-colors">
+                          {{ speaker.name }}
+                        </span>
                       </Link>
                     </div>
-                  </article>
+                  </li>
                 </template>
-              </div>
+              </ol>
             </section>
 
             <!-- Speakers (dedicated card grid when we have them) -->
