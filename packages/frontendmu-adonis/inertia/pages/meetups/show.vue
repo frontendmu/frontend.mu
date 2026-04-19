@@ -198,13 +198,51 @@ function handleScroll() {
   }
 }
 
+// Lightbox
+const lightboxIndex = ref<number | null>(null)
+const photos = computed(() => props.meetup?.photos ?? [])
+const activePhoto = computed(() =>
+  lightboxIndex.value !== null ? photos.value[lightboxIndex.value] : null
+)
+
+function openLightbox(index: number) {
+  lightboxIndex.value = index
+  document.body.style.overflow = 'hidden'
+}
+
+function closeLightbox() {
+  lightboxIndex.value = null
+  document.body.style.overflow = ''
+}
+
+function nextPhoto() {
+  if (lightboxIndex.value === null) return
+  lightboxIndex.value = (lightboxIndex.value + 1) % photos.value.length
+}
+
+function prevPhoto() {
+  if (lightboxIndex.value === null) return
+  lightboxIndex.value =
+    (lightboxIndex.value - 1 + photos.value.length) % photos.value.length
+}
+
+function handleLightboxKey(e: KeyboardEvent) {
+  if (lightboxIndex.value === null) return
+  if (e.key === 'Escape') closeLightbox()
+  else if (e.key === 'ArrowRight') nextPhoto()
+  else if (e.key === 'ArrowLeft') prevPhoto()
+}
+
 onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true })
+  window.addEventListener('keydown', handleLightboxKey)
   highlightChangedSection()
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
+  window.removeEventListener('keydown', handleLightboxKey)
+  document.body.style.overflow = ''
 })
 
 // Highlight a section when arriving via ?changed=<section> from a notification link.
@@ -555,35 +593,21 @@ const calendarUrl = computed(() => {
                 <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
               </div>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                <div
-                  v-for="photo in meetup.photos.slice(0, 6)"
+                <button
+                  v-for="(photo, index) in meetup.photos"
                   :key="photo.id"
-                  class="relative rounded-lg overflow-hidden aspect-[4/3]"
+                  type="button"
+                  class="relative rounded-lg overflow-hidden aspect-[4/3] group focus:outline-none focus:ring-2 focus:ring-verse-500"
+                  @click="openLightbox(index)"
                 >
                   <img
-                    :src="photo.photoUrl"
+                    :src="photo.thumbnailUrl"
                     :alt="photo.caption || 'Event photo'"
-                    class="w-full h-full object-cover"
+                    loading="lazy"
+                    class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
                   />
-                </div>
+                </button>
               </div>
-              <a
-                v-if="meetup.album"
-                :href="meetup.album"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 text-sm font-bold text-verse-500 hover:text-verse-600 transition-colors"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-                View full album
-              </a>
             </section>
           </div>
 
@@ -920,6 +944,73 @@ const calendarUrl = computed(() => {
               RSVP
             </button>
           </template>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
+
+  <!-- Photo Lightbox -->
+  <Teleport to="body">
+    <Transition
+      enter-active-class="transition-opacity duration-150"
+      leave-active-class="transition-opacity duration-150"
+      enter-from-class="opacity-0"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="activePhoto && meetup"
+        class="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Photo viewer"
+        @click.self="closeLightbox"
+      >
+        <button
+          type="button"
+          class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors"
+          aria-label="Close"
+          @click="closeLightbox"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <button
+          v-if="meetup.photos.length > 1"
+          type="button"
+          class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center text-white/80 hover:text-white rounded-full bg-black/40 hover:bg-black/60 transition-colors"
+          aria-label="Previous photo"
+          @click="prevPhoto"
+        >
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <button
+          v-if="meetup.photos.length > 1"
+          type="button"
+          class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center text-white/80 hover:text-white rounded-full bg-black/40 hover:bg-black/60 transition-colors"
+          aria-label="Next photo"
+          @click="nextPhoto"
+        >
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+
+        <img
+          :key="activePhoto.id"
+          :src="activePhoto.photoUrl"
+          :alt="activePhoto.caption || 'Event photo'"
+          class="max-w-[95vw] max-h-[90vh] object-contain select-none"
+        />
+
+        <div
+          class="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/50 text-white text-xs font-medium tabular-nums"
+        >
+          {{ (lightboxIndex ?? 0) + 1 }} / {{ meetup.photos.length }}
         </div>
       </div>
     </Transition>

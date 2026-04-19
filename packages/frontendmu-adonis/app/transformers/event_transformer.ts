@@ -6,6 +6,10 @@ import type Sponsor from '#models/sponsor'
 import SessionTransformer from '#transformers/session_transformer'
 import SponsorTransformer from '#transformers/sponsor_transformer'
 
+function thumbnailFor(url: string, width: number): string {
+  return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=${width}&output=webp`
+}
+
 export default class EventTransformer extends BaseTransformer<Event> {
   toObject() {
     const sessions = (
@@ -51,6 +55,7 @@ export default class EventTransformer extends BaseTransformer<Event> {
       photos: photos.map((photo) => ({
         id: photo.id,
         photoUrl: photo.photoUrl,
+        thumbnailUrl: thumbnailFor(photo.photoUrl, 800),
         caption: photo.caption,
       })),
     }

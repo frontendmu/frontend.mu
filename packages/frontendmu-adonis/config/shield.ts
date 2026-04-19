@@ -18,6 +18,8 @@ const shieldConfig = defineConfig({
         'https://avatars.githubusercontent.com',
         'https://github.com',
         'https://lh3.googleusercontent.com',
+        'https://cdn.jsdelivr.net',
+        'https://images.weserv.nl',
       ],
       fontSrc: [`'self'`, 'https://fonts.gstatic.com'],
       connectSrc: [`'self'`, 'https://fonts.googleapis.com', 'https://fonts.gstatic.com'],
