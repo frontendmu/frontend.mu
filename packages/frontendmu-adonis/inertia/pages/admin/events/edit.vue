@@ -45,15 +45,36 @@ onUnmounted(() => {
 })
 
 // Session form state
+type SessionKind = 'talk' | 'intro' | 'sponsored' | 'break' | 'photo' | 'quiz' | 'other'
+
+const SESSION_KIND_OPTIONS: Array<{ value: SessionKind; label: string; hint: string }> = [
+  { value: 'talk', label: 'Talk', hint: 'Speaker-led session' },
+  { value: 'intro', label: 'Intro', hint: 'Welcome / MC segment' },
+  { value: 'sponsored', label: 'Sponsored', hint: 'Sponsor spotlight' },
+  { value: 'break', label: 'Break', hint: 'Lunch, coffee, etc.' },
+  { value: 'photo', label: 'Group photo', hint: 'Everyone on stage' },
+  { value: 'quiz', label: 'Quiz', hint: 'Hosted quiz segment' },
+  { value: 'other', label: 'Other', hint: 'Custom segment' },
+]
+
+const KINDS_WITH_SPEAKERS: SessionKind[] = ['talk', 'intro', 'quiz', 'other']
+const KINDS_WITH_SPONSOR: SessionKind[] = ['sponsored']
+
 const editingSession = ref<Data.Session | null>(null)
 const sessionForm = ref({
   title: '',
   description: '',
+  kind: 'talk' as SessionKind,
+  sponsorId: null as string | null,
+  durationMinutes: null as number | null,
   speakerIds: [] as string[],
 })
 const sessionFormErrors = ref<Record<string, string>>({})
 const sessionFormProcessing = ref(false)
 const speakerSearch = ref('')
+
+const showSpeakers = computed(() => KINDS_WITH_SPEAKERS.includes(sessionForm.value.kind))
+const showSponsor = computed(() => KINDS_WITH_SPONSOR.includes(sessionForm.value.kind))
 
 // Form state for event
 const formEventDate = computed(() => {
@@ -107,11 +128,23 @@ const draggedSession = ref<Data.Session | null>(null)
 const dragOverIndex = ref<number | null>(null)
 
 // Session management functions
-function openNewSessionForm() {
+const QUICK_ADD_PRESETS: Record<string, { kind: SessionKind; title: string }> = {
+  intro: { kind: 'intro', title: 'Welcome & intro' },
+  break: { kind: 'break', title: 'Lunch' },
+  photo: { kind: 'photo', title: 'Group photo' },
+  quiz: { kind: 'quiz', title: 'Quiz' },
+  sponsored: { kind: 'sponsored', title: 'Sponsor spotlight' },
+}
+
+function openNewSessionForm(presetKey?: keyof typeof QUICK_ADD_PRESETS) {
+  const preset = presetKey ? QUICK_ADD_PRESETS[presetKey] : null
   editingSession.value = null
   sessionForm.value = {
-    title: '',
+    title: preset?.title ?? '',
     description: '',
+    kind: preset?.kind ?? 'talk',
+    sponsorId: null,
+    durationMinutes: null,
     speakerIds: [],
   }
   sessionFormErrors.value = {}
@@ -126,6 +159,9 @@ function openEditSessionForm(session: Data.Session) {
   sessionForm.value = {
     title: session.title,
     description: session.description || '',
+    kind: ((session as { kind?: SessionKind }).kind ?? 'talk') as SessionKind,
+    sponsorId: (session as { sponsorId?: string | null }).sponsorId ?? null,
+    durationMinutes: (session as { durationMinutes?: number | null }).durationMinutes ?? null,
     speakerIds: session.speakers?.map((s) => s.id) || [],
   }
   sessionFormErrors.value = {}
@@ -142,6 +178,9 @@ function closeSessionForm() {
   sessionForm.value = {
     title: '',
     description: '',
+    kind: 'talk',
+    sponsorId: null,
+    durationMinutes: null,
     speakerIds: [],
   }
   sessionFormErrors.value = {}
@@ -221,8 +260,14 @@ async function saveSession() {
 
     const method = editingSession.value ? 'PUT' : 'POST'
 
+    const kind = sessionForm.value.kind
     const payload = {
-      ...sessionForm.value,
+      title: sessionForm.value.title,
+      description: sessionForm.value.description,
+      kind,
+      durationMinutes: sessionForm.value.durationMinutes,
+      sponsorId: KINDS_WITH_SPONSOR.includes(kind) ? sessionForm.value.sponsorId : null,
+      speakerIds: KINDS_WITH_SPEAKERS.includes(kind) ? sessionForm.value.speakerIds : [],
       order: editingSession.value?.order ?? sessions.value.length + 1,
     }
 
@@ -475,8 +520,72 @@ async function removeSponsor(sponsorId: string) {
               />
             </div>
 
+            <!-- Type + Duration -->
+            <div class="grid grid-cols-[1fr_140px] gap-3">
+              <div>
+                <label
+                  for="sessionKind"
+                  class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
+                >
+                  Type
+                </label>
+                <select
+                  id="sessionKind"
+                  v-model="sessionForm.kind"
+                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-700 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                >
+                  <option v-for="opt in SESSION_KIND_OPTIONS" :key="opt.value" :value="opt.value">
+                    {{ opt.label }} — {{ opt.hint }}
+                  </option>
+                </select>
+              </div>
+              <div>
+                <label
+                  for="sessionDuration"
+                  class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
+                >
+                  Duration (min)
+                </label>
+                <input
+                  id="sessionDuration"
+                  v-model.number="sessionForm.durationMinutes"
+                  type="number"
+                  min="1"
+                  max="1440"
+                  placeholder="—"
+                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-700 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <!-- Sponsor (sponsored kind only) -->
+            <div v-if="showSponsor">
+              <label
+                for="sessionSponsor"
+                class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
+              >
+                Sponsor *
+              </label>
+              <select
+                id="sessionSponsor"
+                v-model="sessionForm.sponsorId"
+                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-700 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+              >
+                <option :value="null">— Pick a sponsor —</option>
+                <option v-for="sp in sponsors" :key="sp.id" :value="sp.id">
+                  {{ sp.name }}
+                </option>
+              </select>
+              <p
+                v-if="sponsors.length === 0"
+                class="mt-2 text-xs text-verse-500 dark:text-verse-400"
+              >
+                Attach sponsors to this event first (below the Sessions section).
+              </p>
+            </div>
+
             <!-- Speakers -->
-            <div>
+            <div v-if="showSpeakers">
               <label class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2">
                 Speakers
               </label>
@@ -847,10 +956,32 @@ async function removeSponsor(sponsorId: string) {
             <h3 class="text-lg font-medium text-verse-900 dark:text-verse-100">Sessions</h3>
             <button
               type="button"
-              @click="openNewSessionForm"
+              @click="() => openNewSessionForm()"
               class="px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white text-sm font-medium squircle rounded-lg transition-colors"
             >
               Add Session
+            </button>
+          </div>
+
+          <!-- Quick-add presets -->
+          <div class="flex flex-wrap items-center gap-2 mb-4 pb-4 border-b border-verse-200 dark:border-verse-700">
+            <span class="text-xs font-medium text-verse-500 dark:text-verse-400 uppercase tracking-wide">
+              Quick add
+            </span>
+            <button
+              v-for="preset in [
+                { key: 'intro', label: '+ Intro' },
+                { key: 'break', label: '+ Lunch break' },
+                { key: 'photo', label: '+ Group photo' },
+                { key: 'quiz', label: '+ Quiz' },
+                { key: 'sponsored', label: '+ Sponsored' },
+              ]"
+              :key="preset.key"
+              type="button"
+              @click="openNewSessionForm(preset.key as 'intro' | 'break' | 'photo' | 'quiz' | 'sponsored')"
+              class="px-2.5 py-1 text-xs font-medium text-verse-700 dark:text-verse-300 bg-white dark:bg-verse-700 border border-verse-300 dark:border-verse-600 hover:border-verse-500 hover:text-verse-900 dark:hover:text-verse-100 squircle rounded-md transition-colors"
+            >
+              {{ preset.label }}
             </button>
           </div>
 
@@ -885,15 +1016,27 @@ async function removeSponsor(sponsorId: string) {
                     </svg>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2 mb-1">
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
                       <span
                         class="px-2 py-0.5 bg-verse-200 dark:bg-verse-600 text-verse-700 dark:text-verse-200 text-xs font-medium rounded"
                       >
                         #{{ index + 1 }}
                       </span>
+                      <span
+                        v-if="session.kind && session.kind !== 'talk'"
+                        class="px-2 py-0.5 bg-coral-soft text-coral-strong text-[10.5px] font-mono font-semibold uppercase tracking-wider rounded"
+                      >
+                        {{ session.kind }}
+                      </span>
                       <h4 class="font-medium text-verse-900 dark:text-verse-100 truncate">
                         {{ session.title }}
                       </h4>
+                      <span
+                        v-if="session.durationMinutes"
+                        class="text-xs font-mono text-verse-500 dark:text-verse-400"
+                      >
+                        · {{ session.durationMinutes }}m
+                      </span>
                     </div>
                     <p
                       v-if="session.description"
