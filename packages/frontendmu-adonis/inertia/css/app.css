@@ -108,14 +108,14 @@ html.dark {
 
 /* Editorial section label: uppercase mono with a leading hairline */
 .section-label {
-  @apply inline-flex items-center gap-2.5 text-[11px] font-semibold uppercase;
+  @apply inline-flex items-center gap-3 text-[13px] font-semibold uppercase;
   font-family: var(--font-mono);
   letter-spacing: 0.14em;
   color: var(--color-coral-strong);
 }
 .section-label::before {
   content: '';
-  width: 18px;
+  width: 24px;
   height: 1px;
   background: currentColor;
   opacity: 0.6;
