@@ -22,13 +22,24 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      actions: write
 
     steps:
+      - name: Validate RELEASE_TOKEN secret
+        env:
+          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          if [ -z "${RELEASE_TOKEN:-}" ]; then
+            echo "::error::RELEASE_TOKEN secret is not set. The production branch is protected, so the default GITHUB_TOKEN cannot push to it. Create a fine-grained PAT with Contents: Read and write on this repo, grant its user bypass permission on the production branch protection rule, and store it as the repository secret RELEASE_TOKEN."
+            exit 1
+          fi
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: production
+          # RELEASE_TOKEN must be able to bypass branch protection on production.
+          # See the workflow comments in the validation step above.
+          token: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Configure git
         run: |
@@ -57,16 +68,6 @@ jobs:
           git push origin production
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
-      - name: Trigger Adonis deploy
-        if: steps.merge.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # A push signed by GITHUB_TOKEN does not trigger other workflows, so we
-          # explicitly dispatch the deploy workflow against the newly-updated
-          # production ref.
-          gh workflow run deploy-adonis.yml --ref production
-
       - name: Summary
         if: always()
         run: |
@@ -74,7 +75,7 @@ jobs:
             {
               echo "### Released main → production"
               echo ""
-              echo "Adonis deploy workflow dispatched against \`production\`."
+              echo "The push to \`production\` will fire the Deploy AdonisJS workflow if the merge touched \`packages/frontendmu-adonis/**\` or the deploy workflow file itself."
             } >> "$GITHUB_STEP_SUMMARY"
           else
             echo "### No changes to release" >> "$GITHUB_STEP_SUMMARY"
