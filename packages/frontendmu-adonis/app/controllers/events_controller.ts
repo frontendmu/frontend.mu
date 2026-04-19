@@ -13,7 +13,7 @@ export default class EventsController {
       .where('status', 'published')
       .orderBy('eventDate', 'desc')
       .preload('sessions', (query) => {
-        query.preload('speakers')
+        query.preload('speakers').preload('sponsor').orderBy('order', 'asc')
       })
 
     const meetups = EventTransformer.transform(events)
@@ -38,7 +38,7 @@ export default class EventsController {
       .where(lookupColumn, params.idOrSlug)
       .where('status', 'published')
       .preload('sessions', (query) => {
-        query.preload('speakers')
+        query.preload('speakers').preload('sponsor').orderBy('order', 'asc')
       })
       .preload('photos')
       .preload('sponsors')

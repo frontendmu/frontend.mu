@@ -3,7 +3,19 @@ import { randomUUID } from 'node:crypto'
 import { BaseModel, column, belongsTo, manyToMany, beforeCreate } from '@adonisjs/lucid/orm'
 import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Event from '#models/event'
+import Sponsor from '#models/sponsor'
 import User from '#models/user'
+
+export const SESSION_KINDS = [
+  'talk',
+  'intro',
+  'sponsored',
+  'break',
+  'photo',
+  'quiz',
+  'other',
+] as const
+export type SessionKind = (typeof SESSION_KINDS)[number]
 
 export default class Session extends BaseModel {
   static selfAssignPrimaryKey = true
@@ -30,6 +42,15 @@ export default class Session extends BaseModel {
   @column()
   declare order: number | null
 
+  @column()
+  declare kind: SessionKind
+
+  @column()
+  declare sponsorId: string | null
+
+  @column()
+  declare durationMinutes: number | null
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
@@ -39,6 +60,9 @@ export default class Session extends BaseModel {
   // Relationships
   @belongsTo(() => Event)
   declare event: BelongsTo<typeof Event>
+
+  @belongsTo(() => Sponsor)
+  declare sponsor: BelongsTo<typeof Sponsor>
 
   @manyToMany(() => User, {
     pivotTable: 'session_speakers',

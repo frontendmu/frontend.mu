@@ -18,7 +18,7 @@ export default class AdminSessionsController {
     await bouncer.with(SessionPolicy).authorize('create')
 
     await event.load('sessions', (query) => {
-      query.preload('speakers').orderBy('order', 'asc')
+      query.preload('speakers').preload('sponsor').orderBy('order', 'asc')
     })
 
     return response.json({
@@ -42,6 +42,9 @@ export default class AdminSessionsController {
       title: data.title,
       description: data.description,
       order: data.order,
+      kind: data.kind ?? 'talk',
+      sponsorId: data.sponsorId ?? null,
+      durationMinutes: data.durationMinutes ?? null,
     })
 
     if (data.speakerIds && data.speakerIds.length > 0) {
@@ -88,6 +91,11 @@ export default class AdminSessionsController {
       title: data.title,
       description: data.description,
       order: data.order,
+      ...(data.kind !== undefined ? { kind: data.kind } : {}),
+      ...(data.sponsorId !== undefined ? { sponsorId: data.sponsorId } : {}),
+      ...(data.durationMinutes !== undefined
+        ? { durationMinutes: data.durationMinutes }
+        : {}),
     })
 
     await session.save()
