@@ -432,90 +432,143 @@ const calendarUrl = computed(() => {
             <!-- About -->
             <section v-if="meetup.description" class="pb-12 border-b border-gray-200 dark:border-verse-900">
               <span class="section-label">About this meetup</span>
-              <h2 class="font-display text-[clamp(28px,3.8vw,36px)] leading-[1.05] text-gray-900 dark:text-gray-100 mt-3">
-                What to expect when you <span class="font-display-italic text-verse-500 dark:text-verse-300">join us</span>
-              </h2>
               <div
-                class="prose prose-lg dark:prose-invert max-w-[68ch] mt-5 leading-[1.7] text-gray-700 dark:text-gray-400"
+                class="prose prose-lg dark:prose-invert max-w-[68ch] mt-6 text-[19px] leading-[1.75] text-gray-700 dark:text-gray-400"
                 v-html="sanitizeHtml(meetup.description)"
               />
             </section>
 
-            <!-- Agenda (timeline) -->
+            <!-- Agenda -->
             <section v-if="meetup.sessions.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
               <span class="section-label">Agenda</span>
-              <h2 class="font-display text-[clamp(28px,3.8vw,36px)] leading-[1.05] text-gray-900 dark:text-gray-100 mt-3">
-                {{ meetup.sessions.length }} session<template v-if="meetup.sessions.length !== 1">s</template>,
-                <span class="font-display-italic text-verse-500 dark:text-verse-300">one day</span>
-              </h2>
 
-              <div class="mt-8">
-                <article
-                  v-for="(session, index) in meetup.sessions"
-                  :key="session.id"
-                  class="agenda-session grid grid-cols-[90px_1fr] md:grid-cols-[110px_1fr] gap-6 md:gap-7 py-6 border-b border-dashed border-gray-200 dark:border-verse-900 last:border-b-0 relative"
-                >
-                  <div class="font-mono text-[13px] font-semibold text-verse-600 dark:text-verse-300 relative pt-1">
-                    <span>{{ session.startTime || '—' }}</span>
-                    <!-- timeline dot -->
+              <div class="mt-7">
+                <template v-for="session in meetup.sessions" :key="session.id">
+                  <!-- Minimal row: break / photo -->
+                  <article
+                    v-if="session.kind === 'break' || session.kind === 'photo'"
+                    class="agenda-session flex items-center gap-4 py-5 border-b border-dashed border-gray-200 dark:border-verse-900 last:border-b-0"
+                  >
                     <span
-                      class="hidden md:block absolute right-[-20px] top-[8px] w-[9px] h-[9px] rounded-full bg-white dark:bg-verse-950 border-2 border-verse-600 dark:border-verse-300"
-                    />
-                  </div>
-                  <div class="md:pl-5 border-l border-gray-200 dark:border-verse-900">
-                    <div class="flex flex-wrap items-center gap-2 mb-2">
-                      <span v-if="session.kind" class="font-mono text-[10.5px] uppercase tracking-[0.05em] font-medium px-1.5 py-0.5 rounded bg-verse-50 dark:bg-verse-900 text-verse-600 dark:text-verse-300">
-                        {{ session.kind }}
-                      </span>
-                      <span v-if="session.duration" class="font-mono text-[11.5px] text-gray-400 dark:text-gray-500">
-                        {{ session.duration }}
+                      class="w-9 h-9 rounded-[10px] bg-gray-50 dark:bg-verse-900/60 text-gray-500 dark:text-gray-400 grid place-items-center shrink-0"
+                    >
+                      <svg v-if="session.kind === 'break'" class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 8h1a4 4 0 0 1 0 8h-1" />
+                        <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z" />
+                        <path d="M6 2v3M10 2v3M14 2v3" />
+                      </svg>
+                      <svg v-else class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                        <circle cx="12" cy="13" r="4" />
+                      </svg>
+                    </span>
+                    <p class="flex-1 text-[17px] text-gray-700 dark:text-gray-300">
+                      {{ session.title }}
+                    </p>
+                    <span
+                      v-if="session.durationMinutes"
+                      class="font-mono text-[12px] text-gray-400 dark:text-gray-500"
+                    >
+                      {{ session.durationMinutes }} min
+                    </span>
+                  </article>
+
+                  <!-- Sponsored row -->
+                  <article
+                    v-else-if="session.kind === 'sponsored' && session.sponsor"
+                    class="agenda-session py-6 border-b border-dashed border-gray-200 dark:border-verse-900 last:border-b-0"
+                  >
+                    <span class="font-mono text-[10.5px] uppercase tracking-[0.14em] text-coral-strong font-semibold">
+                      Sponsor spotlight
+                    </span>
+                    <div class="mt-2 flex items-center gap-4 flex-wrap">
+                      <Link
+                        :href="`/sponsor/${session.sponsor.id}`"
+                        class="flex items-center gap-4 group/sponsor"
+                      >
+                        <img
+                          v-if="session.sponsor.logoUrl || session.sponsor.logomarkUrl"
+                          :src="(session.sponsor.logoUrl || session.sponsor.logomarkUrl) as string"
+                          :alt="session.sponsor.name"
+                          class="h-10 w-auto object-contain opacity-90 group-hover/sponsor:opacity-100 transition-opacity"
+                        />
+                        <div class="leading-tight">
+                          <h3 class="font-display text-[24px] md:text-[26px] leading-[1.15] text-gray-900 dark:text-gray-100">
+                            {{ session.title }}
+                          </h3>
+                          <p class="mt-1 text-[14px] text-gray-500 dark:text-gray-400 group-hover/sponsor:text-verse-500 transition-colors">
+                            by {{ session.sponsor.name }}
+                          </p>
+                        </div>
+                      </Link>
+                      <span
+                        v-if="session.durationMinutes"
+                        class="font-mono text-[12px] text-gray-400 dark:text-gray-500 ml-auto"
+                      >
+                        {{ session.durationMinutes }} min
                       </span>
                     </div>
-                    <h3 class="font-display text-[20px] md:text-[22px] leading-tight text-gray-900 dark:text-gray-100">
+                  </article>
+
+                  <!-- Talk / intro / quiz / other: full card with speakers -->
+                  <article
+                    v-else
+                    class="agenda-session py-8 border-b border-dashed border-gray-200 dark:border-verse-900 last:border-b-0"
+                  >
+                    <div class="flex items-center gap-3 mb-2 flex-wrap">
+                      <span
+                        v-if="session.kind && session.kind !== 'talk'"
+                        class="px-2 py-0.5 bg-verse-50 dark:bg-verse-900 text-verse-600 dark:text-verse-300 text-[10.5px] font-mono font-semibold uppercase tracking-[0.12em] rounded"
+                      >
+                        {{ session.kind }}
+                      </span>
+                      <span
+                        v-if="session.durationMinutes"
+                        class="font-mono text-[12px] text-gray-400 dark:text-gray-500"
+                      >
+                        {{ session.durationMinutes }} min
+                      </span>
+                    </div>
+                    <h3 class="font-display text-[26px] md:text-[30px] leading-[1.1] text-gray-900 dark:text-gray-100">
                       {{ session.title }}
                     </h3>
-                    <div v-if="session.speakers?.length" class="mt-3 flex flex-wrap gap-4">
+                    <div v-if="session.speakers?.length" class="mt-4 flex flex-wrap gap-x-6 gap-y-4">
                       <Link
                         v-for="speaker in session.speakers"
                         :key="speaker.id"
                         :href="`/speaker/${speaker.id}`"
-                        class="flex items-center gap-2.5 group/speaker"
+                        class="flex items-center gap-3 group/speaker"
                       >
                         <SpeakerAvatar
-                          size="sm"
+                          size="md"
                           :name="speaker.name"
                           :github-username="speaker.githubUsername"
                           class="ring-2 ring-gray-100 dark:ring-verse-900 group-hover/speaker:ring-verse-500 transition-all"
                         />
                         <div class="leading-tight">
-                          <p class="text-sm font-semibold text-gray-900 dark:text-gray-200 group-hover/speaker:text-verse-500 transition-colors">
+                          <p class="text-[15px] font-semibold text-gray-900 dark:text-gray-200 group-hover/speaker:text-verse-500 transition-colors">
                             {{ speaker.name }}
                           </p>
-                          <p v-if="speaker.githubUsername" class="text-[11px] text-gray-400 mt-0.5 font-mono">
+                          <p v-if="speaker.githubUsername" class="text-[12px] text-gray-400 mt-1 font-mono">
                             @{{ speaker.githubUsername }}
                           </p>
                         </div>
                       </Link>
                     </div>
-                  </div>
-                </article>
+                  </article>
+                </template>
               </div>
             </section>
 
             <!-- Speakers (dedicated card grid when we have them) -->
             <section v-if="allSpeakers.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
               <span class="section-label">Speakers</span>
-              <h2 class="font-display text-[clamp(28px,3.8vw,36px)] leading-[1.05] text-gray-900 dark:text-gray-100 mt-3">
-                {{ allSpeakers.length }}
-                builder<template v-if="allSpeakers.length !== 1">s</template>,
-                <span class="font-display-italic text-verse-500 dark:text-verse-300">one lineup</span>
-              </h2>
               <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Link
                   v-for="sp in allSpeakers"
                   :key="sp.id"
                   :href="`/speaker/${sp.id}`"
-                  class="flex items-start gap-4 p-4 rounded-xl border border-gray-200 dark:border-verse-900 hover:border-verse-300 dark:hover:border-verse-700 bg-white dark:bg-verse-950 transition-colors"
+                  class="flex items-start gap-4 p-5 rounded-xl border border-gray-200 dark:border-verse-900 hover:border-verse-300 dark:hover:border-verse-700 bg-white dark:bg-verse-950 transition-colors"
                 >
                   <SpeakerAvatar
                     size="md"
@@ -525,10 +578,10 @@ const calendarUrl = computed(() => {
                     class="shrink-0"
                   />
                   <div class="min-w-0">
-                    <p class="font-display text-[18px] text-gray-900 dark:text-gray-100 leading-tight">
+                    <p class="font-display text-[22px] text-gray-900 dark:text-gray-100 leading-[1.15]">
                       {{ sp.name }}
                     </p>
-                    <p v-if="sp.githubUsername" class="font-mono text-[11px] uppercase tracking-[0.08em] text-verse-600 dark:text-verse-400 mt-1.5">
+                    <p v-if="sp.githubUsername" class="font-mono text-[12px] uppercase tracking-[0.08em] text-verse-600 dark:text-verse-400 mt-2">
                       @{{ sp.githubUsername }}
                     </p>
                   </div>
@@ -538,12 +591,7 @@ const calendarUrl = computed(() => {
 
             <!-- Attendees -->
             <section v-if="attendees.length > 0" class="py-12 border-b border-gray-200 dark:border-verse-900">
-              <span class="section-label">Who's coming</span>
-              <h2 class="font-display text-[clamp(28px,3.8vw,36px)] leading-[1.05] text-gray-900 dark:text-gray-100 mt-3">
-                <span class="font-display-italic text-verse-500 dark:text-verse-300">{{ rsvpCount }} builder<template v-if="rsvpCount !== 1">s</template></span>
-                <template v-if="isPast"> showed up</template>
-                <template v-else> already in</template>
-              </h2>
+              <span class="section-label">{{ isPast ? 'Who came' : "Who's coming" }}</span>
               <div class="mt-6 flex items-center gap-4 flex-wrap">
                 <div class="flex -space-x-2.5">
                   <template v-for="attendee in attendees.slice(0, 8)" :key="attendee.id">
@@ -562,7 +610,7 @@ const calendarUrl = computed(() => {
                     +{{ attendees.length - 8 }}
                   </div>
                 </div>
-                <p class="font-mono text-[13px] text-gray-500 dark:text-gray-400">
+                <p class="font-mono text-[14px] text-gray-500 dark:text-gray-400">
                   <strong class="text-gray-900 dark:text-gray-100 font-bold">{{ rsvpCount }} attending</strong>
                   <template v-if="spotsRemaining !== null && !isPast"> · {{ spotsRemaining }} spots left</template>
                 </p>
@@ -571,13 +619,8 @@ const calendarUrl = computed(() => {
 
             <!-- Photo Gallery (past only) -->
             <section v-if="meetup.photos.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
-              <div class="flex items-end justify-between gap-4 flex-wrap">
-                <div>
-                  <span class="section-label">Event Recap</span>
-                  <h2 class="font-display text-[clamp(28px,3.8vw,36px)] leading-[1.05] text-gray-900 dark:text-gray-100 mt-3">
-                    A look <span class="font-display-italic text-verse-500 dark:text-verse-300">back</span>
-                  </h2>
-                </div>
+              <div class="flex items-center justify-between gap-4 flex-wrap">
+                <span class="section-label">Photos</span>
                 <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-gray-400 dark:text-gray-500">
                   {{ meetup.photos.length }} photos · tap to expand
                 </span>
@@ -603,9 +646,6 @@ const calendarUrl = computed(() => {
             <!-- Sponsors -->
             <section v-if="meetup.sponsors.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
               <span class="section-label">Sponsors</span>
-              <h2 class="font-display text-[clamp(28px,3.8vw,36px)] leading-[1.05] text-gray-900 dark:text-gray-100 mt-3">
-                Made possible by <span class="font-display-italic text-verse-500 dark:text-verse-300">local support</span>
-              </h2>
               <div
                 class="mt-6 flex flex-wrap gap-x-10 gap-y-4 items-center px-7 py-6 rounded-xl border border-dashed border-gray-300 dark:border-verse-800 bg-white dark:bg-verse-950"
               >
