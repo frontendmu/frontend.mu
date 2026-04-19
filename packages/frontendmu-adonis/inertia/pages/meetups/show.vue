@@ -31,7 +31,6 @@ const showMobileRsvp = ref(false)
 
 // Check if user has an active RSVP
 const hasRsvp = computed(() => !!props.userRsvp)
-const rsvpStatus = computed(() => props.userRsvp?.status)
 
 // Check if event is accepting RSVPs
 const canRsvp = computed(() => {
@@ -197,8 +196,6 @@ const heroSubtitle = computed(() => {
   const sentence = firstStop > 0 ? text.slice(0, firstStop + 1) : text
   return sentence.length > 220 ? sentence.slice(0, 200).trim() + '…' : sentence
 })
-
-const formattedDateShort = computed(() => eventDate.value?.toFormat('EEE, MMM d') ?? '')
 
 const daysUntil = computed(() => {
   if (!eventDate.value || !isUpcoming.value) return null
@@ -429,7 +426,7 @@ const calendarUrl = computed(() => {
             </section>
 
             <!-- Agenda -->
-            <section v-if="meetup.sessions.length" class="pb-12 border-b border-gray-200 dark:border-verse-900">
+            <section v-if="meetup.sessions?.length" class="pb-12 border-b border-gray-200 dark:border-verse-900">
               <span class="section-label">Agenda</span>
 
               <ol class="mt-6 divide-y divide-dashed divide-gray-200 dark:divide-verse-900">
@@ -586,7 +583,7 @@ const calendarUrl = computed(() => {
                         v-else-if="session.speakers?.length"
                         class="text-[14px] text-gray-500 dark:text-gray-400"
                       >
-                        ·
+                        · by
                         <Link
                           v-for="(speaker, i) in session.speakers"
                           :key="speaker.id"
@@ -607,7 +604,7 @@ const calendarUrl = computed(() => {
             </section>
 
             <!-- Photo Gallery (past only) -->
-            <section v-if="meetup.photos.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
+            <section v-if="meetup.photos?.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
               <div class="flex items-center justify-between gap-4 flex-wrap">
                 <span class="section-label">Photos</span>
                 <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-gray-400 dark:text-gray-500">
@@ -690,7 +687,7 @@ const calendarUrl = computed(() => {
             </section>
 
             <!-- Sponsors -->
-            <section v-if="meetup.sponsors.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
+            <section v-if="meetup.sponsors?.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
               <span class="section-label">Sponsors</span>
               <div
                 class="mt-6 flex flex-wrap gap-x-10 gap-y-4 items-center px-7 py-6 rounded-xl border border-dashed border-gray-300 dark:border-verse-800 bg-white dark:bg-verse-950"

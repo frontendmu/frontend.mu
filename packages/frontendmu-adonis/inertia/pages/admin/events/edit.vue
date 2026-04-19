@@ -159,9 +159,9 @@ function openEditSessionForm(session: Data.Session) {
   sessionForm.value = {
     title: session.title,
     description: session.description || '',
-    kind: ((session as { kind?: SessionKind }).kind ?? 'talk') as SessionKind,
-    sponsorId: (session as { sponsorId?: string | null }).sponsorId ?? null,
-    durationMinutes: (session as { durationMinutes?: number | null }).durationMinutes ?? null,
+    kind: (session.kind ?? 'talk') as SessionKind,
+    sponsorId: session.sponsorId ?? null,
+    durationMinutes: session.durationMinutes ?? null,
     speakerIds: session.speakers?.map((s) => s.id) || [],
   }
   sessionFormErrors.value = {}

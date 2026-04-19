@@ -42,9 +42,7 @@ const statusLabel = computed(() =>
   status.value === 'live' ? 'Live now' : status.value === 'upcoming' ? 'Upcoming' : 'Past'
 )
 
-const speakers = computed(() => {
-  return props.event.sessions?.flatMap((session) => session.speakers).filter(Boolean) || []
-})
+const speakers = computed(() => props.event.speakers ?? [])
 
 const coverThumbnail = computed(() => props.event.coverThumbnailUrl || null)
 

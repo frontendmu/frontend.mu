@@ -4,6 +4,11 @@ const SESSION_KINDS = ['talk', 'intro', 'sponsored', 'break', 'photo', 'quiz', '
 
 export default class extends BaseSchema {
   protected tableName = 'sessions'
+  // SQLite silently ignores `PRAGMA foreign_keys` set inside a transaction,
+  // so we opt out of the automatic migration transaction. Without this, the
+  // PRAGMA OFF/ON guards below would be no-ops and the table-recreate that
+  // adds sponsor_id would cascade-wipe session_speakers.
+  static disableTransactions = true
 
   /*
    * Adding a FK column in SQLite triggers a table-recreate. The existing
