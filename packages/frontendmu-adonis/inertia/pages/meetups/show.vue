@@ -429,7 +429,7 @@ const calendarUrl = computed(() => {
             </section>
 
             <!-- Agenda -->
-            <section v-if="meetup.sessions.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
+            <section v-if="meetup.sessions.length" class="pb-12 border-b border-gray-200 dark:border-verse-900">
               <span class="section-label">Agenda</span>
 
               <ol class="mt-6 divide-y divide-dashed divide-gray-200 dark:divide-verse-900">
@@ -606,6 +606,32 @@ const calendarUrl = computed(() => {
               </ol>
             </section>
 
+            <!-- Photo Gallery (past only) -->
+            <section v-if="meetup.photos.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
+              <div class="flex items-center justify-between gap-4 flex-wrap">
+                <span class="section-label">Photos</span>
+                <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-gray-400 dark:text-gray-500">
+                  {{ meetup.photos.length }} photos · tap to expand
+                </span>
+              </div>
+              <div class="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                <button
+                  v-for="(photo, index) in meetup.photos"
+                  :key="photo.id"
+                  type="button"
+                  class="relative rounded-md overflow-hidden aspect-square group focus:outline-none focus:ring-2 focus:ring-verse-500"
+                  @click="openLightbox(index)"
+                >
+                  <img
+                    :src="photo.thumbnailUrl"
+                    :alt="photo.caption || 'Event photo'"
+                    loading="lazy"
+                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+                  />
+                </button>
+              </div>
+            </section>
+
             <!-- Speakers (dedicated card grid when we have them) -->
             <section v-if="allSpeakers.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
               <span class="section-label">Speakers</span>
@@ -660,32 +686,6 @@ const calendarUrl = computed(() => {
                   <strong class="text-gray-900 dark:text-gray-100 font-bold">{{ rsvpCount }} attending</strong>
                   <template v-if="spotsRemaining !== null && !isPast"> · {{ spotsRemaining }} spots left</template>
                 </p>
-              </div>
-            </section>
-
-            <!-- Photo Gallery (past only) -->
-            <section v-if="meetup.photos.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
-              <div class="flex items-center justify-between gap-4 flex-wrap">
-                <span class="section-label">Photos</span>
-                <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-gray-400 dark:text-gray-500">
-                  {{ meetup.photos.length }} photos · tap to expand
-                </span>
-              </div>
-              <div class="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                <button
-                  v-for="(photo, index) in meetup.photos"
-                  :key="photo.id"
-                  type="button"
-                  class="relative rounded-md overflow-hidden aspect-square group focus:outline-none focus:ring-2 focus:ring-verse-500"
-                  @click="openLightbox(index)"
-                >
-                  <img
-                    :src="photo.thumbnailUrl"
-                    :alt="photo.caption || 'Event photo'"
-                    loading="lazy"
-                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
-                  />
-                </button>
               </div>
             </section>
 
