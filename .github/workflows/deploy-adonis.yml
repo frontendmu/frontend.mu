@@ -6,6 +6,7 @@ on:
     paths:
       - packages/frontendmu-adonis/**
       - .github/workflows/deploy-adonis.yml
+  workflow_dispatch:
 
 jobs:
   build-and-push:
