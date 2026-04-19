@@ -63,20 +63,8 @@ const spotsRemaining = computed(() => {
   return Math.max(0, props.meetup.seatsAvailable - props.rsvpCount)
 })
 
-// Speakers dedup'd across talk sessions only — hosts of intros/quizzes
-// are not speakers, they're emcees for those segments.
-const allSpeakers = computed(() => {
-  if (!props.meetup?.sessions) return []
-  const seen = new Set<string>()
-  return props.meetup.sessions
-    .filter((s) => s.kind === 'talk' || s.kind === 'other')
-    .flatMap((s) => s.speakers)
-    .filter((speaker) => {
-      if (!speaker || seen.has(speaker.id)) return false
-      seen.add(speaker.id)
-      return true
-    })
-})
+// Canonical speakers, derived by the API from talk/other sessions only.
+const allSpeakers = computed(() => props.meetup?.speakers ?? [])
 
 // RSVP handlers
 async function handleRsvp() {

@@ -13,7 +13,9 @@ export default class PublicMeetupsController {
     const events = await Event.query()
       .where('status', 'published')
       .orderBy('eventDate', 'desc')
-      .preload('sessions', (query) => query.preload('speakers'))
+      .preload('sessions', (query) =>
+        query.preload('speakers').preload('sponsor').orderBy('order', 'asc')
+      )
       .preload('sponsors')
 
     response.header('Cache-Control', CACHE_CONTROL)
@@ -27,7 +29,9 @@ export default class PublicMeetupsController {
     const event = await Event.query()
       .where(column, params.idOrSlug)
       .where('status', 'published')
-      .preload('sessions', (query) => query.preload('speakers'))
+      .preload('sessions', (query) =>
+        query.preload('speakers').preload('sponsor').orderBy('order', 'asc')
+      )
       .preload('sponsors')
       .preload('photos')
       .firstOrFail()
@@ -44,7 +48,9 @@ export default class PublicMeetupsController {
       .where('status', 'published')
       .where('eventDate', '>=', today)
       .orderBy('eventDate', 'asc')
-      .preload('sessions', (query) => query.preload('speakers'))
+      .preload('sessions', (query) =>
+        query.preload('speakers').preload('sponsor').orderBy('order', 'asc')
+      )
       .preload('sponsors')
       .preload('photos')
       .first()
