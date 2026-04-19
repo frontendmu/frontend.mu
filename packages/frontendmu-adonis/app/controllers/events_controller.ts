@@ -15,6 +15,9 @@ export default class EventsController {
       .preload('sessions', (query) => {
         query.preload('speakers').preload('sponsor').orderBy('order', 'asc')
       })
+      .preload('photos', (query) => {
+        query.orderBy('order', 'asc')
+      })
 
     const meetups = EventTransformer.transform(events)
 

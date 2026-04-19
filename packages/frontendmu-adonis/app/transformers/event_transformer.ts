@@ -24,6 +24,9 @@ export default class EventTransformer extends BaseTransformer<Event> {
     const sponsors = (
       this.resource.$hasRelated('sponsors') ? this.resource.$getRelated('sponsors') : []
     ) as Sponsor[]
+    const photos = (
+      this.resource.$hasRelated('photos') ? this.resource.$getRelated('photos') : []
+    ) as EventPhoto[]
 
     const seen = new Set<string>()
     const speakers: User[] = []
@@ -36,6 +39,8 @@ export default class EventTransformer extends BaseTransformer<Event> {
         speakers.push(speaker)
       }
     }
+
+    const coverPhoto = photos[0] ?? null
 
     return {
       id: this.resource.id,
@@ -50,6 +55,8 @@ export default class EventTransformer extends BaseTransformer<Event> {
       acceptingRsvp: this.resource.acceptingRsvp,
       status: this.resource.status,
       album: this.resource.albumName,
+      photoCount: photos.length,
+      coverThumbnailUrl: coverPhoto ? thumbnailFor(coverPhoto.photoUrl, 600) : null,
       updatedAt: this.resource.updatedAt?.toISO() ?? null,
       sessions: SessionTransformer.transform(sessions).depth(2),
       speakers: SpeakerTransformer.transform(speakers).useVariant('summary'),

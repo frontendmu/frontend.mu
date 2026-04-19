@@ -67,7 +67,8 @@ const tint = computed(() => {
   return TINTS[Math.abs(hash) % TINTS.length]
 })
 
-const hasGallery = computed(() => !!props.event.album)
+const coverThumbnail = computed(() => props.event.coverThumbnailUrl || null)
+const hasGallery = computed(() => !!coverThumbnail.value || !!props.event.album)
 
 function stripHtml(input: string): string {
   return input.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
@@ -179,9 +180,17 @@ function stripHtml(input: string): string {
       class="relative overflow-hidden border-t sm:border-t-0 sm:border-l border-gray-100 dark:border-verse-900 min-h-[180px] sm:min-h-0 order-first sm:order-none"
       :class="[hasGallery ? '' : 'no-gallery-stripes']"
     >
-      <!-- Gallery placeholder tint -->
+      <!-- Cover photo (when we have a synced gallery) -->
+      <img
+        v-if="coverThumbnail"
+        :src="coverThumbnail"
+        :alt="event.title"
+        loading="lazy"
+        class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+      />
+      <!-- Gradient placeholder (album set but photos not yet synced) -->
       <div
-        v-if="hasGallery"
+        v-else-if="hasGallery"
         class="absolute inset-0"
         :style="{ background: `linear-gradient(135deg, ${tint[0]} 0%, ${tint[1]} 100%)` }"
       >

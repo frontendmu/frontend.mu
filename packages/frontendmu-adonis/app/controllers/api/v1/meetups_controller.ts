@@ -17,6 +17,7 @@ export default class PublicMeetupsController {
         query.preload('speakers').preload('sponsor').orderBy('order', 'asc')
       )
       .preload('sponsors')
+      .preload('photos', (query) => query.orderBy('order', 'asc'))
 
     response.header('Cache-Control', CACHE_CONTROL)
     return response.json(await serialize(EventTransformer.transform(events)))
