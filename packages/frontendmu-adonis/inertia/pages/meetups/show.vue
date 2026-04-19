@@ -200,11 +200,33 @@ function handleScroll() {
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true })
+  highlightChangedSection()
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
 })
+
+// Highlight a section when arriving via ?changed=<section> from a notification link.
+// Unknown values are ignored. Respects prefers-reduced-motion for the pulse animation.
+const CHANGE_TARGETS = new Set(['schedule', 'location', 'rsvp', 'seats'])
+const activeChange = ref<string | null>(null)
+
+function highlightChangedSection() {
+  const changed = new URLSearchParams(window.location.search).get('changed')
+  if (!changed || !CHANGE_TARGETS.has(changed)) return
+
+  activeChange.value = changed
+  setTimeout(() => {
+    if (activeChange.value === changed) activeChange.value = null
+  }, 2000)
+
+  requestAnimationFrame(() => {
+    document
+      .querySelector<HTMLElement>(`[data-change="${changed}"]`)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  })
+}
 
 // Generate Google Calendar URL
 const calendarUrl = computed(() => {
@@ -581,49 +603,63 @@ const calendarUrl = computed(() => {
                 </div>
                 <div class="p-6 space-y-5">
                   <div class="space-y-4">
-                    <div class="flex items-baseline justify-between">
-                      <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Date</p>
-                      <p class="text-sm font-bold text-gray-900 dark:text-gray-100">
-                        {{ eventDate?.toFormat('dd MMM yyyy') }}
-                      </p>
-                    </div>
-                    <div class="flex items-baseline justify-between">
-                      <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Time</p>
-                      <p class="text-sm font-bold text-gray-900 dark:text-gray-100">
-                        {{ meetup.startTime || 'TBA' }}
-                      </p>
-                    </div>
-                    <div class="flex items-baseline justify-between">
-                      <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Capacity</p>
-                      <p class="text-sm font-bold text-gray-900 dark:text-gray-100">
-                        {{ rsvpCount }} / {{ meetup.seatsAvailable || '∞' }}
-                      </p>
-                    </div>
-                    <!-- Capacity progress bar -->
-                    <div v-if="meetup.seatsAvailable" class="space-y-1">
-                      <div
-                        class="w-full h-1.5 rounded-full bg-gray-100 dark:bg-verse-800 overflow-hidden"
-                      >
-                        <div
-                          class="h-full rounded-full transition-all duration-500"
-                          :class="
-                            capacityPercent >= 90
-                              ? 'bg-red-500'
-                              : capacityPercent >= 70
-                                ? 'bg-amber-500'
-                                : 'bg-verse-500'
-                          "
-                          :style="{ width: `${capacityPercent}%` }"
-                        ></div>
+                    <div
+                      data-change="schedule"
+                      :data-changed-active="activeChange === 'schedule' ? '' : null"
+                      class="space-y-4"
+                    >
+                      <div class="flex items-baseline justify-between">
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Date</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-gray-100">
+                          {{ eventDate?.toFormat('dd MMM yyyy') }}
+                        </p>
                       </div>
-                      <p class="text-[10px] text-gray-400 text-right">
-                        {{ capacityPercent }}% full
-                      </p>
+                      <div class="flex items-baseline justify-between">
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Time</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-gray-100">
+                          {{ meetup.startTime || 'TBA' }}
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      data-change="seats"
+                      :data-changed-active="activeChange === 'seats' ? '' : null"
+                      class="space-y-4"
+                    >
+                      <div class="flex items-baseline justify-between">
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Capacity</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-gray-100">
+                          {{ rsvpCount }} / {{ meetup.seatsAvailable || '∞' }}
+                        </p>
+                      </div>
+                      <!-- Capacity progress bar -->
+                      <div v-if="meetup.seatsAvailable" class="space-y-1">
+                        <div
+                          class="w-full h-1.5 rounded-full bg-gray-100 dark:bg-verse-800 overflow-hidden"
+                        >
+                          <div
+                            class="h-full rounded-full transition-all duration-500"
+                            :class="
+                              capacityPercent >= 90
+                                ? 'bg-red-500'
+                                : capacityPercent >= 70
+                                  ? 'bg-amber-500'
+                                  : 'bg-verse-500'
+                            "
+                            :style="{ width: `${capacityPercent}%` }"
+                          ></div>
+                        </div>
+                        <p class="text-[10px] text-gray-400 text-right">
+                          {{ capacityPercent }}% full
+                        </p>
+                      </div>
                     </div>
                   </div>
 
                   <div
                     v-if="meetup.venue"
+                    data-change="location"
+                    :data-changed-active="activeChange === 'location' ? '' : null"
                     class="pt-4 border-t border-gray-100 dark:border-verse-800 space-y-1"
                   >
                     <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Venue</p>
@@ -679,7 +715,11 @@ const calendarUrl = computed(() => {
                   </div>
 
                   <!-- Sidebar RSVP -->
-                  <div class="pt-4 border-t border-gray-100 dark:border-verse-800 space-y-3">
+                  <div
+                    data-change="rsvp"
+                    :data-changed-active="activeChange === 'rsvp' ? '' : null"
+                    class="pt-4 border-t border-gray-100 dark:border-verse-800 space-y-3"
+                  >
                     <div
                       v-if="
                         isUpcoming ||
@@ -889,5 +929,25 @@ const calendarUrl = computed(() => {
 <style scoped>
 .safe-area-bottom {
   padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+[data-changed-active] {
+  animation: change-highlight 2s ease-out 1;
+  border-radius: 0.5rem;
+}
+
+@keyframes change-highlight {
+  0%, 20% {
+    box-shadow: 0 0 0 3px var(--color-verse-400, #a78bfa);
+  }
+  100% {
+    box-shadow: 0 0 0 3px transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-changed-active] {
+    animation: none;
+  }
 }
 </style>
