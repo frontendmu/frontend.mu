@@ -18,7 +18,7 @@ export default class AdminSessionsController {
     await bouncer.with(SessionPolicy).authorize('create')
 
     await event.load('sessions', (query) => {
-      query.preload('speakers').orderBy('order', 'asc')
+      query.preload('speakers').preload('sponsor').orderBy('order', 'asc')
     })
 
     return response.json({
@@ -37,11 +37,15 @@ export default class AdminSessionsController {
 
     const data = await request.validateUsing(createSessionValidator)
 
+    const kind = data.kind ?? 'talk'
     const session = await Session.create({
       eventId: event.id,
       title: data.title,
       description: data.description,
       order: data.order,
+      kind,
+      sponsorId: kind === 'sponsored' ? (data.sponsorId ?? null) : null,
+      durationMinutes: data.durationMinutes ?? null,
     })
 
     if (data.speakerIds && data.speakerIds.length > 0) {
@@ -84,10 +88,25 @@ export default class AdminSessionsController {
 
     const data = await request.validateUsing(updateSessionValidator)
 
+    // If the kind changes away from 'sponsored', proactively clear the stale
+    // sponsor link so it can't surface again if kind flips back.
+    const nextKind = data.kind ?? session.kind
+    const sponsorId =
+      nextKind === 'sponsored'
+        ? data.sponsorId !== undefined
+          ? data.sponsorId
+          : session.sponsorId
+        : null
+
     session.merge({
       title: data.title,
       description: data.description,
       order: data.order,
+      kind: nextKind,
+      sponsorId,
+      ...(data.durationMinutes !== undefined
+        ? { durationMinutes: data.durationMinutes }
+        : {}),
     })
 
     await session.save()

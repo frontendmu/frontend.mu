@@ -3,8 +3,14 @@ import type Event from '#models/event'
 import type EventPhoto from '#models/event_photo'
 import type Session from '#models/session'
 import type Sponsor from '#models/sponsor'
+import type User from '#models/user'
 import SessionTransformer from '#transformers/session_transformer'
+import SpeakerTransformer from '#transformers/speaker_transformer'
 import SponsorTransformer from '#transformers/sponsor_transformer'
+
+// Kinds whose attached users are the actual event speakers. Intro/quiz hosts
+// and sponsored-segment reps don't belong in the canonical speakers list.
+const SPEAKER_SESSION_KINDS = new Set(['talk', 'other'])
 
 function thumbnailFor(url: string, width: number): string {
   return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=${width}&output=webp`
@@ -18,6 +24,23 @@ export default class EventTransformer extends BaseTransformer<Event> {
     const sponsors = (
       this.resource.$hasRelated('sponsors') ? this.resource.$getRelated('sponsors') : []
     ) as Sponsor[]
+    const photos = (
+      this.resource.$hasRelated('photos') ? this.resource.$getRelated('photos') : []
+    ) as EventPhoto[]
+
+    const seen = new Set<string>()
+    const speakers: User[] = []
+    for (const session of sessions) {
+      if (!SPEAKER_SESSION_KINDS.has(session.kind)) continue
+      if (!session.$hasRelated('speakers')) continue
+      for (const speaker of session.$getRelated('speakers') as User[]) {
+        if (seen.has(speaker.id)) continue
+        seen.add(speaker.id)
+        speakers.push(speaker)
+      }
+    }
+
+    const coverPhoto = photos[0] ?? null
 
     return {
       id: this.resource.id,
@@ -32,8 +55,10 @@ export default class EventTransformer extends BaseTransformer<Event> {
       acceptingRsvp: this.resource.acceptingRsvp,
       status: this.resource.status,
       album: this.resource.albumName,
+      coverThumbnailUrl: coverPhoto ? thumbnailFor(coverPhoto.photoUrl, 600) : null,
       updatedAt: this.resource.updatedAt?.toISO() ?? null,
       sessions: SessionTransformer.transform(sessions).depth(2),
+      speakers: SpeakerTransformer.transform(speakers).useVariant('summary'),
       sponsors: SponsorTransformer.transform(sponsors).useVariant('summary'),
     }
   }

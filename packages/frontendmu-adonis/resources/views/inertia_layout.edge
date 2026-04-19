@@ -7,7 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..700,0..100,0..1&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script nonce="{{ cspNonce }}">
       // Prevent flash of incorrect theme
       (function() {
@@ -23,5 +23,29 @@
 <body>
     @inertia()
     @debugbar()
+    <script nonce="{{ cspNonce }}">
+      // Keep the AdonisJS debug bar collapsed on initial load — the library
+      // hardcodes isPanelOpen: true and does not persist the state. We wait
+      // for the debug bar's boot script to run its first render (which flips
+      // #dbg-panel to display:block), then click close to sync its state.
+      (function () {
+        var closed = false;
+        var tryClose = function () {
+          if (closed) return true;
+          var panel = document.getElementById('dbg-panel');
+          var btn = document.getElementById('dbg-btn-close');
+          if (panel && btn && panel.style.display === 'block') {
+            btn.click();
+            closed = true;
+            return true;
+          }
+          return false;
+        };
+        var start = Date.now();
+        var interval = setInterval(function () {
+          if (tryClose() || Date.now() - start > 8000) clearInterval(interval);
+        }, 50);
+      })();
+    </script>
 </body>
 </html>
