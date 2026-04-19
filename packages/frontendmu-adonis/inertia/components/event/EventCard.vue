@@ -46,29 +46,7 @@ const speakers = computed(() => {
   return props.event.sessions?.flatMap((session) => session.speakers).filter(Boolean) || []
 })
 
-// Deterministic tint pair seeded from the slug/id so cards feel varied but stable
-const TINTS: Array<[string, string]> = [
-  ['oklch(58% 0.14 230)', 'oklch(72% 0.10 200)'],
-  ['oklch(48% 0.12 260)', 'oklch(38% 0.10 280)'],
-  ['oklch(60% 0.13 30)', 'oklch(78% 0.10 55)'],
-  ['oklch(55% 0.12 150)', 'oklch(72% 0.09 130)'],
-  ['oklch(60% 0.14 310)', 'oklch(75% 0.10 290)'],
-  ['oklch(52% 0.13 20)', 'oklch(68% 0.11 40)'],
-  ['oklch(50% 0.13 200)', 'oklch(65% 0.10 180)'],
-  ['oklch(54% 0.14 85)', 'oklch(72% 0.11 70)'],
-  ['oklch(45% 0.10 260)', 'oklch(58% 0.12 240)'],
-  ['oklch(58% 0.13 160)', 'oklch(74% 0.10 140)'],
-]
-
-const tint = computed(() => {
-  const key = props.event.slug || props.event.id
-  let hash = 0
-  for (let i = 0; i < key.length; i += 1) hash = (hash * 31 + key.charCodeAt(i)) | 0
-  return TINTS[Math.abs(hash) % TINTS.length]
-})
-
 const coverThumbnail = computed(() => props.event.coverThumbnailUrl || null)
-const hasGallery = computed(() => !!coverThumbnail.value || !!props.event.album)
 
 function stripHtml(input: string): string {
   return input.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
@@ -79,7 +57,11 @@ function stripHtml(input: string): string {
   <article
     class="meetup-card group relative grid rounded-[14px] overflow-hidden border transition-all duration-200 hover:-translate-y-[3px] bg-white dark:bg-verse-950"
     :class="[
-      featured ? 'sm:grid-cols-[1.1fr_1fr] min-h-[280px]' : 'sm:grid-cols-2 min-h-[192px]',
+      coverThumbnail
+        ? featured
+          ? 'sm:grid-cols-[1.1fr_1fr] min-h-[280px]'
+          : 'sm:grid-cols-2 min-h-[192px]'
+        : '',
       status === 'live'
         ? 'border-coral shadow-[0_8px_24px_-8px_color-mix(in_oklch,var(--color-coral)_30%,transparent)]'
         : status === 'upcoming'
@@ -87,7 +69,23 @@ function stripHtml(input: string): string {
           : 'border-gray-200 dark:border-verse-900 hover:border-gray-300 dark:hover:border-verse-800',
     ]"
   >
-    <!-- Body (left) -->
+    <!-- Status tag (floats top-right when no cover to anchor it) -->
+    <span
+      v-if="!coverThumbnail"
+      class="absolute top-4 right-4 z-10 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-mono text-[10px] font-bold uppercase tracking-widest"
+      :class="
+        status === 'live'
+          ? 'bg-coral-strong text-white'
+          : status === 'upcoming'
+            ? 'bg-verse-50 dark:bg-verse-900 text-verse-600 dark:text-verse-300 border border-verse-100 dark:border-verse-800'
+            : 'bg-gray-50 dark:bg-verse-900 text-gray-600 dark:text-gray-400'
+      "
+    >
+      <span v-if="status === 'live'" class="w-1.5 h-1.5 rounded-full bg-white" />
+      {{ isMeetupToday ? 'Today' : isNextMeetup && status === 'upcoming' ? 'Next up' : statusLabel }}
+    </span>
+
+    <!-- Body (left, or full-width when no cover) -->
     <div
       class="flex flex-col justify-between gap-4 min-w-0"
       :class="featured ? 'p-8 md:p-10' : 'p-5 md:p-6'"
@@ -175,70 +173,17 @@ function stripHtml(input: string): string {
       </div>
     </div>
 
-    <!-- Image / Placeholder (right) -->
+    <!-- Cover image (right) — only rendered when we have a synced photo -->
     <div
+      v-if="coverThumbnail"
       class="relative overflow-hidden border-t sm:border-t-0 sm:border-l border-gray-100 dark:border-verse-900 min-h-[180px] sm:min-h-0 order-first sm:order-none"
-      :class="[hasGallery ? '' : 'no-gallery-stripes']"
     >
-      <!-- Cover photo (when we have a synced gallery) -->
       <img
-        v-if="coverThumbnail"
         :src="coverThumbnail"
         :alt="event.title"
         loading="lazy"
         class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
       />
-      <!-- Gradient placeholder (album set but photos not yet synced) -->
-      <div
-        v-else-if="hasGallery"
-        class="absolute inset-0"
-        :style="{ background: `linear-gradient(135deg, ${tint[0]} 0%, ${tint[1]} 100%)` }"
-      >
-        <svg class="absolute inset-0 w-full h-full opacity-[0.35]" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice">
-          <defs>
-            <pattern :id="`pat-${event.id}`" width="20" height="20" patternUnits="userSpaceOnUse" patternTransform="rotate(-12)">
-              <circle cx="2" cy="2" r="1" fill="rgba(255,255,255,0.3)" />
-            </pattern>
-          </defs>
-          <rect width="200" height="140" :fill="`url(#pat-${event.id})`" />
-          <rect x="20" y="30" width="70" height="50" rx="4" fill="rgba(255,255,255,0.12)" />
-          <rect x="110" y="40" width="75" height="60" rx="4" fill="rgba(0,0,0,0.18)" />
-          <circle cx="60" cy="110" r="16" fill="rgba(255,255,255,0.15)" />
-        </svg>
-        <div
-          class="absolute inset-0 flex items-center justify-center font-mono text-[10px] tracking-widest uppercase text-white/90"
-        >
-          <span class="bg-black/25 px-2.5 py-1 rounded">{{ event.album || formattedDate.full }}</span>
-        </div>
-      </div>
-
-      <!-- No gallery state -->
-      <div
-        v-else
-        class="absolute inset-0 flex flex-col items-center justify-center gap-2.5 p-6 text-center"
-      >
-        <div
-          class="w-10 h-10 rounded-[10px] bg-white dark:bg-verse-950 border border-dashed border-gray-300 dark:border-verse-800 grid place-items-center text-gray-400 dark:text-gray-500"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="5" width="18" height="14" rx="2" />
-            <circle cx="9" cy="11" r="1.5" />
-            <path d="m21 16-4-4-8 8" />
-            <path d="M3 19 21 5" stroke-dasharray="2 2" opacity="0.6" />
-          </svg>
-        </div>
-        <div class="font-mono text-[10.5px] font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400">
-          {{ status === 'upcoming' ? 'Gallery opens after' : 'No photos yet' }}
-        </div>
-        <div class="font-mono text-[10px] text-gray-400 dark:text-gray-500 max-w-[22ch] leading-snug">
-          {{
-            status === 'upcoming'
-              ? 'Photos will appear here once the event wraps'
-              : 'Recap only — no photos were shared'
-          }}
-        </div>
-      </div>
-
       <!-- Status tag -->
       <span
         class="absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-mono text-[10px] font-bold uppercase tracking-widest backdrop-blur-md"
@@ -256,7 +201,7 @@ function stripHtml(input: string): string {
 
       <!-- Attendee badge bottom-right -->
       <span
-        v-if="event.attendeeCount && hasGallery"
+        v-if="event.attendeeCount"
         class="absolute bottom-3 right-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/92 dark:bg-verse-950/92 backdrop-blur-sm font-mono text-[11px] font-bold text-gray-900 dark:text-gray-100 shadow-sm"
       >
         <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
