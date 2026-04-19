@@ -63,11 +63,13 @@ const spotsRemaining = computed(() => {
   return Math.max(0, props.meetup.seatsAvailable - props.rsvpCount)
 })
 
-// All speakers deduplicated across sessions
+// Speakers dedup'd across talk sessions only — hosts of intros/quizzes
+// are not speakers, they're emcees for those segments.
 const allSpeakers = computed(() => {
   if (!props.meetup?.sessions) return []
   const seen = new Set<string>()
   return props.meetup.sessions
+    .filter((s) => s.kind === 'talk' || s.kind === 'other')
     .flatMap((s) => s.speakers)
     .filter((speaker) => {
       if (!speaker || seen.has(speaker.id)) return false
