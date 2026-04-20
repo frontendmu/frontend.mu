@@ -2,10 +2,16 @@ import { BaseSchema } from '@adonisjs/lucid/schema'
 import { DateTime } from 'luxon'
 
 /*
- * Backfills the 45 event ↔ sponsor pairings captured in the March 2026
- * export that were never loaded during the Directus → Adonis migration.
- * Covers 39 events and 33 sponsors. Uses INSERT OR IGNORE so it is
- * safe to re-run and won't overwrite links manually added via the admin UI.
+ * Backfills 48 event ↔ sponsor pairings. The first 45 come from the March
+ * 2026 export that was never loaded during the Directus → Adonis migration.
+ * The last three are inferred from venue names for events that post-dated
+ * the snapshot — each venue literally matches (or clearly abbreviates) an
+ * existing sponsor's name: Novity, Extension Interactive, and PGD = Publicis
+ * Global Delivery. The heuristic is the same pattern that holds for ~75% of
+ * the pre-existing links in the source data.
+ *
+ * Uses INSERT … ON CONFLICT … IGNORE so it is safe to re-run and won't
+ * clobber links added via the admin UI.
  */
 const LINKS: Array<[string, string]> = [
   ['611f226b-989b-469e-851b-f130cf6c2a8a', '35bac92e-5a64-4c0d-99a8-649669f040ea'],
@@ -53,6 +59,10 @@ const LINKS: Array<[string, string]> = [
   ['e950962d-a766-407a-b2a8-9fe00806d5ab', '19109e0a-1ded-4aeb-b6f0-2f5b93c86ebf'],
   ['bf1d3fd3-ab1a-4c9d-a1f8-8edc0d5f82d2', '81ad6c97-6038-4784-9c74-1f0b55813f60'],
   ['c5d9cb7c-f2a8-45f5-af29-2526f11c3ad9', '7955a0c4-c38b-4fff-92cb-8a4cd0ddf096'],
+  // Venue-inferred links for events that post-date the export:
+  ['50046559-7dec-4477-8fbe-ef6fb7b7fcd9', '6dc18fc4-81a3-4457-8234-d2b551d163e1'], // 2025-september @ Novity Mauritius → Novity
+  ['f063b0c1-1f38-484a-a28f-0e7dd1311cad', '8258c629-5b86-4a4a-8b5a-817a3d98b023'], // 2025-october @ PGD Mauritius → Publicis Global Delivery
+  ['1df20e74-d11e-45fd-8b2b-426114ba2e84', '4fcbf1ea-3202-4b63-aa1f-5f30ea7079e1'], // 2016-july @ Extension Interactive → Extension Interactive
 ]
 
 export default class extends BaseSchema {
