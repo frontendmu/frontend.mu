@@ -53,7 +53,7 @@ function stripHtml(input: string): string {
 
 <template>
   <article
-    class="meetup-card group relative grid rounded-[14px] overflow-hidden border transition-all duration-200 hover:-translate-y-[3px] bg-white dark:bg-verse-950"
+    class="meetup-card group relative grid h-full rounded-[14px] overflow-hidden border transition-all duration-200 hover:-translate-y-[3px] bg-white dark:bg-verse-950"
     :class="[
       coverThumbnail
         ? featured
