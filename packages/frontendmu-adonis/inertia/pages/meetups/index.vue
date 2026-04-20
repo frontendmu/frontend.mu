@@ -100,7 +100,7 @@ function featuredForYear(year: number): Data.Event | undefined {
 
 <template>
   <Head title="All Meetups" />
-  <main class="relative min-h-screen pt-32 pb-24">
+  <main class="relative min-h-screen pt-32 pb-24 overflow-x-clip">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <!-- Page Header -->
       <header class="mb-10 max-w-3xl space-y-4">
@@ -204,16 +204,17 @@ function featuredForYear(year: number): Data.Event | undefined {
       <div class="space-y-16">
         <template v-for="year in years" :key="year">
           <section class="year-section relative">
-            <!-- Giant vertical year label -->
+            <!-- Giant vertical year label — breaks out of the container to the left -->
             <div
               aria-hidden="true"
-              class="year-label absolute left-[-8px] top-[160px] font-display font-normal pointer-events-none select-none hidden md:block text-gray-200/90 dark:text-verse-900"
+              class="year-label absolute top-[40px] font-display font-normal pointer-events-none select-none hidden md:block text-gray-200/90 dark:text-verse-900"
               :style="{
                 fontSize: 'clamp(80px, 12vw, 180px)',
                 lineHeight: '0.8',
                 letterSpacing: '-0.04em',
                 writingMode: 'vertical-rl',
                 transform: 'rotate(180deg)',
+                right: 'calc(100% + 1.25rem)',
                 zIndex: 0,
               }"
             >
@@ -221,7 +222,7 @@ function featuredForYear(year: number): Data.Event | undefined {
             </div>
 
             <!-- Year header -->
-            <div class="relative z-10 flex items-baseline gap-5 mb-7 md:pl-20">
+            <div class="relative z-10 flex items-baseline gap-5 mb-7">
               <h2 class="font-display text-[32px] md:text-[38px] leading-none tracking-tight text-gray-900 dark:text-gray-100">
                 {{ year }}
               </h2>
@@ -232,7 +233,7 @@ function featuredForYear(year: number): Data.Event | undefined {
             </div>
 
             <!-- Events Grid -->
-            <div class="relative z-10 md:pl-20 grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-5">
               <template v-for="event in meetupsGroupedByYear[year]" :key="event.id">
                 <div
                   :class="event.id === featuredForYear(year)?.id ? 'md:col-span-2' : ''"

@@ -360,12 +360,44 @@ const calendarUrl = computed(() => {
             </span>
           </div>
 
-          <!-- Title — editorial serif with italic tail -->
-          <h1
-            class="font-display text-[clamp(44px,6.5vw,84px)] leading-[0.98] text-gray-900 dark:text-gray-100 text-balance max-w-[16ch] mb-6"
-          >
-            <template v-if="titleParts.plain">{{ titleParts.plain }}&nbsp;</template><span class="font-display-italic text-verse-500 dark:text-verse-300">{{ titleParts.italic }}</span>
-          </h1>
+          <!-- Title + Sponsors row — editorial serif with italic tail; sponsors right-aligned -->
+          <div class="flex items-end justify-between gap-8 flex-wrap mb-6">
+            <h1
+              class="font-display text-[clamp(44px,6.5vw,84px)] leading-[0.98] text-gray-900 dark:text-gray-100 text-balance max-w-[16ch]"
+            >
+              <template v-if="titleParts.plain">{{ titleParts.plain }}&nbsp;</template><span class="font-display-italic text-verse-500 dark:text-verse-300">{{ titleParts.italic }}</span>
+            </h1>
+
+            <div v-if="meetup.sponsors?.length" class="flex flex-col items-start md:items-end gap-3 shrink-0">
+              <span class="font-mono text-[9.5px] uppercase tracking-[0.12em] text-gray-400 dark:text-gray-500">
+                Sponsored by
+              </span>
+              <div class="flex flex-wrap justify-start md:justify-end gap-2.5">
+                <Link
+                  v-for="sponsor in meetup.sponsors"
+                  :key="sponsor.id"
+                  :href="`/sponsor/${sponsor.id}`"
+                  class="flex items-center justify-center h-28 min-w-[180px] px-8 rounded-xl border border-gray-200 dark:border-verse-900 hover:border-verse-300 dark:hover:border-verse-700 transition-colors"
+                  :class="sponsor.logoBg ? '' : 'bg-white dark:bg-white'"
+                  :style="sponsor.logoBg ? { backgroundColor: sponsor.logoBg } : {}"
+                >
+                  <img
+                    v-if="sponsor.logoUrl"
+                    :src="sponsor.logoUrl"
+                    :alt="sponsor.name"
+                    class="max-h-16 w-auto object-contain"
+                  />
+                  <span
+                    v-else
+                    class="font-display text-[20px]"
+                    :class="sponsor.logoBg && sponsor.logoBg !== '#ffffff' ? 'text-gray-100' : 'text-gray-900'"
+                  >
+                    {{ sponsor.name }}
+                  </span>
+                </Link>
+              </div>
+            </div>
+          </div>
 
           <!-- Subtitle (first sentence of description, muted) -->
           <p
@@ -438,7 +470,7 @@ const calendarUrl = computed(() => {
         </section>
 
         <!-- ===== TWO-COLUMN GRID ===== -->
-        <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 lg:gap-14 mt-12 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 lg:gap-14 mt-12">
           <!-- Left Column: Content -->
           <div class="min-w-0">
             <!-- About -->
@@ -717,29 +749,6 @@ const calendarUrl = computed(() => {
               </div>
             </section>
 
-            <!-- Sponsors -->
-            <section v-if="meetup.sponsors?.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
-              <span class="section-label">Sponsors</span>
-              <div
-                class="mt-6 flex flex-wrap gap-x-10 gap-y-4 items-center px-7 py-6 rounded-xl border border-dashed border-gray-300 dark:border-verse-800 bg-white dark:bg-verse-950"
-              >
-                <Link
-                  v-for="sponsor in meetup.sponsors"
-                  :key="sponsor.id"
-                  :href="`/sponsor/${sponsor.id}`"
-                  class="flex items-center gap-3 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-                >
-                  <img
-                    v-if="sponsor.logoUrl"
-                    :src="sponsor.logoUrl"
-                    :alt="sponsor.name"
-                    class="h-9 w-auto object-contain"
-                  />
-                  <span v-else class="font-display text-[17px]">{{ sponsor.name }}</span>
-                </Link>
-              </div>
-            </section>
-
             <!-- Share bar -->
             <div
               class="flex items-center gap-3 flex-wrap py-6 border-b border-gray-200 dark:border-verse-900"
@@ -887,13 +896,13 @@ const calendarUrl = computed(() => {
                     <span class="font-mono text-[10.5px] uppercase tracking-[0.12em] text-gray-400 dark:text-gray-500">Venue</span>
                     <div class="text-[15px] font-semibold text-gray-900 dark:text-gray-100 mt-1.5 leading-snug">{{ meetup.venue }}</div>
                     <div v-if="meetup.location" class="text-[13.5px] text-gray-500 dark:text-gray-400 leading-snug">{{ meetup.location }}</div>
-                    <div v-if="meetup.mapUrl || meetup.parkingLocation" class="mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
+                    <div v-if="meetup.mapUrl || meetup.parkingLocation" class="mt-3 flex flex-wrap gap-2">
                       <a
                         v-if="meetup.mapUrl"
                         :href="meetup.mapUrl"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="inline-flex items-center gap-1.5 font-mono text-[11.5px] font-semibold text-verse-600 dark:text-verse-400 hover:text-verse-700"
+                        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-gray-200 dark:border-verse-800 font-mono text-[11.5px] font-semibold text-gray-600 dark:text-gray-300 hover:border-verse-400 hover:text-verse-600 dark:hover:text-verse-400 transition-colors"
                       >
                         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                           <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" />
@@ -901,9 +910,19 @@ const calendarUrl = computed(() => {
                         </svg>
                         Directions
                       </a>
-                      <span v-if="meetup.parkingLocation" class="inline-flex items-center gap-1.5 font-mono text-[11.5px] text-gray-400 dark:text-gray-500">
-                        Parking: {{ meetup.parkingLocation }}
-                      </span>
+                      <a
+                        v-if="meetup.parkingLocation"
+                        :href="meetup.parkingLocation"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-gray-200 dark:border-verse-800 font-mono text-[11.5px] font-semibold text-gray-600 dark:text-gray-300 hover:border-verse-400 hover:text-verse-600 dark:hover:text-verse-400 transition-colors"
+                      >
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="3" y="3" width="18" height="18" rx="3" />
+                          <path d="M9 17V7h4a3 3 0 0 1 0 6H9" />
+                        </svg>
+                        Parking
+                      </a>
                     </div>
                   </div>
                 </div>

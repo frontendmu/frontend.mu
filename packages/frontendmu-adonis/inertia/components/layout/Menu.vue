@@ -556,7 +556,7 @@ onUnmounted(() => {
   >
     <div
       ref="menuInner"
-      class="menu-inner w-[92%] max-w-7xl bg-white/80 dark:bg-verse-950/60 backdrop-blur-xl border border-gray-100 dark:border-verse-800 rounded-2xl squircle px-3 md:px-5 h-16 flex items-center justify-between shadow-sm"
+      class="menu-inner relative w-[92%] max-w-7xl bg-white/80 dark:bg-verse-950/60 backdrop-blur-xl border border-gray-100 dark:border-verse-800 rounded-2xl squircle px-3 md:px-5 h-16 flex items-center justify-between shadow-sm"
     >
       <!-- Brand -->
       <div class="flex items-center">
@@ -577,6 +577,14 @@ onUnmounted(() => {
           </span>
         </Link>
       </div>
+
+      <!-- Mobile centered site title -->
+      <Link
+        href="/"
+        class="sm:hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-base font-black tracking-tighter dark:text-gray-100 uppercase tracking-[0.1em]"
+      >
+        coders<span class="text-verse-500">.mu</span>
+      </Link>
 
       <!-- Navigation -->
       <nav class="hidden md:block">
