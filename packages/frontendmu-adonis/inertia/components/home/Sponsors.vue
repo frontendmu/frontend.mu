@@ -59,10 +59,8 @@ const grid = computed(() => {
           <Link
             v-if="cell.sponsor"
             :href="`/sponsor/${cell.sponsor.id}`"
-            class="hex-cell hex-cell--filled hex-wave"
-            :style="
-              { '--hex-fill': cell.sponsor.logoBg || undefined, '--wave-i': rowIdx + colIdx } as any
-            "
+            class="hex-cell hex-cell--filled"
+            :style="{ '--hex-fill': cell.sponsor.logoBg || undefined } as any"
           >
             <img
               v-if="cell.sponsor.logoUrl"
@@ -78,11 +76,7 @@ const grid = computed(() => {
               {{ cell.sponsor.name }}
             </span>
           </Link>
-          <div
-            v-else
-            class="hex-cell hex-cell--empty hex-wave"
-            :style="{ '--wave-i': rowIdx + colIdx } as any"
-          />
+          <div v-else class="hex-cell hex-cell--empty" />
         </template>
       </div>
     </div>
@@ -169,44 +163,6 @@ const grid = computed(() => {
   text-align: center;
   padding: 0 8px;
   color: #111827;
-}
-
-/* Wave animation */
-.hex-wave {
-  animation: hex-wave 6s ease-in-out infinite;
-  animation-delay: calc(var(--wave-i) * 0.15s);
-  transition: transform 0.4s ease;
-}
-
-@keyframes hex-wave {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  15% {
-    transform: translateY(-4px);
-  }
-  30% {
-    transform: translateY(0);
-  }
-}
-
-.hex-grid:hover .hex-wave {
-  animation: hex-wave-hard 3s ease-in-out infinite;
-  animation-delay: calc(var(--wave-i) * 0.1s);
-}
-
-@keyframes hex-wave-hard {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  15% {
-    transform: translateY(-10px);
-  }
-  30% {
-    transform: translateY(0);
-  }
 }
 
 /* Responsive hex sizing */

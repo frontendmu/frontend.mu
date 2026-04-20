@@ -1,0 +1,82 @@
+name: Release to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      note:
+        description: Optional note to include in the release merge commit
+        required: false
+        type: string
+
+concurrency:
+  group: release-to-production
+  cancel-in-progress: false
+
+jobs:
+  release:
+    # Only maintainers can trigger a release. Anyone with repo write access can
+    # press the "Run workflow" button, so this is the explicit allowlist for who
+    # is actually permitted to deploy. Extend by appending usernames to the JSON
+    # array below.
+    if: contains(fromJSON('["MrSunshyne"]'), github.actor)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Validate RELEASE_TOKEN secret
+        env:
+          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          if [ -z "${RELEASE_TOKEN:-}" ]; then
+            echo "::error::RELEASE_TOKEN secret is not set. The production branch is protected, so the default GITHUB_TOKEN cannot push to it. Create a fine-grained PAT with Contents: Read and write on this repo, grant its user bypass permission on the production branch protection rule, and store it as the repository secret RELEASE_TOKEN."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: production
+          # RELEASE_TOKEN must be able to bypass branch protection on production.
+          # See the workflow comments in the validation step above.
+          token: ${{ secrets.RELEASE_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge main into production
+        id: merge
+        env:
+          NOTE: ${{ inputs.note }}
+        run: |
+          set -euo pipefail
+          git fetch origin main
+
+          if git merge-base --is-ancestor origin/main HEAD; then
+            echo "::notice::production is already up to date with main — nothing to release."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          SUFFIX=""
+          if [ -n "${NOTE:-}" ]; then
+            SUFFIX=" — ${NOTE}"
+          fi
+          git merge --no-ff -m "Release: merge main into production${SUFFIX}" origin/main
+          git push origin production
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ "${{ steps.merge.outputs.changed }}" = "true" ]; then
+            {
+              echo "### Released main → production"
+              echo ""
+              echo "The push to \`production\` will fire the Deploy AdonisJS workflow if the merge touched \`packages/frontendmu-adonis/**\` or the deploy workflow file itself."
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### No changes to release" >> "$GITHUB_STEP_SUMMARY"
+          fi

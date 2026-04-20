@@ -17,6 +17,19 @@
   --color-verse-800: #0c1a3d;
   --color-verse-900: #060d1f;
   --color-verse-950: #020617;
+
+  /* Coral accent — used sparingly for live/action moments and section labels */
+  --color-coral-soft: oklch(94% 0.04 40);
+  --color-coral: oklch(68% 0.17 35);
+  --color-coral-strong: oklch(62% 0.19 32);
+
+  /* Mono font stack */
+  --font-mono:
+    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Sans UI font stack — used for body copy */
+  --font-sans:
+    'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 @utility squircle {
@@ -30,6 +43,13 @@ body,
 #app {
   height: 100%;
   width: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: 'ss01', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Dark mode support */
@@ -48,15 +68,23 @@ html.dark {
     sans-serif;
 }
 
-/* Distinctive serif display font for key headings */
+/* Distinctive serif display font for key headings.
+   Fraunces is a variable font with SOFT and WONK axes that give it its
+   distinctive warmth upright and playful, wonky italic at larger sizes. */
 .font-display {
-  font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  font-family: 'Fraunces', 'Instrument Serif', Georgia, 'Times New Roman', serif;
   font-style: normal;
+  font-weight: 400;
+  font-variation-settings: 'SOFT' 40, 'WONK' 0, 'opsz' 144;
+  letter-spacing: -0.025em;
 }
 
 .font-display-italic {
-  font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  font-family: 'Fraunces', 'Instrument Serif', Georgia, 'Times New Roman', serif;
   font-style: italic;
+  font-weight: 400;
+  font-variation-settings: 'SOFT' 80, 'WONK' 1, 'opsz' 144;
+  letter-spacing: -0.02em;
 }
 
 /* Animation utilities */
@@ -76,6 +104,66 @@ html.dark {
 /* Custom utilities */
 .contain {
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Editorial section label: uppercase mono with a leading hairline */
+.section-label {
+  @apply inline-flex items-center gap-3 text-[13px] font-semibold uppercase;
+  font-family: var(--font-mono);
+  letter-spacing: 0.14em;
+  color: var(--color-coral-strong);
+}
+.section-label::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+/* Breadcrumb / eyebrow trail */
+.mono-eyebrow {
+  @apply inline-flex items-center gap-2.5 text-[11px] font-medium uppercase text-gray-500 dark:text-gray-400;
+  font-family: var(--font-mono);
+  letter-spacing: 0.12em;
+}
+.mono-eyebrow .sep {
+  opacity: 0.4;
+}
+
+/* Diagonal-stripe treatment for "no gallery / no cover" card slots */
+.no-gallery-stripes {
+  background-image: repeating-linear-gradient(
+    135deg,
+    oklch(96% 0.012 82) 0px,
+    oklch(96% 0.012 82) 10px,
+    oklch(93% 0.014 80) 10px,
+    oklch(93% 0.014 80) 20px
+  );
+}
+html.dark .no-gallery-stripes {
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--color-verse-900) 0px,
+    var(--color-verse-900) 10px,
+    var(--color-verse-800) 10px,
+    var(--color-verse-800) 20px
+  );
+}
+
+/* Pulse indicator for live state */
+@keyframes coral-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--color-coral) 60%, transparent); }
+  70% { box-shadow: 0 0 0 10px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.coral-pulse {
+  animation: coral-pulse 2s infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .coral-pulse {
+    animation: none;
+  }
 }
 
 /* Native dialog styling */

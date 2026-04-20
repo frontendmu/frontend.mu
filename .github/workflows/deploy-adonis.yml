@@ -6,6 +6,7 @@ on:
     paths:
       - packages/frontendmu-adonis/**
       - .github/workflows/deploy-adonis.yml
+  workflow_dispatch:
 
 jobs:
   build-and-push:
@@ -46,10 +47,17 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           envs: GHCR_TOKEN
           script: |
+            set -euo pipefail
             cd /root/frontend.mu/packages/frontendmu-adonis
             git pull
             echo "$GHCR_TOKEN" | docker login ghcr.io -u github --password-stdin
             docker pull ghcr.io/frontendmu/frontend.mu/adonis:latest
+            # Run pending migrations against the freshly pulled image before
+            # rolling traffic over. `docker compose run --rm` uses the new image
+            # with the service's volume mounts and env, then disposes the
+            # container. If a migration fails, the deploy halts here so the
+            # currently-running app keeps serving requests.
+            DOMAIN=coders.mu docker compose run --rm app node ace migration:run --force
             DOMAIN=coders.mu docker compose up -d
         env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}

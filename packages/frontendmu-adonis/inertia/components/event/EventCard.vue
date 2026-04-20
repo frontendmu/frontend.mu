@@ -9,20 +9,22 @@ interface Props {
   event: Data.Event
   isNextMeetup?: boolean
   isMeetupToday?: boolean
+  featured?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   isNextMeetup: false,
   isMeetupToday: false,
+  featured: false,
 })
 
 const formattedDate = computed(() => {
-  if (!props.event.date) return { day: '', month: '', year: '' }
+  if (!props.event.date) return { day: '', month: '', full: '' }
   const date = new Date(props.event.date)
   return {
     day: date.getDate(),
     month: date.toLocaleString('en-US', { month: 'short' }),
-    year: date.getFullYear(),
+    full: date.toLocaleString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }),
   }
 })
 
@@ -30,88 +32,182 @@ const isUpcoming = computed(() => {
   return props.event.date ? isDateInFuture(new Date(props.event.date)) : false
 })
 
-const speakers = computed(() => {
-  return props.event.sessions?.flatMap((session) => session.speakers).filter(Boolean) || []
+const status = computed<'live' | 'upcoming' | 'past'>(() => {
+  if (props.isMeetupToday) return 'live'
+  if (isUpcoming.value) return 'upcoming'
+  return 'past'
 })
+
+const statusLabel = computed(() =>
+  status.value === 'live' ? 'Live now' : status.value === 'upcoming' ? 'Upcoming' : 'Past'
+)
+
+const speakers = computed(() => props.event.speakers ?? [])
+
+const coverThumbnail = computed(() => props.event.coverThumbnailUrl || null)
+
+function stripHtml(input: string): string {
+  return input.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
+}
 </script>
 
 <template>
-  <div
-    class="group relative bg-white dark:bg-verse-900 border border-gray-200 dark:border-verse-900 rounded-lg p-4 hover:border-gray-300 dark:hover:border-verse-800 transition-colors"
+  <article
+    class="meetup-card group relative grid h-full rounded-[14px] overflow-hidden border transition-all duration-200 hover:-translate-y-[3px] bg-white dark:bg-verse-950"
+    :class="[
+      coverThumbnail
+        ? featured
+          ? 'sm:grid-cols-[1.1fr_1fr] min-h-[280px]'
+          : 'sm:grid-cols-2 min-h-[192px]'
+        : '',
+      status === 'live'
+        ? 'border-coral shadow-[0_8px_24px_-8px_color-mix(in_oklch,var(--color-coral)_30%,transparent)]'
+        : status === 'upcoming'
+          ? 'border-verse-200 dark:border-verse-800 hover:border-verse-300 dark:hover:border-verse-700'
+          : 'border-gray-200 dark:border-verse-900 hover:border-gray-300 dark:hover:border-verse-800',
+    ]"
   >
-    <div class="flex items-center gap-4">
-      <!-- Minimal Date -->
-      <div
-        class="flex flex-col items-center justify-center w-14 shrink-0 text-gray-400 dark:text-gray-400 group-hover:text-verse-500 transition-colors"
-      >
-        <span class="text-2xl font-black leading-none tracking-tighter">{{
-          formattedDate.day
-        }}</span>
-        <span class="text-xs font-bold uppercase tracking-widest">{{ formattedDate.month }}</span>
+    <!-- Status tag (floats top-right when no cover to anchor it) -->
+    <span
+      v-if="!coverThumbnail"
+      class="absolute top-4 right-4 z-10 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-mono text-[10px] font-bold uppercase tracking-widest"
+      :class="
+        status === 'live'
+          ? 'bg-coral-strong text-white'
+          : status === 'upcoming'
+            ? 'bg-verse-50 dark:bg-verse-900 text-verse-600 dark:text-verse-300 border border-verse-100 dark:border-verse-800'
+            : 'bg-gray-50 dark:bg-verse-900 text-gray-600 dark:text-gray-400'
+      "
+    >
+      <span v-if="status === 'live'" class="w-1.5 h-1.5 rounded-full bg-white" />
+      {{ isMeetupToday ? 'Today' : isNextMeetup && status === 'upcoming' ? 'Next up' : statusLabel }}
+    </span>
+
+    <!-- Body (left, or full-width when no cover) -->
+    <div
+      class="flex flex-col justify-between gap-4 min-w-0"
+      :class="featured ? 'p-8 md:p-10' : 'p-5 md:p-6'"
+    >
+      <div>
+        <h3
+          :class="
+            featured
+              ? 'font-display text-[32px] md:text-[40px] leading-[1.05] text-gray-900 dark:text-gray-100'
+              : 'font-mono text-[17px] md:text-[19px] font-bold leading-tight tracking-[-0.01em] text-verse-500 dark:text-verse-300 break-words'
+          "
+        >
+          <template v-if="featured">
+            <span>{{ event.title }}</span>
+          </template>
+          <template v-else>
+            {{ event.title }}
+          </template>
+        </h3>
+
+        <p
+          v-if="featured && event.description"
+          class="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-gray-500 dark:text-gray-400 line-clamp-3"
+        >
+          {{ stripHtml(event.description) }}
+        </p>
+
+        <div
+          class="mt-3 flex flex-wrap items-center gap-x-3.5 gap-y-1.5 font-mono text-[12px] text-gray-500 dark:text-gray-400"
+        >
+          <span class="inline-flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-verse-500/80 dark:text-verse-300/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="5" width="18" height="16" rx="2" />
+              <path d="M3 10h18M8 3v4M16 3v4" />
+            </svg>
+            {{ formattedDate.full }}
+          </span>
+          <span v-if="event.venue" class="inline-flex items-center gap-1.5 truncate max-w-[220px]">
+            <svg class="w-3.5 h-3.5 shrink-0 text-verse-500/80 dark:text-verse-300/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <span class="truncate">{{ event.venue }}</span>
+          </span>
+          <span v-if="event.attendeeCount" class="inline-flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-verse-500/80 dark:text-verse-300/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" />
+              <circle cx="10" cy="7" r="4" />
+              <path d="M21 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            {{ event.attendeeCount }} attending
+          </span>
+        </div>
       </div>
 
-      <div class="flex-1 min-w-0 space-y-3">
-        <div class="space-y-1">
-          <div class="flex items-center gap-2">
-            <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 truncate">
-              {{ event.title }}
-            </h3>
-            <div v-if="isMeetupToday || isNextMeetup" class="shrink-0 flex gap-1">
-              <span
-                v-if="isMeetupToday"
-                class="text-[10px] font-bold uppercase tracking-wider bg-red-500 text-white px-2 py-0.5 rounded"
-              >
-                Today
-              </span>
-              <span
-                v-else-if="isNextMeetup"
-                class="text-[10px] font-bold uppercase tracking-wider bg-green-500 text-white px-2 py-0.5 rounded"
-              >
-                Next
-              </span>
-            </div>
-          </div>
-
-          <div
-            class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono text-gray-500 dark:text-gray-400"
-          >
-            <div v-if="event.venue" class="flex items-center gap-1">
-              <span class="opacity-50 text-verse-500 dark:text-verse-300">@</span>
-              <span class="truncate max-w-[180px]">{{ event.venue }}</span>
-            </div>
-
-            <div v-if="event.attendeeCount" class="flex items-center gap-1">
-              <span class="opacity-50 text-verse-500 dark:text-verse-300">#</span>
-              {{ event.attendeeCount }} attendees
-            </div>
-          </div>
-        </div>
-
-        <!-- Speakers Prominent Row -->
-        <div v-if="speakers.length > 0" class="flex items-center gap-3 relative z-20">
-          <div class="flex -space-x-2">
+      <!-- Footer: speakers / attendee badge -->
+      <div class="flex items-center justify-between gap-3">
+        <div v-if="speakers.length > 0" class="flex items-center gap-3 min-w-0">
+          <div class="flex -space-x-2 shrink-0">
             <template v-for="speaker in speakers.slice(0, 4)" :key="speaker?.id">
               <SpeakerAvatar
                 size="sm"
                 :name="speaker.name"
                 :github-username="speaker.githubUsername"
                 :avatar-url="speaker.avatarUrl"
-                class="border border-white dark:border-verse-950"
+                class="border-2 border-white dark:border-verse-950"
               />
             </template>
             <div
               v-if="speakers.length > 4"
-              class="w-8 h-8 rounded-lg bg-verse-50 dark:bg-verse-900 border border-white dark:border-verse-950 flex items-center justify-center text-[10px] font-black text-verse-600"
+              class="w-8 h-8 rounded-lg bg-verse-50 dark:bg-verse-900 border-2 border-white dark:border-verse-950 flex items-center justify-center text-[10px] font-black text-verse-600 dark:text-verse-300"
             >
               +{{ speakers.length - 4 }}
             </div>
           </div>
-          <span class="text-xs font-bold text-gray-500 dark:text-gray-400">
+          <span class="font-mono text-[11px] text-gray-500 dark:text-gray-400 truncate">
             {{ speakers[0].name
-            }}<template v-if="speakers.length > 1"> & {{ speakers.length - 1 }} others</template>
+            }}<template v-if="speakers.length > 1"> & {{ speakers.length - 1 }} more</template>
           </span>
         </div>
+        <div v-else-if="event.attendeeCount" class="font-mono text-[11px] text-gray-400 dark:text-gray-500">
+          {{ event.attendeeCount }} attendees
+        </div>
+        <div v-else />
       </div>
+    </div>
+
+    <!-- Cover image (right) — only rendered when we have a synced photo -->
+    <div
+      v-if="coverThumbnail"
+      class="relative overflow-hidden border-t sm:border-t-0 sm:border-l border-gray-100 dark:border-verse-900 min-h-[180px] sm:min-h-0 order-first sm:order-none"
+    >
+      <img
+        :src="coverThumbnail"
+        :alt="event.title"
+        loading="lazy"
+        class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+      />
+      <!-- Status tag -->
+      <span
+        class="absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-mono text-[10px] font-bold uppercase tracking-widest backdrop-blur-md"
+        :class="
+          status === 'live'
+            ? 'bg-coral-strong text-white'
+            : status === 'upcoming'
+              ? 'bg-white/90 dark:bg-verse-950/90 text-verse-600 dark:text-verse-300 border border-verse-100 dark:border-verse-800'
+              : 'bg-white/85 dark:bg-verse-950/85 text-gray-700 dark:text-gray-300'
+        "
+      >
+        <span v-if="status === 'live'" class="w-1.5 h-1.5 rounded-full bg-white" />
+        {{ isMeetupToday ? 'Today' : isNextMeetup && status === 'upcoming' ? 'Next up' : statusLabel }}
+      </span>
+
+      <!-- Attendee badge bottom-right -->
+      <span
+        v-if="event.attendeeCount"
+        class="absolute bottom-3 right-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/92 dark:bg-verse-950/92 backdrop-blur-sm font-mono text-[11px] font-bold text-gray-900 dark:text-gray-100 shadow-sm"
+      >
+        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" />
+          <circle cx="10" cy="7" r="4" />
+        </svg>
+        {{ event.attendeeCount }}
+      </span>
     </div>
 
     <Link
@@ -119,5 +215,11 @@ const speakers = computed(() => {
       class="absolute inset-0 z-20"
       aria-label="View event details"
     />
-  </div>
+  </article>
 </template>
+
+<style scoped>
+.meetup-card:hover {
+  box-shadow: 0 24px 48px -12px rgba(13, 20, 51, 0.16), 0 8px 16px -4px rgba(13, 20, 51, 0.08);
+}
+</style>
