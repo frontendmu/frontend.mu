@@ -11,6 +11,8 @@ const workspaceDir = join(scriptDir, '..', '..')
 const repoRootDir = join(workspaceDir, '..', '..')
 const dbPath = join(workspaceDir, 'database', 'db.local.sqlite3')
 
+// WARNING: This dev-only sync rewrites matched event child rows by deleting and
+// recreating sessions, speaker links, sponsor links, and event photos.
 const meetups = JSON.parse(
   readFileSync(join(repoRootDir, 'packages', 'frontendmu-data', 'data', 'meetups-raw.json'), 'utf8')
 )
