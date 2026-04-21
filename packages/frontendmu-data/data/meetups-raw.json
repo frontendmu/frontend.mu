@@ -11003,5 +11003,153 @@
     "gallery": [],
     "sessions": [],
     "sponsors": []
+  },
+  {
+    "id": 100265,
+    "title": "The May Meetup",
+    "description": null,
+    "Location": "One Exchange Square, 12th Floor, Tower A, Wall St, Ebene",
+    "Venue": "Astek Mauritius",
+    "Date": "2026-05-23",
+    "Time": "10AM to 2PM",
+    "Attendees": 0,
+    "images": null,
+    "rsvplink": null,
+    "album": null,
+    "seats_available": 30,
+    "accepting_rsvp": true,
+    "rsvp_closing_date": "2026-05-23T00:00:00",
+    "map": "https://maps.app.goo.gl/Mn3gYsd21KQuwkA27",
+    "parking_location": "https://maps.app.goo.gl/Mn3gYsd21KQuwkA27",
+    "gallery": [],
+    "sessions": [
+      {
+        "id": 100311,
+        "kind": "intro",
+        "duration_minutes": 10,
+        "Session_id": {
+          "title": "Welcome & intro",
+          "deck": null,
+          "speakers": {
+            "name": "Sandeep Ramgolam",
+            "id": "6a23b471-4829-44cf-bf85-7ecd955c7c3a",
+            "github_account": "MrSunshyne"
+          }
+        }
+      },
+      {
+        "id": 100312,
+        "kind": "sponsored",
+        "duration_minutes": 10,
+        "sponsor_id": "55bce5c5-3285-43fd-825f-a7b63ccce9c4",
+        "Session_id": {
+          "title": "Sponsor spotlight",
+          "deck": null,
+          "speakers": null
+        }
+      },
+      {
+        "id": 100313,
+        "kind": "talk",
+        "duration_minutes": 30,
+        "Session_id": {
+          "title": "The Curry-Howard Correspondence",
+          "deck": null,
+          "speakers": {
+            "name": "Houzair Koussa",
+            "id": "5c47169a-5073-47c8-8fc7-efbd4fe82e0d",
+            "github_account": "houzyk"
+          }
+        }
+      },
+      {
+        "id": 100314,
+        "kind": "talk",
+        "duration_minutes": 30,
+        "Session_id": {
+          "title": "TBD",
+          "deck": null,
+          "speakers": null
+        }
+      },
+      {
+        "id": 100315,
+        "kind": "photo",
+        "duration_minutes": 5,
+        "Session_id": {
+          "title": "Group photo",
+          "deck": null,
+          "speakers": null
+        }
+      },
+      {
+        "id": 100316,
+        "kind": "break",
+        "duration_minutes": 45,
+        "Session_id": {
+          "title": "Lunch",
+          "deck": null,
+          "speakers": null
+        }
+      },
+      {
+        "id": 100317,
+        "kind": "talk",
+        "duration_minutes": 30,
+        "Session_id": {
+          "title": "TBD",
+          "deck": null,
+          "speakers": null
+        }
+      },
+      {
+        "id": 100318,
+        "kind": "talk",
+        "duration_minutes": 30,
+        "Session_id": {
+          "title": "TBD",
+          "deck": null,
+          "speakers": null
+        }
+      },
+      {
+        "id": 100319,
+        "kind": "quiz",
+        "duration_minutes": 10,
+        "Session_id": {
+          "title": "Quiz",
+          "deck": null,
+          "speakers": {
+            "name": "Cedric Poilly",
+            "id": "549be7b0-1e7d-4deb-9fb3-273cfe0da5b0",
+            "github_account": "cedpoilly"
+          }
+        }
+      }
+    ],
+    "sponsors": [
+      {
+        "id": 100411,
+        "Events_id": 100265,
+        "Sponsor_id": {
+          "id": "55bce5c5-3285-43fd-825f-a7b63ccce9c4",
+          "status": "published",
+          "sort": null,
+          "date_created": "2026-04-21T10:50:20.000Z",
+          "date_updated": null,
+          "Name": "Astek Mauritius",
+          "Website": "https://astek.mu",
+          "Description": null,
+          "Sponsor_type": ["venue", "food"],
+          "darkbg": false,
+          "Logo": {
+            "filename_disk": "b7aff71d-2cf0-4897-8faa-26af44467771.png"
+          },
+          "logomark": {
+            "filename_disk": "e2b31c7f-5157-446e-aec4-53a29f31a871.png"
+          }
+        }
+      }
+    ]
   }
 ]

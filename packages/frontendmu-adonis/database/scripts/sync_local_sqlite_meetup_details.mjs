@@ -279,6 +279,10 @@ const syncMeetupDetails = db.transaction(() => {
     deleteEventSponsorsByEvent.run(event.id)
     deleteEventPhotosByEvent.run(event.id)
 
+    for (const rawSponsor of meetup.sponsors || []) {
+      ensureSponsorRecord(rawSponsor, now)
+    }
+
     const rawSessions = meetup.sessions || []
     rawSessions.forEach((rawSession, index) => {
       const sessionId = randomUUID()
@@ -288,12 +292,14 @@ const syncMeetupDetails = db.transaction(() => {
       insertSession.run({
         id: sessionId,
         event_id: event.id,
-        title: rawSession.Session_id?.title || `Session ${index + 1}`,
-        description: null,
+        title: rawSession.Session_id?.title || rawSession.title || `Session ${index + 1}`,
+        description: rawSession.Session_id?.description || rawSession.description || null,
         order: index + 1,
-        kind: 'talk',
+        kind: rawSession.kind || 'talk',
         sponsor_id: sponsorId,
-        duration_minutes: null,
+        duration_minutes: normalizeNullableNumber(
+          rawSession.duration_minutes ?? rawSession.durationMinutes
+        ),
         created_at: now,
         updated_at: now,
       })
