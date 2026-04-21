@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { urlFor } from '@adonisjs/core/services/url_builder'
 import db from '@adonisjs/lucid/services/db'
 import User from '#models/user'
+import Role from '#models/role'
 import SpeakerPolicy from '#policies/speaker_policy'
 import { speakerValidator } from '#validators/speaker_validator'
 import SpeakerTransformer from '#transformers/speaker_transformer'
@@ -47,6 +48,11 @@ export default class AdminSpeakersController {
       role: 'member',
       password: null,
     })
+
+    const memberRole = await Role.findBy('name', 'member')
+    if (memberRole) {
+      await speaker.related('roles').attach([memberRole.id])
+    }
 
     session.flash('success', 'Speaker created successfully!')
     return response.redirect().toPath(urlFor('admin.users.edit', { id: speaker.id }))
