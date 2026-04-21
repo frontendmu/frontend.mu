@@ -55,7 +55,7 @@ defineProps<Props>()
       <div class="mt-16 flex justify-center">
         <Link
           href="/speakers"
-          class="group inline-flex items-center gap-3 text-sm font-semibold text-verse-500 dark:text-verse-400 hover:text-verse-600 dark:hover:text-verse-300 transition-colors"
+          class="group inline-flex items-center gap-3 text-sm font-semibold text-verse-500 dark:text-verse-300 hover:text-verse-600 dark:hover:text-verse-200 transition-colors"
         >
           See all speakers
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

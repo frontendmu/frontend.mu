@@ -563,6 +563,7 @@ onUnmounted(() => {
         <Link
           href="/"
           class="flex items-center gap-2 group"
+          aria-label="Go to coders.mu home"
           @contextmenu.prevent="router.visit('/branding')"
         >
           <div

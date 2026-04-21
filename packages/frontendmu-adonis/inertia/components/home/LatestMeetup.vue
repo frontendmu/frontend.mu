@@ -76,11 +76,11 @@ const remainingUpcomingData = computed(() =>
 
           <Link
             href="/meetups"
-            class="hidden md:inline-flex items-center gap-2 text-verse-500 dark:text-verse-400 font-medium hover:text-verse-600 dark:hover:text-verse-300 transition-colors"
+            class="hidden md:inline-flex items-center gap-2 text-verse-500 dark:text-verse-300 font-medium hover:text-verse-600 dark:hover:text-verse-200 transition-colors"
           >
             Explore all meetups
             <svg
-              class="w-5 h-5 text-verse-500 dark:text-verse-400"
+              class="w-5 h-5 text-verse-500 dark:text-verse-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -102,7 +102,7 @@ const remainingUpcomingData = computed(() =>
         <div class="flex md:hidden pt-4">
           <Link
             href="/meetups"
-            class="w-full text-center py-3 bg-verse-50 dark:bg-verse-900 text-verse-600 dark:text-verse-400 rounded-md font-medium"
+            class="w-full text-center py-3 bg-verse-50 dark:bg-verse-900 text-verse-600 dark:text-verse-200 rounded-md font-medium"
           >
             Explore all meetups
           </Link>
