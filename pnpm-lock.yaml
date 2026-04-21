@@ -102,6 +102,9 @@ importers:
       '@adonisjs/tsconfig':
         specifier: ^2.0.0
         version: 2.0.0
+      '@axe-core/playwright':
+        specifier: ^4.11.2
+        version: 4.11.2(playwright-core@1.46.0)
       '@japa/assert':
         specifier: ^4.0.1
         version: 4.2.0(@japa/runner@4.5.0)
@@ -111,6 +114,9 @@ importers:
       '@japa/runner':
         specifier: ^4.2.0
         version: 4.5.0
+      '@playwright/test':
+        specifier: ^1.40.1
+        version: 1.46.0
       '@poppinss/ts-exec':
         specifier: ^1.4.4
         version: 1.4.4
@@ -132,6 +138,9 @@ importers:
       autoprefixer:
         specifier: ^10.4.23
         version: 10.4.27(postcss@8.5.8)
+      axe-core:
+        specifier: ^4.11.3
+        version: 4.11.3
       eslint:
         specifier: ^9.26.0
         version: 9.39.4(jiti@2.6.1)
@@ -946,6 +955,11 @@ packages:
     peerDependencies:
       astro: ^4.0.0
       vue: ^3.2.30
+
+  '@axe-core/playwright@4.11.2':
+    resolution: {integrity: sha512-iP6hfNl9G0j/SEUSo8M7D80RbcDo9KRAAfDP4IT5OHB+Wm6zUHIrm8Y51BKI+Oyqduvipf9u1hcRy57zCBKzWQ==}
+    peerDependencies:
+      playwright-core: '>= 1.0.0'
 
   '@babel/code-frame@7.24.7':
     resolution: {integrity: sha512-BcYH1CVJBO9tvyIZ2jVeXgSIMvGZ2FDRvDdOIVQyuklNKSsx+eppDEBq/g47Ayw+RqNFE+URvOShmf+f/qwAlA==}
@@ -4268,6 +4282,10 @@ packages:
     hasBin: true
     peerDependencies:
       postcss: ^8.1.0
+
+  axe-core@4.11.3:
+    resolution: {integrity: sha512-zBQouZixDTbo3jMGqHKyePxYxr1e5W8UdTmBQ7sNtaA9M2bE32daxxPLS/jojhKOHxQ7LWwPjfiwf/fhaJWzlg==}
+    engines: {node: '>=4'}
 
   axios@1.13.6:
     resolution: {integrity: sha512-ChTCHMouEe2kn713WHbQGcuYrr6fXTBiu460OTwWrWob16g1bXn4vtz07Ope7ewMozJAnEquLk5lWQWtBig9DQ==}
@@ -10991,6 +11009,11 @@ snapshots:
       - supports-color
       - vite
 
+  '@axe-core/playwright@4.11.2(playwright-core@1.46.0)':
+    dependencies:
+      axe-core: 4.11.3
+      playwright-core: 1.46.0
+
   '@babel/code-frame@7.24.7':
     dependencies:
       '@babel/highlight': 7.24.7
@@ -15073,6 +15096,8 @@ snapshots:
       picocolors: 1.1.1
       postcss: 8.5.8
       postcss-value-parser: 4.2.0
+
+  axe-core@4.11.3: {}
 
   axios@1.13.6:
     dependencies:

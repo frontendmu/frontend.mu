@@ -44,13 +44,13 @@ function getGithubUrl(username: string) {
     <div class="contain relative z-10 max-w-5xl">
       <!-- Page Header -->
       <div class="mb-20 space-y-4">
-        <p class="text-sm font-medium text-gray-400 dark:text-gray-500">Our people</p>
+        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Our people</p>
 
         <h1 class="text-5xl md:text-6xl font-display tracking-tight dark:text-white leading-none">
           The Team
         </h1>
 
-        <p class="text-base text-gray-500 dark:text-gray-400 font-medium max-w-xl leading-relaxed">
+        <p class="text-base text-gray-600 dark:text-gray-300 font-medium max-w-xl leading-relaxed">
           The dedicated individuals managing and contributing to the Frontend Coders Mauritius
           ecosystem.
         </p>
@@ -59,20 +59,20 @@ function getGithubUrl(username: string) {
       <!-- Organizers Section -->
       <section class="mb-24 space-y-10">
         <div class="flex items-center gap-2">
-          <span class="text-sm font-semibold text-verse-500 dark:text-verse-400">Organizers</span>
+          <h2 class="text-sm font-semibold text-verse-500 dark:text-verse-400">Organizers</h2>
           <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div v-for="person in organizers" :key="person.name" class="group">
-            <Link :href="person.id ? `/speaker/${person.id}` : '#'" class="block space-y-4">
+            <Link v-if="person.id" :href="`/speaker/${person.id}`" class="block space-y-4">
               <div
                 class="relative aspect-square overflow-hidden rounded-2xl bg-gray-50 dark:bg-verse-900 border border-gray-100 dark:border-verse-800 transition-all duration-300 group-hover:border-verse-500 shadow-sm"
               >
                 <img
                   class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   :src="person.imageUrl"
-                  :alt="person.name"
+                  alt=""
                 />
               </div>
               <div class="space-y-1">
@@ -81,27 +81,45 @@ function getGithubUrl(username: string) {
                 >
                   {{ person.name }}
                 </h3>
-                <div class="flex items-center justify-between gap-2">
-                  <p
-                    class="text-[10px] font-bold text-verse-500 dark:text-verse-400 uppercase tracking-widest"
-                  >
-                    {{ person.role }}
-                  </p>
-                  <a
-                    v-if="person.linkedin"
-                    :href="person.linkedin"
-                    target="_blank"
-                    class="text-gray-300 dark:text-gray-600 hover:text-verse-500 transition-colors"
-                  >
-                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                      <path
-                        d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
-                      />
-                    </svg>
-                  </a>
-                </div>
               </div>
             </Link>
+            <div v-else class="space-y-4">
+              <div
+                class="relative aspect-square overflow-hidden rounded-2xl bg-gray-50 dark:bg-verse-900 border border-gray-100 dark:border-verse-800 shadow-sm"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  :src="person.imageUrl"
+                  alt=""
+                />
+              </div>
+              <div class="space-y-1">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">
+                  {{ person.name }}
+                </h3>
+              </div>
+            </div>
+            <div class="mt-1 flex items-center justify-between gap-2">
+              <p
+                class="text-[10px] font-bold text-verse-500 dark:text-verse-400 uppercase tracking-widest"
+              >
+                {{ person.role }}
+              </p>
+              <a
+                v-if="person.linkedin"
+                :href="person.linkedin"
+                target="_blank"
+                rel="noopener noreferrer"
+                :aria-label="`${person.name} on LinkedIn (opens in a new tab)`"
+                class="text-gray-500 dark:text-gray-400 hover:text-verse-500 transition-colors"
+              >
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+                  />
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -111,9 +129,7 @@ function getGithubUrl(username: string) {
         <!-- Speakers Grid -->
         <section class="lg:col-span-8 space-y-10">
           <div class="flex items-center gap-2">
-            <span class="text-sm font-semibold text-verse-500 dark:text-verse-400"
-              >Speaker History</span
-            >
+            <h2 class="text-sm font-semibold text-verse-500 dark:text-verse-400">Speaker History</h2>
             <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
           </div>
 
@@ -122,6 +138,7 @@ function getGithubUrl(username: string) {
               v-for="speaker in speakers"
               :key="speaker.id"
               :href="`/speaker/${speaker.id}`"
+              :aria-label="`View speaker profile for ${speaker.name}`"
               class="group block space-y-2"
             >
               <SpeakerAvatar
@@ -129,10 +146,11 @@ function getGithubUrl(username: string) {
                 :name="speaker.name"
                 :github-username="speaker.githubUsername"
                 :avatar-url="speaker.avatarUrl"
+                decorative
                 class="w-full aspect-square"
               />
               <p
-                class="text-[9px] font-bold text-center text-gray-400 group-hover:text-verse-500 transition-colors truncate"
+                class="text-[9px] font-bold text-center text-gray-600 dark:text-gray-300 group-hover:text-verse-500 transition-colors truncate"
               >
                 {{ speaker.name.split(' ')[0] }}
               </p>
@@ -142,7 +160,7 @@ function getGithubUrl(username: string) {
             v-else
             class="py-12 border border-dashed border-gray-100 dark:border-verse-900 rounded-2xl text-center"
           >
-            <p class="text-xs font-bold text-gray-400">
+            <p class="text-xs font-bold text-gray-600 dark:text-gray-300">
               The speaker registry is currently being indexed.
             </p>
           </div>
@@ -151,7 +169,7 @@ function getGithubUrl(username: string) {
         <!-- Contributors Sidebar -->
         <section v-if="contributors.length" class="lg:col-span-4 space-y-10">
           <div class="flex items-center gap-2">
-            <span class="text-sm font-semibold text-gray-400">Builders</span>
+            <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-300">Builders</h2>
             <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
           </div>
 
@@ -161,11 +179,13 @@ function getGithubUrl(username: string) {
               :key="contributor.username"
               :href="`https://github.com/frontendmu/frontend.mu/commits/?author=${contributor.username}`"
               target="_blank"
+              rel="noopener noreferrer"
               class="flex items-center justify-between p-3 rounded-xl bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 hover:border-verse-500 transition-all group"
             >
               <div class="flex items-center gap-3">
                 <img
                   :src="getGithubUrl(contributor.username)"
+                  alt=""
                   class="w-8 h-8 rounded-lg shadow-sm"
                 />
                 <div>
@@ -174,7 +194,7 @@ function getGithubUrl(username: string) {
                   >
                     {{ contributor.username }}
                   </p>
-                  <p class="text-[9px] font-mono text-gray-400 uppercase tracking-widest">
+                  <p class="text-[9px] font-mono text-gray-600 dark:text-gray-300 uppercase tracking-widest">
                     {{ contributor.contributions }} commits
                   </p>
                 </div>
@@ -184,6 +204,7 @@ function getGithubUrl(username: string) {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   stroke-linecap="round"
