@@ -1,16 +1,10 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
+import { sqlNow } from '#database/sql_now'
 
 const DATE_FIXES = [
   { slug: '2016-september', eventDate: '2016-09-24 00:00:00' },
   { slug: '2024-february', eventDate: '2024-02-24 00:00:00' },
 ] as const
-
-function sqlNow(): string {
-  return new Date()
-    .toISOString()
-    .replace('T', ' ')
-    .replace(/\.\d{3}Z$/, '')
-}
 
 export default class extends BaseSchema {
   protected tableName = 'events'

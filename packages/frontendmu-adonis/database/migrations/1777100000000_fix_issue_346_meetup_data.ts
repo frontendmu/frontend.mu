@@ -1,4 +1,5 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
+import { sqlNow } from '#database/sql_now'
 
 const ATTENDEE_FIXES = [
   { slug: '2025-september', attendeeCount: 40 },
@@ -26,13 +27,6 @@ const SLUG_SHIFT_FIXES = [
 ] as const
 
 const SINGLE_SLUG_FIXES = [{ from: '2016-july', to: '2016-september' }] as const
-
-function sqlNow(): string {
-  return new Date()
-    .toISOString()
-    .replace('T', ' ')
-    .replace(/\.\d{3}Z$/, '')
-}
 
 async function shiftSlugLeftOrThrow(
   db: any,

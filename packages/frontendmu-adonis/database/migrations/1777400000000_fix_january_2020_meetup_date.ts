@@ -1,11 +1,5 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
-
-function sqlNow(): string {
-  return new Date()
-    .toISOString()
-    .replace('T', ' ')
-    .replace(/\.\d{3}Z$/, '')
-}
+import { sqlNow } from '#database/sql_now'
 
 export default class extends BaseSchema {
   protected tableName = 'events'

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import Database from 'better-sqlite3'
+import { sqlNow } from '#database/sql_now'
 import { randomUUID } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -31,10 +32,6 @@ db.pragma('foreign_keys = ON')
 
 const speakerById = new Map(speakers.map((speaker) => [speaker.id, speaker]))
 const sponsorById = new Map(sponsors.map((sponsor) => [sponsor.id, sponsor]))
-
-function sqlNow() {
-  return new Date().toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, '')
-}
 
 function sqlFromIso(value) {
   if (!value) return null
