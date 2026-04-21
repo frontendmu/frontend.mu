@@ -112,10 +112,7 @@ const updateEvent = db.prepare(`
       venue = @venue,
       start_time = COALESCE(@start_time, start_time),
       end_time = COALESCE(@end_time, end_time),
-      attendee_count = CASE
-        WHEN attendee_count = 0 AND @attendee_count IS NOT NULL THEN @attendee_count
-        ELSE attendee_count
-      END,
+      attendee_count = COALESCE(@attendee_count, attendee_count),
       seats_available = @seats_available,
       accepting_rsvp = COALESCE(@accepting_rsvp, accepting_rsvp),
       rsvp_closing_date = @rsvp_closing_date,

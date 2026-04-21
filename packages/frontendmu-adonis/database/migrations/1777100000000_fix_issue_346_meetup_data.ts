@@ -53,8 +53,7 @@ async function shiftSlugLeftOrThrow(
   }
 
   if (!occupied && !trailing) {
-    const alreadyShifted = await db.from('events').select('id').where('slug', occupiedSlug).first()
-    if (target && alreadyShifted) return
+    if (target) return
     throw new Error(
       `Issue 346 slug fix expected "${occupiedSlug}" and "${trailingSlug}" or an already-fixed state`
     )
