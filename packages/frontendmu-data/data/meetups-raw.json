@@ -10906,7 +10906,60 @@
     "map": null,
     "parking_location": null,
     "gallery": [],
-    "sessions": [],
+    "sessions": [
+      {
+        "id": 100301,
+        "Events_id": 100262,
+        "Session_id": {
+          "title": "Intro to Ansible",
+          "deck": null,
+          "speakers": {
+            "name": "Clifford Weinmann",
+            "id": "19e7128e-4d77-4436-b03d-596a1bf4e74c",
+            "github_account": "clifford2"
+          }
+        }
+      },
+      {
+        "id": 100302,
+        "Events_id": 100262,
+        "Session_id": {
+          "title": "Ai for All",
+          "deck": null,
+          "speakers": {
+            "name": "Krishna Humath",
+            "id": "9e15a900-2597-49c0-8038-5d742df701a6",
+            "github_account": null
+          }
+        }
+      },
+      {
+        "id": 100303,
+        "Events_id": 100262,
+        "Session_id": {
+          "title": "Intro to WebMCP",
+          "deck": null,
+          "speakers": {
+            "name": "Sandeep Ramgolam",
+            "id": "6a23b471-4829-44cf-bf85-7ecd955c7c3a",
+            "github_account": "MrSunshyne"
+          }
+        }
+      },
+      {
+        "id": 100304,
+        "Events_id": 100262,
+        "Session_id": {
+          "title": "PHP can do Whaaat?",
+          "deck": null,
+          "speakers": {
+            "name": "Bruno Bernard",
+            "id": "13680b6f-590f-4d04-b056-f98ab33ea851",
+            "github_account": "eznix86"
+          }
+        }
+      }
+    ],
     "sponsors": []
   },
   {
@@ -10927,67 +10980,13 @@
     "map": null,
     "parking_location": null,
     "gallery": [],
-    "sessions": [
-      {
-        "id": 100301,
-        "Events_id": 100263,
-        "Session_id": {
-          "title": "Intro to Ansible",
-          "deck": null,
-          "speakers": {
-            "name": "Clifford Weinmann",
-            "id": "19e7128e-4d77-4436-b03d-596a1bf4e74c",
-            "github_account": "clifford2"
-          }
-        }
-      },
-      {
-        "id": 100302,
-        "Events_id": 100263,
-        "Session_id": {
-          "title": "Ai for All",
-          "deck": null,
-          "speakers": {
-            "name": "Krishna Humath",
-            "id": "9e15a900-2597-49c0-8038-5d742df701a6",
-            "github_account": null
-          }
-        }
-      },
-      {
-        "id": 100303,
-        "Events_id": 100263,
-        "Session_id": {
-          "title": "Intro to WebMCP",
-          "deck": null,
-          "speakers": {
-            "name": "Sandeep Ramgolam",
-            "id": "6a23b471-4829-44cf-bf85-7ecd955c7c3a",
-            "github_account": "MrSunshyne"
-          }
-        }
-      },
-      {
-        "id": 100304,
-        "Events_id": 100263,
-        "Session_id": {
-          "title": "PHP can do Whaaat?",
-          "deck": null,
-          "speakers": {
-            "name": "Bruno Bernard",
-            "id": "13680b6f-590f-4d04-b056-f98ab33ea851",
-            "github_account": "eznix86"
-          }
-        }
-      }
-    ],
+    "sessions": [],
     "sponsors": []
   },
   {
     "id": 100264,
     "title": "The April Meetup",
-    "description": "This is going to be another informal meetup about tech. No agenda, join us and bring good vibes.
-We will likely meet outdoors or at a beach restaurant in the north. Location to be confirmed. Bring your own lunch",
+    "description": "This is going to be another informal meetup about tech. No agenda, join us and bring good vibes.\nWe will likely meet outdoors or at a beach restaurant in the north. Location to be confirmed. Bring your own lunch",
     "Location": "Kumbaa Coffee",
     "Venue": "Telfair",
     "Date": "2026-04-18",
