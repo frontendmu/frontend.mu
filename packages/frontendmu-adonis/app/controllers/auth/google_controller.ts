@@ -73,6 +73,15 @@ export default class GoogleController {
           existingUser.googleId = googleUser.id
           existingUser.avatarUrl = existingUser.avatarUrl || googleUser.avatarUrl
           await existingUser.save()
+
+          const existingRole = await existingUser.related('roles').query().first()
+          if (!existingRole) {
+            const memberRole = await Role.findBy('name', 'member')
+            if (memberRole) {
+              await existingUser.related('roles').attach([memberRole.id])
+            }
+          }
+
           user = existingUser
         } else {
           // Account has a password — user must log in with credentials first
