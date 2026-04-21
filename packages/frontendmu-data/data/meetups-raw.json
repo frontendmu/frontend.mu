@@ -10887,5 +10887,122 @@
       }
     ],
     "sponsors": []
+  },
+  {
+    "id": 100262,
+    "title": "The February Meetup",
+    "description": "A collaboration between Coders.mu / CloudNative Foundation Mauritius / Laravel Moris",
+    "Location": "Mountain View Vivéa Business Park, 81430 Saint Pierre, Moka - Mauritius.",
+    "Venue": "Spoon Consulting Offices",
+    "Date": "2026-02-28",
+    "Time": "10:30AM to 3PM",
+    "Attendees": 0,
+    "images": null,
+    "rsvplink": null,
+    "album": null,
+    "seats_available": null,
+    "accepting_rsvp": false,
+    "rsvp_closing_date": null,
+    "map": null,
+    "parking_location": null,
+    "gallery": [],
+    "sessions": [],
+    "sponsors": []
+  },
+  {
+    "id": 100263,
+    "title": "The March Meetup",
+    "description": "This is going to be an informal meetup about tech. No agenda, join us and bring good vibes.",
+    "Location": "Kuumba coffee",
+    "Venue": "Telfair La Promenade",
+    "Date": "2026-03-21",
+    "Time": "11AM to 2PM",
+    "Attendees": 0,
+    "images": null,
+    "rsvplink": null,
+    "album": null,
+    "seats_available": 15,
+    "accepting_rsvp": true,
+    "rsvp_closing_date": "2026-03-21T00:00:00",
+    "map": null,
+    "parking_location": null,
+    "gallery": [],
+    "sessions": [
+      {
+        "id": 100301,
+        "Events_id": 100263,
+        "Session_id": {
+          "title": "Intro to Ansible",
+          "deck": null,
+          "speakers": {
+            "name": "Clifford Weinmann",
+            "id": "19e7128e-4d77-4436-b03d-596a1bf4e74c",
+            "github_account": "clifford2"
+          }
+        }
+      },
+      {
+        "id": 100302,
+        "Events_id": 100263,
+        "Session_id": {
+          "title": "Ai for All",
+          "deck": null,
+          "speakers": {
+            "name": "Krishna Humath",
+            "id": "9e15a900-2597-49c0-8038-5d742df701a6",
+            "github_account": null
+          }
+        }
+      },
+      {
+        "id": 100303,
+        "Events_id": 100263,
+        "Session_id": {
+          "title": "Intro to WebMCP",
+          "deck": null,
+          "speakers": {
+            "name": "Sandeep Ramgolam",
+            "id": "6a23b471-4829-44cf-bf85-7ecd955c7c3a",
+            "github_account": "MrSunshyne"
+          }
+        }
+      },
+      {
+        "id": 100304,
+        "Events_id": 100263,
+        "Session_id": {
+          "title": "PHP can do Whaaat?",
+          "deck": null,
+          "speakers": {
+            "name": "Bruno Bernard",
+            "id": "13680b6f-590f-4d04-b056-f98ab33ea851",
+            "github_account": "eznix86"
+          }
+        }
+      }
+    ],
+    "sponsors": []
+  },
+  {
+    "id": 100264,
+    "title": "The April Meetup",
+    "description": "This is going to be another informal meetup about tech. No agenda, join us and bring good vibes.
+We will likely meet outdoors or at a beach restaurant in the north. Location to be confirmed. Bring your own lunch",
+    "Location": "Kumbaa Coffee",
+    "Venue": "Telfair",
+    "Date": "2026-04-18",
+    "Time": "10:29AM to 2PM",
+    "Attendees": 0,
+    "images": null,
+    "rsvplink": null,
+    "album": null,
+    "seats_available": 10,
+    "accepting_rsvp": true,
+    "rsvp_closing_date": "2026-04-18T00:00:00",
+    "map": null,
+    "parking_location": null,
+    "gallery": [],
+    "sessions": [],
+    "sponsors": []
   }
 ]

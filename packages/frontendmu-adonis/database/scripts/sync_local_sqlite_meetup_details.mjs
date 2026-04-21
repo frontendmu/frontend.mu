@@ -155,12 +155,15 @@ const insertEventPhoto = db.prepare(`
   VALUES (?, ?, ?, NULL, ?, ?)
 `)
 
-function ensureSpeakerUser(speakerId, now) {
-  if (!speakerId) return
+function ensureSpeakerUser(speakerRef, now) {
+  const speakerId = typeof speakerRef === 'string' ? speakerRef : speakerRef?.id
+  if (!speakerId) return null
+
   const existingById = db.prepare(`SELECT id FROM users WHERE id = ?`).get(speakerId)
   if (existingById) return existingById.id
 
-  const speaker = speakerById.get(speakerId)
+  const embeddedSpeaker = typeof speakerRef === 'object' ? speakerRef : null
+  const speaker = speakerById.get(speakerId) || embeddedSpeaker
   if (!speaker) return null
 
   const githubUsername = speaker.github_account || null
@@ -175,7 +178,7 @@ function ensureSpeakerUser(speakerId, now) {
   }
 
   upsertUser.run({
-    id: speaker.id,
+    id: speakerId,
     name: speaker.name,
     github_username: githubUsername,
     avatar_url: githubUsername ? `https://github.com/${githubUsername}.png` : null,
@@ -183,7 +186,7 @@ function ensureSpeakerUser(speakerId, now) {
     updated_at: now,
   })
 
-  return speaker.id
+  return speakerId
 }
 
 function ensureSponsorRecord(rawSponsor, now) {
@@ -297,7 +300,7 @@ const syncMeetupDetails = db.transaction(() => {
       sessionsInserted++
 
       if (speaker?.id) {
-        const resolvedSpeakerId = ensureSpeakerUser(speaker.id, now)
+        const resolvedSpeakerId = ensureSpeakerUser(speaker, now)
         if (resolvedSpeakerId) {
           insertSessionSpeaker.run(sessionId, resolvedSpeakerId, now)
           speakerLinksInserted++
