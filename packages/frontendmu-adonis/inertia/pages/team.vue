@@ -138,6 +138,7 @@ function getGithubUrl(username: string) {
               v-for="speaker in speakers"
               :key="speaker.id"
               :href="`/speaker/${speaker.id}`"
+              :aria-label="`View speaker profile for ${speaker.name}`"
               class="group block space-y-2"
             >
               <SpeakerAvatar

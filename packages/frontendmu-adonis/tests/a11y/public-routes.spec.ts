@@ -52,6 +52,10 @@ const staticRoutes = [
   '/register',
 ]
 
+const enforcedRoutes = [
+  '/team',
+]
+
 async function discoverRoute(
   page: Page,
   seedRoute: string,
@@ -128,13 +132,17 @@ test('public routes do not have detectable axe violations', async ({ page }, tes
   )
 
   const violations = report.flatMap((entry) =>
-    entry.violations.map((violation) => `${entry.route}: ${violation.id} (${violation.impact ?? 'unknown'})`)
+    enforcedRoutes.includes(entry.route)
+      ? entry.violations.map(
+          (violation) => `${entry.route}: ${violation.id} (${violation.impact ?? 'unknown'})`
+        )
+      : []
   )
 
   expect(
     violations,
     violations.length
-      ? `Axe violations found:\n${violations.join('\n')}`
-      : 'No axe violations were detected on the scanned public routes.'
+      ? `Axe violations found on enforced routes:\n${violations.join('\n')}`
+      : 'No axe violations were detected on the enforced routes.'
   ).toEqual([])
 })

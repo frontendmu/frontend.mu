@@ -1,14 +1,15 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const appPort = 34123
-const baseURL = process.env.A11Y_BASE_URL || `http://127.0.0.1:${appPort}`
-const isLocalScan = new URL(baseURL).hostname === '127.0.0.1'
-const reportSlug = new URL(baseURL).hostname.replace(/[^a-z0-9.-]+/gi, '-')
+const baseURL = process.env.A11Y_BASE_URL || 'http://127.0.0.1:34123'
+const parsedBaseUrl = new URL(baseURL)
+const appPort = Number(parsedBaseUrl.port || 34123)
+const isLocalScan = parsedBaseUrl.hostname === '127.0.0.1'
+const reportSlug = parsedBaseUrl.hostname.replace(/[^a-z0-9.-]+/gi, '-')
 const serverEnv = [
   'APP_KEY=codex-a11y-test-app-key',
   'HOST=127.0.0.1',
   `PORT=${appPort}`,
-  `APP_URL=http://127.0.0.1:${appPort}`,
+  `APP_URL=${baseURL}`,
   'DB_DATABASE=database/db.local.sqlite3',
   'SESSION_DRIVER=cookie',
   'NODE_ENV=development',
