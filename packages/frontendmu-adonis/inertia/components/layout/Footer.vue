@@ -23,7 +23,7 @@ const today = new Date()
         <!-- Links Grid -->
         <div class="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-8">
           <div class="space-y-4">
-            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-300">Community</h4>
+            <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-300">Community</h2>
             <ul class="space-y-2.5 text-sm text-gray-400">
               <li><Link href="/meetups" class="hover:text-white transition-colors">Meetups</Link></li>
               <li><Link href="/speakers" class="hover:text-white transition-colors">Speakers</Link></li>
@@ -33,7 +33,7 @@ const today = new Date()
           </div>
 
           <div class="space-y-4">
-            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-300">Involvement</h4>
+            <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-300">Involvement</h2>
             <ul class="space-y-2.5 text-sm text-gray-400">
               <li><Link href="/contribute" class="hover:text-white transition-colors">Contribute</Link></li>
               <li><Link href="/api-docs" class="hover:text-white transition-colors">API</Link></li>
@@ -44,7 +44,7 @@ const today = new Date()
           </div>
 
           <div class="space-y-4 col-span-2 md:col-span-1">
-            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-300">Resources</h4>
+            <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-300">Resources</h2>
             <ul class="space-y-2.5 text-sm text-gray-400">
               <li><Link href="/code-of-conduct" class="hover:text-white transition-colors">Code of Conduct</Link></li>
               <li><Link href="/coding-guidelines" class="hover:text-white transition-colors">Guidelines</Link></li>

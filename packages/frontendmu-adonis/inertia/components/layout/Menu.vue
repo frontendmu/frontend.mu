@@ -551,7 +551,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div
+  <header
     class="menu-wrapper fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 md:pt-6 transition-all duration-500 ease-expo"
   >
     <div
@@ -587,7 +587,7 @@ onUnmounted(() => {
       </Link>
 
       <!-- Navigation -->
-      <nav class="hidden md:block">
+      <nav class="hidden md:block" aria-label="Primary">
         <ul class="flex items-center gap-1 lg:gap-2">
           <template v-for="item of Object.keys(links)" :key="item">
             <MenuItem :links="links" :item="item" />
@@ -655,7 +655,7 @@ onUnmounted(() => {
         </button>
       </div>
     </div>
-  </div>
+  </header>
 
   <Teleport to="body">
     <div v-if="isMobileMenuOpen" ref="mobileMenuOverlay" class="fixed inset-0 z-[70] md:hidden">
