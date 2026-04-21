@@ -18,10 +18,17 @@ const SLUG_FIXES = [
   { from: '2016-july', to: '2016-september' },
 ] as const
 
+function sqlNow(): string {
+  return new Date()
+    .toISOString()
+    .replace('T', ' ')
+    .replace(/\.\d{3}Z$/, '')
+}
+
 export default class extends BaseSchema {
   async up() {
     this.defer(async (db) => {
-      const now = new Date()
+      const now = sqlNow()
 
       for (const { slug, attendeeCount } of ATTENDEE_FIXES) {
         await db
@@ -71,7 +78,7 @@ export default class extends BaseSchema {
 
   async down() {
     this.defer(async (db) => {
-      const now = new Date()
+      const now = sqlNow()
 
       for (const { slug, attendeeCount } of ATTENDEE_FIXES) {
         await db
