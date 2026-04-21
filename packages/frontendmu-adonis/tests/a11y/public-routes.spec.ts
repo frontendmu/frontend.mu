@@ -29,6 +29,10 @@ type RouteScan = {
   }[]
 }
 
+async function waitForInertiaApp(page: Page) {
+  await page.locator('#app > *').first().waitFor({ state: 'attached' })
+}
+
 function getReportSlug(baseURL: string) {
   const { hostname } = new URL(baseURL)
   return hostname.replace(/[^a-z0-9.-]+/gi, '-')
@@ -63,6 +67,7 @@ async function discoverRoute(
 ) {
   await page.goto(seedRoute, { waitUntil: 'domcontentloaded' })
   await page.waitForLoadState('load')
+  await waitForInertiaApp(page)
   const links = page.locator(selector)
   if ((await links.count()) === 0) {
     return null
@@ -95,6 +100,7 @@ test('public routes do not have detectable axe violations', async ({ page }, tes
   for (const route of routes) {
     await page.goto(route, { waitUntil: 'domcontentloaded' })
     await page.waitForLoadState('load')
+    await waitForInertiaApp(page)
 
     const results: AxeResults = await new AxeBuilder({ page }).analyze()
     report.push({

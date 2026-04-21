@@ -207,7 +207,7 @@ function featuredForYear(year: number): Data.Event | undefined {
             <!-- Giant vertical year label — breaks out of the container to the left -->
             <div
               aria-hidden="true"
-              class="year-label absolute top-[40px] font-display font-normal pointer-events-none select-none hidden md:block text-gray-200/90 dark:text-verse-900"
+              class="year-label absolute top-[40px] font-display font-normal pointer-events-none select-none hidden md:block text-gray-500 dark:text-verse-400"
               :style="{
                 fontSize: 'clamp(80px, 12vw, 180px)',
                 lineHeight: '0.8',
