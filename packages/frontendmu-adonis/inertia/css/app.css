@@ -195,3 +195,8 @@ dialog[open] {
   display: flex;
   flex-direction: column;
 }
+
+/* Improve contrast for the local Adonis debug bar launcher on dark surfaces. */
+#dbg-launcher > span {
+  color: #cbd5e1;
+}
