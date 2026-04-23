@@ -70,7 +70,7 @@ export default class extends BaseSchema {
   protected tableName = 'event_sponsors'
 
   async up() {
-    const now = DateTime.now().toSQL({ includeOffset: false })!
+    const now = DateTime.utc().toSQL({ includeOffset: false })!
 
     // Only keep rows whose event + sponsor actually exist to avoid FK errors
     // on partially-seeded databases.
