@@ -7,13 +7,21 @@ function getCsrfToken(): string {
   )
 }
 
-function textToMessage(text: string, fallback: string) {
-  const message = text
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
+async function getFallbackMessage(response: Response, contentType: string) {
+  const fallback = response.statusText || `HTTP ${response.status}`
 
-  return message || fallback
+  if (contentType.includes('text/html')) {
+    return fallback
+  }
+
+  const body = await response.text()
+  const text = body.replace(/\s+/g, ' ').trim()
+
+  if (!text) {
+    return fallback
+  }
+
+  return text.length > 200 ? `${text.slice(0, 200)}...` : text
 }
 
 async function readResponseData<T>(response: Response): Promise<T> {
@@ -27,9 +35,8 @@ async function readResponseData<T>(response: Response): Promise<T> {
     return (await response.json()) as T
   }
 
-  const text = await response.text()
   return {
-    message: textToMessage(text, response.statusText),
+    message: await getFallbackMessage(response, contentType),
   } as T
 }
 

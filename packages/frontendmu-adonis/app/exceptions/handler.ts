@@ -22,7 +22,7 @@ function shouldRenderJson(ctx: HttpContext) {
 }
 
 function getErrorStatus(error: unknown, fallback: number) {
-  return (error as ErrorWithStatus)?.status || fallback
+  return (error as ErrorWithStatus)?.status ?? fallback
 }
 
 function getErrorMessage(error: unknown, fallback: string) {

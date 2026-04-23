@@ -1092,7 +1092,7 @@ async function removeSponsor(sponsorId: string) {
                   </button>
                   <button
                     type="button"
-                    @click.stop.prevent="deleteSession(session)"
+                    @click.stop="deleteSession(session)"
                     class="p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 hover:bg-red-100 dark:hover:bg-red-900/30 squircle rounded-lg transition-colors"
                     title="Delete session"
                   >
