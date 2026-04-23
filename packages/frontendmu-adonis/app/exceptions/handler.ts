@@ -14,6 +14,10 @@ type InertiaRenderer = {
 function shouldRenderJson(ctx: HttpContext) {
   const accept = ctx.request.header('accept') || ''
 
+  if (ctx.request.header('x-inertia')) {
+    return false
+  }
+
   return (
     ctx.request.method() !== 'GET' ||
     accept.includes('application/json') ||
