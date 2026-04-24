@@ -300,16 +300,24 @@ async function saveSession() {
 }
 
 async function deleteSession(session: Data.Session) {
+  if (!session.id) {
+    console.error('Cannot delete a session without an id:', session)
+    return
+  }
+
   if (!confirm(`Are you sure you want to delete "${session.title}"?`)) {
     return
   }
 
   try {
-    const { ok } = await apiFetch(`/admin/sessions/${session.id}`, {
+    const { ok, data } = await apiFetch<{ message?: string }>(`/admin/sessions/${session.id}`, {
       method: 'DELETE',
     })
+
     if (ok) {
       sessions.value = sessions.value.filter((s) => s.id !== session.id)
+    } else {
+      console.error('Failed to delete session:', data.message || 'Unknown server error')
     }
   } catch (error) {
     console.error('Failed to delete session:', error)
@@ -964,8 +972,12 @@ async function removeSponsor(sponsorId: string) {
           </div>
 
           <!-- Quick-add presets -->
-          <div class="flex flex-wrap items-center gap-2 mb-4 pb-4 border-b border-verse-200 dark:border-verse-700">
-            <span class="text-xs font-medium text-verse-500 dark:text-verse-400 uppercase tracking-wide">
+          <div
+            class="flex flex-wrap items-center gap-2 mb-4 pb-4 border-b border-verse-200 dark:border-verse-700"
+          >
+            <span
+              class="text-xs font-medium text-verse-500 dark:text-verse-400 uppercase tracking-wide"
+            >
               Quick add
             </span>
             <button
@@ -978,7 +990,9 @@ async function removeSponsor(sponsorId: string) {
               ]"
               :key="preset.key"
               type="button"
-              @click="openNewSessionForm(preset.key as 'intro' | 'break' | 'photo' | 'quiz' | 'sponsored')"
+              @click="
+                openNewSessionForm(preset.key as 'intro' | 'break' | 'photo' | 'quiz' | 'sponsored')
+              "
               class="px-2.5 py-1 text-xs font-medium text-verse-700 dark:text-verse-300 bg-white dark:bg-verse-700 border border-verse-300 dark:border-verse-600 hover:border-verse-500 hover:text-verse-900 dark:hover:text-verse-100 squircle rounded-md transition-colors"
             >
               {{ preset.label }}
@@ -1078,7 +1092,7 @@ async function removeSponsor(sponsorId: string) {
                   </button>
                   <button
                     type="button"
-                    @click="deleteSession(session)"
+                    @click.stop="deleteSession(session)"
                     class="p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 hover:bg-red-100 dark:hover:bg-red-900/30 squircle rounded-lg transition-colors"
                     title="Delete session"
                   >
