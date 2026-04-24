@@ -1,11 +1,24 @@
 <script setup lang="ts">
-import { Head, usePage } from '@inertiajs/vue3'
+import { Head, Link, usePage } from '@inertiajs/vue3'
 import type { Data } from '@generated/data'
 import { computed } from 'vue'
 
 const page = usePage<Data.SharedProps>()
 const errors = computed(() => page.props.errors as Record<string, string> | undefined)
 const googleOauthEnabled = computed(() => page.props.auth.providers.google)
+
+const nextParam = computed(() => {
+  const query = page.url.split('?')[1]
+  if (!query) return null
+  const value = new URLSearchParams(query).get('next')
+  return value && value.startsWith('/') && !value.startsWith('//') ? value : null
+})
+const googleHref = computed(() =>
+  nextParam.value ? `/auth/google?next=${encodeURIComponent(nextParam.value)}` : '/auth/google'
+)
+const registerHref = computed(() =>
+  nextParam.value ? `/register?next=${encodeURIComponent(nextParam.value)}` : '/register'
+)
 </script>
 
 <template>
@@ -33,7 +46,7 @@ const googleOauthEnabled = computed(() => page.props.auth.providers.google)
         <!-- Google Sign In -->
         <a
           v-if="googleOauthEnabled"
-          href="/auth/google"
+          :href="googleHref"
           class="w-full flex items-center justify-center gap-2.5 px-4 py-2.5 bg-white dark:bg-verse-900 border border-gray-300 dark:border-verse-800 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-verse-800 transition-colors"
         >
           <svg class="w-4 h-4" viewBox="0 0 24 24">
@@ -75,6 +88,7 @@ const googleOauthEnabled = computed(() => page.props.auth.providers.google)
 
         <form method="POST" action="/login" class="space-y-4">
           <input type="hidden" name="_csrf" :value="$page.props.auth.csrfToken" />
+          <input v-if="nextParam" type="hidden" name="next" :value="nextParam" />
 
           <div>
             <label
@@ -121,7 +135,7 @@ const googleOauthEnabled = computed(() => page.props.auth.providers.google)
         <p class="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
           Don't have an account?
           <Link
-            href="/register"
+            :href="registerHref"
             class="text-verse-500 hover:text-verse-600 dark:text-verse-400 dark:hover:text-verse-300 ml-1 font-medium"
           >
             Create account

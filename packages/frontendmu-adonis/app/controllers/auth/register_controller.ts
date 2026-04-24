@@ -4,6 +4,7 @@ import User from '#models/user'
 import Role from '#models/role'
 import { registerValidator } from '#validators/register_validator'
 import logger from '@adonisjs/core/services/logger'
+import { safeReturnUrl } from '../../lib/safe_return_url.js'
 
 export default class RegisterController {
   async show({ inertia }: HttpContext) {
@@ -12,6 +13,7 @@ export default class RegisterController {
 
   async store({ request, response, session, auth }: HttpContext) {
     const data = await request.validateUsing(registerValidator)
+    const next = safeReturnUrl(request.input('next'))
 
     const existingUser = await User.findBy('email', data.email)
     if (existingUser) {
@@ -43,6 +45,9 @@ export default class RegisterController {
       return response.redirect().back()
     }
 
+    if (next) {
+      return response.redirect().toPath(next)
+    }
     return response.redirect().toPath(urlFor('home'))
   }
 }

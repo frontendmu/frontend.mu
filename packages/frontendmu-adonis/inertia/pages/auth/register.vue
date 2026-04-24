@@ -5,6 +5,16 @@ import { computed } from 'vue'
 
 const page = usePage<Data.SharedProps>()
 const errors = computed(() => page.props.errors as Record<string, string> | undefined)
+
+const nextParam = computed(() => {
+  const query = page.url.split('?')[1]
+  if (!query) return null
+  const value = new URLSearchParams(query).get('next')
+  return value && value.startsWith('/') && !value.startsWith('//') ? value : null
+})
+const loginHref = computed(() =>
+  nextParam.value ? `/login?next=${encodeURIComponent(nextParam.value)}` : '/login'
+)
 </script>
 
 <template>
@@ -31,6 +41,7 @@ const errors = computed(() => page.props.errors as Record<string, string> | unde
 
         <form method="POST" action="/register" class="space-y-4">
           <input type="hidden" name="_csrf" :value="$page.props.auth.csrfToken" />
+          <input v-if="nextParam" type="hidden" name="next" :value="nextParam" />
 
           <div>
             <label
@@ -113,7 +124,7 @@ const errors = computed(() => page.props.errors as Record<string, string> | unde
         <p class="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
           Already registered?
           <Link
-            href="/login"
+            :href="loginHref"
             class="text-verse-500 hover:text-verse-600 dark:text-verse-300 dark:hover:text-verse-200 ml-1 font-medium"
           >
             Sign in
