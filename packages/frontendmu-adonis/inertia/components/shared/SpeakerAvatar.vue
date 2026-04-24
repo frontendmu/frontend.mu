@@ -7,10 +7,12 @@ interface Props {
   githubUsername?: string | null
   avatarUrl?: string | null
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
+  decorative?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   size: 'md',
+  decorative: false,
 })
 
 const finalAvatarUrl = computed(() => {
@@ -46,7 +48,7 @@ const logoSizeClasses = {
     <img
       v-if="finalAvatarUrl"
       :src="finalAvatarUrl"
-      :alt="name"
+      :alt="decorative ? '' : name"
       class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
     />
     

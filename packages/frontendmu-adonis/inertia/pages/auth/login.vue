@@ -69,7 +69,7 @@ const googleOauthEnabled = computed(() => page.props.auth.providers.google)
             <div class="w-full border-t border-gray-300 dark:border-verse-900"></div>
           </div>
           <div class="relative flex justify-center text-xs">
-            <span class="px-2 bg-white dark:bg-verse-950 text-gray-400">or</span>
+            <span class="px-2 bg-white dark:bg-verse-950 text-gray-500 dark:text-gray-300">or</span>
           </div>
         </div>
 

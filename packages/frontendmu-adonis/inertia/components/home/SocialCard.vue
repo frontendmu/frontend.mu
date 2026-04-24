@@ -27,7 +27,7 @@ defineProps<Props>()
       <h3 class="font-bold text-lg leading-tight">
         <slot name="tagline" />
       </h3>
-      <p class="text-xs text-white/80 line-clamp-2">
+      <p class="text-xs text-white line-clamp-2">
         <slot name="description" />
       </p>
     </div>

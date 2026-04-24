@@ -44,6 +44,7 @@ const { isAdmin } = useAuth()
         v-if="sponsors.length"
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-32"
       >
+        <h2 class="sr-only">Current partners</h2>
         <Link
           v-for="sponsor in sponsors"
           :key="sponsor.id"
@@ -59,7 +60,7 @@ const { isAdmin } = useAuth()
             <img
               v-if="sponsor.logoUrl"
               :src="sponsor.logoUrl"
-              :alt="sponsor.name"
+              alt=""
               class="max-w-[180px] max-h-[80px] object-contain transition-transform duration-200 group-hover:scale-105"
             />
             <span
@@ -85,7 +86,7 @@ const { isAdmin } = useAuth()
               <span
                 v-for="type in sponsor.sponsorTypes"
                 :key="type"
-                class="px-2 py-0.5 bg-verse-500/10 text-verse-600 dark:text-verse-400 border border-verse-500/20 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                class="px-2 py-0.5 bg-verse-500/10 text-verse-600 dark:bg-verse-400/10 dark:text-verse-200 border border-verse-500/20 dark:border-verse-300/30 rounded-full text-[10px] font-bold uppercase tracking-wider"
               >
                 {{ type }}
               </span>

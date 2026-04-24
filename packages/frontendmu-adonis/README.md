@@ -22,6 +22,8 @@ node ace serve --hmr
 
 That's it. The repo includes `database/db.local.sqlite3` — a SQLite database pre-seeded with events, sponsors, sessions, and speaker data. No database setup required.
 
+Treat that committed SQLite file as generated development data. When it needs updating, regenerate it from migrations and the data scripts instead of editing the binary directly.
+
 ### Dev Admin Account
 
 The local database includes a superadmin account:
@@ -61,6 +63,9 @@ DB_DATABASE=database/db.local.sqlite3 node ace migration:fresh
 
 # 4. Generate the local dev DB (imports speakers, events, sponsors + creates dummy users/RSVPs)
 npx tsx database/scripts/generate_local_db.ts
+
+# 5. Sync meetup/session details from the checked-in raw data export
+pnpm run db:sync-local-meetup-details
 ```
 
 ### Backup & Restore

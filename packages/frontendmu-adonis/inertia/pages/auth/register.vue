@@ -114,7 +114,7 @@ const errors = computed(() => page.props.errors as Record<string, string> | unde
           Already registered?
           <Link
             href="/login"
-            class="text-verse-500 hover:text-verse-600 dark:text-verse-400 dark:hover:text-verse-300 ml-1 font-medium"
+            class="text-verse-500 hover:text-verse-600 dark:text-verse-300 dark:hover:text-verse-200 ml-1 font-medium"
           >
             Sign in
           </Link>

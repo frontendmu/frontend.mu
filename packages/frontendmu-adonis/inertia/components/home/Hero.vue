@@ -161,7 +161,7 @@ onUnmounted(() => {
                   <span class="text-[11px] leading-none">{{
                     formatDate(featuredEvent.date).day
                   }}</span>
-                  <span class="text-[6px] uppercase tracking-wider opacity-80">{{
+                  <span class="text-[7px] uppercase tracking-[0.16em] text-white/95">{{
                     formatDate(featuredEvent.date).month
                   }}</span>
                 </div>

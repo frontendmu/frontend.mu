@@ -22,6 +22,7 @@
   --color-coral-soft: oklch(94% 0.04 40);
   --color-coral: oklch(68% 0.17 35);
   --color-coral-strong: oklch(62% 0.19 32);
+  --color-coral-deep: oklch(55% 0.16 32);
 
   /* Mono font stack */
   --font-mono:
@@ -111,6 +112,9 @@ html.dark {
   @apply inline-flex items-center gap-3 text-[13px] font-semibold uppercase;
   font-family: var(--font-mono);
   letter-spacing: 0.14em;
+  color: var(--color-coral-deep);
+}
+html.dark .section-label {
   color: var(--color-coral-strong);
 }
 .section-label::before {
@@ -190,4 +194,9 @@ dialog::backdrop {
 dialog[open] {
   display: flex;
   flex-direction: column;
+}
+
+/* Improve contrast for the local Adonis debug bar launcher on dark surfaces. */
+#dbg-launcher > span {
+  color: #cbd5e1;
 }

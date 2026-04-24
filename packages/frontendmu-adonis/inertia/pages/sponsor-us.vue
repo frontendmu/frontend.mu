@@ -25,7 +25,7 @@ import { Link } from '@inertiajs/vue3'
           <div class="lg:col-span-7 space-y-12">
             <section class="space-y-8">
               <div class="flex items-center gap-2">
-                <span class="text-sm font-semibold text-verse-500 dark:text-verse-400">The Value</span>
+                <h2 class="text-sm font-semibold text-verse-500 dark:text-verse-400">The Value</h2>
                 <div class="h-px flex-1 bg-gray-100 dark:bg-verse-900"></div>
               </div>
               
@@ -53,7 +53,7 @@ import { Link } from '@inertiajs/vue3'
           <div class="lg:col-span-5 space-y-8">
             <!-- Contact Card -->
             <div class="p-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl shadow-2xl space-y-6">
-              <h3 class="text-2xl font-display tracking-tight leading-tight">Let's talk partnerships.</h3>
+              <h2 class="text-2xl font-display tracking-tight leading-tight">Let's talk partnerships.</h2>
               <p class="text-base font-medium opacity-70 leading-relaxed">
                 Every sponsorship is a custom partnership. We'll work with you to ensure your goals are met.
               </p>
@@ -65,18 +65,18 @@ import { Link } from '@inertiajs/vue3'
                   Send an Inquiry
                 </a>
               </div>
-              <p class="text-center text-[9px] font-bold opacity-50 uppercase tracking-widest italic">
+              <p class="text-center text-[9px] font-bold text-gray-400 dark:text-gray-600 uppercase tracking-widest italic">
                 Response time: 24-48 hours
               </p>
             </div>
 
             <!-- Sponsorship Tiers (Simplified) -->
             <div class="p-8 border border-gray-100 dark:border-verse-800 rounded-2xl space-y-6 bg-white/50 dark:bg-verse-950/20 backdrop-blur-xl">
-              <h4 class="text-sm font-semibold text-gray-400">Available Options</h4>
+              <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-300">Available Options</h2>
               <ul class="space-y-4">
                 <li class="flex items-center justify-between font-bold text-sm">
                   <span class="text-gray-600 dark:text-gray-300">Venue Hosting</span>
-                  <span class="text-[10px] font-bold text-verse-500 bg-verse-500/10 px-2.5 py-0.5 rounded">Popular</span>
+                  <span class="text-[10px] font-bold text-verse-600 bg-verse-500/10 dark:bg-verse-400/10 dark:text-verse-200 px-2.5 py-0.5 rounded">Popular</span>
                 </li>
                 <li class="h-px w-full bg-gray-50 dark:bg-verse-800"></li>
                 <li class="flex items-center justify-between font-bold text-sm text-gray-600 dark:text-gray-300">

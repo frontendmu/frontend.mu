@@ -351,7 +351,7 @@ const calendarUrl = computed(() => {
                 isToday
                   ? 'border-coral/30 bg-coral-soft text-coral-strong'
                   : isUpcoming
-                    ? 'bg-verse-50 dark:bg-verse-900 border-verse-200 dark:border-verse-800 text-verse-600 dark:text-verse-400'
+                    ? 'bg-verse-50 dark:bg-verse-900 border-verse-200 dark:border-verse-800 text-verse-600 dark:text-verse-200'
                     : 'bg-gray-50 border-gray-200 text-gray-500 dark:bg-verse-900 dark:border-verse-800 dark:text-gray-400'
               "
             >
@@ -369,7 +369,7 @@ const calendarUrl = computed(() => {
             </h1>
 
             <div v-if="meetup.sponsors?.length" class="flex flex-col items-start md:items-end gap-3 shrink-0">
-              <span class="font-mono text-[9.5px] uppercase tracking-[0.12em] text-gray-400 dark:text-gray-500">
+              <span class="font-mono text-[9.5px] uppercase tracking-[0.12em] text-gray-500 dark:text-gray-300">
                 Sponsored by
               </span>
               <div class="flex flex-wrap justify-start md:justify-end gap-2.5">
@@ -419,7 +419,7 @@ const calendarUrl = computed(() => {
                 </svg>
               </div>
               <div>
-                <div class="font-mono text-[10.5px] uppercase tracking-[0.12em] text-gray-400 dark:text-gray-500 mb-0.5">Date</div>
+                <div class="font-mono text-[10.5px] uppercase tracking-[0.12em] text-gray-500 dark:text-gray-300 mb-0.5">Date</div>
                 <div class="text-[15px] font-semibold text-gray-900 dark:text-gray-100">{{ formattedDate }}</div>
               </div>
             </div>
@@ -434,7 +434,7 @@ const calendarUrl = computed(() => {
                 </svg>
               </div>
               <div>
-                <div class="font-mono text-[10.5px] uppercase tracking-[0.12em] text-gray-400 dark:text-gray-500 mb-0.5">Time</div>
+                <div class="font-mono text-[10.5px] uppercase tracking-[0.12em] text-gray-500 dark:text-gray-300 mb-0.5">Time</div>
                 <div class="text-[15px] font-semibold text-gray-900 dark:text-gray-100">
                   {{ meetup.startTime }}<template v-if="meetup.endTime"> – {{ meetup.endTime }}</template>
                 </div>
@@ -451,7 +451,7 @@ const calendarUrl = computed(() => {
                 </svg>
               </div>
               <div>
-                <div class="font-mono text-[10.5px] uppercase tracking-[0.12em] text-gray-400 dark:text-gray-500 mb-0.5">Venue</div>
+                <div class="font-mono text-[10.5px] uppercase tracking-[0.12em] text-gray-500 dark:text-gray-300 mb-0.5">Venue</div>
                 <div class="text-[15px] font-semibold text-gray-900 dark:text-gray-100">
                   {{ meetup.venue }}<template v-if="meetup.location"> · {{ meetup.location }}</template>
                 </div>
@@ -475,7 +475,7 @@ const calendarUrl = computed(() => {
           <div class="min-w-0">
             <!-- About -->
             <section v-if="meetup.description" class="pb-12 border-b border-gray-200 dark:border-verse-900">
-              <span class="section-label">About this meetup</span>
+              <h2 class="section-label">About this meetup</h2>
               <div
                 class="prose prose-lg dark:prose-invert max-w-[68ch] mt-6 text-[19px] leading-[1.75] text-gray-700 dark:text-gray-400"
                 v-html="sanitizeHtml(meetup.description)"
@@ -484,7 +484,7 @@ const calendarUrl = computed(() => {
 
             <!-- Agenda -->
             <section v-if="meetup.sessions?.length" class="pb-12 border-b border-gray-200 dark:border-verse-900">
-              <span class="section-label">Agenda</span>
+              <h2 class="section-label">Agenda</h2>
 
               <ol class="mt-6 divide-y divide-dashed divide-gray-200 dark:divide-verse-900">
                 <li
@@ -569,7 +569,7 @@ const calendarUrl = computed(() => {
                       <span>{{ session.title }}</span>
                       <span
                         v-if="session.durationMinutes"
-                        class="font-mono text-[11.5px] not-italic text-gray-400 dark:text-gray-500"
+                        class="font-mono text-[11.5px] not-italic text-gray-500 dark:text-gray-300"
                       >
                         {{ session.durationMinutes }} min
                       </span>
@@ -583,7 +583,7 @@ const calendarUrl = computed(() => {
                         </h3>
                         <span
                           v-if="session.durationMinutes"
-                          class="font-mono text-[11.5px] text-gray-400 dark:text-gray-500"
+                          class="font-mono text-[11.5px] text-gray-500 dark:text-gray-300"
                         >
                           {{ session.durationMinutes }} min
                         </span>
@@ -656,7 +656,7 @@ const calendarUrl = computed(() => {
                       </span>
                       <span
                         v-if="session.durationMinutes"
-                        class="font-mono text-[11.5px] text-gray-400 dark:text-gray-500"
+                        class="font-mono text-[11.5px] text-gray-500 dark:text-gray-300"
                       >
                         {{ session.durationMinutes }} min
                       </span>
@@ -669,8 +669,8 @@ const calendarUrl = computed(() => {
             <!-- Photo Gallery (past only) -->
             <section v-if="meetup.photos?.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
               <div class="flex items-center justify-between gap-4 flex-wrap">
-                <span class="section-label">Photos</span>
-                <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-gray-400 dark:text-gray-500">
+                <h2 class="section-label">Photos</h2>
+                <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-gray-500 dark:text-gray-300">
                   {{ meetup.photos.length }} photos · tap to expand
                 </span>
               </div>
@@ -694,7 +694,7 @@ const calendarUrl = computed(() => {
 
             <!-- Speakers (dedicated card grid when we have them) -->
             <section v-if="allSpeakers.length" class="py-12 border-b border-gray-200 dark:border-verse-900">
-              <span class="section-label">Speakers</span>
+              <h2 class="section-label">Speakers</h2>
               <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Link
                   v-for="sp in allSpeakers"
@@ -713,7 +713,7 @@ const calendarUrl = computed(() => {
                     <p class="font-display text-[22px] text-gray-900 dark:text-gray-100 leading-[1.15]">
                       {{ sp.name }}
                     </p>
-                    <p v-if="sp.githubUsername" class="font-mono text-[12px] uppercase tracking-[0.08em] text-verse-600 dark:text-verse-400 mt-2">
+                    <p v-if="sp.githubUsername" class="font-mono text-[12px] uppercase tracking-[0.08em] text-verse-600 dark:text-verse-300 mt-2">
                       @{{ sp.githubUsername }}
                     </p>
                   </div>
@@ -723,7 +723,7 @@ const calendarUrl = computed(() => {
 
             <!-- Attendees -->
             <section v-if="attendees.length > 0" class="py-12 border-b border-gray-200 dark:border-verse-900">
-              <span class="section-label">{{ isPast ? 'Who came' : "Who's coming" }}</span>
+              <h2 class="section-label">{{ isPast ? 'Who came' : "Who's coming" }}</h2>
               <div class="mt-6 flex items-center gap-4 flex-wrap">
                 <div class="flex -space-x-2.5">
                   <template v-for="attendee in attendees.slice(0, 8)" :key="attendee.id">
@@ -753,7 +753,7 @@ const calendarUrl = computed(() => {
             <div
               class="flex items-center gap-3 flex-wrap py-6 border-b border-gray-200 dark:border-verse-900"
             >
-              <span class="font-mono text-[11px] uppercase tracking-[0.12em] text-gray-400 dark:text-gray-500">
+              <span class="font-mono text-[11px] uppercase tracking-[0.12em] text-gray-500 dark:text-gray-300">
                 Share this meetup
               </span>
               <button
@@ -783,7 +783,7 @@ const calendarUrl = computed(() => {
                   <path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1-1" />
                 </svg>
               </button>
-              <span class="ml-auto font-mono text-[11px] text-gray-400 dark:text-gray-500 truncate max-w-[260px]">
+              <span class="ml-auto font-mono text-[11px] text-gray-500 dark:text-gray-300 truncate max-w-[260px]">
                 coders.mu/meetup/{{ meetup.slug || meetup.id }}
               </span>
             </div>
@@ -799,9 +799,9 @@ const calendarUrl = computed(() => {
                 </svg>
               </div>
               <div>
-                <h4 class="font-display text-[17px] text-[oklch(28%_0.08_155)] dark:text-gray-100 mb-0.5">
+                <h2 class="font-display text-[17px] text-[oklch(28%_0.08_155)] dark:text-gray-100 mb-0.5">
                   A welcoming space for everyone
-                </h4>
+                </h2>
                 <p class="text-[13.5px] leading-[1.55] text-[oklch(32%_0.05_155)] dark:text-gray-400">
                   Coders.mu meetups follow a simple code of conduct: be kind, be curious, no harassment.
                   First time attending? Come say hi — we'll introduce you around.
@@ -843,15 +843,15 @@ const calendarUrl = computed(() => {
                     class="space-y-0"
                   >
                     <div class="flex items-baseline justify-between py-2.5">
-                      <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-gray-400 dark:text-gray-500">Date</span>
+                      <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-gray-500 dark:text-gray-300">Date</span>
                       <span class="text-[15px] font-semibold text-gray-900 dark:text-gray-100">{{ eventDate?.toFormat('dd MMM yyyy') || 'TBA' }}</span>
                     </div>
                     <div class="flex items-baseline justify-between py-2.5 border-t border-dashed border-gray-200 dark:border-verse-800">
-                      <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-gray-400 dark:text-gray-500">Time</span>
+                      <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-gray-500 dark:text-gray-300">Time</span>
                       <span class="text-[15px] font-semibold text-gray-900 dark:text-gray-100">{{ meetup.startTime || 'TBA' }}</span>
                     </div>
                     <div class="flex items-baseline justify-between py-2.5 border-t border-dashed border-gray-200 dark:border-verse-800">
-                      <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-gray-400 dark:text-gray-500">Price</span>
+                      <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-gray-500 dark:text-gray-300">Price</span>
                       <span class="text-[15px] font-semibold text-[oklch(45%_0.1_155)] dark:text-emerald-400">Free</span>
                     </div>
                   </div>
@@ -864,10 +864,10 @@ const calendarUrl = computed(() => {
                     class="mt-4"
                   >
                     <div class="flex items-baseline justify-between">
-                      <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-gray-400 dark:text-gray-500">Capacity</span>
+                      <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-gray-500 dark:text-gray-300">Capacity</span>
                       <span class="text-[14px] font-semibold">
                         <span :class="capacityPercent >= 80 ? 'text-coral-strong' : 'text-gray-900 dark:text-gray-100'">{{ rsvpCount }}</span>
-                        <span class="text-gray-400 dark:text-gray-500"> / {{ meetup.seatsAvailable }}</span>
+                        <span class="text-gray-500 dark:text-gray-300"> / {{ meetup.seatsAvailable }}</span>
                       </span>
                     </div>
                     <div class="mt-2 h-1.5 rounded-full bg-gray-100 dark:bg-verse-900 overflow-hidden">
@@ -893,7 +893,7 @@ const calendarUrl = computed(() => {
                     :data-changed-active="activeChange === 'location' ? '' : null"
                     class="mt-5"
                   >
-                    <span class="font-mono text-[10.5px] uppercase tracking-[0.12em] text-gray-400 dark:text-gray-500">Venue</span>
+                    <span class="font-mono text-[10.5px] uppercase tracking-[0.12em] text-gray-500 dark:text-gray-300">Venue</span>
                     <div class="text-[15px] font-semibold text-gray-900 dark:text-gray-100 mt-1.5 leading-snug">{{ meetup.venue }}</div>
                     <div v-if="meetup.location" class="text-[13.5px] text-gray-500 dark:text-gray-400 leading-snug">{{ meetup.location }}</div>
                     <div v-if="meetup.mapUrl || meetup.parkingLocation" class="mt-3 flex flex-wrap gap-2">
