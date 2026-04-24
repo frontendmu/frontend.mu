@@ -30,6 +30,7 @@ export default class SessionTransformer extends BaseTransformer<Session> {
             name: sponsor.name,
             logoUrl: sponsor.logoUrl,
             logomarkUrl: sponsor.logomarkUrl,
+            logoBg: sponsor.logoBg,
           }
         : null,
     }
