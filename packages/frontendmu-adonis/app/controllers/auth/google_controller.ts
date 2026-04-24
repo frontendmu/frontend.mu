@@ -3,15 +3,25 @@ import { urlFor } from '@adonisjs/core/services/url_builder'
 import { googleOauthEnabled } from '#config/ally'
 import User from '#models/user'
 import Role from '#models/role'
+import { safeReturnUrl } from '../../lib/safe_return_url.js'
+
+const RETURN_TO_KEY = 'auth.returnTo'
 
 export default class GoogleController {
   /**
    * Redirect the user to Google for authentication
    */
-  async redirect({ ally, response, session }: HttpContext) {
+  async redirect({ ally, request, response, session }: HttpContext) {
     if (!googleOauthEnabled) {
       session.flash('error', 'Google sign-in is not available right now.')
       return response.redirect().toPath(urlFor('auth.login.show'))
+    }
+
+    const next = safeReturnUrl(request.input('next'))
+    if (next) {
+      session.put(RETURN_TO_KEY, next)
+    } else {
+      session.forget(RETURN_TO_KEY)
     }
 
     return ally.use('google').redirect()
@@ -117,6 +127,11 @@ export default class GoogleController {
     await auth.use('web').login(user)
 
     session.flash('success', `Welcome back, ${user.name}!`)
+
+    const returnTo = safeReturnUrl(session.pull(RETURN_TO_KEY))
+    if (returnTo) {
+      return response.redirect().toPath(returnTo)
+    }
     return response.redirect().toPath(urlFor('home'))
   }
 }

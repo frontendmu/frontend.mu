@@ -22,6 +22,7 @@ const page = usePage<Data.SharedProps>()
 const { apiFetch } = useApi()
 const isAuthenticated = computed(() => page.props.auth?.isAuthenticated)
 const featureFlags = computed(() => page.props.featureFlags)
+const loginHref = computed(() => `/login?next=${encodeURIComponent(page.url)}`)
 
 // RSVP state
 const isRsvpLoading = ref(false)
@@ -936,7 +937,7 @@ const calendarUrl = computed(() => {
                   <template v-if="isUpcoming || isToday || (featureFlags.rsvpPastEvents && isPast && meetup.acceptingRsvp)">
                     <template v-if="!isAuthenticated && canRsvp">
                       <Link
-                        href="/login"
+                        :href="loginHref"
                         class="flex-1 py-3 text-center text-sm font-semibold bg-verse-600 text-white rounded-lg hover:bg-verse-700 transition-colors"
                       >
                         Login to RSVP
@@ -1051,7 +1052,7 @@ const calendarUrl = computed(() => {
 
           <template v-if="!isAuthenticated">
             <Link
-              href="/login"
+              :href="loginHref"
               class="px-6 py-2.5 bg-verse-600 text-white font-medium rounded-md text-sm"
             >
               Login
