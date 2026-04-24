@@ -327,7 +327,7 @@ function getUserRoles() {
             Authentication required.
           </h2>
           <Link
-            href="/login"
+            href="/login?next=/profile"
             class="inline-flex items-center gap-3 px-8 py-3.5 bg-verse-600 text-white rounded-xl font-bold text-sm hover:bg-verse-700 transition-colors"
           >
             Sign In to View
