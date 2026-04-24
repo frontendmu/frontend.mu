@@ -508,7 +508,9 @@ const calendarUrl = computed(() => {
                     <!-- Sponsored: sponsor logo if present, else icon -->
                     <div
                       v-else-if="session.kind === 'sponsored' && session.sponsor && (session.sponsor.logoUrl || session.sponsor.logomarkUrl)"
-                      class="w-10 h-10 rounded-full bg-white dark:bg-verse-900 border border-gray-200 dark:border-verse-800 grid place-items-center overflow-hidden"
+                      class="w-10 h-10 rounded-full border border-gray-200 dark:border-verse-800 grid place-items-center overflow-hidden"
+                      :class="session.sponsor.logoBg ? '' : 'bg-white dark:bg-verse-900'"
+                      :style="session.sponsor.logoBg ? { backgroundColor: session.sponsor.logoBg } : {}"
                     >
                       <img
                         :src="(session.sponsor.logomarkUrl || session.sponsor.logoUrl) as string"
