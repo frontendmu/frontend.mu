@@ -72,7 +72,7 @@ function doDelete() {
       <AdminFilterChips
         v-model="currentStatus"
         :chips="filterChips"
-        aria--label="Filter by status"
+        aria-label="Filter by status"
       />
       <p class="text-xs font-mono text-verse-500 dark:text-verse-300 tabular-nums">
         Showing {{ events.length }} event{{ events.length === 1 ? '' : 's' }}

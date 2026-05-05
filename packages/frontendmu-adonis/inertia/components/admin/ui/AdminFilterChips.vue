@@ -22,13 +22,12 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div :aria-label="ariaLabel" role="tablist" class="flex flex-wrap gap-1.5">
+  <div :aria-label="ariaLabel" role="group" class="flex flex-wrap gap-1.5">
     <button
       v-for="chip in chips"
       :key="chip.key"
       type="button"
-      role="tab"
-      :aria-selected="modelValue === chip.key"
+      :aria-pressed="modelValue === chip.key"
       :class="[
         'inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border transition-colors',
         modelValue === chip.key

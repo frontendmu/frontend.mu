@@ -716,7 +716,13 @@ async function removeSponsor(sponsorId: string) {
     <dialog
       ref="sessionDialog"
       class="w-full max-w-2xl rounded-2xl shadow-xl bg-white dark:bg-verse-900 max-h-[85vh] overflow-hidden border border-verse-200 dark:border-verse-800"
-      @close="isDialogOpen = false"
+      @close="
+        () => {
+          isDialogOpen = false
+          editingSession = null
+          sessionFormErrors = {}
+        }
+      "
     >
       <div
         class="flex items-center justify-between px-5 py-4 border-b border-verse-200 dark:border-verse-800"
