@@ -52,6 +52,7 @@ const form = useForm({
   twitterUrl: props.user?.twitterUrl || '',
   linkedinUrl: props.user?.linkedinUrl || '',
   websiteUrl: props.user?.websiteUrl || '',
+  phone: props.user?.phone || '',
 })
 
 function handleSubmit() {
@@ -211,6 +212,23 @@ function getUserRoles() {
                   />
                 </div>
               </div>
+            </div>
+
+            <div class="space-y-2">
+              <label for="phone" class="text-xs font-medium text-gray-400">
+                Phone number
+                <span class="text-gray-300 dark:text-verse-700"> · used to verify you’re a real human when you RSVP</span>
+              </label>
+              <input
+                id="phone"
+                v-model="form.phone"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel"
+                placeholder="+230 5 123 4567"
+                class="w-full px-4 py-3 bg-white dark:bg-verse-900/40 border border-gray-100 dark:border-verse-800 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:border-verse-500 transition-colors"
+              />
+              <p v-if="form.errors.phone" class="text-xs text-red-500">{{ form.errors.phone }}</p>
             </div>
 
             <div class="space-y-2">

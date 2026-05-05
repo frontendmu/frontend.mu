@@ -25,7 +25,7 @@ export default class ProfileController {
       }))
 
     return inertia.render('profile', {
-      user: UserTransformer.transform(user),
+      user: UserTransformer.transform(user).useVariant('forProfile'),
       rsvpMeetups,
     })
   }
@@ -41,6 +41,7 @@ export default class ProfileController {
       linkedinUrl: data.linkedinUrl || null,
       twitterUrl: data.twitterUrl || null,
       websiteUrl: data.websiteUrl || null,
+      phone: data.phone || null,
     })
     await user.save()
 

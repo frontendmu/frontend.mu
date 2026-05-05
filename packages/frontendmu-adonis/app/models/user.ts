@@ -70,12 +70,15 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare websiteUrl: string | null
 
   @column()
+  declare phone: string | null
+
+  @column({ consume: (v: unknown): boolean => Boolean(v) })
   declare featured: boolean
 
-  @column()
+  @column({ consume: (v: unknown): boolean => Boolean(v) })
   declare isOrganizer: boolean
 
-  @column()
+  @column({ consume: (v: unknown): boolean => Boolean(v) })
   declare isCommunityMember: boolean
 
   @column()

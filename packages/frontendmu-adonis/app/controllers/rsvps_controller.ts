@@ -3,6 +3,7 @@ import Event from '#models/event'
 import Rsvp from '#models/rsvp'
 import { rsvpToEvent, cancelRsvp } from '#abilities/main'
 import RsvpTransformer from '#transformers/rsvp_transformer'
+import { createRsvpValidator } from '#validators/rsvp_validator'
 import db from '@adonisjs/lucid/services/db'
 
 export default class RsvpsController {
@@ -10,7 +11,7 @@ export default class RsvpsController {
    * Create a new RSVP for the authenticated user
    */
   async store(ctx: HttpContext) {
-    const { auth, bouncer, params, response, serializeWithoutWrapping: serialize } = ctx
+    const { auth, bouncer, params, request, response, serializeWithoutWrapping: serialize } = ctx
     const user = auth.getUserOrFail()
     const event = await Event.findOrFail(params.eventId)
 
@@ -19,6 +20,22 @@ export default class RsvpsController {
       return response.forbidden({
         message: 'This event is not accepting RSVPs at this time.',
       })
+    }
+
+    const data = await request.validateUsing(createRsvpValidator)
+    const userHasPhone = Boolean(user.phone && user.phone.trim().length > 0)
+
+    if (!userHasPhone && !data.phone) {
+      return response.unprocessableEntity({
+        code: 'PHONE_REQUIRED',
+        message: 'Please add a phone number before RSVPing so we know you’re a real human.',
+        errors: { phone: 'A phone number is required to RSVP.' },
+      })
+    }
+
+    if (data.phone && !userHasPhone) {
+      user.phone = data.phone
+      await user.save()
     }
 
     // Check if user already has an RSVP for this event
