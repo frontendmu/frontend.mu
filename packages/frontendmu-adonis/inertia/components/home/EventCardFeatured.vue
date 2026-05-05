@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const formattedDate = computed(() => {
-  if (!props.event.date) return ''
+  if (!props.event.date) return { full: '', short: '', day: '', month: '' }
   const date = new Date(props.event.date)
   return {
     full: date.toLocaleDateString('en-US', {
@@ -28,12 +28,16 @@ const formattedDate = computed(() => {
       day: 'numeric',
     }),
     short: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    day: date.toLocaleDateString('en-US', { day: 'numeric' }),
+    month: date.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
   }
 })
 
 const speakers = computed(() => {
   return props.event.sessions?.flatMap((session) => session.speakers).filter(Boolean) || []
 })
+
+const sponsors = computed(() => props.event.sponsors ?? [])
 </script>
 
 <template>
@@ -155,15 +159,41 @@ const speakers = computed(() => {
         </div>
       </div>
 
-      <!-- Date Large Display (hidden on mobile) -->
+      <!-- Sponsors (hidden on mobile, replaces date block on lg+) -->
       <div
-        v-if="event.date"
-        class="hidden lg:flex flex-col items-center justify-center w-28 h-28 rounded-lg bg-gray-50 dark:bg-verse-900 border border-gray-200 dark:border-verse-900"
+        v-if="sponsors.length > 0"
+        class="hidden lg:flex flex-col items-end gap-2 shrink-0"
       >
-        <span class="text-3xl font-bold text-verse-500 leading-none">{{ formattedDate.day }}</span>
-        <span class="text-sm font-medium uppercase tracking-wider text-gray-400 mt-1">{{
-          formattedDate.month
-        }}</span>
+        <span
+          class="font-mono text-[9.5px] uppercase tracking-[0.12em] text-gray-500 dark:text-gray-300"
+        >
+          Sponsored by
+        </span>
+        <div class="flex flex-wrap justify-end gap-2 max-w-[260px]">
+          <Link
+            v-for="sponsor in sponsors"
+            :key="sponsor.id"
+            :href="`/sponsor/${sponsor.id}`"
+            class="relative z-20 flex items-center justify-center h-14 min-w-[120px] px-4 rounded-lg border border-gray-200 dark:border-verse-900 hover:border-verse-300 dark:hover:border-verse-700 transition-colors"
+            :class="sponsor.logoBg ? '' : 'bg-white dark:bg-white'"
+            :style="sponsor.logoBg ? { backgroundColor: sponsor.logoBg } : {}"
+            :aria-label="sponsor.name"
+          >
+            <img
+              v-if="sponsor.logoUrl"
+              :src="sponsor.logoUrl"
+              :alt="sponsor.name"
+              class="max-h-8 w-auto object-contain"
+            />
+            <span
+              v-else
+              class="font-display text-[15px]"
+              :class="sponsor.logoBg && sponsor.logoBg !== '#ffffff' ? 'text-gray-100' : 'text-gray-900'"
+            >
+              {{ sponsor.name }}
+            </span>
+          </Link>
+        </div>
       </div>
     </div>
     <Link
