@@ -367,7 +367,7 @@ const xTicks = computed(() => {
 
     <p
       v-if="!series.length"
-      class="text-center text-xs text-verse-500 dark:text-verse-400 mt-2"
+      class="text-center text-xs text-verse-500 dark:text-verse-300 mt-2"
     >
       No RSVPs yet — markers shown for reference.
     </p>
