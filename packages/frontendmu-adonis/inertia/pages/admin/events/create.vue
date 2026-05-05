@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { Head, useForm } from '@inertiajs/vue3'
-import { Link } from '@inertiajs/vue3'
-import ContentBlock from '~/components/shared/ContentBlock.vue'
-import BaseHeading from '~/components/base/BaseHeading.vue'
+import AdminShell from '~/components/admin/ui/AdminShell.vue'
+import AdminCard from '~/components/admin/ui/AdminCard.vue'
+import AdminButton from '~/components/admin/ui/AdminButton.vue'
+import AdminInput from '~/components/admin/ui/AdminInput.vue'
+import AdminTextarea from '~/components/admin/ui/AdminTextarea.vue'
+import AdminSelect from '~/components/admin/ui/AdminSelect.vue'
+import AdminCheckbox from '~/components/admin/ui/AdminCheckbox.vue'
 
-// Form state
 const form = useForm({
   title: '',
   eventDate: '',
@@ -22,288 +25,119 @@ const form = useForm({
 })
 
 function handleSubmit() {
-  form.post('/admin/events', {
-    preserveScroll: true,
-  })
+  form.post('/admin/events', { preserveScroll: true })
 }
 </script>
 
 <template>
-  <Head title="Create Event" />
-  <main class="relative min-h-screen pt-40 pb-20">
-      <ContentBlock>
-        <div class="max-w-4xl mx-auto">
-        <!-- Breadcrumb -->
-        <nav class="mb-6 flex items-center gap-2 text-sm">
-          <Link
-            href="/meetups"
-            class="text-verse-600 hover:text-verse-800 dark:text-verse-400 dark:hover:text-verse-200"
-          >
-            Meetups
-          </Link>
-          <span class="text-verse-400">/</span>
-          <span class="text-verse-500 dark:text-verse-400">Create Event</span>
-        </nav>
+  <Head title="New event · Admin" />
+  <AdminShell
+    title="New event"
+    description="Set the basic details now — you can add sessions and sponsors after creation."
+    :breadcrumbs="[
+      { label: 'Admin', href: '/admin' },
+      { label: 'Events', href: '/admin/events' },
+      { label: 'New event' },
+    ]"
+  >
+    <form class="space-y-6 max-w-3xl" @submit.prevent="handleSubmit">
+      <AdminCard title="Basics" description="The essentials that define your event.">
+        <div class="space-y-5">
+          <AdminInput
+            v-model="form.title"
+            label="Title"
+            required
+            placeholder="e.g. The October Meetup"
+            :error="form.errors.title"
+          />
+          <AdminInput
+            v-model="form.eventDate"
+            label="Event date"
+            type="date"
+            required
+            :error="form.errors.eventDate"
+          />
+          <AdminTextarea
+            v-model="form.description"
+            label="Description"
+            placeholder="What is this meetup about? Who is it for?"
+            :error="form.errors.description"
+          />
+        </div>
+      </AdminCard>
 
-        <BaseHeading :level="1" class="mb-8">Create New Event</BaseHeading>
-
-        <!-- Create Form -->
-        <form @submit.prevent="handleSubmit" class="space-y-6">
-          <!-- Title -->
-          <div>
-            <label
-              for="title"
-              class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-            >
-              Title *
-            </label>
-            <input
-              id="title"
-              v-model="form.title"
-              type="text"
-              required
-              placeholder="e.g., The October Meetup"
-              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
+      <AdminCard title="Where & when">
+        <div class="space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <AdminInput
+              v-model="form.location"
+              label="Location"
+              placeholder="e.g. Port Louis, Mauritius"
             />
-            <p v-if="form.errors.title" class="mt-1 text-sm text-red-600 dark:text-red-400">
-              {{ form.errors.title }}
-            </p>
+            <AdminInput
+              v-model="form.venue"
+              label="Venue"
+              placeholder="e.g. Caudan Arts Centre"
+            />
           </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <AdminInput v-model="form.startTime" label="Start time" type="time" />
+            <AdminInput v-model="form.endTime" label="End time" type="time" />
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <AdminInput v-model="form.mapUrl" label="Map URL" type="url" placeholder="https://maps.google.com/…" />
+            <AdminInput
+              v-model="form.parkingLocation"
+              label="Parking URL"
+              type="url"
+              placeholder="https://maps.google.com/…"
+            />
+          </div>
+        </div>
+      </AdminCard>
 
-          <!-- Event Date -->
-          <div>
-            <label
-              for="eventDate"
-              class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-            >
-              Event Date *
-            </label>
-            <input
-              id="eventDate"
-              v-model="form.eventDate"
+      <AdminCard title="RSVPs" description="Open RSVPs only when you're ready to receive them.">
+        <div class="space-y-5">
+          <AdminCheckbox
+            v-model="form.acceptingRsvp"
+            label="Accept RSVPs"
+            description="Members can sign up for this event right away."
+          />
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <AdminInput
+              v-model="form.seatsAvailable"
+              label="Seats available"
+              type="number"
+              min="0"
+              hint="Leave empty for unlimited"
+            />
+            <AdminInput
+              v-model="form.rsvpClosingDate"
+              label="RSVP closing date"
               type="date"
-              required
-              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
             />
-            <p v-if="form.errors.eventDate" class="mt-1 text-sm text-red-600 dark:text-red-400">
-              {{ form.errors.eventDate }}
-            </p>
           </div>
+        </div>
+      </AdminCard>
 
-          <!-- Description -->
-          <div>
-            <label
-              for="description"
-              class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-            >
-              Description
-            </label>
-            <textarea
-              id="description"
-              v-model="form.description"
-              rows="4"
-              placeholder="Describe the event..."
-              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-            />
-            <p v-if="form.errors.description" class="mt-1 text-sm text-red-600 dark:text-red-400">
-              {{ form.errors.description }}
-            </p>
-          </div>
+      <AdminCard title="Visibility">
+        <AdminSelect
+          v-model="form.status"
+          label="Status"
+          hint="Draft events stay hidden from the public."
+        >
+          <option value="draft">Draft</option>
+          <option value="published">Published</option>
+          <option value="cancelled">Cancelled</option>
+        </AdminSelect>
+      </AdminCard>
 
-          <!-- Location & Venue -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label
-                for="location"
-                class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-              >
-                Location
-              </label>
-              <input
-                id="location"
-                v-model="form.location"
-                type="text"
-                placeholder="e.g., Port Louis, Mauritius"
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label
-                for="venue"
-                class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-              >
-                Venue
-              </label>
-              <input
-                id="venue"
-                v-model="form.venue"
-                type="text"
-                placeholder="e.g., Caudan Arts Centre"
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          <!-- Start Time & End Time -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label
-                for="startTime"
-                class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-              >
-                Start Time
-              </label>
-              <input
-                id="startTime"
-                v-model="form.startTime"
-                type="time"
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label
-                for="endTime"
-                class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-              >
-                End Time
-              </label>
-              <input
-                id="endTime"
-                v-model="form.endTime"
-                type="time"
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          <!-- RSVP Settings -->
-          <div class="p-4 bg-verse-50 dark:bg-verse-800/50 squircle rounded-lg border border-verse-200 dark:border-verse-700">
-            <h3 class="text-lg font-medium text-verse-900 dark:text-verse-100 mb-4">
-              RSVP Settings
-            </h3>
-            <div class="space-y-4">
-              <div class="flex items-center gap-3">
-                <input
-                  id="acceptingRsvp"
-                  v-model="form.acceptingRsvp"
-                  type="checkbox"
-                  class="w-4 h-4 text-verse-600 border-verse-300 rounded focus:ring-verse-500"
-                />
-                <label for="acceptingRsvp" class="text-sm text-verse-700 dark:text-verse-300">
-                  Accepting RSVPs
-                </label>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label
-                    for="seatsAvailable"
-                    class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-                  >
-                    Seats Available
-                  </label>
-                  <input
-                    id="seatsAvailable"
-                    v-model.number="form.seatsAvailable"
-                    type="number"
-                    min="0"
-                    placeholder="Leave empty for unlimited"
-                    class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label
-                    for="rsvpClosingDate"
-                    class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-                  >
-                    RSVP Closing Date
-                  </label>
-                  <input
-                    id="rsvpClosingDate"
-                    v-model="form.rsvpClosingDate"
-                    type="date"
-                    class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Map & Parking -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label
-                for="mapUrl"
-                class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-              >
-                Map URL
-              </label>
-              <input
-                id="mapUrl"
-                v-model="form.mapUrl"
-                type="url"
-                placeholder="https://maps.google.com/..."
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label
-                for="parkingLocation"
-                class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-              >
-                Parking Location URL
-              </label>
-              <input
-                id="parkingLocation"
-                v-model="form.parkingLocation"
-                type="url"
-                placeholder="https://maps.google.com/..."
-                class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          <!-- Status -->
-          <div>
-            <label
-              for="status"
-              class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-            >
-              Status
-            </label>
-            <select
-              id="status"
-              v-model="form.status"
-              class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-            >
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-            <p class="mt-1 text-sm text-verse-500 dark:text-verse-400">
-              Draft events are not visible to the public.
-            </p>
-          </div>
-
-          <!-- Actions -->
-          <div class="flex items-center gap-4 pt-4">
-            <button
-              type="submit"
-              :disabled="form.processing"
-              class="px-6 py-2.5 bg-verse-600 hover:bg-verse-700 disabled:bg-verse-400 text-white font-medium squircle rounded-lg transition-colors"
-            >
-              <span v-if="form.processing">Creating...</span>
-              <span v-else>Create Event</span>
-            </button>
-            <Link
-              href="/meetups"
-              class="px-6 py-2.5 border border-verse-300 dark:border-verse-600 text-verse-700 dark:text-verse-300 hover:bg-verse-50 dark:hover:bg-verse-800 font-medium squircle rounded-lg transition-colors"
-            >
-              Cancel
-            </Link>
-          </div>
-        </form>
+      <div class="sticky bottom-3 z-10 flex justify-end gap-2 bg-white/85 dark:bg-verse-950/85 backdrop-blur-md p-3 rounded-xl border border-verse-200 dark:border-verse-800">
+        <AdminButton href="/admin/events" variant="secondary">Cancel</AdminButton>
+        <AdminButton type="submit" variant="primary" :loading="form.processing">
+          {{ form.processing ? 'Creating…' : 'Create event' }}
+        </AdminButton>
       </div>
-    </ContentBlock>
-  </main>
+    </form>
+  </AdminShell>
 </template>

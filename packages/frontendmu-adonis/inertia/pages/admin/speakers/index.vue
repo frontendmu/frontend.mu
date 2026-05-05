@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3'
-import { Link } from '@inertiajs/vue3'
+import { computed, ref } from 'vue'
+import { Head, Link } from '@inertiajs/vue3'
 import type { Data } from '@generated/data'
-import ContentBlock from '~/components/shared/ContentBlock.vue'
-import BaseHeading from '~/components/base/BaseHeading.vue'
+import AdminShell from '~/components/admin/ui/AdminShell.vue'
+import AdminCard from '~/components/admin/ui/AdminCard.vue'
+import AdminButton from '~/components/admin/ui/AdminButton.vue'
+import AdminBadge from '~/components/admin/ui/AdminBadge.vue'
+import AdminAvatar from '~/components/admin/ui/AdminAvatar.vue'
+import AdminSearchInput from '~/components/admin/ui/AdminSearchInput.vue'
+import AdminEmptyState from '~/components/admin/ui/AdminEmptyState.vue'
+import AdminConfirmModal from '~/components/admin/ui/AdminConfirmModal.vue'
 import { useAuth } from '~/composables/use_auth'
 import { useDeleteConfirmation } from '~/composables/use_delete_confirmation'
 
@@ -19,207 +25,155 @@ const {
   isDeleting,
   confirmDelete,
   cancelDelete,
-  executeDelete: execDelete,
+  executeDelete,
 } = useDeleteConfirmation<Data.Speaker.Variants['forAdminIndex']>()
+
+const search = ref('')
+
+const filtered = computed(() => {
+  const q = search.value.trim().toLowerCase()
+  if (!q) return props.speakers
+  return props.speakers.filter(
+    (s) =>
+      s.name.toLowerCase().includes(q) ||
+      (s.githubUsername?.toLowerCase().includes(q) ?? false)
+  )
+})
 
 function doDelete() {
   if (!speakerToDelete.value) return
-  execDelete(`/admin/speakers/${speakerToDelete.value.id}`)
+  executeDelete(`/admin/speakers/${speakerToDelete.value.id}`)
 }
 </script>
 
 <template>
-  <Head title="Manage Speakers" />
-  <main class="relative min-h-screen pt-40 pb-20">
-    <ContentBlock>
-      <!-- Header -->
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <div>
-          <BaseHeading :level="1">Manage Speakers</BaseHeading>
-          <p class="text-verse-600 dark:text-verse-400 mt-2">View and manage speaker profiles.</p>
-        </div>
-        <Link
-          href="/admin/speakers/create"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white text-sm font-medium squircle rounded-lg transition-colors"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          Add Speaker
-        </Link>
+  <Head title="Speakers · Admin" />
+  <AdminShell title="Speakers" description="Curate the people who lead sessions across our meetups.">
+    <template #actions>
+      <AdminButton href="/admin/speakers/create" variant="primary">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        Add speaker
+      </AdminButton>
+    </template>
+
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-5">
+      <p class="text-xs font-mono text-verse-500 dark:text-verse-300 tabular-nums">
+        {{ filtered.length }} speaker{{ filtered.length === 1 ? '' : 's' }}
+      </p>
+      <div class="sm:w-72">
+        <AdminSearchInput v-model="search" placeholder="Search by name or GitHub" />
       </div>
+    </div>
 
-      <!-- Speakers Grid -->
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div
-          v-for="speaker in speakers"
-          :key="speaker.id"
-          class="bg-white dark:bg-verse-800/50 squircle rounded-xl border border-verse-200 dark:border-verse-700 p-6 hover:shadow-lg transition-shadow"
-        >
-          <div class="flex items-start gap-4">
-            <!-- Avatar -->
-            <img
-              v-if="speaker.avatarUrl"
-              :src="speaker.avatarUrl"
-              :alt="speaker.name"
-              class="w-16 h-16 rounded-full object-cover"
-            />
-            <div
-              v-else
-              class="w-16 h-16 rounded-full bg-verse-200 dark:bg-verse-700 flex items-center justify-center"
+    <div
+      v-if="filtered.length"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
+    >
+      <AdminCard
+        v-for="speaker in filtered"
+        :key="speaker.id"
+        padded
+        interactive
+      >
+        <div class="flex items-start gap-3">
+          <AdminAvatar
+            :src="speaker.avatarUrl"
+            :name="speaker.name"
+            size="lg"
+            rounded="xl"
+          />
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h3 class="font-semibold text-verse-900 dark:text-verse-50 truncate">
+                {{ speaker.name }}
+              </h3>
+              <AdminBadge v-if="speaker.featured" tone="accent">Featured</AdminBadge>
+            </div>
+            <p
+              v-if="speaker.githubUsername"
+              class="text-sm text-verse-500 dark:text-verse-300 truncate mt-0.5"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-8 w-8 text-verse-400"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </div>
-
-            <!-- Info -->
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2">
-                <h3 class="font-semibold text-verse-900 dark:text-verse-100 truncate">
-                  {{ speaker.name }}
-                </h3>
-                <span
-                  v-if="speaker.featured"
-                  class="px-2 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 rounded"
-                >
-                  Featured
-                </span>
-              </div>
-              <p v-if="speaker.githubUsername" class="text-sm text-verse-500 dark:text-verse-400">
-                @{{ speaker.githubUsername }}
-              </p>
-              <p class="text-sm text-verse-600 dark:text-verse-400 mt-1">
-                {{ speaker.sessionCount }} session{{ speaker.sessionCount !== 1 ? 's' : '' }}
-              </p>
-            </div>
+              @{{ speaker.githubUsername }}
+            </p>
+            <p class="text-xs font-mono text-verse-500 dark:text-verse-300 mt-1.5 uppercase tracking-wide">
+              {{ speaker.sessionCount }} session{{ speaker.sessionCount === 1 ? '' : 's' }}
+            </p>
           </div>
+        </div>
 
-          <!-- Actions -->
-          <div
-            class="flex items-center justify-end gap-2 mt-4 pt-4 border-t border-verse-100 dark:border-verse-700"
+        <template #footer>
+          <Link
+            :href="`/speaker/${speaker.id}`"
+            class="text-sm font-medium text-verse-700 dark:text-verse-200 hover:text-verse-900 dark:hover:text-white"
           >
-            <Link
-              :href="`/speaker/${speaker.id}`"
-              class="p-2 text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200 transition-colors"
-              title="View"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                <path
-                  fill-rule="evenodd"
-                  d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </Link>
-            <Link
+            View profile
+          </Link>
+          <div class="flex items-center gap-1">
+            <AdminButton
               :href="`/admin/users/${speaker.id}/edit`"
-              class="p-2 text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200 transition-colors"
-              title="Edit"
+              variant="ghost"
+              size="sm"
+              icon-only
+              title="Edit speaker"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                />
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
               </svg>
-            </Link>
+            </AdminButton>
             <button
               v-if="canDelete"
+              type="button"
+              class="p-2 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+              title="Delete speaker"
+              aria-label="Delete speaker"
               @click="confirmDelete(speaker)"
-              class="p-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
-              title="Delete"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                  clip-rule="evenodd"
-                />
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
               </svg>
             </button>
           </div>
-        </div>
-      </div>
-
-      <!-- Empty state -->
-      <div v-if="!speakers.length" class="text-center py-16">
-        <p class="text-verse-500 dark:text-verse-400 mb-4">No speakers found.</p>
-        <Link
-          href="/admin/speakers/create"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white text-sm font-medium squircle rounded-lg transition-colors"
-        >
-          Add your first speaker
-        </Link>
-      </div>
-    </ContentBlock>
-  </main>
-
-  <!-- Delete Confirmation Modal -->
-  <Teleport to="body">
-    <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div class="absolute inset-0 bg-black/50" @click="cancelDelete" />
-      <div
-        class="relative bg-white dark:bg-verse-800 squircle rounded-xl shadow-xl max-w-md w-full p-6"
-      >
-        <h3 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-2">
-          Delete Speaker
-        </h3>
-        <p class="text-verse-600 dark:text-verse-400 mb-4">
-          Are you sure you want to delete "<strong>{{ speakerToDelete?.name }}</strong
-          >"? This will also remove them from all sessions. This action cannot be undone.
-        </p>
-        <div class="flex justify-end gap-3">
-          <button
-            @click="cancelDelete"
-            :disabled="isDeleting"
-            class="px-4 py-2 text-sm font-medium text-verse-700 dark:text-verse-300 bg-verse-100 dark:bg-verse-700 hover:bg-verse-200 dark:hover:bg-verse-600 squircle rounded-lg transition-colors disabled:opacity-50"
-          >
-            Cancel
-          </button>
-          <button
-            @click="doDelete"
-            :disabled="isDeleting"
-            class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 squircle rounded-lg transition-colors disabled:opacity-50"
-          >
-            <span v-if="isDeleting">Deleting...</span>
-            <span v-else>Delete</span>
-          </button>
-        </div>
-      </div>
+        </template>
+      </AdminCard>
     </div>
-  </Teleport>
+
+    <AdminCard v-else :padded="false">
+      <AdminEmptyState
+        :title="search ? 'No speakers match your search' : 'No speakers yet'"
+        :description="
+          search
+            ? 'Try a different name or GitHub handle.'
+            : 'Add your first speaker to get started.'
+        "
+        icon="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"
+      >
+        <template #actions>
+          <AdminButton v-if="search" variant="secondary" @click="search = ''">
+            Clear search
+          </AdminButton>
+          <AdminButton href="/admin/speakers/create" variant="primary">
+            Add speaker
+          </AdminButton>
+        </template>
+      </AdminEmptyState>
+    </AdminCard>
+  </AdminShell>
+
+  <AdminConfirmModal
+    :open="showDeleteModal"
+    title="Delete speaker"
+    :loading="isDeleting"
+    confirm-label="Delete speaker"
+    @cancel="cancelDelete"
+    @confirm="doDelete"
+  >
+    Are you sure you want to delete
+    <strong class="text-verse-900 dark:text-verse-100">{{ speakerToDelete?.name }}</strong
+    >? This will also remove them from all sessions.
+  </AdminConfirmModal>
 </template>
