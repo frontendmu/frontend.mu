@@ -34,6 +34,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   |----------------------------------------------------------
   */
   FEATURE_RSVP_PAST_EVENTS: Env.schema.boolean.optional(),
+  ENABLE_REGISTRATION: Env.schema.boolean.optional(),
 
   /*
   |----------------------------------------------------------
