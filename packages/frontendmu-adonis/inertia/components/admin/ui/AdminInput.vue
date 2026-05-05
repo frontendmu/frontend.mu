@@ -58,7 +58,7 @@ function onInput(event: Event) {
     <div class="relative">
       <span
         v-if="leadingText"
-        class="absolute inset-y-0 left-0 inline-flex items-center px-3 text-sm text-verse-500 dark:text-verse-400 border-r border-verse-200 dark:border-verse-700 bg-verse-50/60 dark:bg-verse-900/40 rounded-l-lg pointer-events-none"
+        class="absolute inset-y-0 left-0 inline-flex items-center px-3 text-sm text-verse-500 dark:text-verse-300 border-r border-verse-200 dark:border-verse-700 bg-verse-50/60 dark:bg-verse-900/40 rounded-l-lg pointer-events-none"
       >
         {{ leadingText }}
       </span>
@@ -82,7 +82,7 @@ function onInput(event: Event) {
     <p v-if="error" class="mt-1.5 text-xs text-red-600 dark:text-red-400">{{ error }}</p>
     <p
       v-else-if="hint"
-      class="mt-1.5 text-xs text-verse-500 dark:text-verse-400"
+      class="mt-1.5 text-xs text-verse-500 dark:text-verse-300"
     >
       {{ hint }}
     </p>

@@ -506,7 +506,7 @@ async function removeSponsor(sponsorId: string) {
             class="space-y-2"
             aria-label="Sessions list"
           >
-            <p class="text-[11px] font-mono text-verse-500 dark:text-verse-400 mb-2 uppercase tracking-wide">
+            <p class="text-[11px] font-mono text-verse-500 dark:text-verse-300 mb-2 uppercase tracking-wide">
               Drag to reorder
             </p>
             <div
@@ -539,7 +539,7 @@ async function removeSponsor(sponsorId: string) {
                 </div>
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap mb-1">
-                    <span class="text-[10px] font-mono text-verse-500 dark:text-verse-400 tabular-nums">
+                    <span class="text-[10px] font-mono text-verse-500 dark:text-verse-300 tabular-nums">
                       #{{ index + 1 }}
                     </span>
                     <AdminBadge v-if="session.kind && session.kind !== 'talk'" tone="accent">
@@ -547,7 +547,7 @@ async function removeSponsor(sponsorId: string) {
                     </AdminBadge>
                     <span
                       v-if="session.durationMinutes"
-                      class="text-[10px] font-mono text-verse-500 dark:text-verse-400"
+                      class="text-[10px] font-mono text-verse-500 dark:text-verse-300"
                     >
                       {{ session.durationMinutes }}m
                     </span>
@@ -557,7 +557,7 @@ async function removeSponsor(sponsorId: string) {
                   </p>
                   <p
                     v-if="session.speakers?.length"
-                    class="text-xs text-verse-500 dark:text-verse-400 truncate mt-0.5"
+                    class="text-xs text-verse-500 dark:text-verse-300 truncate mt-0.5"
                   >
                     {{ getSpeakerNames(session.speakers) }}
                   </p>
@@ -591,12 +591,12 @@ async function removeSponsor(sponsorId: string) {
               </div>
             </div>
           </div>
-          <p v-else class="text-sm text-verse-500 dark:text-verse-400 py-3 text-center">
+          <p v-else class="text-sm text-verse-500 dark:text-verse-300 py-3 text-center">
             No sessions yet.
           </p>
 
           <template #footer>
-            <div class="flex flex-wrap gap-1.5 text-[11px] font-mono text-verse-500 dark:text-verse-400 uppercase tracking-wide">
+            <div class="flex flex-wrap gap-1.5 text-[11px] font-mono text-verse-500 dark:text-verse-300 uppercase tracking-wide">
               <span class="self-center mr-1">Quick add</span>
               <button
                 v-for="preset in [
@@ -662,7 +662,7 @@ async function removeSponsor(sponsorId: string) {
               </button>
               <p
                 v-if="filteredAvailableSponsors.length === 0"
-                class="text-xs text-verse-500 dark:text-verse-400 py-2 text-center"
+                class="text-xs text-verse-500 dark:text-verse-300 py-2 text-center"
               >
                 {{ sponsorSearch ? `No matches for "${sponsorSearch}"` : 'All sponsors attached' }}
               </p>
@@ -687,7 +687,7 @@ async function removeSponsor(sponsorId: string) {
                 </p>
                 <p
                   v-if="sponsor.sponsorTypes?.length"
-                  class="text-xs text-verse-500 dark:text-verse-400 truncate"
+                  class="text-xs text-verse-500 dark:text-verse-300 truncate"
                 >
                   {{ sponsor.sponsorTypes.join(', ') }}
                 </p>
@@ -706,7 +706,7 @@ async function removeSponsor(sponsorId: string) {
               </button>
             </div>
           </div>
-          <p v-else class="text-sm text-verse-500 dark:text-verse-400 py-3 text-center">
+          <p v-else class="text-sm text-verse-500 dark:text-verse-300 py-3 text-center">
             No sponsors attached.
           </p>
         </AdminCard>
@@ -818,7 +818,7 @@ async function removeSponsor(sponsorId: string) {
                   </p>
                   <p
                     v-if="speaker.email"
-                    class="text-xs text-verse-500 dark:text-verse-400 truncate"
+                    class="text-xs text-verse-500 dark:text-verse-300 truncate"
                   >
                     {{ speaker.email }}
                   </p>
@@ -826,19 +826,19 @@ async function removeSponsor(sponsorId: string) {
               </button>
               <p
                 v-if="filteredSpeakers.length === 0"
-                class="text-sm text-verse-500 dark:text-verse-400 py-3 text-center"
+                class="text-sm text-verse-500 dark:text-verse-300 py-3 text-center"
               >
                 No speakers found.
               </p>
             </div>
             <p
               v-if="sessionForm.speakerIds.length > 0"
-              class="mt-2 text-xs text-verse-500 dark:text-verse-400"
+              class="mt-2 text-xs text-verse-500 dark:text-verse-300"
             >
               {{ sessionForm.speakerIds.length }} speaker(s) selected
             </p>
           </div>
-          <p v-else class="text-sm text-verse-500 dark:text-verse-400 py-3 text-center">
+          <p v-else class="text-sm text-verse-500 dark:text-verse-300 py-3 text-center">
             No speakers available. Members can be assigned as speakers.
           </p>
         </div>

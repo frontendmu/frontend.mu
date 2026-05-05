@@ -60,7 +60,7 @@ const fieldId = computed(() => props.id || `field-${Math.random().toString(36).s
     <p v-if="error" class="mt-1.5 text-xs text-red-600 dark:text-red-400">{{ error }}</p>
     <p
       v-else-if="hint"
-      class="mt-1.5 text-xs text-verse-500 dark:text-verse-400"
+      class="mt-1.5 text-xs text-verse-500 dark:text-verse-300"
     >
       {{ hint }}
     </p>

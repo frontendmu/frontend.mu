@@ -34,7 +34,7 @@ const toneClasses = computed(() => {
     case 'accent':
       return 'bg-coral-soft text-coral-deep dark:bg-coral-strong/15 dark:text-coral-strong'
     case 'muted':
-      return 'bg-verse-100 text-verse-600 dark:bg-verse-800 dark:text-verse-400'
+      return 'bg-verse-100 text-verse-600 dark:bg-verse-800 dark:text-verse-300'
     default:
       return 'bg-verse-100 text-verse-700 dark:bg-verse-800 dark:text-verse-200'
   }

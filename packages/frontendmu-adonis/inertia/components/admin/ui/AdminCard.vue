@@ -31,7 +31,7 @@ withDefaults(
         <h2 v-if="title" class="text-base font-semibold text-verse-900 dark:text-verse-50">
           {{ title }}
         </h2>
-        <p v-if="description" class="text-sm text-verse-500 dark:text-verse-400 mt-1">
+        <p v-if="description" class="text-sm text-verse-500 dark:text-verse-300 mt-1">
           {{ description }}
         </p>
         <slot name="header" />

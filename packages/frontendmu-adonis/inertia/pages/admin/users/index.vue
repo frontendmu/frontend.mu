@@ -138,7 +138,7 @@ function doDelete() {
                 </div>
                 <p
                   v-if="user.githubUsername"
-                  class="text-xs text-verse-500 dark:text-verse-400 truncate"
+                  class="text-xs text-verse-500 dark:text-verse-300 truncate"
                 >
                   @{{ user.githubUsername }}
                 </p>
@@ -165,7 +165,7 @@ function doDelete() {
               </span>
             </div>
           </td>
-          <td class="px-5 py-3.5 text-sm text-verse-600 dark:text-verse-400 whitespace-nowrap">
+          <td class="px-5 py-3.5 text-sm text-verse-600 dark:text-verse-300 whitespace-nowrap">
             {{ formatEventDate(user.createdAt) }}
           </td>
           <td class="px-5 py-3.5">

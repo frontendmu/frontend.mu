@@ -22,7 +22,7 @@ withDefaults(
         >
           {{ title }}
         </h1>
-        <p v-if="description" class="text-verse-500 dark:text-verse-400 mt-2 max-w-2xl">
+        <p v-if="description" class="text-verse-500 dark:text-verse-300 mt-2 max-w-2xl">
           {{ description }}
         </p>
         <div v-if="$slots.meta" class="mt-3">

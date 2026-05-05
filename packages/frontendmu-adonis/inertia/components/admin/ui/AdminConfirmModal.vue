@@ -74,7 +74,7 @@ onUnmounted(() => {
             <h3 class="text-lg font-semibold text-verse-900 dark:text-verse-50">{{ title }}</h3>
             <p
               v-if="description || $slots.default"
-              class="mt-2 text-sm text-verse-600 dark:text-verse-400"
+              class="mt-2 text-sm text-verse-600 dark:text-verse-300"
             >
               <template v-if="description">{{ description }}</template>
               <slot />

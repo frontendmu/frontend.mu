@@ -37,7 +37,7 @@ withDefaults(
     <h3 class="text-base font-semibold text-verse-900 dark:text-verse-100">{{ title }}</h3>
     <p
       v-if="description"
-      class="mt-1.5 text-sm text-verse-500 dark:text-verse-400 max-w-md mx-auto"
+      class="mt-1.5 text-sm text-verse-500 dark:text-verse-300 max-w-md mx-auto"
     >
       {{ description }}
     </p>

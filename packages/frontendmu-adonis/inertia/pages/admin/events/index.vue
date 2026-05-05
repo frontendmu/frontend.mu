@@ -74,7 +74,7 @@ function doDelete() {
         :chips="filterChips"
         aria--label="Filter by status"
       />
-      <p class="text-xs font-mono text-verse-500 dark:text-verse-400 tabular-nums">
+      <p class="text-xs font-mono text-verse-500 dark:text-verse-300 tabular-nums">
         Showing {{ events.length }} event{{ events.length === 1 ? '' : 's' }}
       </p>
     </div>
@@ -103,7 +103,7 @@ function doDelete() {
               >
                 {{ event.title }}
               </Link>
-              <span v-if="event.venue" class="text-xs text-verse-500 dark:text-verse-400 mt-0.5">
+              <span v-if="event.venue" class="text-xs text-verse-500 dark:text-verse-300 mt-0.5">
                 {{ event.venue }}
               </span>
             </div>

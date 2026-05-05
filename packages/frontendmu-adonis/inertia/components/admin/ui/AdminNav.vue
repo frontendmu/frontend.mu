@@ -118,7 +118,7 @@ const icons: Record<string, string> = {
               'group relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
               item.match(currentPath)
                 ? 'bg-verse-100 dark:bg-verse-800/70 text-verse-900 dark:text-verse-50'
-                : 'text-verse-600 dark:text-verse-400 hover:bg-verse-50 dark:hover:bg-verse-900/40 hover:text-verse-900 dark:hover:text-verse-100',
+                : 'text-verse-600 dark:text-verse-300 hover:bg-verse-50 dark:hover:bg-verse-900/40 hover:text-verse-900 dark:hover:text-verse-100',
             ]"
           >
             <span

@@ -60,7 +60,7 @@ function doDelete() {
     </template>
 
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-5">
-      <p class="text-xs font-mono text-verse-500 dark:text-verse-400 tabular-nums">
+      <p class="text-xs font-mono text-verse-500 dark:text-verse-300 tabular-nums">
         {{ filtered.length }} speaker{{ filtered.length === 1 ? '' : 's' }}
       </p>
       <div class="sm:w-72">
@@ -94,11 +94,11 @@ function doDelete() {
             </div>
             <p
               v-if="speaker.githubUsername"
-              class="text-sm text-verse-500 dark:text-verse-400 truncate mt-0.5"
+              class="text-sm text-verse-500 dark:text-verse-300 truncate mt-0.5"
             >
               @{{ speaker.githubUsername }}
             </p>
-            <p class="text-xs font-mono text-verse-500 dark:text-verse-400 mt-1.5 uppercase tracking-wide">
+            <p class="text-xs font-mono text-verse-500 dark:text-verse-300 mt-1.5 uppercase tracking-wide">
               {{ speaker.sessionCount }} session{{ speaker.sessionCount === 1 ? '' : 's' }}
             </p>
           </div>

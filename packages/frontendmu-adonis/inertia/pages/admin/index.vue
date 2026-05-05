@@ -148,7 +148,7 @@ const toneClasses: Record<NonNullable<Section['stats'][number]['tone']>, string>
                 </Link>
                 <AdminBadge v-if="section.superadminOnly" tone="danger">Superadmin</AdminBadge>
               </div>
-              <p class="text-sm text-verse-500 dark:text-verse-400 mt-1">
+              <p class="text-sm text-verse-500 dark:text-verse-300 mt-1">
                 {{ section.description }}
               </p>
               <div
@@ -161,7 +161,7 @@ const toneClasses: Record<NonNullable<Section['stats'][number]['tone']>, string>
                   >
                     {{ stat.value }}
                   </span>
-                  <span class="text-xs text-verse-500 dark:text-verse-400 font-mono uppercase tracking-wide">
+                  <span class="text-xs text-verse-500 dark:text-verse-300 font-mono uppercase tracking-wide">
                     {{ stat.label }}
                   </span>
                 </div>

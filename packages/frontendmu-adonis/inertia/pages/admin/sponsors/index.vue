@@ -75,7 +75,7 @@ function doDelete() {
         :chips="filterChips"
         aria-label="Filter by status"
       />
-      <p class="text-xs font-mono text-verse-500 dark:text-verse-400 tabular-nums">
+      <p class="text-xs font-mono text-verse-500 dark:text-verse-300 tabular-nums">
         {{ sponsors.length }} sponsor{{ sponsors.length === 1 ? '' : 's' }}
       </p>
     </div>
@@ -131,7 +131,7 @@ function doDelete() {
                 </Link>
                 <p
                   v-if="sponsor.website"
-                  class="text-xs text-verse-500 dark:text-verse-400 truncate max-w-[280px]"
+                  class="text-xs text-verse-500 dark:text-verse-300 truncate max-w-[280px]"
                 >
                   {{ sponsor.website }}
                 </p>

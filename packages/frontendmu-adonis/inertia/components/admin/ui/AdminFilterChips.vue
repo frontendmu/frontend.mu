@@ -44,7 +44,7 @@ const emit = defineEmits<{
           'inline-flex items-center justify-center min-w-[1.25rem] px-1 text-[10px] font-mono rounded-full',
           modelValue === chip.key
             ? 'bg-white/20 dark:bg-verse-900/20 text-white dark:text-verse-900'
-            : 'bg-verse-100 dark:bg-verse-800 text-verse-500 dark:text-verse-400',
+            : 'bg-verse-100 dark:bg-verse-800 text-verse-500 dark:text-verse-300',
         ]"
       >
         {{ chip.count }}

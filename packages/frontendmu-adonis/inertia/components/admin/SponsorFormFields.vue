@@ -142,7 +142,7 @@ function toggleSponsorType(type: string) {
           </label>
           <span
             v-if="form.logoBg && !['#ffffff', '#111827', ''].includes(form.logoBg)"
-            class="text-xs font-mono text-verse-500 dark:text-verse-400"
+            class="text-xs font-mono text-verse-500 dark:text-verse-300"
           >
             {{ form.logoBg }}
           </span>

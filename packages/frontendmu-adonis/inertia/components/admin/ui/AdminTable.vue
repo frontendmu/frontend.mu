@@ -19,7 +19,7 @@ withDefaults(
               v-for="col in columns"
               :key="col.label"
               :class="[
-                'px-5 py-2.5 text-[11px] font-mono font-semibold uppercase tracking-[0.12em] text-verse-500 dark:text-verse-400',
+                'px-5 py-2.5 text-[11px] font-mono font-semibold uppercase tracking-[0.12em] text-verse-500 dark:text-verse-300',
                 col.align === 'right' ? 'text-right' : col.align === 'center' ? 'text-center' : 'text-left',
                 col.class,
               ]"

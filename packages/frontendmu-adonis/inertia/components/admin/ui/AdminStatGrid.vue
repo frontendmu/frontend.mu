@@ -29,7 +29,7 @@ const toneClasses: Record<NonNullable<Stat['tone']>, string> = {
       :key="stat.label"
       class="bg-white dark:bg-verse-900/50 squircle rounded-2xl border border-verse-200 dark:border-verse-800 px-4 py-4 sm:px-5 sm:py-5"
     >
-      <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-verse-500 dark:text-verse-400">
+      <div class="text-[11px] font-mono uppercase tracking-[0.14em] text-verse-500 dark:text-verse-300">
         {{ stat.label }}
       </div>
       <div
@@ -40,7 +40,7 @@ const toneClasses: Record<NonNullable<Stat['tone']>, string> = {
       >
         {{ stat.value }}
       </div>
-      <p v-if="stat.hint" class="mt-1 text-xs text-verse-500 dark:text-verse-400">
+      <p v-if="stat.hint" class="mt-1 text-xs text-verse-500 dark:text-verse-300">
         {{ stat.hint }}
       </p>
     </div>

@@ -232,7 +232,7 @@ function roleTone(name: string) {
               v-if="expandedRole === role.id"
               class="px-3.5 pb-3.5 pt-1 border-t border-verse-200 dark:border-verse-800"
             >
-              <p class="text-[11px] font-mono uppercase tracking-wide text-verse-500 dark:text-verse-400 mb-2">
+              <p class="text-[11px] font-mono uppercase tracking-wide text-verse-500 dark:text-verse-300 mb-2">
                 Permissions in this role
               </p>
               <div class="flex flex-wrap gap-1">
@@ -270,7 +270,7 @@ function roleTone(name: string) {
       >
         <div v-if="effectivePermissions.length > 0" class="space-y-3">
           <div v-for="(perms, category) in groupedPermissions" :key="category">
-            <p class="text-[11px] font-mono uppercase tracking-wide text-verse-500 dark:text-verse-400 mb-1.5">
+            <p class="text-[11px] font-mono uppercase tracking-wide text-verse-500 dark:text-verse-300 mb-1.5">
               {{ category }}
             </p>
             <div class="flex flex-wrap gap-1">
@@ -284,7 +284,7 @@ function roleTone(name: string) {
             </div>
           </div>
         </div>
-        <p v-else class="text-sm text-verse-500 dark:text-verse-400 italic">
+        <p v-else class="text-sm text-verse-500 dark:text-verse-300 italic">
           No permissions. Select at least one role.
         </p>
       </AdminCard>
@@ -330,7 +330,7 @@ function roleTone(name: string) {
           >
             <div class="min-w-0">
               <p class="font-medium text-verse-900 dark:text-verse-100 truncate">{{ session.title }}</p>
-              <p v-if="session.eventTitle" class="text-xs text-verse-500 dark:text-verse-400 truncate">
+              <p v-if="session.eventTitle" class="text-xs text-verse-500 dark:text-verse-300 truncate">
                 {{ session.eventTitle }}
                 <span v-if="session.eventDate"> · {{ session.eventDate }}</span>
               </p>
@@ -359,7 +359,7 @@ function roleTone(name: string) {
           >
             <div class="min-w-0">
               <p class="font-medium text-verse-900 dark:text-verse-100 truncate">{{ rsvp.eventTitle }}</p>
-              <p v-if="rsvp.eventDate" class="text-xs text-verse-500 dark:text-verse-400">
+              <p v-if="rsvp.eventDate" class="text-xs text-verse-500 dark:text-verse-300">
                 {{ rsvp.eventDate }}
               </p>
             </div>

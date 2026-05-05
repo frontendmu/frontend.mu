@@ -48,7 +48,7 @@ const fieldId = computed(() => props.id || `cb-${Math.random().toString(36).slic
       <span v-if="label" class="block text-sm font-medium text-verse-900 dark:text-verse-100">
         {{ label }}
       </span>
-      <span v-if="description" class="block text-xs text-verse-500 dark:text-verse-400 mt-0.5">
+      <span v-if="description" class="block text-xs text-verse-500 dark:text-verse-300 mt-0.5">
         {{ description }}
       </span>
       <slot />

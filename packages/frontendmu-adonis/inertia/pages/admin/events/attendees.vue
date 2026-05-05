@@ -161,7 +161,7 @@ function exportCsv() {
           }}<span v-if="event.endTime"> – {{ event.endTime }}</span>
         </span>
         <span v-if="event.venue">{{ event.venue }}</span>
-        <span v-if="event.seatsAvailable !== null" class="text-verse-500 dark:text-verse-400">
+        <span v-if="event.seatsAvailable !== null" class="text-verse-500 dark:text-verse-300">
           Capacity {{ counts.confirmed }} / {{ event.seatsAvailable }}
         </span>
       </div>
@@ -262,10 +262,10 @@ function exportCsv() {
           <td class="px-5 py-3">
             <AdminBadge :tone="statusTone(attendee.status)" dot>{{ attendee.status }}</AdminBadge>
           </td>
-          <td class="px-5 py-3 text-sm text-verse-600 dark:text-verse-400 whitespace-nowrap">
+          <td class="px-5 py-3 text-sm text-verse-600 dark:text-verse-300 whitespace-nowrap">
             {{ formatRsvpedAt(attendee.rsvpedAt) }}
           </td>
-          <td class="px-5 py-3 text-sm text-verse-600 dark:text-verse-400 max-w-xs">
+          <td class="px-5 py-3 text-sm text-verse-600 dark:text-verse-300 max-w-xs">
             <span v-if="attendee.notes" class="line-clamp-2">{{ attendee.notes }}</span>
             <span v-else class="text-verse-400 dark:text-verse-500">—</span>
           </td>
