@@ -13,7 +13,6 @@ import AdminCheckbox from '~/components/admin/ui/AdminCheckbox.vue'
 import AdminBadge from '~/components/admin/ui/AdminBadge.vue'
 import AdminAvatar from '~/components/admin/ui/AdminAvatar.vue'
 import AdminSearchInput from '~/components/admin/ui/AdminSearchInput.vue'
-import AdminEmptyState from '~/components/admin/ui/AdminEmptyState.vue'
 import AdminConfirmModal from '~/components/admin/ui/AdminConfirmModal.vue'
 import { useApi } from '~/composables/use_api'
 
