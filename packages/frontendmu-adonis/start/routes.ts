@@ -176,6 +176,14 @@ router
       .where('id', UUID_REGEX)
       .as('admin.events.destroy')
 
+    // Event attendees (full RSVP roster — admin only)
+    router
+      .get('/admin/events/:idOrSlug/attendees', [
+        () => import('#controllers/admin/event_attendees_controller'),
+        'show',
+      ])
+      .as('admin.events.attendees')
+
     // Session management (nested under events)
     router
       .get('/admin/events/:eventId/sessions', [
