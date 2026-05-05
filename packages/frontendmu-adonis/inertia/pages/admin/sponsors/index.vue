@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { Head, router } from '@inertiajs/vue3'
-import { Link } from '@inertiajs/vue3'
-import ContentBlock from '~/components/shared/ContentBlock.vue'
-import BaseHeading from '~/components/base/BaseHeading.vue'
+import { computed } from 'vue'
+import { Head, Link, router } from '@inertiajs/vue3'
+import AdminShell from '~/components/admin/ui/AdminShell.vue'
+import AdminCard from '~/components/admin/ui/AdminCard.vue'
+import AdminButton from '~/components/admin/ui/AdminButton.vue'
+import AdminBadge from '~/components/admin/ui/AdminBadge.vue'
+import AdminTable from '~/components/admin/ui/AdminTable.vue'
+import AdminFilterChips from '~/components/admin/ui/AdminFilterChips.vue'
+import AdminEmptyState from '~/components/admin/ui/AdminEmptyState.vue'
+import AdminConfirmModal from '~/components/admin/ui/AdminConfirmModal.vue'
 import { useAuth } from '~/composables/use_auth'
 import { useDeleteConfirmation } from '~/composables/use_delete_confirmation'
 
@@ -28,325 +34,212 @@ const {
   showModal: showDeleteModal,
   itemToDelete: sponsorToDelete,
   isDeleting,
-  confirmDelete: confirmDeleteItem,
+  confirmDelete,
   cancelDelete,
-  executeDelete: execDelete,
+  executeDelete,
 } = useDeleteConfirmation<Sponsor>()
 
-// Status badge styles
-const getStatusBadge = (status: string) => {
-  return status === 'active'
-    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-    : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
-}
+const filterChips = [
+  { key: 'all', label: 'All' },
+  { key: 'active', label: 'Active' },
+  { key: 'inactive', label: 'Inactive' },
+]
 
-// Filter by status
-function filterByStatus(status: string) {
-  router.get('/admin/sponsors', { status }, { preserveState: true })
-}
-
-function confirmDelete(sponsor: Sponsor) {
-  confirmDeleteItem(sponsor)
-}
+const currentStatus = computed({
+  get: () => props.statusFilter,
+  set: (v) => router.get('/admin/sponsors', { status: v }, { preserveState: true }),
+})
 
 function doDelete() {
   if (!sponsorToDelete.value) return
-  execDelete(`/admin/sponsors/${sponsorToDelete.value.id}`)
+  executeDelete(`/admin/sponsors/${sponsorToDelete.value.id}`)
 }
 </script>
 
 <template>
-  <Head title="Manage Sponsors" />
-  <main class="relative min-h-screen pt-40 pb-20">
-    <ContentBlock>
-      <!-- Header -->
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <div>
-          <BaseHeading :level="1">Manage Sponsors</BaseHeading>
-          <p class="text-verse-600 dark:text-verse-400 mt-2">View and manage sponsor profiles.</p>
-        </div>
-        <Link
-          href="/admin/sponsors/create"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-verse-600 hover:bg-verse-700 text-white text-sm font-medium squircle rounded-lg transition-colors"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          Add Sponsor
-        </Link>
-      </div>
+  <Head title="Sponsors · Admin" />
+  <AdminShell title="Sponsors" description="Track sponsors, partnerships and how they show up across events.">
+    <template #actions>
+      <AdminButton href="/admin/sponsors/create" variant="primary">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        Add sponsor
+      </AdminButton>
+    </template>
 
-      <!-- Filters -->
-      <div class="flex flex-wrap gap-2 mb-6">
-        <button
-          @click="filterByStatus('all')"
-          :class="[
-            'px-4 py-2 squircle rounded-lg text-sm font-medium transition-colors',
-            statusFilter === 'all'
-              ? 'bg-verse-600 text-white'
-              : 'bg-verse-100 dark:bg-verse-800 text-verse-700 dark:text-verse-300 hover:bg-verse-200 dark:hover:bg-verse-700',
-          ]"
-        >
-          All
-        </button>
-        <button
-          @click="filterByStatus('active')"
-          :class="[
-            'px-4 py-2 squircle rounded-lg text-sm font-medium transition-colors',
-            statusFilter === 'active'
-              ? 'bg-green-600 text-white'
-              : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50',
-          ]"
-        >
-          Active
-        </button>
-        <button
-          @click="filterByStatus('inactive')"
-          :class="[
-            'px-4 py-2 squircle rounded-lg text-sm font-medium transition-colors',
-            statusFilter === 'inactive'
-              ? 'bg-gray-600 text-white'
-              : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700',
-          ]"
-        >
-          Inactive
-        </button>
-      </div>
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-5">
+      <AdminFilterChips
+        v-model="currentStatus"
+        :chips="filterChips"
+        aria-label="Filter by status"
+      />
+      <p class="text-xs font-mono text-verse-500 dark:text-verse-400 tabular-nums">
+        {{ sponsors.length }} sponsor{{ sponsors.length === 1 ? '' : 's' }}
+      </p>
+    </div>
 
-      <!-- Sponsors Table -->
-      <div
-        class="bg-white dark:bg-verse-800/50 squircle rounded-xl border border-verse-200 dark:border-verse-700 overflow-hidden"
+    <AdminCard :padded="false">
+      <AdminTable
+        v-if="sponsors.length"
+        :columns="[
+          { label: 'Sponsor' },
+          { label: 'Types' },
+          { label: 'Status' },
+          { label: 'Actions', align: 'right' },
+        ]"
       >
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead
-              class="bg-verse-50 dark:bg-verse-800 border-b border-verse-200 dark:border-verse-700"
-            >
-              <tr>
-                <th
-                  class="px-6 py-3 text-left text-xs font-semibold text-verse-600 dark:text-verse-400 uppercase tracking-wider"
-                >
-                  Sponsor
-                </th>
-                <th
-                  class="px-6 py-3 text-left text-xs font-semibold text-verse-600 dark:text-verse-400 uppercase tracking-wider"
-                >
-                  Types
-                </th>
-                <th
-                  class="px-6 py-3 text-left text-xs font-semibold text-verse-600 dark:text-verse-400 uppercase tracking-wider"
-                >
-                  Status
-                </th>
-                <th
-                  class="px-6 py-3 text-right text-xs font-semibold text-verse-600 dark:text-verse-400 uppercase tracking-wider"
-                >
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-verse-200 dark:divide-verse-700">
-              <tr
-                v-for="sponsor in sponsors"
-                :key="sponsor.id"
-                class="hover:bg-verse-50 dark:hover:bg-verse-800/80 transition-colors"
+        <tr
+          v-for="sponsor in sponsors"
+          :key="sponsor.id"
+          class="hover:bg-verse-50/50 dark:hover:bg-verse-800/40 transition-colors"
+        >
+          <td class="px-5 py-3.5">
+            <div class="flex items-center gap-3 min-w-0">
+              <div
+                v-if="sponsor.logoUrl"
+                :class="[
+                  'w-10 h-10 rounded-xl flex items-center justify-center p-1 border border-verse-100 dark:border-verse-800 shrink-0',
+                  sponsor.logoBg ? '' : 'bg-white dark:bg-white',
+                ]"
+                :style="sponsor.logoBg ? { backgroundColor: sponsor.logoBg } : {}"
               >
-                <td class="px-6 py-4">
-                  <div class="flex items-center gap-3">
-                    <div
-                      v-if="sponsor.logoUrl"
-                      :class="[
-                        'w-10 h-10 squircle rounded-lg flex items-center justify-center p-1',
-                        sponsor.logoBg ? '' : 'bg-white',
-                      ]"
-                      :style="sponsor.logoBg ? { backgroundColor: sponsor.logoBg } : {}"
-                    >
-                      <img
-                        :src="sponsor.logoUrl"
-                        :alt="sponsor.name"
-                        class="max-w-full max-h-full object-contain"
-                      />
-                    </div>
-                    <div
-                      v-else
-                      class="w-10 h-10 squircle rounded-lg bg-verse-200 dark:bg-verse-700 flex items-center justify-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 text-verse-400"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                    <div>
-                      <span class="font-medium text-verse-900 dark:text-verse-100">
-                        {{ sponsor.name }}
-                      </span>
-                      <p
-                        v-if="sponsor.website"
-                        class="text-xs text-verse-500 dark:text-verse-400 truncate max-w-[200px]"
-                      >
-                        {{ sponsor.website }}
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td class="px-6 py-4">
-                  <div class="flex flex-wrap gap-1">
-                    <span
-                      v-for="type in sponsor.sponsorTypes"
-                      :key="type"
-                      class="px-2 py-0.5 text-xs font-medium bg-verse-100 dark:bg-verse-700 text-verse-600 dark:text-verse-300 rounded capitalize"
-                    >
-                      {{ type }}
-                    </span>
-                    <span
-                      v-if="!sponsor.sponsorTypes?.length"
-                      class="text-verse-400 dark:text-verse-500 text-sm"
-                    >
-                      -
-                    </span>
-                  </div>
-                </td>
-                <td class="px-6 py-4">
-                  <span
-                    :class="[
-                      'px-2.5 py-1 rounded-full text-xs font-medium capitalize',
-                      getStatusBadge(sponsor.status),
-                    ]"
-                  >
-                    {{ sponsor.status }}
-                  </span>
-                </td>
-                <td class="px-6 py-4 text-right">
-                  <div class="flex items-center justify-end gap-2">
-                    <Link
-                      :href="`/sponsor/${sponsor.id}`"
-                      class="p-2 text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200 transition-colors"
-                      title="View"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                        <path
-                          fill-rule="evenodd"
-                          d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                    </Link>
-                    <Link
-                      :href="`/admin/sponsors/${sponsor.id}/edit`"
-                      class="p-2 text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200 transition-colors"
-                      title="Edit"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                        />
-                      </svg>
-                    </Link>
-                    <button
-                      v-if="canDelete"
-                      @click="confirmDelete(sponsor)"
-                      class="p-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
-                      title="Delete"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                <img
+                  :src="sponsor.logoUrl"
+                  :alt="sponsor.name"
+                  class="max-w-full max-h-full object-contain"
+                />
+              </div>
+              <div
+                v-else
+                class="w-10 h-10 rounded-xl bg-verse-100 dark:bg-verse-800 flex items-center justify-center text-verse-500 shrink-0"
+                aria-hidden="true"
+              >
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
+                </svg>
+              </div>
+              <div class="min-w-0">
+                <Link
+                  :href="`/admin/sponsors/${sponsor.id}/edit`"
+                  class="font-medium text-verse-900 dark:text-verse-50 hover:underline decoration-coral-strong decoration-2 underline-offset-4 truncate block"
+                >
+                  {{ sponsor.name }}
+                </Link>
+                <p
+                  v-if="sponsor.website"
+                  class="text-xs text-verse-500 dark:text-verse-400 truncate max-w-[280px]"
+                >
+                  {{ sponsor.website }}
+                </p>
+              </div>
+            </div>
+          </td>
+          <td class="px-5 py-3.5">
+            <div class="flex flex-wrap gap-1">
+              <AdminBadge
+                v-for="type in sponsor.sponsorTypes"
+                :key="type"
+                tone="muted"
+              >
+                {{ type }}
+              </AdminBadge>
+              <span
+                v-if="!sponsor.sponsorTypes?.length"
+                class="text-verse-400 dark:text-verse-500 text-sm"
+              >—</span>
+            </div>
+          </td>
+          <td class="px-5 py-3.5">
+            <AdminBadge :tone="sponsor.status === 'active' ? 'success' : 'muted'" dot>
+              {{ sponsor.status }}
+            </AdminBadge>
+          </td>
+          <td class="px-5 py-3.5">
+            <div class="flex items-center justify-end gap-1">
+              <AdminButton
+                :href="`/sponsor/${sponsor.id}`"
+                variant="ghost"
+                size="sm"
+                icon-only
+                title="View public page"
+              >
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </AdminButton>
+              <AdminButton
+                :href="`/admin/sponsors/${sponsor.id}/edit`"
+                variant="ghost"
+                size="sm"
+                icon-only
+                title="Edit sponsor"
+              >
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+              </AdminButton>
+              <button
+                v-if="canDelete"
+                type="button"
+                class="p-2 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+                title="Delete sponsor"
+                aria-label="Delete sponsor"
+                @click="confirmDelete(sponsor)"
+              >
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </AdminTable>
 
-        <!-- Empty state -->
-        <div v-if="!sponsors.length" class="px-6 py-12 text-center">
-          <p class="text-verse-500 dark:text-verse-400 mb-4">
-            No sponsors found<span v-if="statusFilter !== 'all'">
-              with status "{{ statusFilter }}"</span
-            >.
-          </p>
-          <Link
+      <AdminEmptyState
+        v-else
+        :title="
+          statusFilter !== 'all' ? `No ${statusFilter} sponsors` : 'No sponsors yet'
+        "
+        :description="
+          statusFilter !== 'all'
+            ? 'Try a different filter, or clear filters to see them all.'
+            : 'Add your first sponsor to get started.'
+        "
+        icon="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+      >
+        <template #actions>
+          <AdminButton
             v-if="statusFilter !== 'all'"
             href="/admin/sponsors"
-            class="inline-block text-verse-600 hover:text-verse-800 dark:text-verse-400 dark:hover:text-verse-200 underline"
+            variant="secondary"
           >
-            View all sponsors
-          </Link>
-        </div>
-      </div>
-    </ContentBlock>
-  </main>
+            Clear filters
+          </AdminButton>
+          <AdminButton href="/admin/sponsors/create" variant="primary">
+            Add sponsor
+          </AdminButton>
+        </template>
+      </AdminEmptyState>
+    </AdminCard>
+  </AdminShell>
 
-  <!-- Delete Confirmation Modal -->
-  <Teleport to="body">
-    <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div class="absolute inset-0 bg-black/50" @click="cancelDelete" />
-      <div
-        class="relative bg-white dark:bg-verse-800 squircle rounded-xl shadow-xl max-w-md w-full p-6"
-      >
-        <h3 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-2">
-          Delete Sponsor
-        </h3>
-        <p class="text-verse-600 dark:text-verse-400 mb-4">
-          Are you sure you want to delete "<strong>{{ sponsorToDelete?.name }}</strong
-          >"? This action cannot be undone.
-        </p>
-        <div class="flex justify-end gap-3">
-          <button
-            @click="cancelDelete"
-            :disabled="isDeleting"
-            class="px-4 py-2 text-sm font-medium text-verse-700 dark:text-verse-300 bg-verse-100 dark:bg-verse-700 hover:bg-verse-200 dark:hover:bg-verse-600 squircle rounded-lg transition-colors disabled:opacity-50"
-          >
-            Cancel
-          </button>
-          <button
-            @click="doDelete"
-            :disabled="isDeleting"
-            class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 squircle rounded-lg transition-colors disabled:opacity-50"
-          >
-            <span v-if="isDeleting">Deleting...</span>
-            <span v-else>Delete</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </Teleport>
+  <AdminConfirmModal
+    :open="showDeleteModal"
+    title="Delete sponsor"
+    :loading="isDeleting"
+    confirm-label="Delete sponsor"
+    @cancel="cancelDelete"
+    @confirm="doDelete"
+  >
+    Are you sure you want to delete
+    <strong class="text-verse-900 dark:text-verse-100">{{ sponsorToDelete?.name }}</strong
+    >? This action cannot be undone.
+  </AdminConfirmModal>
 </template>
