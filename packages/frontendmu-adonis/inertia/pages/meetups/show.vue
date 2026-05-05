@@ -5,6 +5,7 @@ import { Head, usePage, router } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'
 import type { Data } from '@generated/data'
 import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
+import RsvpPhoneModal from '~/components/rsvp/RsvpPhoneModal.vue'
 import { sanitizeHtml } from '~/composables/use_sanitize'
 import { useApi } from '~/composables/use_api'
 
@@ -29,6 +30,9 @@ const isRsvpLoading = ref(false)
 const rsvpError = ref<string | null>(null)
 const rsvpSuccess = ref<string | null>(null)
 const showMobileRsvp = ref(false)
+const showPhoneModal = ref(false)
+const phoneModalError = ref<string | null>(null)
+const userHasPhone = computed(() => Boolean(page.props.auth?.user?.hasPhone))
 
 // Check if user has an active RSVP
 const hasRsvp = computed(() => !!props.userRsvp)
@@ -70,29 +74,62 @@ const allSpeakers = computed(() => props.meetup?.speakers ?? [])
 async function handleRsvp() {
   if (!props.meetup) return
 
+  if (!userHasPhone.value) {
+    phoneModalError.value = null
+    showPhoneModal.value = true
+    return
+  }
+
+  await submitRsvp()
+}
+
+async function submitRsvp(phone?: string) {
+  if (!props.meetup) return
+
   isRsvpLoading.value = true
   rsvpError.value = null
   rsvpSuccess.value = null
+  phoneModalError.value = null
 
   try {
-    const { ok, data } = await apiFetch<{ message: string }>(
-      `/api/events/${props.meetup.id}/rsvp`,
-      {
-        method: 'POST',
-      }
-    )
+    const { ok, data, response } = await apiFetch<{
+      message: string
+      code?: string
+      errors?: Record<string, string>
+    }>(`/api/events/${props.meetup.id}/rsvp`, {
+      method: 'POST',
+      body: phone ? JSON.stringify({ phone }) : undefined,
+    })
 
     if (ok) {
       rsvpSuccess.value = data.message
+      showPhoneModal.value = false
       router.reload()
-    } else {
-      rsvpError.value = data.message || 'Failed to RSVP'
+      return
     }
+
+    if (response.status === 422 && (data.code === 'PHONE_REQUIRED' || data.errors?.phone)) {
+      phoneModalError.value = data.errors?.phone || data.message || 'Please enter a valid phone number.'
+      showPhoneModal.value = true
+      return
+    }
+
+    rsvpError.value = data.message || 'Failed to RSVP'
   } catch (error) {
     rsvpError.value = 'An error occurred. Please try again.'
   } finally {
     isRsvpLoading.value = false
   }
+}
+
+function onPhoneModalSubmit(phone: string) {
+  submitRsvp(phone)
+}
+
+function onPhoneModalClose() {
+  if (isRsvpLoading.value) return
+  showPhoneModal.value = false
+  phoneModalError.value = null
 }
 
 async function handleCancelRsvp() {
@@ -1149,6 +1186,14 @@ const calendarUrl = computed(() => {
       </div>
     </Transition>
   </Teleport>
+
+  <RsvpPhoneModal
+    :open="showPhoneModal"
+    :loading="isRsvpLoading"
+    :error="phoneModalError"
+    @submit="onPhoneModalSubmit"
+    @close="onPhoneModalClose"
+  />
 </template>
 
 <style scoped>

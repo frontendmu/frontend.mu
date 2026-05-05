@@ -8,5 +8,12 @@ export const updateProfileValidator = vine.compile(
     linkedinUrl: vine.string().url().maxLength(500).optional(),
     twitterUrl: vine.string().url().maxLength(500).optional(),
     websiteUrl: vine.string().url().maxLength(500).optional(),
+    phone: vine
+      .string()
+      .trim()
+      .minLength(7)
+      .maxLength(20)
+      .regex(/^\+?[0-9 \-()]+$/)
+      .optional(),
   })
 )
