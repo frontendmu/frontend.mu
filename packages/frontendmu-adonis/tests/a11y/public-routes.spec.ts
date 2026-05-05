@@ -53,7 +53,6 @@ const staticRoutes = [
   '/coding-guidelines',
   '/api-docs',
   '/login',
-  '/register',
 ]
 
 const enforcedRoutes = [

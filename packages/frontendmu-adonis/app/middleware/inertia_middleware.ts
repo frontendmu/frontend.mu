@@ -45,6 +45,7 @@ export default class InertiaMiddleware extends BaseInertiaMiddleware {
         providers: {
           google: googleOauthEnabled,
         },
+        registrationEnabled: featureFlags.registrationEnabled,
         csrfToken: ctx.request.csrfToken ?? '',
       }),
       featureFlags,
