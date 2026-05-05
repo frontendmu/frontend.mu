@@ -18,6 +18,13 @@ export default class UserTransformer extends BaseTransformer<User> {
     }
   }
 
+  forProfile() {
+    return {
+      ...this.toObject(),
+      phone: this.resource.phone,
+    }
+  }
+
   forSharedAuth() {
     return {
       id: this.resource.id,

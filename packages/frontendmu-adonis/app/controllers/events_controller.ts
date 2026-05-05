@@ -1,4 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { DateTime } from 'luxon'
 import Event from '#models/event'
 import Rsvp from '#models/rsvp'
 import type User from '#models/user'
@@ -57,20 +58,35 @@ export default class EventsController {
       avatarUrl: string | null
       githubUsername: string | null
     }> = []
-    let rsvpCount = 0
 
     await auth.check()
     const user = auth.user as User | undefined
 
+    const confirmedRsvps = await Rsvp.query()
+      .where('eventId', event.id)
+      .where('status', 'confirmed')
+      .preload('user')
+      .orderBy('createdAt', 'asc')
+
+    const rsvpCount = confirmedRsvps.length
+
+    // Round to UTC day so public viewers can see trend without exact-time correlation.
+    const rsvpedAtList = confirmedRsvps
+      .map((r) => r.createdAt?.toUTC().startOf('day').toISO() ?? null)
+      .filter((iso): iso is string => Boolean(iso))
+
+    const firstRsvpAt = confirmedRsvps[0]?.createdAt ?? null
+    const rsvpOpenAt = firstRsvpAt
+      ? firstRsvpAt.minus({ days: 2 }).toISO()
+      : DateTime.now().toISO()
+
+    const timeline = {
+      rsvpOpenAt,
+      rsvpCloseAt: event.rsvpClosingDate?.toISO() ?? null,
+      eventAt: event.eventDate?.toISO() ?? null,
+    }
+
     if (user) {
-      const rsvps = await Rsvp.query()
-        .where('eventId', event.id)
-        .where('status', 'confirmed')
-        .preload('user')
-        .orderBy('createdAt', 'asc')
-
-      rsvpCount = rsvps.length
-
       userRsvp = await Rsvp.query()
         .where('userId', user.id)
         .where('eventId', event.id)
@@ -80,7 +96,7 @@ export default class EventsController {
       canEdit = await bouncer.with(EventPolicy).allows('edit', event)
 
       attendees = await Promise.all(
-        rsvps.map(async (rsvp) => {
+        confirmedRsvps.map(async (rsvp) => {
           rsvp.user.$extras.displayName = this.truncateName(rsvp.user.name)
           return (await serialize(PublicAttendeeTransformer.transform(rsvp.user))) as {
             id: string
@@ -91,11 +107,12 @@ export default class EventsController {
         })
       )
     } else {
-      const countResult = await Event.query()
-        .where('id', event.id)
-        .withCount('rsvps', (q) => q.where('status', 'confirmed'))
-        .firstOrFail()
-      rsvpCount = Number(countResult.$extras.rsvps_count) || 0
+      attendees = confirmedRsvps.map((rsvp, index) => ({
+        id: `anon-${index}`,
+        name: this.truncateName(rsvp.user.name),
+        avatarUrl: null,
+        githubUsername: null,
+      }))
     }
 
     return inertia.render('meetups/show', {
@@ -104,6 +121,8 @@ export default class EventsController {
       rsvpCount,
       canEdit,
       attendees,
+      rsvpedAtList,
+      timeline,
     })
   }
 

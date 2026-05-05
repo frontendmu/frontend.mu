@@ -67,7 +67,7 @@ export default class Event extends BaseModel {
   @column()
   declare seatsAvailable: number | null
 
-  @column()
+  @column({ consume: (v: unknown): boolean => Boolean(v) })
   declare acceptingRsvp: boolean
 
   @column.dateTime()

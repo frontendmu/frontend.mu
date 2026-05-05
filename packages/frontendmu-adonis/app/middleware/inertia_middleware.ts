@@ -24,6 +24,7 @@ async function getSharedAuthUser(ctx: HttpContext) {
     email: user.email,
     avatarUrl: user.avatarUrl,
     githubUsername: user.githubUsername,
+    hasPhone: Boolean(user.phone && user.phone.trim().length > 0),
     roles: roles.map((role) => ({ id: role.id, name: role.name })),
     role: user.role,
   }
