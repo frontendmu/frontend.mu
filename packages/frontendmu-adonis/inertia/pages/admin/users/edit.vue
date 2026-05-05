@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { Head, useForm, usePage } from '@inertiajs/vue3'
-import { Link } from '@inertiajs/vue3'
+import { Head, useForm, usePage, Link } from '@inertiajs/vue3'
 import type { Data } from '@generated/data'
-import ContentBlock from '~/components/shared/ContentBlock.vue'
-import BaseHeading from '~/components/base/BaseHeading.vue'
-import { getRoleBadgeClass } from '~/utils/roles'
+import AdminShell from '~/components/admin/ui/AdminShell.vue'
+import AdminCard from '~/components/admin/ui/AdminCard.vue'
+import AdminButton from '~/components/admin/ui/AdminButton.vue'
+import AdminInput from '~/components/admin/ui/AdminInput.vue'
+import AdminTextarea from '~/components/admin/ui/AdminTextarea.vue'
+import AdminCheckbox from '~/components/admin/ui/AdminCheckbox.vue'
+import AdminBadge from '~/components/admin/ui/AdminBadge.vue'
+import AdminAvatar from '~/components/admin/ui/AdminAvatar.vue'
 
 type SharedProps = Data.SharedProps
 
@@ -18,7 +22,6 @@ interface Rsvp {
 }
 
 type AdminRole = Data.Role.Variants['forAdminEdit']
-type AdminSession = Data.Session.Variants['forSpeakerProfile']
 type AdminUser = Data.AdminUser.Variants['forAdminEdit'] & { rsvps: Rsvp[] }
 
 interface Props {
@@ -31,7 +34,6 @@ const page = usePage<SharedProps>()
 const currentUser = computed(() => page.props.auth.user)
 const isEditingSelf = computed(() => props.user.id === currentUser.value?.id)
 
-// Track which role is expanded for permission viewing
 const expandedRole = ref<number | null>(null)
 
 const form = useForm({
@@ -57,11 +59,8 @@ function toggleRole(roleId: number) {
   const index = form.roleIds.indexOf(roleId)
   if (index === -1) {
     form.roleIds.push(roleId)
-  } else {
-    // Don't allow removing the last role
-    if (form.roleIds.length > 1) {
-      form.roleIds.splice(index, 1)
-    }
+  } else if (form.roleIds.length > 1) {
+    form.roleIds.splice(index, 1)
   }
 }
 
@@ -73,20 +72,16 @@ function toggleExpandRole(roleId: number) {
   expandedRole.value = expandedRole.value === roleId ? null : roleId
 }
 
-// Compute effective permissions based on selected roles
 const effectivePermissions = computed(() => {
   const permissions = new Set<string>()
   for (const role of props.allRoles) {
     if (form.roleIds.includes(role.id)) {
-      for (const perm of role.permissions) {
-        permissions.add(perm.name)
-      }
+      for (const perm of role.permissions) permissions.add(perm.name)
     }
   }
   return Array.from(permissions).sort()
 })
 
-// Check if superadmin is trying to remove their own superadmin role
 const isTryingToRemoveSuperadmin = computed(() => {
   if (!isEditingSelf.value) return false
   const superadminRole = props.allRoles.find((r) => r.name === 'superadmin')
@@ -96,7 +91,6 @@ const isTryingToRemoveSuperadmin = computed(() => {
   return hadSuperadmin && !hasSuperadmin
 })
 
-// Permission category grouping
 function getPermissionCategory(permName: string) {
   if (permName.includes('event')) return 'Events'
   if (permName.includes('rsvp')) return 'RSVPs'
@@ -113,541 +107,297 @@ const groupedPermissions = computed(() => {
   const groups: Record<string, string[]> = {}
   for (const perm of effectivePermissions.value) {
     const category = getPermissionCategory(perm)
-    if (!groups[category]) {
-      groups[category] = []
-    }
+    if (!groups[category]) groups[category] = []
     groups[category].push(perm)
   }
   return groups
 })
+
+function roleTone(name: string) {
+  switch (name) {
+    case 'superadmin':
+      return 'danger'
+    case 'organizer':
+      return 'accent'
+    case 'member':
+      return 'info'
+    case 'viewer':
+      return 'muted'
+    default:
+      return 'neutral'
+  }
+}
 </script>
 
 <template>
-  <Head :title="`Edit User: ${user.name}`" />
-  <main class="relative min-h-screen pt-40 pb-20">
-    <ContentBlock>
-      <div class="max-w-3xl mx-auto">
-        <!-- Breadcrumb -->
-        <nav class="mb-6 flex items-center gap-2 text-sm">
-          <Link
-            href="/admin"
-            class="text-verse-600 hover:text-verse-800 dark:text-verse-400 dark:hover:text-verse-200"
-          >
-            Admin
-          </Link>
-          <span class="text-verse-400">/</span>
-          <Link
-            href="/admin/users"
-            class="text-verse-600 hover:text-verse-800 dark:text-verse-400 dark:hover:text-verse-200"
-          >
-            Users
-          </Link>
-          <span class="text-verse-400">/</span>
-          <span class="text-verse-900 dark:text-verse-100">{{ user.name }}</span>
-        </nav>
+  <Head :title="`${user.name} · Admin`" />
+  <AdminShell
+    :title="user.name"
+    :description="
+      isEditingSelf ? 'You are editing your own account.' : 'Account, roles and permissions.'
+    "
+    :breadcrumbs="[
+      { label: 'Admin', href: '/admin' },
+      { label: 'Users', href: '/admin/users' },
+      { label: user.name },
+    ]"
+  >
+    <template #media>
+      <AdminAvatar :src="user.avatarUrl" :name="user.name" size="xl" rounded="2xl" />
+    </template>
+    <template #meta>
+      <div class="flex flex-wrap gap-1.5">
+        <AdminBadge v-for="role in user.roles" :key="role.id" :tone="roleTone(role.name)">
+          {{ role.name }}
+        </AdminBadge>
+      </div>
+    </template>
 
-        <!-- Header with Avatar -->
-        <div class="flex items-center gap-4 mb-8">
-          <img
-            v-if="user.avatarUrl"
-            :src="user.avatarUrl"
-            :alt="user.name"
-            class="w-20 h-20 rounded-full object-cover"
+    <form class="space-y-6 max-w-3xl" @submit.prevent="handleSubmit">
+      <AdminCard title="Basic info">
+        <div class="space-y-5">
+          <AdminInput v-model="form.name" label="Name" required :error="form.errors.name" />
+          <AdminInput v-model="form.email" label="Email" type="email" :error="form.errors.email" />
+          <AdminInput
+            v-model="form.githubUsername"
+            label="GitHub username"
+            leading-text="@"
+            hint="Used to fetch the avatar from GitHub"
           />
+          <AdminInput
+            v-model="form.title"
+            label="Title"
+            placeholder="e.g. Lead Organiser, Software Engineer"
+            hint="Shown on the team page under the user's name"
+          />
+          <AdminTextarea v-model="form.bio" label="Bio" :rows="3" />
+        </div>
+      </AdminCard>
+
+      <AdminCard
+        title="Roles & permissions"
+        description="Assign one or more roles. Permissions are derived from the selected roles."
+      >
+        <div class="space-y-2">
           <div
-            v-else
-            class="w-20 h-20 rounded-full bg-verse-200 dark:bg-verse-700 flex items-center justify-center"
+            v-for="role in allRoles"
+            :key="role.id"
+            :class="[
+              'rounded-xl border transition-colors overflow-hidden',
+              isRoleSelected(role.id)
+                ? 'border-verse-400 dark:border-verse-600 bg-verse-50/50 dark:bg-verse-900/40'
+                : 'border-verse-200 dark:border-verse-800',
+            ]"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-10 w-10 text-verse-400"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                clip-rule="evenodd"
+            <div class="flex items-center gap-3 p-3.5">
+              <input
+                type="checkbox"
+                :checked="isRoleSelected(role.id)"
+                :disabled="
+                  isEditingSelf && role.name === 'superadmin' && isRoleSelected(role.id)
+                "
+                class="h-4 w-4 text-verse-600 focus:ring-verse-500 border-verse-300 dark:border-verse-700 rounded cursor-pointer"
+                :aria-labelledby="`role-${role.id}-label`"
+                @change="toggleRole(role.id)"
               />
-            </svg>
-          </div>
-          <div>
-            <BaseHeading :level="1">Edit User</BaseHeading>
-            <p class="text-verse-600 dark:text-verse-400">
-              {{ user.name }}
-              <span v-if="isEditingSelf" class="text-sm text-verse-500">(Your account)</span>
-            </p>
-            <!-- Current roles badges -->
-            <div class="flex flex-wrap gap-1 mt-2">
-              <span
-                v-for="role in user.roles"
-                :key="role.id"
-                :class="[
-                  'px-2 py-0.5 text-xs font-medium rounded-full',
-                  getRoleBadgeClass(role.name),
-                ]"
+              <div class="flex-1 min-w-0">
+                <div :id="`role-${role.id}-label`" class="flex items-center gap-2 flex-wrap">
+                  <AdminBadge :tone="roleTone(role.name)">{{ role.name }}</AdminBadge>
+                  <span class="text-sm text-verse-600 dark:text-verse-300">
+                    {{ role.description }}
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="p-1 rounded-md text-verse-400 hover:text-verse-700 dark:hover:text-verse-200"
+                :aria-label="expandedRole === role.id ? 'Hide permissions' : 'Show permissions'"
+                @click="toggleExpandRole(role.id)"
               >
-                {{ role.name }}
-              </span>
+                <svg
+                  :class="['w-4 h-4 transition-transform', expandedRole === role.id ? 'rotate-180' : '']"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+            </div>
+            <div
+              v-if="expandedRole === role.id"
+              class="px-3.5 pb-3.5 pt-1 border-t border-verse-200 dark:border-verse-800"
+            >
+              <p class="text-[11px] font-mono uppercase tracking-wide text-verse-500 dark:text-verse-400 mb-2">
+                Permissions in this role
+              </p>
+              <div class="flex flex-wrap gap-1">
+                <span
+                  v-for="perm in role.permissions"
+                  :key="perm.id"
+                  class="px-2 py-0.5 text-xs font-mono bg-verse-100 dark:bg-verse-800 text-verse-700 dark:text-verse-200 rounded"
+                >
+                  {{ perm.name }}
+                </span>
+                <span
+                  v-if="role.permissions.length === 0"
+                  class="text-xs text-verse-400 italic"
+                >No permissions</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <form @submit.prevent="handleSubmit" class="space-y-8">
-          <!-- Basic Info Section -->
-          <div
-            class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6"
-          >
-            <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-4">
-              Basic Information
-            </h2>
+        <div
+          v-if="isTryingToRemoveSuperadmin"
+          class="mt-4 px-3.5 py-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900/40 text-sm text-amber-800 dark:text-amber-200"
+        >
+          You cannot remove the superadmin role from yourself.
+        </div>
 
-            <div class="space-y-4">
-              <!-- Name -->
-              <div>
-                <label
-                  for="name"
-                  class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-                >
-                  Name <span class="text-red-500">*</span>
-                </label>
-                <input
-                  id="name"
-                  v-model="form.name"
-                  type="text"
-                  required
-                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-                />
-                <p v-if="form.errors.name" class="mt-1 text-sm text-red-500">
-                  {{ form.errors.name }}
-                </p>
-              </div>
+        <p v-if="form.errors.roleIds" class="mt-2 text-sm text-red-600 dark:text-red-400">
+          {{ form.errors.roleIds }}
+        </p>
+      </AdminCard>
 
-              <!-- Email -->
-              <div>
-                <label
-                  for="email"
-                  class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-                >
-                  Email
-                </label>
-                <input
-                  id="email"
-                  v-model="form.email"
-                  type="email"
-                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-                />
-                <p v-if="form.errors.email" class="mt-1 text-sm text-red-500">
-                  {{ form.errors.email }}
-                </p>
-              </div>
-
-              <!-- GitHub Username -->
-              <div>
-                <label
-                  for="githubUsername"
-                  class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-                >
-                  GitHub Username
-                </label>
-                <div class="flex">
-                  <span
-                    class="inline-flex items-center px-3 border border-r-0 border-verse-300 dark:border-verse-600 rounded-l-lg bg-verse-50 dark:bg-verse-700 text-verse-500 dark:text-verse-400"
-                  >
-                    @
-                  </span>
-                  <input
-                    id="githubUsername"
-                    v-model="form.githubUsername"
-                    type="text"
-                    class="flex-1 px-4 py-2 border border-verse-300 dark:border-verse-600 rounded-r-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-                  />
-                </div>
-                <p class="mt-1 text-xs text-verse-500 dark:text-verse-400">
-                  Used to fetch avatar from GitHub
-                </p>
-              </div>
-
-              <!-- Title -->
-              <div>
-                <label
-                  for="title"
-                  class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-                >
-                  Title
-                </label>
-                <input
-                  id="title"
-                  v-model="form.title"
-                  type="text"
-                  placeholder="e.g. Lead Organiser, Co-Organiser, Software Engineer"
-                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-                />
-                <p class="mt-1 text-xs text-verse-500 dark:text-verse-400">
-                  Displayed on the team page under the user's name
-                </p>
-              </div>
-
-              <!-- Bio -->
-              <div>
-                <label
-                  for="bio"
-                  class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-                >
-                  Bio
-                </label>
-                <textarea
-                  id="bio"
-                  v-model="form.bio"
-                  rows="3"
-                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-                />
-              </div>
+      <AdminCard
+        title="Effective permissions"
+        :description="`${effectivePermissions.length} permission${effectivePermissions.length === 1 ? '' : 's'} based on the selected roles.`"
+      >
+        <div v-if="effectivePermissions.length > 0" class="space-y-3">
+          <div v-for="(perms, category) in groupedPermissions" :key="category">
+            <p class="text-[11px] font-mono uppercase tracking-wide text-verse-500 dark:text-verse-400 mb-1.5">
+              {{ category }}
+            </p>
+            <div class="flex flex-wrap gap-1">
+              <span
+                v-for="perm in perms"
+                :key="perm"
+                class="px-2 py-0.5 text-xs font-mono bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200 rounded"
+              >
+                {{ perm }}
+              </span>
             </div>
           </div>
+        </div>
+        <p v-else class="text-sm text-verse-500 dark:text-verse-400 italic">
+          No permissions. Select at least one role.
+        </p>
+      </AdminCard>
 
-          <!-- Roles Section -->
+      <AdminCard title="Social links">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <AdminInput v-model="form.linkedinUrl" label="LinkedIn" type="url" placeholder="https://linkedin.com/in/…" />
+          <AdminInput v-model="form.twitterUrl" label="Twitter" type="url" placeholder="https://twitter.com/…" />
+          <AdminInput v-model="form.websiteUrl" label="Website" type="url" placeholder="https://…" />
+        </div>
+      </AdminCard>
+
+      <AdminCard title="Display flags" description="Where this person appears on the public site.">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <AdminCheckbox
+            v-model="form.featured"
+            label="Featured"
+            description="Shown prominently on the speakers page."
+          />
+          <AdminCheckbox
+            v-model="form.isOrganizer"
+            label="Organizer"
+            description="Listed as an organizer on the team page."
+          />
+          <AdminCheckbox
+            v-model="form.isCommunityMember"
+            label="Community member"
+            description="Listed as a community member on the team page."
+          />
+        </div>
+      </AdminCard>
+
+      <AdminCard
+        v-if="user.sessions.length"
+        :title="`Sessions (${user.sessions.length})`"
+        description="Read-only — manage assignments from the event edit page."
+      >
+        <div class="space-y-2">
           <div
-            class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6"
+            v-for="session in user.sessions"
+            :key="session.id"
+            class="flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-lg bg-verse-50 dark:bg-verse-900/40 border border-verse-200 dark:border-verse-800"
           >
-            <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-2">
-              Roles & Permissions
-            </h2>
-            <p class="text-sm text-verse-600 dark:text-verse-400 mb-4">
-              Assign one or more roles to this user. Permissions are derived from the selected
-              roles.
-            </p>
-
-            <div class="space-y-3">
-              <div
-                v-for="role in allRoles"
-                :key="role.id"
-                :class="[
-                  'border squircle rounded-lg overflow-hidden transition-all',
-                  isRoleSelected(role.id)
-                    ? 'border-verse-500 bg-verse-50 dark:bg-verse-700/50'
-                    : 'border-verse-200 dark:border-verse-700',
-                ]"
-              >
-                <!-- Role Header -->
-                <div
-                  class="flex items-center gap-3 p-4 cursor-pointer"
-                  @click="toggleRole(role.id)"
-                >
-                  <input
-                    type="checkbox"
-                    :checked="isRoleSelected(role.id)"
-                    :disabled="
-                      isEditingSelf && role.name === 'superadmin' && isRoleSelected(role.id)
-                    "
-                    class="h-5 w-5 text-verse-600 focus:ring-verse-500 border-verse-300 rounded"
-                    @click.stop="toggleRole(role.id)"
-                  />
-                  <div class="flex-1">
-                    <div class="flex items-center gap-2">
-                      <span
-                        :class="[
-                          'px-2 py-0.5 text-xs font-semibold rounded-full',
-                          getRoleBadgeClass(role.name),
-                        ]"
-                      >
-                        {{ role.name }}
-                      </span>
-                      <span class="text-sm text-verse-600 dark:text-verse-400">
-                        {{ role.description }}
-                      </span>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    class="p-1 text-verse-400 hover:text-verse-600 dark:hover:text-verse-200"
-                    @click.stop="toggleExpandRole(role.id)"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      :class="[
-                        'h-5 w-5 transition-transform',
-                        expandedRole === role.id ? 'rotate-180' : '',
-                      ]"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </div>
-
-                <!-- Role Permissions (Expandable) -->
-                <div
-                  v-if="expandedRole === role.id"
-                  class="border-t border-verse-200 dark:border-verse-600 bg-verse-50 dark:bg-verse-800 p-4"
-                >
-                  <p class="text-xs font-medium text-verse-500 dark:text-verse-400 mb-2">
-                    Permissions included in this role:
-                  </p>
-                  <div class="flex flex-wrap gap-1">
-                    <span
-                      v-for="perm in role.permissions"
-                      :key="perm.id"
-                      class="px-2 py-0.5 text-xs bg-verse-200 dark:bg-verse-600 text-verse-700 dark:text-verse-300 rounded"
-                    >
-                      {{ perm.name }}
-                    </span>
-                    <span
-                      v-if="role.permissions.length === 0"
-                      class="text-xs text-verse-400 italic"
-                    >
-                      No permissions
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Warning for self-edit -->
-            <div
-              v-if="isTryingToRemoveSuperadmin"
-              class="mt-4 p-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 squircle rounded-lg"
-            >
-              <p class="text-sm text-amber-800 dark:text-amber-200">
-                You cannot remove the superadmin role from yourself.
+            <div class="min-w-0">
+              <p class="font-medium text-verse-900 dark:text-verse-100 truncate">{{ session.title }}</p>
+              <p v-if="session.eventTitle" class="text-xs text-verse-500 dark:text-verse-400 truncate">
+                {{ session.eventTitle }}
+                <span v-if="session.eventDate"> · {{ session.eventDate }}</span>
               </p>
             </div>
-
-            <p v-if="form.errors.roleIds" class="mt-2 text-sm text-red-500">
-              {{ form.errors.roleIds }}
-            </p>
-          </div>
-
-          <!-- Effective Permissions Preview -->
-          <div
-            class="bg-verse-50 dark:bg-verse-900 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6"
-          >
-            <h3 class="text-sm font-semibold text-verse-700 dark:text-verse-300 mb-3">
-              Effective Permissions ({{ effectivePermissions.length }})
-            </h3>
-            <div v-if="effectivePermissions.length > 0" class="space-y-3">
-              <div v-for="(perms, category) in groupedPermissions" :key="category">
-                <p class="text-xs font-medium text-verse-500 dark:text-verse-400 mb-1">
-                  {{ category }}
-                </p>
-                <div class="flex flex-wrap gap-1">
-                  <span
-                    v-for="perm in perms"
-                    :key="perm"
-                    class="px-2 py-0.5 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded"
-                  >
-                    {{ perm }}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <p v-else class="text-sm text-verse-500 dark:text-verse-400 italic">
-              No permissions. Select at least one role.
-            </p>
-          </div>
-
-          <!-- Social Links -->
-          <div
-            class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6"
-          >
-            <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-4">
-              Social Links
-            </h2>
-            <div class="grid md:grid-cols-3 gap-4">
-              <div>
-                <label
-                  for="linkedinUrl"
-                  class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-                >
-                  LinkedIn
-                </label>
-                <input
-                  id="linkedinUrl"
-                  v-model="form.linkedinUrl"
-                  type="url"
-                  placeholder="https://linkedin.com/in/..."
-                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label
-                  for="twitterUrl"
-                  class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-                >
-                  Twitter
-                </label>
-                <input
-                  id="twitterUrl"
-                  v-model="form.twitterUrl"
-                  type="url"
-                  placeholder="https://twitter.com/..."
-                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label
-                  for="websiteUrl"
-                  class="block text-sm font-medium text-verse-700 dark:text-verse-300 mb-2"
-                >
-                  Website
-                </label>
-                <input
-                  id="websiteUrl"
-                  v-model="form.websiteUrl"
-                  type="url"
-                  placeholder="https://..."
-                  class="w-full px-4 py-2 border border-verse-300 dark:border-verse-600 squircle rounded-lg bg-white dark:bg-verse-800 text-verse-900 dark:text-verse-100 focus:ring-2 focus:ring-verse-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- Flags -->
-          <div
-            class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6"
-          >
-            <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-4">
-              Display Flags
-            </h2>
-            <div class="space-y-3">
-              <div class="flex items-center gap-3">
-                <input
-                  id="featured"
-                  v-model="form.featured"
-                  type="checkbox"
-                  class="h-4 w-4 text-verse-600 focus:ring-verse-500 border-verse-300 rounded"
-                />
-                <label for="featured" class="text-sm text-verse-700 dark:text-verse-300">
-                  Featured (shown prominently on speakers page)
-                </label>
-              </div>
-              <div class="flex items-center gap-3">
-                <input
-                  id="isOrganizer"
-                  v-model="form.isOrganizer"
-                  type="checkbox"
-                  class="h-4 w-4 text-verse-600 focus:ring-verse-500 border-verse-300 rounded"
-                />
-                <label for="isOrganizer" class="text-sm text-verse-700 dark:text-verse-300">
-                  Show as organizer on team page
-                </label>
-              </div>
-              <div class="flex items-center gap-3">
-                <input
-                  id="isCommunityMember"
-                  v-model="form.isCommunityMember"
-                  type="checkbox"
-                  class="h-4 w-4 text-verse-600 focus:ring-verse-500 border-verse-300 rounded"
-                />
-                <label for="isCommunityMember" class="text-sm text-verse-700 dark:text-verse-300">
-                  Show as community member
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <!-- Sessions (read-only) -->
-          <div
-            v-if="user.sessions.length"
-            class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6"
-          >
-            <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-4">
-              Sessions ({{ user.sessions.length }})
-            </h2>
-            <div class="space-y-2">
-              <div
-                v-for="session in user.sessions"
-                :key="session.id"
-                class="flex items-center justify-between p-3 bg-verse-50 dark:bg-verse-900/50 squircle rounded-lg"
-              >
-                <div>
-                  <p class="font-medium text-verse-900 dark:text-verse-100">{{ session.title }}</p>
-                  <p v-if="session.eventTitle" class="text-sm text-verse-500 dark:text-verse-400">
-                    {{ session.eventTitle }}
-                    <span v-if="session.eventDate"> — {{ session.eventDate }}</span>
-                  </p>
-                </div>
-                <Link
-                  v-if="session.eventId"
-                  :href="`/admin/events/${session.eventId}/edit`"
-                  class="text-xs text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200 transition-colors"
-                >
-                  View event
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <!-- RSVPs (read-only) -->
-          <div
-            v-if="user.rsvps.length"
-            class="bg-white dark:bg-verse-800 squircle rounded-lg border border-verse-200 dark:border-verse-700 p-6"
-          >
-            <h2 class="text-lg font-semibold text-verse-900 dark:text-verse-100 mb-4">
-              RSVPs ({{ user.rsvps.length }})
-            </h2>
-            <div class="space-y-2">
-              <div
-                v-for="rsvp in user.rsvps"
-                :key="rsvp.id"
-                class="flex items-center justify-between p-3 bg-verse-50 dark:bg-verse-900/50 squircle rounded-lg"
-              >
-                <div class="min-w-0">
-                  <p class="font-medium text-verse-900 dark:text-verse-100 truncate">
-                    {{ rsvp.eventTitle }}
-                  </p>
-                  <p v-if="rsvp.eventDate" class="text-sm text-verse-500 dark:text-verse-400">
-                    {{ rsvp.eventDate }}
-                  </p>
-                </div>
-                <div class="flex items-center gap-3 ml-3 shrink-0">
-                  <span
-                    :class="[
-                      'px-2 py-0.5 text-xs font-medium rounded-full',
-                      rsvp.status === 'confirmed'
-                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                        : rsvp.status === 'waitlist'
-                          ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400'
-                          : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400',
-                    ]"
-                  >
-                    {{ rsvp.status }}
-                  </span>
-                  <Link
-                    :href="`/admin/events/${rsvp.eventId}/edit`"
-                    class="text-xs text-verse-500 hover:text-verse-700 dark:text-verse-400 dark:hover:text-verse-200 transition-colors"
-                  >
-                    View event
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Submit -->
-          <div class="flex justify-end gap-4 pt-4">
             <Link
-              href="/admin/users"
-              class="px-6 py-2 text-verse-700 dark:text-verse-300 hover:bg-verse-100 dark:hover:bg-verse-700 squircle rounded-lg transition-colors"
+              v-if="session.eventId"
+              :href="`/admin/events/${session.eventId}/edit`"
+              class="text-xs font-medium text-verse-700 dark:text-verse-300 hover:text-verse-900 dark:hover:text-white whitespace-nowrap"
             >
-              Cancel
+              View event →
             </Link>
-            <button
-              type="submit"
-              :disabled="form.processing || isTryingToRemoveSuperadmin || form.roleIds.length === 0"
-              class="px-6 py-2 bg-verse-600 hover:bg-verse-700 text-white font-medium squircle rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <span v-if="form.processing">Saving...</span>
-              <span v-else>Save Changes</span>
-            </button>
           </div>
-        </form>
+        </div>
+      </AdminCard>
+
+      <AdminCard
+        v-if="user.rsvps.length"
+        :title="`RSVPs (${user.rsvps.length})`"
+        description="History of events this user has signed up for."
+      >
+        <div class="space-y-2">
+          <div
+            v-for="rsvp in user.rsvps"
+            :key="rsvp.id"
+            class="flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-lg bg-verse-50 dark:bg-verse-900/40 border border-verse-200 dark:border-verse-800"
+          >
+            <div class="min-w-0">
+              <p class="font-medium text-verse-900 dark:text-verse-100 truncate">{{ rsvp.eventTitle }}</p>
+              <p v-if="rsvp.eventDate" class="text-xs text-verse-500 dark:text-verse-400">
+                {{ rsvp.eventDate }}
+              </p>
+            </div>
+            <div class="flex items-center gap-3 shrink-0">
+              <AdminBadge
+                :tone="
+                  rsvp.status === 'confirmed'
+                    ? 'success'
+                    : rsvp.status === 'waitlist'
+                      ? 'warning'
+                      : 'danger'
+                "
+                dot
+              >
+                {{ rsvp.status }}
+              </AdminBadge>
+              <Link
+                :href="`/admin/events/${rsvp.eventId}/edit`"
+                class="text-xs font-medium text-verse-700 dark:text-verse-300 hover:text-verse-900 dark:hover:text-white whitespace-nowrap"
+              >
+                View →
+              </Link>
+            </div>
+          </div>
+        </div>
+      </AdminCard>
+
+      <div class="sticky bottom-3 z-10 flex justify-end gap-2 bg-white/85 dark:bg-verse-950/85 backdrop-blur-md p-3 rounded-xl border border-verse-200 dark:border-verse-800">
+        <AdminButton href="/admin/users" variant="secondary">Cancel</AdminButton>
+        <AdminButton
+          type="submit"
+          variant="primary"
+          :loading="form.processing"
+          :disabled="isTryingToRemoveSuperadmin || form.roleIds.length === 0"
+        >
+          {{ form.processing ? 'Saving…' : 'Save changes' }}
+        </AdminButton>
       </div>
-    </ContentBlock>
-  </main>
+    </form>
+  </AdminShell>
 </template>
