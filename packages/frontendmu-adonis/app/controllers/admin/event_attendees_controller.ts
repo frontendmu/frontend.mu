@@ -27,14 +27,15 @@ export default class AdminEventAttendeesController {
       cancelled: rsvps.filter((r) => r.status === 'cancelled').length,
     }
 
-    const sortedByCreated = [...rsvps].sort((a, b) => {
-      const ta = a.createdAt?.toMillis() ?? 0
-      const tb = b.createdAt?.toMillis() ?? 0
-      return ta - tb
-    })
-    const firstRsvpAt = sortedByCreated[0]?.createdAt ?? null
-    const rsvpOpenAt = firstRsvpAt
-      ? firstRsvpAt.minus({ days: 2 }).toISO()
+    const firstConfirmedRsvpAt = rsvps
+      .filter((r) => r.status === 'confirmed')
+      .reduce<DateTime | null>((earliest, r) => {
+        if (!r.createdAt) return earliest
+        if (!earliest || r.createdAt < earliest) return r.createdAt
+        return earliest
+      }, null)
+    const rsvpOpenAt = firstConfirmedRsvpAt
+      ? firstConfirmedRsvpAt.minus({ days: 2 }).toISO()
       : DateTime.now().toISO()
 
     const timeline = {

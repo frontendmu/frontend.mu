@@ -14,6 +14,7 @@ export const updateProfileValidator = vine.compile(
       .minLength(7)
       .maxLength(20)
       .regex(/^\+?[0-9 \-()]+$/)
+      .regex(/[0-9].*[0-9].*[0-9].*[0-9].*[0-9]/)
       .optional(),
   })
 )

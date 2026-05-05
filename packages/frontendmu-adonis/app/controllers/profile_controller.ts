@@ -25,7 +25,7 @@ export default class ProfileController {
       }))
 
     return inertia.render('profile', {
-      user: UserTransformer.transform(user),
+      user: UserTransformer.transform(user).useVariant('forProfile'),
       rsvpMeetups,
     })
   }

@@ -107,8 +107,8 @@ export default class EventsController {
         })
       )
     } else {
-      attendees = confirmedRsvps.map((rsvp) => ({
-        id: rsvp.id,
+      attendees = confirmedRsvps.map((rsvp, index) => ({
+        id: `anon-${index}`,
         name: this.truncateName(rsvp.user.name),
         avatarUrl: null,
         githubUsername: null,

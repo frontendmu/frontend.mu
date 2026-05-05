@@ -14,8 +14,14 @@ export default class UserTransformer extends BaseTransformer<User> {
       linkedinUrl: this.resource.linkedinUrl,
       twitterUrl: this.resource.twitterUrl,
       websiteUrl: this.resource.websiteUrl,
-      phone: this.resource.phone,
       roles: this.resource.roles?.map((role) => ({ id: role.id, name: role.name })) ?? [],
+    }
+  }
+
+  forProfile() {
+    return {
+      ...this.toObject(),
+      phone: this.resource.phone,
     }
   }
 
