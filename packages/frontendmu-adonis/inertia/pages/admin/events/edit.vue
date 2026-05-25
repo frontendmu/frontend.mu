@@ -512,18 +512,25 @@ function dismissPendingUpload(id: string) {
   pendingUploads.value = pendingUploads.value.filter((p) => p.id !== id)
 }
 
-async function saveCaption(photo: GalleryPhoto, value: string) {
-  const trimmed = value.trim()
+async function saveCaption(photo: GalleryPhoto, event: Event) {
+  const input = event.target as HTMLInputElement
+  const trimmed = input.value.trim()
   if (trimmed === (photo.caption ?? '')) return
   const next = trimmed.length ? trimmed : null
+  const previous = photo.caption
   try {
     const { ok } = await apiFetch(`/admin/events/${props.event.id}/photos/${photo.id}`, {
       method: 'PATCH',
       body: JSON.stringify({ caption: next }),
     })
-    if (ok) photo.caption = next
+    if (ok) {
+      photo.caption = next
+    } else {
+      input.value = previous ?? ''
+    }
   } catch (error) {
     console.error('Failed to update caption:', error)
+    input.value = previous ?? ''
   }
 }
 
@@ -569,18 +576,21 @@ async function onPhotoDrop(index: number) {
   dragOverPhotoIndex.value = null
   if (from === null || from === index) return
 
-  const next = [...photos.value]
+  const previous = photos.value
+  const next = [...previous]
   const [moved] = next.splice(from, 1)
   next.splice(index, 0, moved)
   photos.value = next
 
   try {
-    await apiFetch(`/admin/events/${props.event.id}/photos/reorder`, {
+    const { ok } = await apiFetch(`/admin/events/${props.event.id}/photos/reorder`, {
       method: 'PATCH',
       body: JSON.stringify({ photoIds: next.map((p) => p.id) }),
     })
+    if (!ok) photos.value = previous
   } catch (error) {
     console.error('Failed to persist photo order:', error)
+    photos.value = previous
   }
 }
 
@@ -802,7 +812,7 @@ function onPhotoImageError(photoId: string, event: Event) {
                 @error="onPhotoImageError(photo.id, $event)"
               />
               <div
-                class="absolute inset-x-0 top-0 flex items-center justify-between p-1.5 bg-gradient-to-b from-black/55 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+                class="absolute inset-x-0 top-0 flex items-center justify-between p-1.5 bg-gradient-to-b from-black/55 to-transparent opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity"
               >
                 <span
                   class="text-[10px] font-mono text-white/90 tabular-nums bg-black/30 rounded px-1.5 py-0.5"
@@ -835,7 +845,7 @@ function onPhotoImageError(photoId: string, event: Event) {
                 :value="photo.caption ?? ''"
                 placeholder="Add caption…"
                 class="absolute inset-x-0 bottom-0 px-2 py-1.5 text-xs text-white bg-black/55 placeholder-white/60 border-none focus:bg-black/75 focus:outline-none transition-colors"
-                @change="saveCaption(photo, ($event.target as HTMLInputElement).value)"
+                @change="saveCaption(photo, $event)"
               />
             </div>
           </div>
