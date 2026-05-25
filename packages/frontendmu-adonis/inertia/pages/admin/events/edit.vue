@@ -379,6 +379,229 @@ async function removeSponsor(sponsorId: string) {
     console.error('Failed to remove sponsor:', error)
   }
 }
+
+// ─── Photos / gallery ──────────────────────────────────────────────────
+type GalleryPhoto = {
+  id: string
+  photoUrl: string
+  thumbnailUrl: string
+  caption: string | null
+  order: number | null
+}
+
+type PresignResponse = {
+  transport: 'r2' | 'local'
+  uploadUrl: string
+  uploadMethod: 'PUT' | 'POST'
+  uploadFormField: string | null
+  key: string
+  publicUrl: string
+}
+
+type PendingUpload = {
+  id: string
+  name: string
+  status: 'uploading' | 'error'
+  error?: string
+}
+
+const photos = ref<GalleryPhoto[]>(((props.event as any).photos ?? []) as GalleryPhoto[])
+const pendingUploads = ref<PendingUpload[]>([])
+const fileInputRef = ref<HTMLInputElement | null>(null)
+const dragOverGallery = ref(false)
+const photoToDelete = ref<GalleryPhoto | null>(null)
+const isDeletingPhoto = ref(false)
+const draggedPhotoIndex = ref<number | null>(null)
+const dragOverPhotoIndex = ref<number | null>(null)
+const ALLOWED_PHOTO_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
+const MAX_PHOTO_BYTES = 10 * 1024 * 1024
+
+function openFilePicker() {
+  fileInputRef.value?.click()
+}
+
+function onFileInputChange(event: Event) {
+  const input = event.target as HTMLInputElement
+  if (input.files) handleFiles(Array.from(input.files))
+  input.value = ''
+}
+
+function onGalleryDrop(event: DragEvent) {
+  dragOverGallery.value = false
+  if (event.dataTransfer?.files?.length) {
+    handleFiles(Array.from(event.dataTransfer.files))
+  }
+}
+
+async function handleFiles(files: File[]) {
+  // Sequential uploads keep progress legible and avoid hammering R2 with parallel PUTs.
+  for (const file of files) {
+    await uploadOne(file)
+  }
+}
+
+async function uploadOne(file: File) {
+  const pending: PendingUpload = {
+    id: crypto.randomUUID(),
+    name: file.name,
+    status: 'uploading',
+  }
+
+  if (!ALLOWED_PHOTO_TYPES.has(file.type)) {
+    pendingUploads.value.push({ ...pending, status: 'error', error: 'Unsupported file type' })
+    return
+  }
+  if (file.size > MAX_PHOTO_BYTES) {
+    pendingUploads.value.push({ ...pending, status: 'error', error: 'File exceeds 10 MB' })
+    return
+  }
+
+  pendingUploads.value.push(pending)
+
+  try {
+    const presign = await apiFetch<PresignResponse>('/admin/media/presign-upload', {
+      method: 'POST',
+      body: JSON.stringify({
+        kind: 'event-photo',
+        eventId: props.event.id,
+        contentType: file.type,
+        contentLength: file.size,
+      }),
+    })
+
+    if (!presign.ok) throw new Error('Failed to get upload URL')
+    const { uploadUrl, uploadMethod, uploadFormField, key } = presign.data
+
+    let uploadResp: Response
+    if (uploadFormField) {
+      const fd = new FormData()
+      fd.append(uploadFormField, file)
+      uploadResp = await fetch(uploadUrl, { method: uploadMethod, body: fd })
+    } else {
+      uploadResp = await fetch(uploadUrl, {
+        method: uploadMethod,
+        headers: { 'Content-Type': file.type },
+        body: file,
+      })
+    }
+
+    if (!uploadResp.ok) throw new Error(`Upload failed: ${uploadResp.status}`)
+
+    const confirm = await apiFetch<{ photo: GalleryPhoto }>(
+      `/admin/events/${props.event.id}/photos`,
+      { method: 'POST', body: JSON.stringify({ key }) }
+    )
+
+    if (!confirm.ok) throw new Error('Failed to register photo')
+
+    photos.value.push(confirm.data.photo)
+    pendingUploads.value = pendingUploads.value.filter((p) => p.id !== pending.id)
+  } catch (error) {
+    const idx = pendingUploads.value.findIndex((p) => p.id === pending.id)
+    if (idx !== -1) {
+      pendingUploads.value[idx] = {
+        ...pending,
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Upload failed',
+      }
+    }
+  }
+}
+
+function dismissPendingUpload(id: string) {
+  pendingUploads.value = pendingUploads.value.filter((p) => p.id !== id)
+}
+
+async function saveCaption(photo: GalleryPhoto, value: string) {
+  const trimmed = value.trim()
+  if (trimmed === (photo.caption ?? '')) return
+  const next = trimmed.length ? trimmed : null
+  try {
+    const { ok } = await apiFetch(`/admin/events/${props.event.id}/photos/${photo.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ caption: next }),
+    })
+    if (ok) photo.caption = next
+  } catch (error) {
+    console.error('Failed to update caption:', error)
+  }
+}
+
+function confirmDeletePhoto(photo: GalleryPhoto) {
+  photoToDelete.value = photo
+}
+
+async function deletePhoto() {
+  if (!photoToDelete.value) return
+  isDeletingPhoto.value = true
+  try {
+    const { ok } = await apiFetch(
+      `/admin/events/${props.event.id}/photos/${photoToDelete.value.id}`,
+      { method: 'DELETE' }
+    )
+    if (ok) {
+      photos.value = photos.value.filter((p) => p.id !== photoToDelete.value!.id)
+      photoToDelete.value = null
+    }
+  } catch (error) {
+    console.error('Failed to delete photo:', error)
+  } finally {
+    isDeletingPhoto.value = false
+  }
+}
+
+function onPhotoDragStart(index: number) {
+  draggedPhotoIndex.value = index
+}
+
+function onPhotoDragOver(event: DragEvent, index: number) {
+  event.preventDefault()
+  dragOverPhotoIndex.value = index
+}
+
+function onPhotoDragLeave() {
+  dragOverPhotoIndex.value = null
+}
+
+async function onPhotoDrop(index: number) {
+  const from = draggedPhotoIndex.value
+  draggedPhotoIndex.value = null
+  dragOverPhotoIndex.value = null
+  if (from === null || from === index) return
+
+  const next = [...photos.value]
+  const [moved] = next.splice(from, 1)
+  next.splice(index, 0, moved)
+  photos.value = next
+
+  try {
+    await apiFetch(`/admin/events/${props.event.id}/photos/reorder`, {
+      method: 'PATCH',
+      body: JSON.stringify({ photoIds: next.map((p) => p.id) }),
+    })
+  } catch (error) {
+    console.error('Failed to persist photo order:', error)
+  }
+}
+
+function onPhotoDragEnd() {
+  draggedPhotoIndex.value = null
+  dragOverPhotoIndex.value = null
+}
+
+// Fresh R2 uploads can race the Cloudflare edge cache on the very first GET.
+// Retry the <img> once with a cache-buster ~800ms later; if it still fails,
+// the broken-image icon stays so the admin notices a real problem.
+const retriedPhotoIds = new Set<string>()
+function onPhotoImageError(photoId: string, event: Event) {
+  if (retriedPhotoIds.has(photoId)) return
+  retriedPhotoIds.add(photoId)
+  const img = event.target as HTMLImageElement
+  const sep = img.src.includes('?') ? '&' : '?'
+  setTimeout(() => {
+    img.src = `${img.src}${sep}_r=${Date.now()}`
+  }, 800)
+}
 </script>
 
 <template>
@@ -477,6 +700,145 @@ async function removeSponsor(sponsorId: string) {
             <option value="published">Published</option>
             <option value="cancelled">Cancelled</option>
           </AdminSelect>
+        </AdminCard>
+
+        <AdminCard
+          title="Photos"
+          :description="`${photos.length} ${photos.length === 1 ? 'photo' : 'photos'}`"
+        >
+          <template #headerActions>
+            <input
+              ref="fileInputRef"
+              type="file"
+              multiple
+              accept="image/jpeg,image/png,image/webp"
+              class="hidden"
+              @change="onFileInputChange"
+            />
+            <AdminButton type="button" size="sm" variant="primary" @click="openFilePicker">
+              + Photos
+            </AdminButton>
+          </template>
+
+          <div
+            class="rounded-xl border-2 border-dashed p-6 text-center transition-colors"
+            :class="
+              dragOverGallery
+                ? 'border-coral-strong bg-coral-soft/30 dark:bg-coral-strong/10'
+                : 'border-verse-200 dark:border-verse-800 hover:border-verse-300 dark:hover:border-verse-700'
+            "
+            @dragenter.prevent="dragOverGallery = true"
+            @dragover.prevent="dragOverGallery = true"
+            @dragleave="dragOverGallery = false"
+            @drop.prevent="onGalleryDrop"
+          >
+            <p class="text-sm text-verse-600 dark:text-verse-300">
+              Drag JPG / PNG / WebP images here, or
+              <button
+                type="button"
+                class="font-medium text-coral-strong hover:underline"
+                @click="openFilePicker"
+              >
+                pick from your computer
+              </button>
+            </p>
+            <p class="mt-1 text-[11px] font-mono text-verse-500 dark:text-verse-400">
+              Up to 10 MB per file
+            </p>
+          </div>
+
+          <div v-if="pendingUploads.length" class="mt-3 space-y-1.5">
+            <div
+              v-for="upload in pendingUploads"
+              :key="upload.id"
+              class="flex items-center gap-2 px-3 py-2 rounded-lg border text-xs"
+              :class="
+                upload.status === 'error'
+                  ? 'border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/10 text-red-700 dark:text-red-300'
+                  : 'border-verse-200 dark:border-verse-800 bg-verse-50 dark:bg-verse-900/40 text-verse-700 dark:text-verse-300'
+              "
+            >
+              <span class="flex-1 truncate">{{ upload.name }}</span>
+              <span v-if="upload.status === 'uploading'" class="text-verse-500 dark:text-verse-400">
+                Uploading…
+              </span>
+              <template v-else>
+                <span class="text-red-600 dark:text-red-400">{{ upload.error }}</span>
+                <button
+                  type="button"
+                  class="text-verse-500 hover:text-verse-700 dark:hover:text-verse-300"
+                  aria-label="Dismiss"
+                  @click="dismissPendingUpload(upload.id)"
+                >
+                  ✕
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <div v-if="photos.length" class="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div
+              v-for="(photo, index) in photos"
+              :key="photo.id"
+              class="group relative aspect-square rounded-xl overflow-hidden border bg-verse-100 dark:bg-verse-900"
+              :class="[
+                draggedPhotoIndex === index ? 'opacity-50' : '',
+                dragOverPhotoIndex === index
+                  ? 'border-coral-strong ring-2 ring-coral-strong/30'
+                  : 'border-verse-200 dark:border-verse-800',
+              ]"
+              draggable="true"
+              @dragstart="onPhotoDragStart(index)"
+              @dragover="onPhotoDragOver($event, index)"
+              @dragleave="onPhotoDragLeave"
+              @drop="onPhotoDrop(index)"
+              @dragend="onPhotoDragEnd"
+            >
+              <img
+                :src="photo.thumbnailUrl || photo.photoUrl"
+                :alt="photo.caption || `Photo ${index + 1}`"
+                class="w-full h-full object-cover"
+                loading="lazy"
+                @error="onPhotoImageError(photo.id, $event)"
+              />
+              <div
+                class="absolute inset-x-0 top-0 flex items-center justify-between p-1.5 bg-gradient-to-b from-black/55 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <span
+                  class="text-[10px] font-mono text-white/90 tabular-nums bg-black/30 rounded px-1.5 py-0.5"
+                >
+                  #{{ index + 1 }}
+                </span>
+                <button
+                  type="button"
+                  class="p-1.5 rounded-md text-white bg-red-500/80 hover:bg-red-600"
+                  title="Delete photo"
+                  aria-label="Delete photo"
+                  @click="confirmDeletePhoto(photo)"
+                >
+                  <svg
+                    class="w-3.5 h-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                  </svg>
+                </button>
+              </div>
+              <input
+                type="text"
+                :value="photo.caption ?? ''"
+                placeholder="Add caption…"
+                class="absolute inset-x-0 bottom-0 px-2 py-1.5 text-xs text-white bg-black/55 placeholder-white/60 border-none focus:bg-black/75 focus:outline-none transition-colors"
+                @change="saveCaption(photo, ($event.target as HTMLInputElement).value)"
+              />
+            </div>
+          </div>
         </AdminCard>
 
         <div
@@ -876,5 +1238,16 @@ async function removeSponsor(sponsorId: string) {
     Are you sure you want to delete
     <strong class="text-verse-900 dark:text-verse-100">{{ sessionToDelete?.title }}</strong
     >?
+  </AdminConfirmModal>
+
+  <AdminConfirmModal
+    :open="!!photoToDelete"
+    title="Delete photo"
+    :loading="isDeletingPhoto"
+    confirm-label="Delete photo"
+    @cancel="photoToDelete = null"
+    @confirm="deletePhoto"
+  >
+    This photo will be permanently removed from the gallery and from storage.
   </AdminConfirmModal>
 </template>
