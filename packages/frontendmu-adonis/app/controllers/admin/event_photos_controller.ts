@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import drive from '@adonisjs/drive/services/main'
+import db from '@adonisjs/lucid/services/db'
 import Event from '#models/event'
 import EventPhoto from '#models/event_photo'
 import EventPolicy from '#policies/event_policy'
@@ -71,19 +72,18 @@ export default class AdminEventPhotosController {
 
     const data = await request.validateUsing(updateEventPhotoValidator)
 
-    photo.merge({
-      ...(data.caption !== undefined ? { caption: data.caption } : {}),
-      ...(data.order !== undefined ? { order: data.order } : {}),
-    })
-
-    await photo.save()
+    if (data.caption !== undefined) {
+      photo.caption = data.caption
+      await photo.save()
+    }
 
     return response.json({ photo: serializePhoto(photo) })
   }
 
   /**
-   * Reorders all photos in a single transaction. Accepts the desired ordering
-   * by id; positions are assigned 0..N matching the input order.
+   * Reorders all photos in a single transaction. Requires the payload to list
+   * every photo in the event exactly once — partial or duplicate input is
+   * rejected so we can't end up with stale or colliding positions.
    */
   async reorder({ params, request, bouncer, response }: HttpContext) {
     const event = await Event.findOrFail(params.eventId)
@@ -94,19 +94,30 @@ export default class AdminEventPhotosController {
     const photos = await EventPhoto.query().where('eventId', event.id)
     const photosById = new Map(photos.map((p) => [p.id, p]))
 
+    if (new Set(photoIds).size !== photoIds.length) {
+      return response.badRequest({ error: 'photoIds contains duplicates' })
+    }
+    if (photoIds.length !== photos.length) {
+      return response.badRequest({
+        error: `photoIds must include every photo in the event (expected ${photos.length}, got ${photoIds.length})`,
+      })
+    }
     for (const id of photoIds) {
       if (!photosById.has(id)) {
         return response.badRequest({ error: `Photo ${id} does not belong to this event` })
       }
     }
 
-    for (let i = 0; i < photoIds.length; i++) {
-      const photo = photosById.get(photoIds[i])!
-      if (photo.order !== i) {
-        photo.order = i
-        await photo.save()
+    await db.transaction(async (trx) => {
+      for (let i = 0; i < photoIds.length; i++) {
+        const photo = photosById.get(photoIds[i])!
+        if (photo.order !== i) {
+          photo.useTransaction(trx)
+          photo.order = i
+          await photo.save()
+        }
       }
-    }
+    })
 
     return response.json({ ok: true })
   }
@@ -120,13 +131,26 @@ export default class AdminEventPhotosController {
       .where('eventId', event.id)
       .firstOrFail()
 
+    // Legacy data has multiple rows pointing at the same storage_key (when the
+    // same source URL was registered twice). Only drop the R2 object if no
+    // other row still references it — otherwise we'd 404 those siblings.
     if (photo.storageKey) {
-      try {
-        await drive.use().delete(photo.storageKey)
-      } catch (error) {
-        // Object may already be missing; log but keep the row deletion
-        // moving so the admin UI doesn't get stuck.
-        console.error(`[event-photos] failed to delete ${photo.storageKey}:`, error)
+      const sharedCount = await EventPhoto.query()
+        .where('storageKey', photo.storageKey)
+        .whereNot('id', photo.id)
+        .count('* as total')
+        .first()
+
+      const isShared = Number(sharedCount?.$extras.total ?? 0) > 0
+
+      if (!isShared) {
+        try {
+          await drive.use().delete(photo.storageKey)
+        } catch (error) {
+          // Object may already be missing; log but proceed with the row delete
+          // so the admin UI doesn't get stuck.
+          console.error(`[event-photos] failed to delete ${photo.storageKey}:`, error)
+        }
       }
     }
 

@@ -20,10 +20,12 @@ export const createEventPhotoValidator = vine.compile(
   })
 )
 
+// Caption is the only field this endpoint owns. Order is set by the dedicated
+// /reorder endpoint so we can shift sibling rows atomically instead of letting
+// a single PATCH leave the event with duplicate positions.
 export const updateEventPhotoValidator = vine.compile(
   vine.object({
     caption: vine.string().trim().maxLength(500).nullable().optional(),
-    order: vine.number().min(0).nullable().optional(),
   })
 )
 
