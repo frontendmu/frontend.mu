@@ -72,6 +72,9 @@ export default class AdminEventsController {
       query.preload('speakers').orderBy('order', 'asc')
     })
     await event.load('sponsors')
+    await event.load('photos', (query) => {
+      query.orderBy('order', 'asc')
+    })
 
     return inertia.render('admin/events/edit', {
       event: EventTransformer.transform(event).useVariant('detail'),

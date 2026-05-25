@@ -7,14 +7,11 @@ import type User from '#models/user'
 import SessionTransformer from '#transformers/session_transformer'
 import SpeakerTransformer from '#transformers/speaker_transformer'
 import SponsorTransformer from '#transformers/sponsor_transformer'
+import { thumbnailFor } from '#utils/thumbnail'
 
 // Kinds whose attached users are the actual event speakers. Intro/quiz hosts
 // and sponsored-segment reps don't belong in the canonical speakers list.
 const SPEAKER_SESSION_KINDS = new Set(['talk', 'other'])
-
-function thumbnailFor(url: string, width: number): string {
-  return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=${width}&output=webp`
-}
 
 export default class EventTransformer extends BaseTransformer<Event> {
   toObject() {
@@ -82,6 +79,7 @@ export default class EventTransformer extends BaseTransformer<Event> {
         photoUrl: photo.photoUrl,
         thumbnailUrl: thumbnailFor(photo.photoUrl, 800),
         caption: photo.caption,
+        order: photo.order,
       })),
     }
   }

@@ -340,5 +340,54 @@ router
       .delete('/admin/users/:id', [() => import('#controllers/admin/users_controller'), 'destroy'])
       .where('id', UUID_REGEX)
       .as('admin.users.destroy')
+
+    // Media uploads (presigned PUT to R2 in prod, multipart POST to local fs in dev)
+    router
+      .post('/admin/media/presign-upload', [
+        () => import('#controllers/admin/media_controller'),
+        'presignUpload',
+      ])
+      .as('admin.media.presignUpload')
+
+    // Event photos (nested under events)
+    router
+      .post('/admin/events/:eventId/photos', [
+        () => import('#controllers/admin/event_photos_controller'),
+        'store',
+      ])
+      .where('eventId', UUID_REGEX)
+      .as('admin.events.photos.store')
+    router
+      .patch('/admin/events/:eventId/photos/reorder', [
+        () => import('#controllers/admin/event_photos_controller'),
+        'reorder',
+      ])
+      .where('eventId', UUID_REGEX)
+      .as('admin.events.photos.reorder')
+    router
+      .patch('/admin/events/:eventId/photos/:photoId', [
+        () => import('#controllers/admin/event_photos_controller'),
+        'update',
+      ])
+      .where('eventId', UUID_REGEX)
+      .where('photoId', UUID_REGEX)
+      .as('admin.events.photos.update')
+    router
+      .delete('/admin/events/:eventId/photos/:photoId', [
+        () => import('#controllers/admin/event_photos_controller'),
+        'destroy',
+      ])
+      .where('eventId', UUID_REGEX)
+      .where('photoId', UUID_REGEX)
+      .as('admin.events.photos.destroy')
   })
   .use(middleware.auth())
+
+// Dev-only local upload endpoint (signed via HMAC, no cookie auth — same trust
+// model as a presigned R2 PUT). In prod this 404s.
+router
+  .post('/admin/media/upload-local', [
+    () => import('#controllers/admin/media_controller'),
+    'uploadLocal',
+  ])
+  .as('admin.media.uploadLocal')

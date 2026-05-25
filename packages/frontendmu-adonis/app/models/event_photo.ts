@@ -22,6 +22,9 @@ export default class EventPhoto extends BaseModel {
   declare photoUrl: string
 
   @column()
+  declare storageKey: string | null
+
+  @column()
   declare caption: string | null
 
   @column()
