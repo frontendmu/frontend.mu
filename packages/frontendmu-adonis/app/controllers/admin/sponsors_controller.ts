@@ -1,28 +1,50 @@
 import { randomUUID } from 'node:crypto'
-import { unlink } from 'node:fs/promises'
-import { join } from 'node:path'
+import { createReadStream } from 'node:fs'
 import type { HttpContext } from '@adonisjs/core/http'
-import app from '@adonisjs/core/services/app'
 import { urlFor } from '@adonisjs/core/services/url_builder'
+import drive from '@adonisjs/drive/services/main'
 import Sponsor from '#models/sponsor'
 import SponsorPolicy from '#policies/sponsor_policy'
 import { sponsorValidator } from '#validators/sponsor_validator'
 import SponsorTransformer from '#transformers/sponsor_transformer'
+import env from '#start/env'
 
-const UPLOAD_DIR = 'uploads/sponsors'
+const KEY_PREFIX = 'sponsors'
+const LEGACY_URL_PREFIX = '/uploads/sponsors/'
 const FILE_RULES = { size: '2mb' as const, extnames: ['svg', 'png', 'jpg', 'jpeg', 'webp'] }
 
-async function deleteUploadedFile(url: string | null) {
-  if (!url?.startsWith('/uploads/')) {
-    return
+/**
+ * Recover the storage key from a URL stored in the DB. Handles both the
+ * canonical CDN form (`https://cdn.coders.mu/sponsors/<file>`) and the legacy
+ * `/uploads/sponsors/<file>` form used by old local-fs deployments. Returns
+ * null for external URLs (admin typed a full http(s) URL into the field).
+ */
+function keyFromUrl(url: string | null): string | null {
+  if (!url) return null
+  const cdnBase = env.get('CDN_BASE_URL')
+  if (cdnBase && url.startsWith(`${cdnBase}/${KEY_PREFIX}/`)) {
+    return url.slice(cdnBase.length + 1)
   }
+  if (url.startsWith(LEGACY_URL_PREFIX)) {
+    return `${KEY_PREFIX}/${url.slice(LEGACY_URL_PREFIX.length)}`
+  }
+  return null
+}
 
-  await unlink(join(app.publicPath(), url)).catch(() => {})
+async function deleteStoredObject(url: string | null) {
+  const key = keyFromUrl(url)
+  if (!key) return
+  try {
+    await drive.use().delete(key)
+  } catch (error) {
+    // Object may already be missing (manual cleanup, prior failed delete).
+    // Log but don't block the save — the DB rewrite is the source of truth.
+    console.error(`[sponsors] failed to delete ${key}:`, error)
+  }
 }
 
 async function clearLogoFile(existingUrl: string | null): Promise<{ url: null; error?: string }> {
-  await deleteUploadedFile(existingUrl)
-
+  await deleteStoredObject(existingUrl)
   return { url: null }
 }
 
@@ -39,18 +61,24 @@ async function handleLogoUpload(
       return { url: existingUrl, error: file.errors[0]?.message }
     }
 
-    await deleteUploadedFile(existingUrl)
+    // Upload the new object before deleting the old, so a transient storage
+    // error doesn't leave the sponsor without a logo.
+    const key = `${KEY_PREFIX}/${randomUUID()}.${file.extname}`
+    const disk = drive.use()
+    await disk.putStream(key, createReadStream(file.tmpPath!), {
+      contentType: file.headers['content-type'],
+    })
 
-    const fileName = `${randomUUID()}.${file.extname}`
-    await file.move(app.publicPath(UPLOAD_DIR), { name: fileName })
-    return { url: `/${UPLOAD_DIR}/${fileName}` }
+    await deleteStoredObject(existingUrl)
+    return { url: await disk.getUrl(key) }
   }
 
   if (urlValue) {
+    // Admin typed (or kept) a URL field. If it's a different URL than what was
+    // previously stored AND the previous value was something we own, clean it.
     if (urlValue !== existingUrl) {
-      await deleteUploadedFile(existingUrl)
+      await deleteStoredObject(existingUrl)
     }
-
     return { url: urlValue }
   }
 
@@ -172,7 +200,7 @@ export default class AdminSponsorsController {
     const sponsor = await Sponsor.findOrFail(params.id)
 
     for (const url of [sponsor.logoUrl, sponsor.logomarkUrl]) {
-      await deleteUploadedFile(url)
+      await deleteStoredObject(url)
     }
 
     await sponsor.delete()
