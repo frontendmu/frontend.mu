@@ -7,6 +7,7 @@ import { readFile } from 'node:fs/promises'
 import Sponsor from '#models/sponsor'
 import env from '#start/env'
 
+const KEY_PREFIX = 'sponsors'
 const LOCAL_PREFIX = '/uploads/sponsors/'
 const PUBLIC_UPLOADS_DIR = 'public/uploads/sponsors'
 
@@ -47,18 +48,26 @@ export default class SponsorsMigrateLogosToR2 extends BaseCommand {
   declare skipUpload: boolean
 
   async run() {
-    const cdnBase = env.get('CDN_BASE_URL')
-    if (!cdnBase) {
+    const cdnBaseRaw = env.get('CDN_BASE_URL')
+    if (!cdnBaseRaw) {
       this.logger.error('CDN_BASE_URL is not set. Aborting.')
       this.exitCode = 1
       return
     }
+    // Trim a trailing slash so concatenation can't produce `host//key`.
+    const cdnBase = cdnBaseRaw.replace(/\/+$/, '')
 
     const driveDisk = env.get('DRIVE_DISK')
     if (driveDisk !== 'r2' && !this.dryRun) {
       this.logger.error(
         `DRIVE_DISK=${driveDisk}, expected 'r2'. Set DRIVE_DISK=r2 in your env or run with --dry-run.`
       )
+      this.exitCode = 1
+      return
+    }
+
+    if (this.limit !== undefined && (!Number.isInteger(this.limit) || this.limit <= 0)) {
+      this.logger.error(`--limit must be a positive integer (got ${this.limit}).`)
       this.exitCode = 1
       return
     }
@@ -93,9 +102,15 @@ export default class SponsorsMigrateLogosToR2 extends BaseCommand {
     if (this.dryRun) {
       this.logger.info('--dry-run — sample of first 10 mappings:')
       for (const job of jobs.slice(0, 10)) {
-        const key = this.deriveKey(job.url)
-        this.logger.info(`  [${job.sponsor.name}] ${job.field}: ${job.url}`)
-        this.logger.info(`    → ${cdnBase}/${key}`)
+        try {
+          const { key } = this.deriveKeyAndBasename(job.url)
+          this.logger.info(`  [${job.sponsor.name}] ${job.field}: ${job.url}`)
+          this.logger.info(`    → ${cdnBase}/${key}`)
+        } catch (error) {
+          this.logger.error(
+            `  [${job.sponsor.name}] ${job.field}: ${job.url} — ${error instanceof Error ? error.message : String(error)}`
+          )
+        }
       }
       this.logger.warning(`(${jobs.length} total — re-run without --dry-run to migrate.)`)
       return
@@ -106,9 +121,21 @@ export default class SponsorsMigrateLogosToR2 extends BaseCommand {
     const totals = { migrated: 0, failed: 0 }
 
     for (const job of jobs) {
-      const key = this.deriveKey(job.url)
-      const basename = job.url.slice(LOCAL_PREFIX.length)
-      const label = `${totals.migrated + totals.failed + 1}/${jobs.length} [${job.sponsor.name}] ${job.field} → ${key}`
+      const labelPrefix = `${totals.migrated + totals.failed + 1}/${jobs.length} [${job.sponsor.name}] ${job.field}`
+
+      let key: string
+      let basename: string
+      try {
+        ;({ key, basename } = this.deriveKeyAndBasename(job.url))
+      } catch (error) {
+        this.logger.error(
+          `${labelPrefix} — ${error instanceof Error ? error.message : String(error)}`
+        )
+        totals.failed++
+        continue
+      }
+
+      const label = `${labelPrefix} → ${key}`
 
       try {
         if (this.skipUpload) {
@@ -158,8 +185,17 @@ export default class SponsorsMigrateLogosToR2 extends BaseCommand {
    * `/uploads/sponsors/<uuid>.png` → `sponsors/<uuid>.png`. Basenames are
    * already unique UUIDs from the original Directus import, so a flat
    * namespace under `sponsors/` is collision-safe.
+   *
+   * The basename is rejected if it contains anything other than the
+   * `[A-Za-z0-9._-]` set — protects against a poisoned DB row using path
+   * traversal (`../etc/passwd`) to exfiltrate server files via the
+   * subsequent fs read + R2 PUT.
    */
-  private deriveKey(url: string): string {
-    return `sponsors/${url.slice(LOCAL_PREFIX.length)}`
+  private deriveKeyAndBasename(url: string): { key: string; basename: string } {
+    const basename = url.slice(LOCAL_PREFIX.length)
+    if (!/^[A-Za-z0-9._-]+$/.test(basename)) {
+      throw new Error(`refusing basename "${basename}" (must be a plain filename)`)
+    }
+    return { key: `${KEY_PREFIX}/${basename}`, basename }
   }
 }
