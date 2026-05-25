@@ -101,7 +101,7 @@ const sampleDetail = `{
   "status": "published",
   "updatedAt": "2025-03-02T18:03:12.000+00:00",
   "rsvpLink": null,
-  "coverImageUrl": "/uploads/events/....jpg",
+  "coverImageUrl": "https://cdn.coders.mu/events/....jpg",
   "sessions": [
     {
       "id": "c38acef1-f105-4538-b760-85c69e94c706",
