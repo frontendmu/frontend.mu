@@ -412,9 +412,21 @@ router
   ])
   .as('admin.media.uploadLocal')
 
-// Wildcard fallback — every unmatched GET should render the Inertia 404 page
-// (the previous router default returned `Cannot GET:...` JSON).
-router.get('*', ({ inertia, response }) => {
+// Wildcard fallback for unmatched GET requests:
+//   - /api/* paths return a JSON 404 (API consumers expect JSON, not the
+//     full Inertia HTML shell).
+//   - everything else renders the Inertia 404 page with noindex meta so the
+//     bogus URL never claims to be canonical.
+router.get('*', async (ctx) => {
+  const { inertia, request, response } = ctx
   response.status(404)
+  if (request.url(false).startsWith('/api/')) {
+    return response.json({
+      error: 'not_found',
+      message: `Route not found: ${request.method()} ${request.url(false)}`,
+    })
+  }
+  const { setSeoMeta } = await import('#utils/seo')
+  setSeoMeta(ctx, { title: 'Page not found', noindex: true })
   return inertia.render('errors/not_found', {})
 })

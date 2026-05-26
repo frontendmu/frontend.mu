@@ -1,8 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { type DateTime } from 'luxon'
+import { DateTime } from 'luxon'
 import db from '@adonisjs/lucid/services/db'
 import Event from '#models/event'
-import User from '#models/user'
 import { canonicalUrl } from '#utils/site_url'
 
 type Entry = {
@@ -72,18 +71,32 @@ export default class SitemapController {
       })
     }
 
-    // Speakers with at least one session — avoids polluting the index with
-    // attendee accounts that never spoke.
-    const speakerRows = await db.from('session_speakers').distinct('speaker_id')
-    const speakerIds = speakerRows.map((r) => r.speaker_id as string).filter(Boolean)
-    if (speakerIds.length > 0) {
-      const speakers = await User.query().whereIn('id', speakerIds).select('id', 'updatedAt')
-      for (const speaker of speakers) {
-        entries.push({
-          loc: canonicalUrl(`/speaker/${speaker.id}`),
-          lastmod: toIso(speaker.updatedAt as DateTime | null | undefined),
-        })
-      }
+    // Speakers with at least one session. Lastmod tracks the most recent
+    // session they spoke at (not user.updatedAt, which would churn on every
+    // OAuth login refresh and other profile writes that don't change the
+    // public /speaker/<id> page).
+    const speakerRows = await db
+      .from('session_speakers')
+      .join('sessions', 'sessions.id', 'session_speakers.session_id')
+      .groupBy('session_speakers.speaker_id')
+      .select('session_speakers.speaker_id')
+      .max('sessions.updated_at as latest_session_updated_at')
+
+    for (const row of speakerRows) {
+      const id = row.speaker_id as string | undefined
+      if (!id) continue
+      const raw = row.latest_session_updated_at as Date | string | null | undefined
+      const lastmod = raw
+        ? toIso(
+            raw instanceof Date
+              ? DateTime.fromJSDate(raw)
+              : DateTime.fromISO(String(raw))
+          )
+        : undefined
+      entries.push({
+        loc: canonicalUrl(`/speaker/${id}`),
+        lastmod,
+      })
     }
 
     response.header('Content-Type', 'application/xml; charset=utf-8')

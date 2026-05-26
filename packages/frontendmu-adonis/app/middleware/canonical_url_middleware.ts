@@ -2,14 +2,16 @@ import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
 
 const TRACKING_PARAM = /^(utm_[a-z_]+|fbclid|gclid|mc_[a-z0-9_]+|ref|trk)$/i
+const BYPASS_PREFIXES = ['/api/', '/auth/']
 
 /**
  * Canonicalises GET URLs so search engines (and shares) all converge on the
  * same form:
  *   - trailing-slash stripped (except for "/")
  *   - tracking params (utm_*, ref, trk, fbclid, gclid, …) stripped
- * Inertia XHRs (X-Inertia: true) and non-GET requests are skipped so SPA
- * navigation and form posts don't get redirected.
+ * Inertia XHRs (X-Inertia: true), non-GET requests, and JSON-only routes
+ * (/api/*, /auth/* OAuth callbacks) are skipped so API consumers and OAuth
+ * flows aren't 301-redirected mid-request.
  */
 export default class CanonicalUrlMiddleware {
   async handle(ctx: HttpContext, next: NextFn) {
@@ -19,6 +21,11 @@ export default class CanonicalUrlMiddleware {
     if (request.header('x-inertia')) return next()
 
     const pathname = request.url(false)
+
+    for (const prefix of BYPASS_PREFIXES) {
+      if (pathname.startsWith(prefix)) return next()
+    }
+
     const qs = request.parsedUrl.query as string | null | undefined
 
     let canonicalPath = pathname
