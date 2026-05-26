@@ -3,7 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title inertia>frontend.mu</title>
+    @if(seoMeta)
+      <title inertia>{{ seoMeta.title }}</title>
+      <meta name="description" content="{{ seoMeta.description }}">
+      <link rel="canonical" href="{{ seoMeta.canonical }}">
+      @if(seoMeta.noindex)
+        <meta name="robots" content="noindex,follow">
+      @endif
+      <meta property="og:site_name" content="coders.mu">
+      <meta property="og:type" content="{{ seoMeta.ogType }}">
+      <meta property="og:title" content="{{ seoMeta.ogTitle }}">
+      <meta property="og:description" content="{{ seoMeta.ogDescription }}">
+      <meta property="og:url" content="{{ seoMeta.canonical }}">
+      @if(seoMeta.ogImage)
+        <meta property="og:image" content="{{ seoMeta.ogImage }}">
+      @endif
+      <meta name="twitter:card" content="{{ seoMeta.ogImage ? 'summary_large_image' : 'summary' }}">
+      <meta name="twitter:title" content="{{ seoMeta.ogTitle }}">
+      <meta name="twitter:description" content="{{ seoMeta.ogDescription }}">
+      @if(seoMeta.ogImage)
+        <meta name="twitter:image" content="{{ seoMeta.ogImage }}">
+      @endif
+    @else
+      <title inertia>coders.mu</title>
+    @endif
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

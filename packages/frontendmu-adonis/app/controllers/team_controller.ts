@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises'
 import app from '@adonisjs/core/services/app'
 import { resolveAvatarUrl } from '../lib/avatar_url.js'
 import SpeakerTransformer from '#transformers/speaker_transformer'
+import { setSeoMeta } from '#utils/seo'
 
 const GITHUB_RAW_BASE =
   'https://raw.githubusercontent.com/frontendmu/frontend.mu/main/packages/frontendmu-data/data'
@@ -34,7 +35,15 @@ function toTeamMember(user: User, defaultRole: string) {
 }
 
 export default class TeamController {
-  async index({ inertia }: HttpContext) {
+  async index(ctx: HttpContext) {
+    const { inertia } = ctx
+    setSeoMeta(ctx, {
+      title: 'Team',
+      description:
+        'The organizers and community members who keep coders.mu meetups going, plus the contributors behind the open-source site itself.',
+      canonical: '/team',
+    })
+
     const dbOrganizers = await User.query().where('isOrganizer', true).orderBy('name', 'asc')
 
     const organizers = dbOrganizers.map((u) => toTeamMember(u, 'Organizer'))

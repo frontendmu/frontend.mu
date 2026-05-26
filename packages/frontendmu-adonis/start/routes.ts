@@ -19,6 +19,22 @@ router
   .prefix('/api/public/v1')
   .use(middleware.forceJsonResponse())
 
+// SEO — sitemap discoverable at the conventional path
+router.get('/sitemap.xml', [() => import('#controllers/sitemap_controller'), 'index']).as('sitemap')
+
+// Legacy snake_case slugs from the old Directus/Nuxt site → 301 to current kebab routes
+router.get('/code_of_conduct', ({ response }) => response.redirect('/code-of-conduct', false, 301))
+router.get('/coding_guidelines', ({ response }) =>
+  response.redirect('/coding-guidelines', false, 301)
+)
+
+// Legacy numeric meetup IDs from the old site (e.g. /meetup/17). The new system
+// uses date-slugs / UUIDs and has no legacy_id mapping. Return 410 Gone so Google
+// removes them from the index faster than it would on a 404.
+router
+  .get('/meetup/:legacyId', ({ response }) => response.status(410).send('Gone'))
+  .where('legacyId', /^\d+$/)
+
 // Home page
 router.get('/', [() => import('#controllers/home_controller'), 'index']).as('home')
 
@@ -77,6 +93,10 @@ router
 router
   .get('/api-docs', [() => import('#controllers/pages_controller'), 'apiDocs'])
   .as('pages.apiDocs')
+router
+  .get('/privacy', [() => import('#controllers/pages_controller'), 'privacy'])
+  .as('pages.privacy')
+router.get('/terms', [() => import('#controllers/pages_controller'), 'terms']).as('pages.terms')
 
 // Auth routes
 router
@@ -391,3 +411,10 @@ router
     'uploadLocal',
   ])
   .as('admin.media.uploadLocal')
+
+// Wildcard fallback — every unmatched GET should render the Inertia 404 page
+// (the previous router default returned `Cannot GET:...` JSON).
+router.get('*', ({ inertia, response }) => {
+  response.status(404)
+  return inertia.render('errors/not_found', {})
+})
