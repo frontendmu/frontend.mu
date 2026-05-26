@@ -4,6 +4,7 @@ import BaseInertiaMiddleware from '@adonisjs/inertia/inertia_middleware'
 import type { InferSharedProps } from '@adonisjs/inertia/types'
 import { googleOauthEnabled } from '#config/ally'
 import featureFlags from '#config/feature_flags'
+import { setSeoMeta } from '#utils/seo'
 
 async function getSharedAuthUser(ctx: HttpContext) {
   const user = ctx.auth.user
@@ -54,6 +55,11 @@ export default class InertiaMiddleware extends BaseInertiaMiddleware {
 
   async handle(ctx: HttpContext, next: NextFn) {
     await this.init(ctx)
+
+    // Seed sensible default SEO meta for every request. Controllers can
+    // override via setSeoMeta() before rendering — this just guarantees the
+    // Edge layout always has a `seoMeta` object to read from.
+    setSeoMeta(ctx)
 
     const output = await next()
 

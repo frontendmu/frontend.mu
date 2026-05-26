@@ -6,9 +6,18 @@ import Rsvp from '#models/rsvp'
 import EventTransformer from '#transformers/event_transformer'
 import SpeakerTransformer from '#transformers/speaker_transformer'
 import SponsorTransformer from '#transformers/sponsor_transformer'
+import { setSeoMeta } from '#utils/seo'
 
 export default class HomeController {
-  async index({ inertia, auth }: HttpContext) {
+  async index(ctx: HttpContext) {
+    const { inertia, auth } = ctx
+
+    setSeoMeta(ctx, {
+      title: 'Front-End Coders Mauritius',
+      description:
+        'A community of passionate developers in Mauritius. Join us for monthly meetups, workshops, and tech talks.',
+      canonical: '/',
+    })
     const dbEvents = await Event.query()
       .where('status', 'published')
       .orderBy('eventDate', 'desc')

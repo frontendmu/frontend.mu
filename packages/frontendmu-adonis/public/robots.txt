@@ -1,2 +1,11 @@
 User-agent: *
-Allow: /
+Disallow: /admin/
+Disallow: /profile
+Disallow: /login
+Disallow: /register
+Disallow: /redirect
+Disallow: /auth/
+Disallow: /api/
+Disallow: /user/
+
+Sitemap: https://coders.mu/sitemap.xml
