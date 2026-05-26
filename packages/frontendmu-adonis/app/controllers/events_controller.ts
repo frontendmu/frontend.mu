@@ -8,6 +8,7 @@ import EventTransformer from '#transformers/event_transformer'
 import RsvpTransformer from '#transformers/rsvp_transformer'
 import PublicAttendeeTransformer from '#transformers/public_attendee_transformer'
 import { setSeoMeta } from '#utils/seo'
+import { htmlToPlainText } from '#utils/html_text'
 
 export default class EventsController {
   async index(ctx: HttpContext) {
@@ -122,11 +123,8 @@ export default class EventsController {
     }
 
     const meetupDescription =
-      (event.description ?? '')
-        .replace(/<[^>]+>/g, '')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .slice(0, 200) || `Details, sessions and RSVP for ${event.title} on coders.mu.`
+      htmlToPlainText(event.description, 200) ||
+      `Details, sessions and RSVP for ${event.title} on coders.mu.`
 
     setSeoMeta(ctx, {
       title: event.title,

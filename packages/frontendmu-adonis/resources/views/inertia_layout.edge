@@ -6,15 +6,18 @@
     @if(seoMeta)
       <title inertia>{{ seoMeta.title }}</title>
       <meta name="description" content="{{ seoMeta.description }}">
-      <link rel="canonical" href="{{ seoMeta.canonical }}">
       @if(seoMeta.noindex)
         <meta name="robots" content="noindex,follow">
+      @else
+        <link rel="canonical" href="{{ seoMeta.canonical }}">
       @endif
       <meta property="og:site_name" content="coders.mu">
       <meta property="og:type" content="{{ seoMeta.ogType }}">
       <meta property="og:title" content="{{ seoMeta.ogTitle }}">
       <meta property="og:description" content="{{ seoMeta.ogDescription }}">
-      <meta property="og:url" content="{{ seoMeta.canonical }}">
+      @if(!seoMeta.noindex)
+        <meta property="og:url" content="{{ seoMeta.canonical }}">
+      @endif
       @if(seoMeta.ogImage)
         <meta property="og:image" content="{{ seoMeta.ogImage }}">
       @endif
