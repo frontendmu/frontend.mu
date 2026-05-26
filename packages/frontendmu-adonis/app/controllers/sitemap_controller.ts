@@ -74,28 +74,34 @@ export default class SitemapController {
     // Speakers with at least one session. Lastmod tracks the most recent
     // session they spoke at (not user.updatedAt, which would churn on every
     // OAuth login refresh and other profile writes that don't change the
-    // public /speaker/<id> page).
+    // public /speaker/<id> page). Sessions imported by migrations may not
+    // have updated_at set, so we coalesce to created_at — better than no
+    // lastmod at all.
     const speakerRows = await db
       .from('session_speakers')
       .join('sessions', 'sessions.id', 'session_speakers.session_id')
       .groupBy('session_speakers.speaker_id')
       .select('session_speakers.speaker_id')
-      .max('sessions.updated_at as latest_session_updated_at')
+      .select(
+        db.raw('MAX(COALESCE(sessions.updated_at, sessions.created_at)) as latest_session_at')
+      )
 
     for (const row of speakerRows) {
       const id = row.speaker_id as string | undefined
       if (!id) continue
-      const raw = row.latest_session_updated_at as Date | string | null | undefined
-      const lastmod = raw
-        ? toIso(
-            raw instanceof Date
-              ? DateTime.fromJSDate(raw)
-              : DateTime.fromISO(String(raw))
-          )
-        : undefined
+      const raw = row.latest_session_at as Date | string | null | undefined
+      let dt: DateTime | undefined
+      if (raw instanceof Date) {
+        dt = DateTime.fromJSDate(raw)
+      } else if (typeof raw === 'string' && raw) {
+        // SQLite returns timestamps as `YYYY-MM-DD HH:MM:SS`; Postgres can
+        // return ISO. Try fromSQL first then fall back to fromISO.
+        dt = DateTime.fromSQL(raw, { zone: 'utc' })
+        if (!dt.isValid) dt = DateTime.fromISO(raw, { zone: 'utc' })
+      }
       entries.push({
         loc: canonicalUrl(`/speaker/${id}`),
-        lastmod,
+        lastmod: dt?.isValid ? toIso(dt) : undefined,
       })
     }
 
