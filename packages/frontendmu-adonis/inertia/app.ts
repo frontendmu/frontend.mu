@@ -8,12 +8,19 @@ import { createInertiaApp } from '@inertiajs/vue3'
 import { resolvePageComponent } from '@adonisjs/inertia/helpers'
 import DefaultLayout from '~/layouts/DefaultLayout.vue'
 
-const appName = import.meta.env.VITE_APP_NAME || 'frontend.mu'
-
 createInertiaApp({
   progress: { color: '#3B82F6' },
 
-  title: (title: string) => `${title} - ${appName}`,
+  // Match the server-side TITLE_SUFFIX in app/utils/seo.ts so the title
+  // stays consistent across the SSR HTML → hydration handoff. Pages that
+  // already include the brand in their own <Head title=…> are checked
+  // here to avoid double-suffixing.
+  title: (title: string) => {
+    const trimmed = title.trim()
+    if (!trimmed) return 'coders.mu'
+    if (/coders\.mu|frontend\.mu/i.test(trimmed)) return trimmed
+    return `${trimmed} · coders.mu`
+  },
 
   resolve: async (name: string) => {
     const page = await resolvePageComponent(

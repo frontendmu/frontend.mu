@@ -15,11 +15,15 @@
       <meta property="og:title" content="{{ seoMeta.ogTitle }}">
       <meta property="og:description" content="{{ seoMeta.ogDescription }}">
       <meta property="og:url" content="{{ seoMeta.canonical }}">
-      <meta property="og:image" content="{{ seoMeta.ogImage }}">
-      <meta name="twitter:card" content="summary_large_image">
+      @if(seoMeta.ogImage)
+        <meta property="og:image" content="{{ seoMeta.ogImage }}">
+      @endif
+      <meta name="twitter:card" content="{{ seoMeta.ogImage ? 'summary_large_image' : 'summary' }}">
       <meta name="twitter:title" content="{{ seoMeta.ogTitle }}">
       <meta name="twitter:description" content="{{ seoMeta.ogDescription }}">
-      <meta name="twitter:image" content="{{ seoMeta.ogImage }}">
+      @if(seoMeta.ogImage)
+        <meta name="twitter:image" content="{{ seoMeta.ogImage }}">
+      @endif
     @else
       <title inertia>coders.mu</title>
     @endif

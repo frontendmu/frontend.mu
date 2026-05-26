@@ -7,7 +7,7 @@ export type SeoMeta = {
   canonical: string
   ogTitle: string
   ogDescription: string
-  ogImage: string
+  ogImage: string | null
   ogType: 'website' | 'article' | 'profile'
   noindex: boolean
 }
@@ -16,7 +16,6 @@ const SITE_NAME = 'coders.mu'
 const TITLE_SUFFIX = ' · coders.mu'
 const DEFAULT_DESCRIPTION =
   'A community of frontend, backend, and full-stack developers in Mauritius. Monthly meetups, talks, and open conversations on the craft.'
-const DEFAULT_OG_IMAGE = '/og-default.png'
 
 const NOINDEX_PATH_PREFIXES = ['/admin', '/profile', '/login', '/register', '/auth']
 
@@ -31,7 +30,7 @@ function defaultsFor(ctx: HttpContext): SeoMeta {
     canonical: canonicalUrl(path),
     ogTitle: SITE_NAME,
     ogDescription: DEFAULT_DESCRIPTION,
-    ogImage: siteUrl() + DEFAULT_OG_IMAGE,
+    ogImage: null,
     ogType: 'website',
     noindex,
   }
@@ -63,7 +62,7 @@ export function setSeoMeta(ctx: HttpContext, input: SeoMetaInput = {}): SeoMeta 
     ? input.ogImage.startsWith('http')
       ? input.ogImage
       : siteUrl() + (input.ogImage.startsWith('/') ? input.ogImage : `/${input.ogImage}`)
-    : defaults.ogImage
+    : null
 
   const meta: SeoMeta = {
     title,
