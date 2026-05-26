@@ -4,7 +4,9 @@ import { Link } from '@inertiajs/vue3'
 </script>
 
 <template>
-  <Head title="Not Found" />
+  <Head title="Not Found">
+    <meta head-key="robots" name="robots" content="noindex,follow">
+  </Head>
   <main class="relative min-h-screen flex items-center justify-center">
     <div class="text-center space-y-8">
       <h1 class="text-8xl font-display tracking-tight text-verse-500">404</h1>

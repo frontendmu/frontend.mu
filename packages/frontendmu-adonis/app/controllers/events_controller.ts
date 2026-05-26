@@ -7,9 +7,17 @@ import EventPolicy from '#policies/event_policy'
 import EventTransformer from '#transformers/event_transformer'
 import RsvpTransformer from '#transformers/rsvp_transformer'
 import PublicAttendeeTransformer from '#transformers/public_attendee_transformer'
+import { setSeoMeta } from '#utils/seo'
 
 export default class EventsController {
-  async index({ inertia, auth, bouncer }: HttpContext) {
+  async index(ctx: HttpContext) {
+    const { inertia, auth, bouncer } = ctx
+    setSeoMeta(ctx, {
+      title: 'All Meetups',
+      description:
+        'Every coders.mu meetup — past, upcoming, sessions, and speakers. Browse the full history of Front-End Coders Mauritius.',
+      canonical: '/meetups',
+    })
     const events = await Event.query()
       .where('status', 'published')
       .orderBy('eventDate', 'desc')
@@ -76,9 +84,7 @@ export default class EventsController {
       .filter((iso): iso is string => Boolean(iso))
 
     const firstRsvpAt = confirmedRsvps[0]?.createdAt ?? null
-    const rsvpOpenAt = firstRsvpAt
-      ? firstRsvpAt.minus({ days: 2 }).toISO()
-      : DateTime.now().toISO()
+    const rsvpOpenAt = firstRsvpAt ? firstRsvpAt.minus({ days: 2 }).toISO() : DateTime.now().toISO()
 
     const timeline = {
       rsvpOpenAt,
@@ -114,6 +120,21 @@ export default class EventsController {
         githubUsername: null,
       }))
     }
+
+    const meetupDescription =
+      (event.description ?? '')
+        .replace(/<[^>]+>/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 200) || `Details, sessions and RSVP for ${event.title} on coders.mu.`
+
+    setSeoMeta(ctx, {
+      title: event.title,
+      description: meetupDescription,
+      canonical: `/meetup/${event.slug}`,
+      ogType: 'article',
+      ogImage: event.coverImageUrl ?? undefined,
+    })
 
     return inertia.render('meetups/show', {
       meetup: EventTransformer.transform(event).useVariant('detail'),
