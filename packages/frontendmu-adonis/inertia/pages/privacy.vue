@@ -1,15 +1,10 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3'
+// Title / meta description / canonical / OG tags are emitted server-side via
+// setSeoMeta in pages_controller.ts → inertia_layout.edge. Keeping a Vue
+// <Head> block here would duplicate the description meta tag at hydration.
 </script>
 
 <template>
-  <Head title="Privacy">
-    <meta
-      head-key="description"
-      name="description"
-      content="How coders.mu handles your personal data — what we collect, why, and how to ask us to remove it."
-    >
-  </Head>
   <main class="relative min-h-screen pt-40 pb-24">
     <div class="contain relative z-10">
       <!-- Page Header -->

@@ -1,6 +1,7 @@
 import app from '@adonisjs/core/services/app'
 import { type HttpContext, ExceptionHandler } from '@adonisjs/core/http'
 import type { StatusPageRange, StatusPageRenderer } from '@adonisjs/core/types/http'
+import { setSeoMeta } from '#utils/seo'
 
 type ErrorWithStatus = {
   message?: string
@@ -46,6 +47,11 @@ function renderStatusPage(
         message: getErrorMessage(error, fallbackMessage),
       })
     }
+
+    // Error pages should always be noindex — and skip the canonical link so
+    // we don't tell Google that, e.g., /sponsor/<deleted-uuid> is the
+    // canonical version of itself.
+    setSeoMeta(ctx, { title: fallbackMessage, noindex: true })
 
     const inertia = (ctx as HttpContext & { inertia?: InertiaRenderer }).inertia
     if (inertia) {

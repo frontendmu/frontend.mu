@@ -40,6 +40,7 @@ export default class SpeakersController {
     // the new DB. Returning 410 (instead of the default 404 from firstOrFail)
     // signals "permanently gone" so Google drops them from the index faster.
     if (!dbSpeaker) {
+      setSeoMeta(ctx, { title: 'Speaker not found', noindex: true })
       response.status(410)
       return inertia.render('errors/not_found', {})
     }
