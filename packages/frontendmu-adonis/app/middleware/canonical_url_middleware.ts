@@ -1,7 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
 
-const TRACKING_PARAM = /^(utm_[a-z_]+|fbclid|gclid|mc_eid|mc_cid|ref|trk)$/i
+const TRACKING_PARAM = /^(utm_[a-z_]+|fbclid|gclid|mc_[a-z0-9_]+|ref|trk)$/i
 
 /**
  * Canonicalises GET URLs so search engines (and shares) all converge on the
