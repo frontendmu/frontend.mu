@@ -12,6 +12,13 @@ const featureFlags = {
    * Useful for testing or special circumstances.
    */
   rsvpPastEvents: env.get('FEATURE_RSVP_PAST_EVENTS', false),
+  /**
+   * Allow new users to register with email + password.
+   * Disabled in production to prevent spam signups; Google OAuth
+   * is the only public sign-up path. Email/password login still
+   * works for existing accounts (super admins, local dev).
+   */
+  registrationEnabled: env.get('ENABLE_REGISTRATION', false),
 }
 
 export default featureFlags
