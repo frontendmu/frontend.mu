@@ -19,6 +19,19 @@ router
   .prefix('/api/public/v1')
   .use(middleware.forceJsonResponse())
 
+// Public calendar feed — subscribe once in Google Calendar (or any .ics-compatible
+// client) to automatically get new/updated meetups without manual action.
+//
+// Deliberately unversioned, and deliberately outside the group above. Unversioned
+// because subscribers paste this URL into their calendar app once and it then lives
+// in their account indefinitely — there is no way to deprecate it the way a JSON
+// endpoint can be, since a dead feed fails silently rather than erroring. Outside
+// the group because forceJsonResponse() rewrites the Accept header, which has no
+// business on a text/calendar route.
+router
+  .get('/api/public/meetups.ics', [() => import('#controllers/calendar_controller'), 'feed'])
+  .as('calendar.feed')
+
 // SEO — sitemap discoverable at the conventional path
 router.get('/sitemap.xml', [() => import('#controllers/sitemap_controller'), 'index']).as('sitemap')
 
@@ -169,6 +182,14 @@ router
     router
       .get('/admin', [() => import('#controllers/admin/dashboard_controller'), 'index'])
       .as('admin.dashboard')
+
+    // Site settings (calendar feed behaviour, etc.)
+    router
+      .get('/admin/settings', [() => import('#controllers/admin/settings_controller'), 'edit'])
+      .as('admin.settings.edit')
+    router
+      .put('/admin/settings', [() => import('#controllers/admin/settings_controller'), 'update'])
+      .as('admin.settings.update')
 
     // Event management
     router
