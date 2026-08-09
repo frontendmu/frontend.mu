@@ -27,6 +27,7 @@ yarn-error.log
 
 # Database (keep database/db.local.sqlite3 for dev seed data)
 tmp/db.production.sqlite3
+database/db.test.sqlite3
 database/backups/
 database/exports/*.json
 *_backup_*.sql
