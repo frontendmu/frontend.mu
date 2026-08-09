@@ -32,7 +32,9 @@ However,These are mostly guidelines, not rules. Use your best judgment, and feel
 
 ## 7. Testing
 
- PLEASE ADD GUIDELINES
+- **Cover new behaviour:** Add tests for new behaviour, and for every bug fix add a test that fails without the fix.
+- **Run before pushing:** All tests and linters must pass — see section 9.
+- **AdonisJS app:** [`packages/frontendmu-adonis/TESTING.md`](packages/frontendmu-adonis/TESTING.md) documents the setup, conventions, and troubleshooting for the `unit`, `functional`, and accessibility suites.
 
 ## 8. Accessibility
 
