@@ -56,6 +56,7 @@ export default class AdminEventsController {
       mapUrl: data.mapUrl,
       status: data.status ?? 'draft',
       attendeeCount: 0,
+      includeInCalendar: data.includeInCalendar ?? null,
     })
 
     session.flash('success', 'Event created successfully!')
@@ -102,6 +103,7 @@ export default class AdminEventsController {
       parkingLocation: data.parkingLocation,
       mapUrl: data.mapUrl,
       status: data.status,
+      includeInCalendar: data.includeInCalendar ?? null,
     })
 
     await event.save()

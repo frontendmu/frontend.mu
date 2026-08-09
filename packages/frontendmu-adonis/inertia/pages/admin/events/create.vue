@@ -22,10 +22,17 @@ const form = useForm({
   parkingLocation: '',
   mapUrl: '',
   status: 'draft' as 'draft' | 'published' | 'cancelled',
+  includeInCalendar: 'auto' as 'auto' | 'show' | 'hide',
 })
 
 function handleSubmit() {
-  form.post('/admin/events', { preserveScroll: true })
+  form
+    .transform((data) => ({
+      ...data,
+      includeInCalendar:
+        data.includeInCalendar === 'auto' ? null : data.includeInCalendar === 'show',
+    }))
+    .post('/admin/events', { preserveScroll: true })
 }
 </script>
 
@@ -121,15 +128,26 @@ function handleSubmit() {
       </AdminCard>
 
       <AdminCard title="Visibility">
-        <AdminSelect
-          v-model="form.status"
-          label="Status"
-          hint="Draft events stay hidden from the public."
-        >
-          <option value="draft">Draft</option>
-          <option value="published">Published</option>
-          <option value="cancelled">Cancelled</option>
-        </AdminSelect>
+        <div class="space-y-5">
+          <AdminSelect
+            v-model="form.status"
+            label="Status"
+            hint="Draft events stay hidden from the public."
+          >
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+            <option value="cancelled">Cancelled</option>
+          </AdminSelect>
+          <AdminSelect
+            v-model="form.includeInCalendar"
+            label="Calendar feed"
+            hint="Whether this event appears in the public .ics subscription feed."
+          >
+            <option value="auto">Auto (use default site settings)</option>
+            <option value="show">Always show</option>
+            <option value="hide">Always hide</option>
+          </AdminSelect>
+        </div>
       </AdminCard>
 
       <div class="sticky bottom-3 z-10 flex justify-end gap-2 bg-white/85 dark:bg-verse-950/85 backdrop-blur-md p-3 rounded-xl border border-verse-200 dark:border-verse-800">

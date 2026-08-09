@@ -104,10 +104,21 @@ const form = useForm({
   parkingLocation: props.event.parkingLocation || '',
   mapUrl: props.event.mapUrl || '',
   status: props.event.status,
+  includeInCalendar: (props.event.includeInCalendar === true
+    ? 'show'
+    : props.event.includeInCalendar === false
+      ? 'hide'
+      : 'auto') as 'auto' | 'show' | 'hide',
 })
 
 function handleSubmit() {
-  form.put(`/admin/events/${props.event.id}`, { preserveScroll: true })
+  form
+    .transform((data) => ({
+      ...data,
+      includeInCalendar:
+        data.includeInCalendar === 'auto' ? null : data.includeInCalendar === 'show',
+    }))
+    .put(`/admin/events/${props.event.id}`, { preserveScroll: true })
 }
 
 async function loadAvailableSpeakers() {
@@ -705,11 +716,22 @@ function onPhotoImageError(photoId: string, event: Event) {
         </AdminCard>
 
         <AdminCard title="Visibility">
-          <AdminSelect v-model="form.status" label="Status">
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
-            <option value="cancelled">Cancelled</option>
-          </AdminSelect>
+          <div class="space-y-5">
+            <AdminSelect v-model="form.status" label="Status">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+              <option value="cancelled">Cancelled</option>
+            </AdminSelect>
+            <AdminSelect
+              v-model="form.includeInCalendar"
+              label="Calendar feed"
+              hint="Whether this event appears in the public .ics subscription feed."
+            >
+              <option value="auto">Auto (use default site settings)</option>
+              <option value="show">Always show</option>
+              <option value="hide">Always hide</option>
+            </AdminSelect>
+          </div>
         </AdminCard>
 
         <AdminCard
