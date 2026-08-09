@@ -9,4 +9,5 @@ export const policies = {
   SpeakerPolicy: () => import('#policies/speaker_policy'),
   SponsorPolicy: () => import('#policies/sponsor_policy'),
   UserPolicy: () => import('#policies/user_policy'),
+  SiteSettingPolicy: () => import('#policies/site_setting_policy'),
 }
