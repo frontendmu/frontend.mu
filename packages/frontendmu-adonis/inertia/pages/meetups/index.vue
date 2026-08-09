@@ -103,7 +103,7 @@ function featuredForYear(year: number): Data.Event | undefined {
   <main class="relative min-h-screen pt-32 pb-24 overflow-x-clip">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <!-- Page Header -->
-      <header class="mb-10 max-w-3xl space-y-4">
+      <header class="mb-10 space-y-4">
         <div class="flex items-center justify-between flex-wrap gap-3">
           <p class="mono-eyebrow">
             <span>CODERS.MU</span>
@@ -133,17 +133,19 @@ function featuredForYear(year: number): Data.Event | undefined {
           </div>
         </div>
 
-        <h1
-          class="font-display text-[clamp(48px,6vw,88px)] leading-[0.98] text-gray-900 dark:text-white text-balance"
-        >
-          Every meetup, <span class="font-display-italic text-verse-500 dark:text-verse-300">every year</span>
-        </h1>
+        <div class="max-w-3xl space-y-4">
+          <h1
+            class="font-display text-[clamp(48px,6vw,88px)] leading-[0.98] text-gray-900 dark:text-white text-balance"
+          >
+            Every meetup, <span class="font-display-italic text-verse-500 dark:text-verse-300">every year</span>
+          </h1>
 
-        <p class="text-[18px] leading-[1.55] text-gray-500 dark:text-gray-400 max-w-[58ch]">
-          Over the years, we've organized {{ meetups.length }}+ meetups around the island — from beachside hacks to
-          late-night terminal talks<template v-if="totalAttendees">. {{ totalAttendees.toLocaleString() }}+ builders
-          have shown up</template>. Here's all of them.
-        </p>
+          <p class="text-[18px] leading-[1.55] text-gray-500 dark:text-gray-400 max-w-[58ch]">
+            Over the years, we've organized {{ meetups.length }}+ meetups around the island — from beachside hacks to
+            late-night terminal talks<template v-if="totalAttendees">. {{ totalAttendees.toLocaleString() }}+ builders
+            have shown up</template>. Here's all of them.
+          </p>
+        </div>
       </header>
 
       <!-- Filter row -->
