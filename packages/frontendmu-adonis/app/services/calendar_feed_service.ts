@@ -56,7 +56,11 @@ export default class CalendarFeedService {
   }
 
   private static resolveTimes(event: Event) {
-    const date = event.eventDate
+    // start_time/end_time are wall-clock strings ("10:00") and event_date is a
+    // calendar date, neither carrying a zone. Pin them to the configured
+    // timezone rather than trusting whatever zone Lucid hydrated the date in,
+    // so "10:00" always means 10:00 where the meetup happens.
+    const date = event.eventDate.setZone(TIMEZONE, { keepLocalTime: true })
 
     if (!event.startTime) {
       return { start: date.startOf('day'), end: date.startOf('day'), allDay: true }
