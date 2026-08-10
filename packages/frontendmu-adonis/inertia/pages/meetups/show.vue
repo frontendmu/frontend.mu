@@ -56,6 +56,17 @@ const canRsvp = computed(() => {
   return true
 })
 
+// Whether the footer CTA leads with RSVP controls. Also decides the calendar link's variant:
+// it shares the row as an icon button when RSVP is present, and takes the full width when not.
+const showRsvpActions = computed(() => {
+  if (!props.meetup) return false
+  return (
+    isUpcoming.value ||
+    isToday.value ||
+    (featureFlags.value.rsvpPastEvents && isPast.value && props.meetup.acceptingRsvp)
+  )
+})
+
 // Check if event is full
 const isFull = computed(() => {
   if (!props.meetup?.seatsAvailable) return false
@@ -1001,7 +1012,7 @@ const calendarUrl = computed(() => {
                   :data-changed-active="activeChange === 'rsvp' ? '' : null"
                   class="px-6 py-5 border-t border-gray-100 dark:border-verse-900 flex gap-2.5"
                 >
-                  <template v-if="isUpcoming || isToday || (featureFlags.rsvpPastEvents && isPast && meetup.acceptingRsvp)">
+                  <template v-if="showRsvpActions">
                     <template v-if="!isAuthenticated && canRsvp">
                       <Link
                         :href="loginHref"
@@ -1037,9 +1048,23 @@ const calendarUrl = computed(() => {
                     </div>
                   </template>
                   <a
+                    v-if="calendarUrl && showRsvpActions"
+                    :href="calendarUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="w-11 h-11 rounded-lg border border-gray-200 dark:border-verse-800 grid place-items-center text-gray-500 dark:text-gray-400 hover:text-verse-500 transition-colors"
+                    aria-label="Add to Calendar"
+                  >
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="5" width="18" height="16" rx="2" />
+                      <path d="M8 3v4M16 3v4M3 10h18" />
+                    </svg>
+                  </a>
+                  <a
                     v-else-if="calendarUrl"
                     :href="calendarUrl"
                     target="_blank"
+                    rel="noopener noreferrer"
                     class="flex-1 py-3 text-center text-sm font-semibold border border-gray-200 dark:border-verse-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-verse-900 transition-colors"
                   >
                     Add to Calendar
