@@ -1047,28 +1047,30 @@ const calendarUrl = computed(() => {
                       RSVPs Closed
                     </div>
                   </template>
-                  <a
-                    v-if="calendarUrl && showRsvpActions"
-                    :href="calendarUrl"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="w-11 h-11 rounded-lg border border-gray-200 dark:border-verse-800 grid place-items-center text-gray-500 dark:text-gray-400 hover:text-verse-500 transition-colors"
-                    aria-label="Add to Calendar"
-                  >
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="3" y="5" width="18" height="16" rx="2" />
-                      <path d="M8 3v4M16 3v4M3 10h18" />
-                    </svg>
-                  </a>
-                  <a
-                    v-else-if="calendarUrl"
-                    :href="calendarUrl"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="flex-1 py-3 text-center text-sm font-semibold border border-gray-200 dark:border-verse-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-verse-900 transition-colors"
-                  >
-                    Add to Calendar
-                  </a>
+                  <template v-if="calendarUrl">
+                    <a
+                      v-if="showRsvpActions"
+                      :href="calendarUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="w-11 h-11 rounded-lg border border-gray-200 dark:border-verse-800 grid place-items-center text-gray-500 dark:text-gray-400 hover:text-verse-500 transition-colors"
+                      aria-label="Add to Calendar"
+                    >
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="5" width="18" height="16" rx="2" />
+                        <path d="M8 3v4M16 3v4M3 10h18" />
+                      </svg>
+                    </a>
+                    <a
+                      v-else
+                      :href="calendarUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="flex-1 py-3 text-center text-sm font-semibold border border-gray-200 dark:border-verse-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-verse-900 transition-colors"
+                    >
+                      Add to Calendar
+                    </a>
+                  </template>
                   <button
                     type="button"
                     class="w-11 h-11 rounded-lg border border-gray-200 dark:border-verse-800 grid place-items-center text-gray-500 dark:text-gray-400 cursor-pointer hover:text-verse-500 transition-colors"
