@@ -1,10 +1,11 @@
 import ical, { ICalEventStatus } from 'ical-generator'
+import env from '#start/env'
 import Event from '#models/event'
 import SiteSetting from '#models/site_setting'
 import { canonicalUrl } from '#utils/site_url'
 
 const DEFAULT_DURATION_HOURS = 4
-const TIMEZONE = 'Indian/Mauritius'
+const TIMEZONE = env.get('TZ')
 
 /**
  * Builds the public .ics calendar feed containing all events that should be
