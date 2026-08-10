@@ -1025,7 +1025,7 @@ const calendarUrl = computed(() => {
                       <button
                         v-if="hasRsvp"
                         :disabled="isRsvpLoading"
-                        class="flex-1 py-3 text-sm font-semibold border border-gray-200 dark:border-verse-800 bg-[oklch(95%_0.03_155)] text-[oklch(38%_0.08_155)] rounded-lg transition-colors disabled:opacity-50"
+                        class="flex-1 py-3 text-sm font-semibold border border-gray-200 dark:border-verse-800 bg-[oklch(95%_0.03_155)] text-[oklch(38%_0.08_155)] rounded-lg cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         @click="handleCancelRsvp"
                       >
                         <span v-if="isRsvpLoading">Cancelling…</span>
@@ -1034,7 +1034,7 @@ const calendarUrl = computed(() => {
                       <button
                         v-else
                         :disabled="isRsvpLoading"
-                        class="flex-1 py-3 text-sm font-semibold bg-verse-600 text-white rounded-lg hover:bg-verse-700 transition-colors disabled:opacity-50"
+                        class="flex-1 py-3 text-sm font-semibold bg-verse-600 text-white rounded-lg cursor-pointer hover:bg-verse-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         @click="handleRsvp"
                       >
                         {{ isRsvpLoading ? 'Submitting…' : isFull ? 'Join waitlist' : 'RSVP — claim your spot' }}
@@ -1071,7 +1071,7 @@ const calendarUrl = computed(() => {
                   </a>
                   <button
                     type="button"
-                    class="w-11 h-11 rounded-lg border border-gray-200 dark:border-verse-800 grid place-items-center text-gray-500 dark:text-gray-400 hover:text-verse-500 transition-colors"
+                    class="w-11 h-11 rounded-lg border border-gray-200 dark:border-verse-800 grid place-items-center text-gray-500 dark:text-gray-400 cursor-pointer hover:text-verse-500 transition-colors"
                     aria-label="Share"
                     @click="shareEvent"
                   >
