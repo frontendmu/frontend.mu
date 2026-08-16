@@ -103,7 +103,12 @@ export default class AdminEventsController {
       parkingLocation: data.parkingLocation,
       mapUrl: data.mapUrl,
       status: data.status,
-      includeInCalendar: data.includeInCalendar ?? null,
+      // Only touch the override when the request actually carries it. Coercing an
+      // omitted value to null would silently reset an admin's explicit pin/hide
+      // on any partial update that never mentioned the calendar.
+      ...(data.includeInCalendar !== undefined
+        ? { includeInCalendar: data.includeInCalendar }
+        : {}),
     })
 
     await event.save()
