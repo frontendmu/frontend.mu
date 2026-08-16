@@ -64,7 +64,11 @@ export default class CalendarFeedService {
     const date = event.eventDate.setZone(TIMEZONE, { keepLocalTime: true })
 
     if (!event.startTime) {
-      return { start: date.startOf('day'), end: date.startOf('day'), allDay: true }
+      // A DATE-valued DTEND is exclusive (RFC 5545 §3.6.1), so a single all-day
+      // meetup ends on the following day. ical-generator passes these through
+      // verbatim — an end equal to the start serialises as a zero-length event.
+      const start = date.startOf('day')
+      return { start, end: start.plus({ days: 1 }), allDay: true }
     }
 
     const start = this.combineDateAndTime(date, event.startTime)

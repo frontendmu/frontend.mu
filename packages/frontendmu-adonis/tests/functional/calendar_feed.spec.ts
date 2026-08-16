@@ -76,6 +76,31 @@ test.group('Calendar feed (/api/public/meetups.ics)', (group) => {
     assert.include(response.text(), 'STATUS:CANCELLED')
   })
 
+  test('ends an all-day meetup on the following day, per the exclusive DTEND rule', async ({
+    client,
+    assert,
+  }) => {
+    await Event.create({
+      title: 'All Day Meetup',
+      eventDate: DateTime.fromISO('2026-11-14T00:00:00'),
+      startTime: null,
+      status: 'published',
+      attendeeCount: 0,
+    })
+
+    const response = await client.get('/api/public/meetups.ics')
+    const lines = response.text().split(/\r?\n/)
+
+    assert.include(
+      lines.find((l) => l.startsWith('DTSTART;VALUE=DATE')),
+      '20261114'
+    )
+    assert.include(
+      lines.find((l) => l.startsWith('DTEND;VALUE=DATE')),
+      '20261115'
+    )
+  })
+
   test('serves an empty (but valid) calendar when the feed is disabled', async ({
     client,
     assert,
