@@ -332,7 +332,9 @@ echo "{$meetup['slug']}: {$meetup['title']} on {$meetup['date']}";`
               knowing: cancelled meetups remain in the feed carrying
               <code class="font-mono">STATUS:CANCELLED</code>, so subscribers' clients
               clear an event they already have. The JSON endpoints omit them entirely.
-              Drafts never appear in either. Past meetups are excluded by default.
+              Past meetups are excluded by default. Drafts are excluded from both,
+              though an organiser can pin an individual meetup into the feed —
+              occasionally used to announce a date before its page goes live.
             </p>
           </section>
 
@@ -481,7 +483,7 @@ echo "{$meetup['slug']}: {$meetup['title']} on {$meetup['date']}";`
               Caching
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-              Every successful response carries:
+              Every successful JSON response carries:
             </p>
             <div
               class="p-4 bg-gray-50 dark:bg-verse-950/40 border border-gray-100 dark:border-verse-800 rounded-lg font-mono text-sm text-gray-900 dark:text-gray-100"
@@ -492,6 +494,13 @@ echo "{$meetup['slug']}: {$meetup['title']} on {$meetup['date']}";`
               Responses are fresh for 60 seconds and servable stale for another
               5 minutes while the cache revalidates. Clients should not poll more
               than once per minute.
+            </p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+              The calendar feed is cached separately, at
+              <code class="font-mono">public, max-age=900</code>, and advertises an
+              hourly refresh hint to subscribing clients. Calendar apps pick their own
+              polling interval regardless, so treat updates to the feed as visible
+              within the hour rather than immediately.
             </p>
           </section>
 
