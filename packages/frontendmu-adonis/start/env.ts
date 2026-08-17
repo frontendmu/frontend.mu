@@ -10,8 +10,21 @@
 */
 
 import { Env } from '@adonisjs/core/env'
+import { IANAZone } from 'luxon'
 
 export default await Env.create(new URL('../', import.meta.url), {
+  TZ: (key: string, value?: string) => {
+    if (!value) {
+      throw new Error(`Missing environment variable "${key}"`)
+    }
+    if (!IANAZone.isValidZone(value)) {
+      throw new Error(
+        `Invalid timezone "${value}" for "${key}" — expected an IANA zone such as "Indian/Mauritius"`
+      )
+    }
+    return value
+  },
+
   NODE_ENV: Env.schema.enum(['development', 'production', 'test'] as const),
   PORT: Env.schema.number(),
   APP_KEY: Env.schema.string(),
@@ -24,7 +37,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   | Variables for configuring session package
   |----------------------------------------------------------
   */
-  SESSION_DRIVER: Env.schema.enum(['cookie'] as const),
+  SESSION_DRIVER: Env.schema.enum(['cookie', 'memory'] as const),
 
   DB_DATABASE: Env.schema.string.optional(),
 

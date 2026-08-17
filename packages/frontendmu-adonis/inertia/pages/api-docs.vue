@@ -50,7 +50,7 @@ const fieldGroups = [
       ['location', 'string | null', 'Address or location text.'],
       ['attendeeCount', 'number', 'Reported attendee count.'],
       ['acceptingRsvp', 'boolean', 'Whether RSVPs are currently open.'],
-      ['status', 'string', '"published", "draft", or "cancelled". The API only returns "published".'],
+      ['status', 'string', '"published", "draft", or "cancelled". These endpoints only return "published"; see Calendar feed for how it differs.'],
       ['album', 'string | null', 'Photo album name, if any.'],
       ['updatedAt', 'string | null', 'ISO-8601 timestamp of last change. Use this to detect updates.'],
       ['sessions', 'Session[]', 'Talks/sessions at this meetup, each with speakers.'],
@@ -123,6 +123,8 @@ const sampleDetail = `{
   "photos": []
 }`
 
+const calendarFeedUrl = 'https://coders.mu/api/public/meetups.ics'
+
 const curlNext = 'curl https://coders.mu/api/public/v1/meetups/next'
 
 const fetchExample = `const res = await fetch('https://coders.mu/api/public/v1/meetups')
@@ -191,8 +193,9 @@ echo "{$meetup['slug']}: {$meetup['title']} on {$meetup['date']}";`
           Public <span class="font-display-italic text-verse-600 dark:text-verse-400">API</span>
         </h1>
         <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl leading-relaxed">
-          A read-only JSON API exposing published meetup data. Intended for CLIs,
-          Raycast extensions, browser extensions, and agent integrations.
+          A read-only API exposing published meetup data as JSON, plus a calendar
+          feed you can subscribe to. Intended for CLIs, Raycast extensions,
+          browser extensions, and agent integrations.
         </p>
         <div class="flex flex-wrap gap-2 pt-2">
           <span
@@ -291,6 +294,47 @@ echo "{$meetup['slug']}: {$meetup['title']} on {$meetup['date']}";`
               human-readable <code class="font-mono">slug</code>. Both resolve to the
               same meetup. Unknown values return a JSON
               <code class="font-mono">404</code>.
+            </p>
+          </section>
+
+          <!-- Calendar feed -->
+          <section id="calendar-feed" class="space-y-5 scroll-mt-32">
+            <h2 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
+              Calendar feed
+            </h2>
+            <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+              Meetups are also published as an iCalendar
+              (<code class="font-mono text-sm text-verse-600 dark:text-verse-400">text/calendar</code>)
+              feed. Subscribe once in Google Calendar, Apple Calendar, or any
+              <code class="font-mono text-sm">.ics</code>-compatible client and new or
+              updated meetups arrive automatically.
+            </p>
+            <div class="relative">
+              <pre
+                class="overflow-x-auto p-4 pr-14 bg-gray-900 dark:bg-verse-950 border border-gray-900 dark:border-verse-800 rounded-lg text-sm font-mono text-gray-100 leading-relaxed"
+              ><code>{{ calendarFeedUrl }}</code></pre>
+              <button
+                type="button"
+                class="absolute top-2 right-2 px-2.5 py-1 text-xs font-medium text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded transition-colors"
+                @click="copy('ics', calendarFeedUrl)"
+              >
+                {{ copied === 'ics' ? 'Copied' : 'Copy' }}
+              </button>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+              This URL is deliberately unversioned. Calendar subscriptions live in
+              people's accounts indefinitely, and a retired feed fails silently rather
+              than returning an error, so the path will not move under a
+              <code class="font-mono">/v2</code> prefix the way the JSON endpoints may.
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-500 leading-relaxed">
+              The feed's contents differ from the JSON endpoints in one way worth
+              knowing: cancelled meetups remain in the feed carrying
+              <code class="font-mono">STATUS:CANCELLED</code>, so subscribers' clients
+              clear an event they already have. The JSON endpoints omit them entirely.
+              Past meetups are excluded by default. Drafts are excluded from both,
+              though an organiser can pin an individual meetup into the feed —
+              occasionally used to announce a date before its page goes live.
             </p>
           </section>
 
@@ -439,7 +483,7 @@ echo "{$meetup['slug']}: {$meetup['title']} on {$meetup['date']}";`
               Caching
             </h2>
             <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-              Every successful response carries:
+              Every successful JSON response carries:
             </p>
             <div
               class="p-4 bg-gray-50 dark:bg-verse-950/40 border border-gray-100 dark:border-verse-800 rounded-lg font-mono text-sm text-gray-900 dark:text-gray-100"
@@ -450,6 +494,13 @@ echo "{$meetup['slug']}: {$meetup['title']} on {$meetup['date']}";`
               Responses are fresh for 60 seconds and servable stale for another
               5 minutes while the cache revalidates. Clients should not poll more
               than once per minute.
+            </p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+              The calendar feed is cached separately, at
+              <code class="font-mono">public, max-age=900</code>, and advertises an
+              hourly refresh hint to subscribing clients. Calendar apps pick their own
+              polling interval regardless, so treat updates to the feed as visible
+              within the hour rather than immediately.
             </p>
           </section>
 
@@ -522,6 +573,7 @@ echo "{$meetup['slug']}: {$meetup['title']} on {$meetup['date']}";`
               <a href="#base-url" class="block text-gray-600 dark:text-gray-400 hover:text-verse-600 dark:hover:text-verse-400 transition-colors">Base URL</a>
               <a href="#authentication" class="block text-gray-600 dark:text-gray-400 hover:text-verse-600 dark:hover:text-verse-400 transition-colors">Authentication</a>
               <a href="#endpoints" class="block text-gray-600 dark:text-gray-400 hover:text-verse-600 dark:hover:text-verse-400 transition-colors">Endpoints</a>
+              <a href="#calendar-feed" class="block text-gray-600 dark:text-gray-400 hover:text-verse-600 dark:hover:text-verse-400 transition-colors">Calendar feed</a>
               <a href="#response-shape" class="block text-gray-600 dark:text-gray-400 hover:text-verse-600 dark:hover:text-verse-400 transition-colors">Response shape</a>
               <a href="#examples" class="block text-gray-600 dark:text-gray-400 hover:text-verse-600 dark:hover:text-verse-400 transition-colors">Examples</a>
               <a href="#caching" class="block text-gray-600 dark:text-gray-400 hover:text-verse-600 dark:hover:text-verse-400 transition-colors">Caching</a>

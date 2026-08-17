@@ -1,4 +1,5 @@
 import { defineConfig } from '@adonisjs/shield'
+import app from '@adonisjs/core/services/app'
 
 const shieldConfig = defineConfig({
   /**
@@ -44,7 +45,9 @@ const shieldConfig = defineConfig({
    * to learn more
    */
   csrf: {
-    enabled: true,
+    // Disabled in tests: the Japa API client has no CSRF-token bridge, and
+    // request forgery isn't a concern for same-process functional tests.
+    enabled: !app.inTest,
     // Local dev upload receiver is authenticated by a signed URL (HMAC over
     // key + exp), mirroring the trust model of an R2 presigned PUT. Skipping
     // CSRF here is correct — the auth lives in the URL, not the session.

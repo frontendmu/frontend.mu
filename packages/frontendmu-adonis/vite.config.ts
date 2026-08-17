@@ -28,6 +28,7 @@ export default defineConfig({
   },
 
   server: {
+    host: '0.0.0.0',
     allowedHosts: ['chotadon.tail1d66.ts.net'],
   },
 

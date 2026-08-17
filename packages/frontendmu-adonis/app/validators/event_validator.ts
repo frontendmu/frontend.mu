@@ -18,6 +18,7 @@ export const createEventValidator = vine.compile(
     parkingLocation: vine.string().trim().maxLength(500).nullable().optional(),
     mapUrl: vine.string().trim().maxLength(500).nullable().optional(),
     status: vine.enum(['published', 'draft', 'cancelled']).optional(),
+    includeInCalendar: vine.boolean().nullable().optional(),
   })
 )
 
@@ -42,5 +43,6 @@ export const updateEventValidator = vine.compile(
     parkingLocation: vine.string().trim().maxLength(500).nullable().optional(),
     mapUrl: vine.string().trim().maxLength(500).nullable().optional(),
     status: vine.enum(['published', 'draft', 'cancelled']).optional(),
+    includeInCalendar: vine.boolean().nullable().optional(),
   })
 )

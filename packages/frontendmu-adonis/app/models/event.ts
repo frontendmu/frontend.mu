@@ -6,6 +6,7 @@ import Session from '#models/session'
 import Sponsor from '#models/sponsor'
 import EventPhoto from '#models/event_photo'
 import Rsvp from '#models/rsvp'
+import SiteSetting from '#models/site_setting'
 
 export type EventStatus = 'published' | 'draft' | 'cancelled'
 
@@ -91,6 +92,14 @@ export default class Event extends BaseModel {
   @column()
   declare status: EventStatus
 
+  /**
+   * Admin override for the public calendar (.ics) feed.
+   * - true/false: always include/exclude this event, regardless of site settings.
+   * - null: defer to the global site settings defaults.
+   */
+  @column({ consume: (v: unknown): boolean | null => (v === null ? null : Boolean(v)) })
+  declare includeInCalendar: boolean | null
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
@@ -134,5 +143,25 @@ export default class Event extends BaseModel {
    */
   get isUpcoming(): boolean {
     return this.eventDate > DateTime.now()
+  }
+
+  /**
+   * Whether this event should appear in the public calendar (.ics) feed,
+   * resolving the per-event admin override against the global site settings.
+   */
+  shouldAppearInCalendar(settings: SiteSetting): boolean {
+    if (!settings.calendarFeedEnabled) return false
+
+    // Explicit per-event override always wins.
+    if (this.includeInCalendar !== null) return this.includeInCalendar
+
+    // Drafts are not public. Cancelled events deliberately stay in the feed —
+    // their VEVENT carries STATUS:CANCELLED, which is how a subscriber's client
+    // learns to clear an entry it already has.
+    if (this.status === 'draft') return false
+
+    if (this.isPast && !settings.calendarIncludePastEvents) return false
+
+    return settings.calendarAutoIncludeNewEvents
   }
 }

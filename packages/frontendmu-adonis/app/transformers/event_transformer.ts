@@ -74,6 +74,7 @@ export default class EventTransformer extends BaseTransformer<Event> {
       coverImageUrl: this.resource.coverImageUrl,
       parkingLocation: this.resource.parkingLocation,
       mapUrl: this.resource.mapUrl,
+      includeInCalendar: this.resource.includeInCalendar,
       photos: photos.map((photo) => ({
         id: photo.id,
         photoUrl: photo.photoUrl,

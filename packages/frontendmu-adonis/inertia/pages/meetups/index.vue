@@ -103,33 +103,49 @@ function featuredForYear(year: number): Data.Event | undefined {
   <main class="relative min-h-screen pt-32 pb-24 overflow-x-clip">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <!-- Page Header -->
-      <header class="mb-10 max-w-3xl space-y-4">
+      <header class="mb-10 space-y-4">
         <div class="flex items-center justify-between flex-wrap gap-3">
           <p class="mono-eyebrow">
             <span>CODERS.MU</span>
             <span class="sep">/</span>
             <span>MEETUPS</span>
           </p>
-          <Link
-            v-if="canCreate"
-            href="/admin/events/create"
-            class="text-xs font-semibold text-verse-500 dark:text-verse-400 hover:text-verse-600 dark:hover:text-verse-300 transition-colors"
-          >
-            + Create Event
-          </Link>
+          <div class="flex items-center gap-4">
+            <a
+              href="/api/public/meetups.ics"
+              class="inline-flex items-center gap-1.5 text-xs font-semibold text-verse-500 dark:text-verse-400 hover:text-verse-600 dark:hover:text-verse-300 transition-colors"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              Subscribe to Calendar
+            </a>
+            <Link
+              v-if="canCreate"
+              href="/admin/events/create"
+              class="text-xs font-semibold text-verse-500 dark:text-verse-400 hover:text-verse-600 dark:hover:text-verse-300 transition-colors"
+            >
+              + Create Event
+            </Link>
+          </div>
         </div>
 
-        <h1
-          class="font-display text-[clamp(48px,6vw,88px)] leading-[0.98] text-gray-900 dark:text-white text-balance"
-        >
-          Every meetup, <span class="font-display-italic text-verse-500 dark:text-verse-300">every year</span>
-        </h1>
+        <div class="max-w-3xl space-y-4">
+          <h1
+            class="font-display text-[clamp(48px,6vw,88px)] leading-[0.98] text-gray-900 dark:text-white text-balance"
+          >
+            Every meetup, <span class="font-display-italic text-verse-500 dark:text-verse-300">every year</span>
+          </h1>
 
-        <p class="text-[18px] leading-[1.55] text-gray-500 dark:text-gray-400 max-w-[58ch]">
-          Over the years, we've organized {{ meetups.length }}+ meetups around the island — from beachside hacks to
-          late-night terminal talks<template v-if="totalAttendees">. {{ totalAttendees.toLocaleString() }}+ builders
-          have shown up</template>. Here's all of them.
-        </p>
+          <p class="text-[18px] leading-[1.55] text-gray-500 dark:text-gray-400 max-w-[58ch]">
+            Over the years, we've organized {{ meetups.length }}+ meetups around the island — from beachside hacks to
+            late-night terminal talks<template v-if="totalAttendees">. {{ totalAttendees.toLocaleString() }}+ builders
+            have shown up</template>. Here's all of them.
+          </p>
+        </div>
       </header>
 
       <!-- Filter row -->
