@@ -56,6 +56,17 @@ const canRsvp = computed(() => {
   return true
 })
 
+// Whether the footer CTA leads with RSVP controls. Also decides the calendar link's variant:
+// it shares the row as an icon button when RSVP is present, and takes the full width when not.
+const showRsvpActions = computed(() => {
+  if (!props.meetup) return false
+  return (
+    isUpcoming.value ||
+    isToday.value ||
+    (featureFlags.value.rsvpPastEvents && isPast.value && props.meetup.acceptingRsvp)
+  )
+})
+
 // Check if event is full
 const isFull = computed(() => {
   if (!props.meetup?.seatsAvailable) return false
@@ -1001,7 +1012,7 @@ const calendarUrl = computed(() => {
                   :data-changed-active="activeChange === 'rsvp' ? '' : null"
                   class="px-6 py-5 border-t border-gray-100 dark:border-verse-900 flex gap-2.5"
                 >
-                  <template v-if="isUpcoming || isToday || (featureFlags.rsvpPastEvents && isPast && meetup.acceptingRsvp)">
+                  <template v-if="showRsvpActions">
                     <template v-if="!isAuthenticated && canRsvp">
                       <Link
                         :href="loginHref"
@@ -1014,7 +1025,7 @@ const calendarUrl = computed(() => {
                       <button
                         v-if="hasRsvp"
                         :disabled="isRsvpLoading"
-                        class="flex-1 py-3 text-sm font-semibold border border-gray-200 dark:border-verse-800 bg-[oklch(95%_0.03_155)] text-[oklch(38%_0.08_155)] rounded-lg transition-colors disabled:opacity-50"
+                        class="flex-1 py-3 text-sm font-semibold border border-gray-200 dark:border-verse-800 bg-[oklch(95%_0.03_155)] text-[oklch(38%_0.08_155)] rounded-lg cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         @click="handleCancelRsvp"
                       >
                         <span v-if="isRsvpLoading">Cancelling…</span>
@@ -1023,7 +1034,7 @@ const calendarUrl = computed(() => {
                       <button
                         v-else
                         :disabled="isRsvpLoading"
-                        class="flex-1 py-3 text-sm font-semibold bg-verse-600 text-white rounded-lg hover:bg-verse-700 transition-colors disabled:opacity-50"
+                        class="flex-1 py-3 text-sm font-semibold bg-verse-600 text-white rounded-lg cursor-pointer hover:bg-verse-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         @click="handleRsvp"
                       >
                         {{ isRsvpLoading ? 'Submitting…' : isFull ? 'Join waitlist' : 'RSVP — claim your spot' }}
@@ -1036,17 +1047,33 @@ const calendarUrl = computed(() => {
                       RSVPs Closed
                     </div>
                   </template>
-                  <a
-                    v-else-if="calendarUrl"
-                    :href="calendarUrl"
-                    target="_blank"
-                    class="flex-1 py-3 text-center text-sm font-semibold border border-gray-200 dark:border-verse-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-verse-900 transition-colors"
-                  >
-                    Add to Calendar
-                  </a>
+                  <template v-if="calendarUrl">
+                    <a
+                      v-if="showRsvpActions"
+                      :href="calendarUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="w-11 h-11 rounded-lg border border-gray-200 dark:border-verse-800 grid place-items-center text-gray-500 dark:text-gray-400 hover:text-verse-500 transition-colors"
+                      aria-label="Add to Calendar"
+                    >
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="5" width="18" height="16" rx="2" />
+                        <path d="M8 3v4M16 3v4M3 10h18" />
+                      </svg>
+                    </a>
+                    <a
+                      v-else
+                      :href="calendarUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="flex-1 py-3 text-center text-sm font-semibold border border-gray-200 dark:border-verse-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-verse-900 transition-colors"
+                    >
+                      Add to Calendar
+                    </a>
+                  </template>
                   <button
                     type="button"
-                    class="w-11 h-11 rounded-lg border border-gray-200 dark:border-verse-800 grid place-items-center text-gray-500 dark:text-gray-400 hover:text-verse-500 transition-colors"
+                    class="w-11 h-11 rounded-lg border border-gray-200 dark:border-verse-800 grid place-items-center text-gray-500 dark:text-gray-400 cursor-pointer hover:text-verse-500 transition-colors"
                     aria-label="Share"
                     @click="shareEvent"
                   >
