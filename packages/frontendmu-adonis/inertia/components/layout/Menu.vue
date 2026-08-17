@@ -29,6 +29,7 @@ interface InertSiblingState {
 const page = usePage<Data.SharedProps>()
 const isAuthenticated = computed(() => page.props.auth.isAuthenticated)
 const user = computed(() => page.props.auth.user)
+const registrationEnabled = computed(() => page.props.auth.registrationEnabled)
 const currentPath = computed(() => page.url)
 const isMobileMenuOpen = ref(false)
 const expandedSections = ref<string[]>([])
@@ -98,10 +99,11 @@ const authLinks = computed(() => {
   if (isAuthenticated.value && user.value) {
     return [{ title: 'Profile', href: '/profile' }]
   }
-  return [
-    { title: 'Login', href: '/login' },
-    { title: 'Register', href: '/register' },
-  ]
+  const links = [{ title: 'Login', href: '/login' }]
+  if (registrationEnabled.value) {
+    links.push({ title: 'Register', href: '/register' })
+  }
+  return links
 })
 
 const mobileActionLinks = computed(() => {

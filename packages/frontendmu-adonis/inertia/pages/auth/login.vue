@@ -6,6 +6,7 @@ import { computed } from 'vue'
 const page = usePage<Data.SharedProps>()
 const errors = computed(() => page.props.errors as Record<string, string> | undefined)
 const googleOauthEnabled = computed(() => page.props.auth.providers.google)
+const registrationEnabled = computed(() => page.props.auth.registrationEnabled)
 
 const nextParam = computed(() => {
   const query = page.url.split('?')[1]
@@ -132,7 +133,10 @@ const registerHref = computed(() =>
           </button>
         </form>
 
-        <p class="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+        <p
+          v-if="registrationEnabled"
+          class="mt-6 text-center text-sm text-gray-500 dark:text-gray-400"
+        >
           Don't have an account?
           <Link
             :href="registerHref"

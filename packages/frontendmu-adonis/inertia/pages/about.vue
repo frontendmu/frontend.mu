@@ -1,6 +1,16 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3'
-import { Link } from '@inertiajs/vue3'
+import { Head, Link, usePage } from '@inertiajs/vue3'
+import type { Data } from '@generated/data'
+import { computed } from 'vue'
+
+const page = usePage<Data.SharedProps>()
+const registrationEnabled = computed(() => page.props.auth.registrationEnabled)
+const googleOauthEnabled = computed(() => page.props.auth.providers.google)
+const joinHref = computed(() => {
+  if (registrationEnabled.value) return '/register'
+  if (googleOauthEnabled.value) return '/auth/google'
+  return '/login'
+})
 </script>
 
 <template>
@@ -56,7 +66,7 @@ import { Link } from '@inertiajs/vue3'
                 Whether you're writing your first line of CSS or architecting cloud systems, there's a seat for you.
               </p>
               <div class="flex flex-col gap-3">
-                <Link href="/register" class="block w-full py-3.5 bg-verse-500 text-white text-center font-bold text-sm rounded-lg hover:bg-verse-600 transition-colors">
+                <Link :href="joinHref" class="block w-full py-3.5 bg-verse-500 text-white text-center font-bold text-sm rounded-lg hover:bg-verse-600 transition-colors">
                   Join the Community
                 </Link>
                 <a href="https://discord.gg/WxXW9Jvv6k" target="_blank" rel="noopener noreferrer" class="block w-full py-3.5 border border-white/20 dark:border-gray-200 text-center font-bold text-sm rounded-lg hover:bg-white/10 dark:hover:bg-gray-100 transition-colors">
