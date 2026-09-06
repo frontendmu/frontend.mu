@@ -90,7 +90,7 @@
     "@inertiajs/vue3": "^3.7.0",
     "@tailwindcss/vite": "^4.3.3",
     "@vinejs/vine": "^4.4.0",
-    "better-sqlite3": "^12.6.2",
+    "better-sqlite3": "^13.0.3",
     "dompurify": "^3.4.15",
     "edge.js": "^6.5.1",
     "luxon": "^3.7.2",
