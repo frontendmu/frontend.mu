@@ -83,9 +83,7 @@ export default class DbClear extends BaseCommand {
       this.logger.success(`Database ${dbConfig.database} has been cleared and recreated!`)
       this.logger.info('Run "node ace migration:run" to set up your schema')
     } catch (error) {
-      this.logger.error(
-        `Operation failed: ${error instanceof Error ? error.message : String(error)}`
-      )
+      this.logger.error(`Operation failed: ${error.message}`)
       process.exit(1)
     }
   }

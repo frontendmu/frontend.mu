@@ -56,9 +56,15 @@ const staticRoutes = [
   '/register',
 ]
 
-const enforcedRoutes = ['/team']
+const enforcedRoutes = [
+  '/team',
+]
 
-async function discoverRoute(page: Page, seedRoute: string, selector: string) {
+async function discoverRoute(
+  page: Page,
+  seedRoute: string,
+  selector: string
+) {
   await page.goto(seedRoute, { waitUntil: 'domcontentloaded' })
   await page.waitForLoadState('load')
   await waitForInertiaApp(page)

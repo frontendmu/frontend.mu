@@ -117,7 +117,11 @@ async function shiftSlugRightOrThrow(
   })
 }
 
-async function renameSlugOrThrow(db: any, { from, to }: { from: string; to: string }, now: string) {
+async function renameSlugOrThrow(
+  db: any,
+  { from, to }: (typeof SINGLE_SLUG_FIXES)[number],
+  now: string
+) {
   const [source, target] = await Promise.all([
     db.from('events').select('id').where('slug', from).first(),
     db.from('events').select('id').where('slug', to).first(),

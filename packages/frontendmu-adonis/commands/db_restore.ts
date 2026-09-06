@@ -80,7 +80,7 @@ export default class DbRestore extends BaseCommand {
       const duration = ((Date.now() - startTime) / 1000).toFixed(2)
       this.logger.success(`Restore completed in ${duration}s`)
     } catch (error) {
-      this.logger.error(`Restore failed: ${error instanceof Error ? error.message : String(error)}`)
+      this.logger.error(`Restore failed: ${error.message}`)
       process.exit(1)
     }
   }

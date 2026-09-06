@@ -74,10 +74,12 @@ export default class extends BaseSchema {
 
     // Only keep rows whose event + sponsor actually exist to avoid FK errors
     // on partially-seeded databases.
-    const eventRows: Array<{ id: string }> = await this.db.from('events').select('id')
-    const sponsorRows: Array<{ id: string }> = await this.db.from('sponsors').select('id')
-    const eventIds = new Set(eventRows.map((r) => r.id))
-    const sponsorIds = new Set(sponsorRows.map((r) => r.id))
+    const eventIds = new Set(
+      (await this.db.from('events').select('id')).map((r: { id: string }) => r.id)
+    )
+    const sponsorIds = new Set(
+      (await this.db.from('sponsors').select('id')).map((r: { id: string }) => r.id)
+    )
 
     const rows = LINKS.filter(
       ([eventId, sponsorId]) => eventIds.has(eventId) && sponsorIds.has(sponsorId)

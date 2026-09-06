@@ -21,10 +21,5 @@
         "@commitlint/cli": "^19.4.0",
         "commitizen": "^4.3.0",
         "cz-git": "^1.9.4"
-    },
-    "pnpm": {
-        "neverBuiltDependencies": [
-            "better-sqlite3"
-        ]
     }
 }

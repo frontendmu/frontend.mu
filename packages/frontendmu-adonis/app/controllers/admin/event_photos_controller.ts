@@ -109,8 +109,8 @@ export default class AdminEventPhotosController {
     }
 
     await db.transaction(async (trx) => {
-      for (const [i, photoId] of photoIds.entries()) {
-        const photo = photosById.get(photoId)!
+      for (let i = 0; i < photoIds.length; i++) {
+        const photo = photosById.get(photoIds[i])!
         if (photo.order !== i) {
           photo.useTransaction(trx)
           photo.order = i

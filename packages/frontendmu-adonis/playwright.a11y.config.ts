@@ -23,10 +23,7 @@ export default defineConfig({
   testDir: './tests/a11y',
   fullyParallel: false,
   retries: 0,
-  reporter: [
-    ['list'],
-    ['html', { open: 'never', outputFolder: `playwright-report/a11y-${reportSlug}` }],
-  ],
+  reporter: [['list'], ['html', { open: 'never', outputFolder: `playwright-report/a11y-${reportSlug}` }]],
   use: {
     baseURL,
     trace: 'on-first-retry',

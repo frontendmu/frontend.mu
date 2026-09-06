@@ -49,7 +49,7 @@ export default class DbBackup extends BaseCommand {
       const duration = ((Date.now() - startTime) / 1000).toFixed(2)
       this.logger.success(`Backup completed in ${duration}s`)
     } catch (error) {
-      this.logger.error(`Backup failed: ${error instanceof Error ? error.message : String(error)}`)
+      this.logger.error(`Backup failed: ${error.message}`)
       process.exit(1)
     }
   }

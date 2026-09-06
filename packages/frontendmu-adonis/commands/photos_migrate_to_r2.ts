@@ -121,7 +121,9 @@ export default class PhotosMigrateToR2 extends BaseCommand {
           this.logger.success(label)
         } catch (error) {
           totals.failed++
-          this.logger.error(`${label} — ${error instanceof Error ? error.message : String(error)}`)
+          this.logger.error(
+            `${label} — ${error instanceof Error ? error.message : String(error)}`
+          )
         }
       }
     })

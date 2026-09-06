@@ -5,8 +5,6 @@ on:
     branches: [production]
     paths:
       - packages/frontendmu-adonis/**
-      - pnpm-lock.yaml
-      - .dockerignore
       - .github/workflows/deploy-adonis.yml
   workflow_dispatch:
 
@@ -30,8 +28,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: packages/frontendmu-adonis/Dockerfile
+          context: packages/frontendmu-adonis
           push: true
           tags: ghcr.io/${{ github.repository }}/adonis:latest
 
