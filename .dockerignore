@@ -6,9 +6,6 @@
 !pnpm-workspace.yaml
 !.npmrc
 !packages/frontendmu-adonis
-!packages/frontendmu-astro/package.json
-!packages/frontendmu-nuxt/package.json
-!packages/frontendmu-data/package.json
 
 packages/frontendmu-adonis/node_modules
 packages/frontendmu-adonis/build
