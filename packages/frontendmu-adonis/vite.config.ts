@@ -29,7 +29,14 @@ export default defineConfig({
     exclude: ['@libsql/sqlite3', 'oracledb', 'knex-dynamic-connection'],
   },
 
-  ssr: {
-    external: ['@libsql/sqlite3', 'oracledb'],
+  // Vite 8 builds every defined environment by default, and both write to
+  // public/assets, so the ssr pass overwrites the browser bundle and its
+  // manifest with externalised, bare-specifier output. Inertia SSR is off
+  // (config/inertia.ts) and no serverEntryPoints are configured, so build
+  // the client environment only.
+  builder: {
+    async buildApp(builder) {
+      await builder.build(builder.environments.client)
+    },
   },
 })
