@@ -1,26 +1,20 @@
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
-import inertia from '@adonisjs/inertia/vite'
 import vue from '@vitejs/plugin-vue'
 import adonisjs from '@adonisjs/vite/client'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
-    inertia({ ssr: { enabled: false } }),
     vue(),
     tailwindcss(),
-    adonisjs({ entrypoints: ['inertia/app.ts'], reload: ['resources/views/**/*.edge'] }),
+    adonisjs({ entryPoints: ['inertia/app.ts'], reload: ['resources/views/**/*.edge'] }),
   ],
 
   resolve: {
     alias: {
       '~': fileURLToPath(new URL('./inertia', import.meta.url)),
     },
-  },
-
-  esbuild: {
-    target: 'esnext',
   },
 
   build: {
@@ -33,9 +27,6 @@ export default defineConfig({
 
   optimizeDeps: {
     exclude: ['@libsql/sqlite3', 'oracledb', 'knex-dynamic-connection'],
-    esbuildOptions: {
-      target: 'esnext',
-    },
   },
 
   ssr: {

@@ -124,10 +124,7 @@ export default defineConfig({
   hooks: {
     init: [
       indexEntities({ transformers: { enabled: true, withSharedProps: true } }),
-      // @adonisjs/inertia 4 types its hook against the assembler API before
-      // `CodeGen` existed. The hook only touches the index generator, so it is
-      // runtime-compatible; the cast goes away with @adonisjs/inertia 5.
-      indexPages({ framework: 'vue3' }) as unknown as ReturnType<typeof indexPolicies>,
+      indexPages({ framework: 'vue3' }),
       indexPolicies(),
     ],
     buildStarting: [() => import('@adonisjs/vite/build_hook')],
