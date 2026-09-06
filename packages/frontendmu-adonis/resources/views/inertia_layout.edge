@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @if(seoMeta)
-      <title inertia>{{ seoMeta.title }}</title>
+      <title data-inertia>{{ seoMeta.title }}</title>
       <meta name="description" content="{{ seoMeta.description }}">
       @if(seoMeta.noindex)
         <meta name="robots" content="noindex,follow">
@@ -28,7 +28,7 @@
         <meta name="twitter:image" content="{{ seoMeta.ogImage }}">
       @endif
     @else
-      <title inertia>coders.mu</title>
+      <title data-inertia>coders.mu</title>
     @endif
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">

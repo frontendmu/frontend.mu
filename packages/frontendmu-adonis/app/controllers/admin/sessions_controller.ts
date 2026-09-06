@@ -104,9 +104,7 @@ export default class AdminSessionsController {
       order: data.order,
       kind: nextKind,
       sponsorId,
-      ...(data.durationMinutes !== undefined
-        ? { durationMinutes: data.durationMinutes }
-        : {}),
+      ...(data.durationMinutes !== undefined ? { durationMinutes: data.durationMinutes } : {}),
     })
 
     await session.save()

@@ -4,8 +4,8 @@ The backend and SSR frontend for frontend.mu, built with AdonisJS 6, Inertia.js,
 
 ## Prerequisites
 
-- Node.js 20+
-- pnpm
+- Node.js 24+
+- pnpm 9
 
 ## Local Development
 
@@ -19,6 +19,10 @@ cp .env.example .env
 # Start the dev server
 node ace serve --hmr
 ```
+
+Route and index types are generated into `.adonisjs/` when the dev server
+boots. To typecheck a fresh checkout without starting the server, run
+`pnpm codegen` first.
 
 That's it. The repo includes `database/db.local.sqlite3` — a SQLite database pre-seeded with events, sponsors, sessions, and speaker data. No database setup required.
 
@@ -39,6 +43,26 @@ The `DB_DATABASE` env var controls which SQLite file to use:
 |---|---|
 | `database/db.local.sqlite3` | Local dev — committed to repo, has seed data, no sensitive user info |
 | `tmp/db.production.sqlite3` | Production — gitignored, contains real user data |
+
+### Running Tests
+
+```bash
+# Functional smoke tests (Japa). They copy database/db.local.sqlite3 to
+# tmp/db.test.sqlite3, run pending migrations there, and boot the HTTP server.
+pnpm test
+
+# Accessibility scan of the public routes (Playwright + axe)
+pnpm test:a11y
+```
+
+### Docker Image
+
+The image is built from the monorepo root so the pnpm lockfile pins the same
+versions in production as in development:
+
+```bash
+docker build -f packages/frontendmu-adonis/Dockerfile -t frontendmu-adonis .
+```
 
 ### Running Migrations
 
