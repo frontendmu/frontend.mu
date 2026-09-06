@@ -18,7 +18,8 @@
     "codegen": "node ace codegen",
     "typecheck": "tsc --noEmit",
     "db:sync-local-meetup-details": "node database/scripts/sync_local_sqlite_meetup_details.mjs",
-    "clean:ports": "lsof -t -i:3333 | xargs kill && lsof -t -i:24678 | xargs kill"
+    "clean:ports": "lsof -t -i:3333 | xargs kill && lsof -t -i:24678 | xargs kill",
+    "verify:build": "node scripts/verify_build_output.mjs"
   },
   "imports": {
     "#generated/*": "./.adonisjs/server/*.js",
