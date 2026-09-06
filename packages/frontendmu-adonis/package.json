@@ -15,6 +15,7 @@
     "test:a11y": "playwright test --config=playwright.a11y.config.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
+    "codegen": "node ace codegen",
     "typecheck": "tsc --noEmit",
     "db:sync-local-meetup-details": "node database/scripts/sync_local_sqlite_meetup_details.mjs",
     "clean:ports": "lsof -t -i:3333 | xargs kill && lsof -t -i:24678 | xargs kill"
@@ -42,11 +43,12 @@
     "#config/*": "./config/*.js"
   },
   "devDependencies": {
-    "@adonisjs/assembler": "^8.1.0",
+    "@adonisjs/assembler": "^8.5.1",
     "@adonisjs/eslint-config": "^3.0.0",
     "@adonisjs/prettier-config": "^1.4.5",
     "@adonisjs/tsconfig": "^2.0.0",
     "@axe-core/playwright": "^4.11.2",
+    "@japa/api-client": "3.2.1",
     "@japa/assert": "^4.0.1",
     "@japa/plugin-adonisjs": "^5.1.0",
     "@japa/runner": "^4.2.0",
@@ -72,8 +74,8 @@
   "dependencies": {
     "@adonisjs/ally": "^6.0.0",
     "@adonisjs/auth": "^10.0.0",
-    "@adonisjs/bouncer": "^4.0.0",
-    "@adonisjs/core": "^7.1.1",
+    "@adonisjs/bouncer": "^4.0.1",
+    "@adonisjs/core": "^7.5.0",
     "@adonisjs/cors": "^3.0.0",
     "@adonisjs/drive": "^4.0.0",
     "@adonisjs/inertia": "^4.1.1",
