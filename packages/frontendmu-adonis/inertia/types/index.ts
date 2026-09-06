@@ -43,13 +43,7 @@ export type Meal = 'veg' | 'non_veg' | 'no_food'
 export type Transport = 'bus' | 'car' | 'need_a_ride' | 'other'
 
 export type Occupation =
-  | 'developer'
-  | 'student'
-  | 'manager'
-  | 'designer'
-  | 'hr'
-  | 'entrepreneur'
-  | 'other'
+  'developer' | 'student' | 'manager' | 'designer' | 'hr' | 'entrepreneur' | 'other'
 
 export interface RSVPMetaData {
   meal: Meal
