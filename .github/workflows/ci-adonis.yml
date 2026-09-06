@@ -60,6 +60,11 @@ jobs:
       - name: Build
         run: pnpm build
 
+      # The page still returns 200 when the browser bundle is wrong, so assert
+      # on the build output itself rather than on an HTTP status.
+      - name: Verify build output
+        run: pnpm verify:build
+
   docker-image:
     runs-on: ubuntu-latest
     steps:

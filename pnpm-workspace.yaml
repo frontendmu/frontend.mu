@@ -3,3 +3,10 @@ packages:
   - "packages/frontendmu-nuxt/"
   - "packages/frontendmu-data/"
   - "packages/frontendmu-adonis/"
+
+# better-sqlite3 ships prebuilt binaries but still carries a binding.gyp, and
+# package managers default to `node-gyp rebuild` for any package that has one
+# and no install script. Skip that; the prebuilds are what we want to load.
+# Also mirrored in the root package.json "pnpm" field for pnpm 9.
+neverBuiltDependencies:
+  - better-sqlite3
