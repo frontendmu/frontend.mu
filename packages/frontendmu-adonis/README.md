@@ -20,6 +20,10 @@ cp .env.example .env
 node ace serve --hmr
 ```
 
+Route and index types are generated into `.adonisjs/` when the dev server
+boots. To typecheck a fresh checkout without starting the server, run
+`pnpm codegen` first.
+
 That's it. The repo includes `database/db.local.sqlite3` — a SQLite database pre-seeded with events, sponsors, sessions, and speaker data. No database setup required.
 
 Treat that committed SQLite file as generated development data. When it needs updating, regenerate it from migrations and the data scripts instead of editing the binary directly.

@@ -4,6 +4,7 @@
 !package.json
 !pnpm-lock.yaml
 !pnpm-workspace.yaml
+!.npmrc
 !packages/frontendmu-adonis
 !packages/frontendmu-astro/package.json
 !packages/frontendmu-nuxt/package.json
@@ -19,3 +20,4 @@ packages/frontendmu-adonis/database/backups
 packages/frontendmu-adonis/database/exports
 packages/frontendmu-adonis/.env
 packages/frontendmu-adonis/.env.*
+!packages/frontendmu-adonis/.env.test

@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt
 
 # Workspace manifests first so the dependency layer is cached independently
 # of application source changes.
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY packages/frontendmu-adonis/package.json packages/frontendmu-adonis/
 COPY packages/frontendmu-astro/package.json packages/frontendmu-astro/
 COPY packages/frontendmu-nuxt/package.json packages/frontendmu-nuxt/
@@ -21,6 +21,9 @@ RUN pnpm install --frozen-lockfile --filter frontendmu-adonis
 
 COPY packages/frontendmu-adonis packages/frontendmu-adonis
 WORKDIR /repo/packages/frontendmu-adonis
+# `node ace build` type-checks against the generated .adonisjs/ types but does
+# not write them; codegen boots the app in warmup mode with .env.test values.
+RUN NODE_ENV=test node ace codegen
 RUN node ace build
 
 # Production node_modules resolved from the same lockfile.

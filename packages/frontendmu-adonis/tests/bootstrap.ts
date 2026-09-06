@@ -1,4 +1,5 @@
 import { copyFile, mkdir } from 'node:fs/promises'
+import { relative, isAbsolute } from 'node:path'
 import { assert } from '@japa/assert'
 import { apiClient } from '@japa/api-client'
 import app from '@adonisjs/core/services/app'
@@ -33,15 +34,17 @@ export const plugins: Config['plugins'] = [
  * applied to the copy, which also exercises the migration path itself.
  */
 async function prepareTestDatabase() {
-  const target = env.get('DB_DATABASE')
-  if (!target || !target.startsWith('tmp/')) {
+  const target = env.get('DB_DATABASE') ?? ''
+  const targetPath = app.makePath(target)
+  const insideTmp = relative(app.makePath('tmp'), targetPath)
+  if (!target || !insideTmp || insideTmp.startsWith('..') || isAbsolute(insideTmp)) {
     throw new Error(
       `Refusing to run tests against DB_DATABASE="${target}". Set it to a path under tmp/ in .env.test.`
     )
   }
 
   await mkdir(app.makePath('tmp'), { recursive: true })
-  await copyFile(app.makePath('database/db.local.sqlite3'), app.makePath(target))
+  await copyFile(app.makePath('database/db.local.sqlite3'), targetPath)
   await testUtils.db().migrate()
 }
 
