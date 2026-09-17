@@ -48,7 +48,7 @@ import IconLinkedin from '~/components/icons/IconLinkedin.vue'
           <template #icon><IconInstagram class="w-8 h-8" /></template>
         </SocialCard>
 
-        <SocialCard href="https://www.linkedin.com/company/81846464/admin/" class="bg-[#0077b5] h-[240px]">
+        <SocialCard href="https://www.linkedin.com/company/frontendmu/" class="bg-[#0077b5] h-[240px]">
           <template #tagline>LinkedIn</template>
           <template #description>Professional networking for those who prefer formal updates.</template>
           <template #icon><IconLinkedin class="w-8 h-8" /></template>

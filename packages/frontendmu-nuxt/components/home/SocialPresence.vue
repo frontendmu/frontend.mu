@@ -80,7 +80,7 @@
       </HomeSocialCard>
 
       <HomeSocialCard
-        href="https://www.linkedin.com/company/81846464/admin/"
+        href="https://www.linkedin.com/company/frontendmu/"
         class="bg-[#007db1] text-sm md:text-normal"
       >
         <template #tagline>
