@@ -32,11 +32,7 @@ export default class EventsController {
       })
 
     // A past meetup with no attendees and no sessions never happened, so hide it from the listing as it has no relevance.
-    const heldEvents = events.filter(
-      (event) => !(event.isPast && event.attendeeCount === 0 && event.sessions.length === 0)
-    )
-
-    const meetups = EventTransformer.transform(heldEvents)
+    const meetups = EventTransformer.transform(events.filter((event) => !event.isCancelled))
 
     let canCreate = false
     await auth.check()
