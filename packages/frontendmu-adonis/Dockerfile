@@ -1,6 +1,9 @@
 # Build context is the monorepo root so the pnpm lockfile is available:
 #   docker build -f packages/frontendmu-adonis/Dockerfile .
-FROM node:24-slim AS base
+# Pinned to an exact Node release: every rebuild gets the same runtime, and a
+# security bump is an explicit commit, which is what triggers the deploy.
+# 24.22.1 has the October 21, 2026 security fixes. Stay on bookworm.
+FROM node:24.22.1-bookworm-slim AS base
 RUN npm install -g pnpm@9.2.0
 
 # --- Build stage ---

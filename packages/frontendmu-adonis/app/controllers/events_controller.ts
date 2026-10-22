@@ -31,7 +31,8 @@ export default class EventsController {
         query.orderBy('order', 'asc').groupLimit(1)
       })
 
-    const meetups = EventTransformer.transform(events)
+    // A past meetup with no attendees and no sessions never happened, so hide it from the listing as it has no relevance.
+    const meetups = EventTransformer.transform(events.filter((event) => !event.isCancelled))
 
     let canCreate = false
     await auth.check()

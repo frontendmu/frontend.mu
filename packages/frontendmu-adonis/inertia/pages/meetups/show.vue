@@ -5,6 +5,7 @@ import { Head, usePage, router } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'
 import type { Data } from '@generated/data'
 import SpeakerAvatar from '~/components/shared/SpeakerAvatar.vue'
+import AddToCalendar from '~/components/event/AddToCalendar.vue'
 import RsvpPhoneModal from '~/components/rsvp/RsvpPhoneModal.vue'
 import RsvpTimelineChart from '~/components/admin/RsvpTimelineChart.vue'
 import { sanitizeHtml } from '~/composables/use_sanitize'
@@ -361,13 +362,21 @@ function highlightChangedSection() {
   })
 }
 
-// Generate Google Calendar URL
-const calendarUrl = computed(() => {
-  if (!props.meetup || !eventDate.value) return null
-  const title = encodeURIComponent(props.meetup.title)
-  const date = eventDate.value.toFormat('yyyyMMdd')
-  const location = encodeURIComponent(props.meetup.venue || '')
-  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${date}/${date}&location=${location}`
+// Event details for the "Add to Calendar" menu (Google, Outlook, .ics)
+const calendarEvent = computed(() => {
+  if (!props.meetup?.date) return null
+  const place = [props.meetup.venue, props.meetup.location]
+    .filter((part) => part && part.trim().toUpperCase() !== 'TBA')
+    .join(', ')
+  return {
+    id: props.meetup.id,
+    title: props.meetup.title,
+    date: props.meetup.date,
+    startTime: props.meetup.startTime,
+    endTime: props.meetup.endTime,
+    location: place,
+    url: window.location.origin + window.location.pathname,
+  }
 })
 </script>
 
@@ -1047,30 +1056,7 @@ const calendarUrl = computed(() => {
                       RSVPs Closed
                     </div>
                   </template>
-                  <template v-if="calendarUrl">
-                    <a
-                      v-if="showRsvpActions"
-                      :href="calendarUrl"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="w-11 h-11 rounded-lg border border-gray-200 dark:border-verse-800 grid place-items-center text-gray-500 dark:text-gray-400 hover:text-verse-500 transition-colors"
-                      aria-label="Add to Calendar"
-                    >
-                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="5" width="18" height="16" rx="2" />
-                        <path d="M8 3v4M16 3v4M3 10h18" />
-                      </svg>
-                    </a>
-                    <a
-                      v-else
-                      :href="calendarUrl"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="flex-1 py-3 text-center text-sm font-semibold border border-gray-200 dark:border-verse-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-verse-900 transition-colors"
-                    >
-                      Add to Calendar
-                    </a>
-                  </template>
+                  <AddToCalendar v-if="calendarEvent" :event="calendarEvent" :filename="meetup.slug || 'meetup'" :variant="showRsvpActions ? 'icon' : 'full'" />
                   <button
                     type="button"
                     class="w-11 h-11 rounded-lg border border-gray-200 dark:border-verse-800 grid place-items-center text-gray-500 dark:text-gray-400 cursor-pointer hover:text-verse-500 transition-colors"

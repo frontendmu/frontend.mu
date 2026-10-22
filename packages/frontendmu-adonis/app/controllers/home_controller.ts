@@ -26,7 +26,7 @@ export default class HomeController {
       })
       .preload('sponsors')
 
-    const events = EventTransformer.transform(dbEvents)
+    const events = EventTransformer.transform(dbEvents.filter((event) => !event.isCancelled))
 
     let userRsvpEventIds: string[] = []
     if (auth.isAuthenticated && auth.user) {

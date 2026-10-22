@@ -130,6 +130,13 @@ export default class Event extends BaseModel {
   }
 
   /**
+   * Check if event has been cancelled (won't be show on homepage or meetups page)
+   */
+  get isCancelled(): boolean {
+    return this.isPast && this.attendeeCount === 0 && this.sessions.length === 0
+  }
+
+  /**
    * Check if event is upcoming
    */
   get isUpcoming(): boolean {
